@@ -1,0 +1,318 @@
+specification {
+	// Deployment family tags (infrastructure level)
+	tag Zone
+	tag Node
+	tag Infra
+
+	// Network zone tags
+	tag Internet
+	tag Vlan
+	tag Lan
+	tag Subnet
+	
+	// Infrastructure node tags
+	tag Cluster
+	tag Vm
+	tag Server
+	tag App
+	
+	// Application type tags
+	tag AppBrowser
+	tag AppMobile
+	tag AppRich
+	
+	// Network infrastructure tags
+	tag F5
+	tag Fw
+	tag Router
+	
+	// Environment tags
+	tag Environment
+	tag Datacenter
+	tag Cicd
+
+	// Environment tags (with semantic colors)
+	tag Production {
+		color rgb(5, 150, 105)
+	}
+	tag Development {
+		color rgb(251, 146, 60)
+	}
+
+	// Infrastructure category tags (with semantic colors)
+	tag Networking {
+		color rgb(37, 99, 235)
+	}
+	tag SharedInfra {
+		color rgb(139, 92, 246)
+	}
+
+	// Deployment pattern tags (with semantic colors)
+	tag Deployment {
+		color rgb(84, 34, 170)
+	}
+	tag Ingress {
+		color rgb(34, 197, 94)
+	}
+	tag Routing {
+		color rgb(59, 130, 246)
+	}
+
+	// Messaging/async tags (with semantic colors)
+	tag Messaging {
+		color rgb(251, 191, 36)
+	}
+	tag Async {
+		color rgb(251, 146, 60)
+	}
+
+	// Data/storage tags (with semantic colors)
+	tag Persistence {
+		color rgb(107, 114, 128)
+	}
+	tag Data {
+		color rgb(75, 85, 99)
+	}
+	tag Backup {
+		color rgb(99, 102, 241)
+	}
+	tag Recovery {
+		color rgb(129, 140, 248)
+	}
+
+	// Service/application tags (with semantic colors)
+	tag Service {
+		color rgb(59, 130, 246)
+	}
+	tag Monitoring {
+		color rgb(168, 85, 247)
+	}
+	tag Observability {
+		color rgb(192, 132, 250)
+	}
+
+	// CI/CD tags (with semantic colors)
+	tag Pipeline {
+		color rgb(236, 72, 153)
+	}
+	tag DeploymentAutomation {
+		color rgb(168, 85, 247)
+	}
+
+	// Deployment relationships (infrastructure flows)
+	relationship http {
+		notation 'HTTP'
+	}
+	relationship https {
+		notation 'HTTPS'
+	} 
+	relationship tcp {
+		notation 'TCP'
+	}
+	relationship nfs {
+		notation 'NFS'
+	}
+	relationship amqp {
+		notation 'AMQP'
+	}
+
+	// Service/data/security links (infra-level)
+	relationship oidc_saml {
+		notation 'Authentication'
+		color red
+		line solid
+	}
+	relationship ldap {
+		notation 'LDAP'
+		color blue
+		line solid
+	}
+	relationship sql {
+		notation 'SQL'
+		color amber
+		line solid
+	}
+	relationship redis {
+		notation 'REDIS'
+		color green
+		line solid
+	}
+	relationship smtp {
+		notation 'SMTP'
+		color indigo
+		line solid
+	}
+
+	// Deployment node kinds (PascalCase with full styling)
+	deploymentNode Zone {
+		#Zone #Networking
+		notation 'Network zone'
+		style {
+			opacity 10%
+			border dotted
+			icon @/switchGray.svg
+		}
+	}
+	deploymentNode Zone_Internet {
+		#Zone #Internet
+		notation 'Internet zone'
+		style {
+			opacity 10%
+			border dotted
+			icon @/internet.svg
+		}
+	}
+	deploymentNode Zone_Vlan {
+		#Zone #Vlan #Networking
+		notation 'VLAN'
+		style {
+			opacity 10%
+			border dotted
+			icon @/switchGray.svg
+		}
+	}
+	deploymentNode Zone_Lan {
+		#Zone #Lan #Networking
+		notation 'Physical LAN'
+		style {
+			opacity 10%
+			border dotted
+			icon @/switchNb2.svg
+		}
+	}
+	deploymentNode Zone_Subnet {
+		#Zone #Subnet #Networking
+		notation 'Subnet'
+		style {
+			opacity 10%
+			border dotted
+			icon @/switchGray.svg
+		}
+	}
+
+	deploymentNode Node_Cluster {
+		#Node #Cluster
+		notation 'Server cluster'
+		style {
+			opacity 10%
+			border dotted
+			multiple true
+			icon bootstrap:bounding-box
+		}
+	}
+
+	deploymentNode Node_Vm {
+		#Node #Vm
+		notation 'Virtual Machine'
+		style {
+			icon @/vm.svg
+		}
+	}
+	deploymentNode Node_Server {
+		#Node #Server
+		notation 'Physical Machine'
+		style {
+			icon @/serverGray.svg
+		}
+	}
+	deploymentNode Node_App {
+		#Node #App
+		notation 'Deployed application service instance'
+		style {
+			icon bootstrap:box
+		}
+	}
+	deploymentNode Node_AppBrowser {
+		#Node #AppBrowser
+		notation 'User terminal: web browser'
+		style {
+			shape browser
+			icon bootstrap:pc-display-horizontal
+		}
+	}
+	deploymentNode Node_AppMobile {
+		#Node #AppMobile
+		notation 'User terminal: mobile application'
+		style {
+			shape mobile
+			icon bootstrap:phone-landscape
+		}
+	}
+	deploymentNode Node_AppRich {
+		#Node #AppRich
+		notation 'User terminal: rich client'
+		style {
+						icon @/software.svg
+		}
+	}
+	
+	deploymentNode Node_External {
+		#Node #External
+		notation 'External service or system'
+		style {
+			color secondary
+			icon bootstrap:cloud
+		}
+	}
+	
+	deploymentNode Infra_F5 {
+		#Infra #F5
+		notation 'F5 Big-IP'
+		style {
+			icon @/serverF5.svg
+		}
+	}
+	
+	deploymentNode Infra_Fw {
+		#Infra #Fw
+		notation 'Firewall'
+		style {
+			icon bootstrap:shield
+		}
+	}
+	
+	deploymentNode Infra_Router {
+		#Infra #Router
+		notation 'Router'
+		style {
+			icon @/router.svg
+		}
+	}
+	
+	// Additional deployment nodes from shared specs
+	deploymentNode Node_Environment {
+		#Node #Environment
+		notation 'Environment'
+		style {
+			opacity 10%
+			border dotted
+			icon bootstrap:layers
+		}
+	}
+	
+	deploymentNode Node_Datacenter {
+		#Node #Datacenter
+		notation 'Data Center'
+		style {
+			opacity 10%
+			border dotted
+			icon bootstrap:building
+		}
+	}
+	
+	deploymentNode Node_Cicd {
+		#Node #Cicd
+		notation 'CI/CD Infrastructure'
+		style {
+			icon bootstrap:gear
+		}
+	}
+	
+	deploymentNode Node_Container {
+		#Node
+		notation 'Container'
+		style {
+			icon bootstrap:box
+		}
+	}
+}

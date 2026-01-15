@@ -1,0 +1,11 @@
+{
+  "$schema": "https://likec4.dev/schemas/config.json",
+  "name": "template-project",
+  "title": "My Project Title",
+  "include": {
+    "paths": ["../shared"]
+  },
+  "imageAliases": {
+    "@": "../shared/images"
+  }
+}

@@ -1,0 +1,212 @@
+specification {
+	// Family tag for C2 - Container level
+	tag Container
+
+	// Container type tags
+	tag ReverseProxy
+	tag Waf
+	tag Browser
+	tag MobileApp
+	tag Spa
+	tag Webapp
+	tag Api
+	tag Geo
+	tag Database
+	tag ObjectStorage
+	tag Directory
+	tag Mailserver
+	tag Loadbalancer
+	tag Firewall
+	tag DataServer
+	tag FileServer
+	tag ProcessingServer
+	tag ExchangeServer
+	tag IamServer
+	tag WebServer
+	tag ApplicationServer
+
+	element Container {
+		#Container
+		notation 'Application container'
+		style {
+			icon @/serverGray.svg
+		}
+	}
+	element Container_ReverseProxy {
+		#Container #ReverseProxy
+		notation 'Reverse proxy'
+		style {
+						icon @/reversProxy.svg
+		}
+	}
+	element Container_Waf {
+		#Container #Waf
+		notation 'WAF (Web Application Firewall)'
+		style {
+						icon @/waf.svg
+		}
+	}
+	element Container_Browser {
+		#Container #Browser
+		notation 'Web browser'
+		style {
+			shape browser
+			icon @/processingWeb.svg
+		}
+	}
+	element Container_MobileApp {
+		#Container #MobileApp
+		notation 'Mobile application'
+		style {
+			shape mobile
+			icon @/smartphone.svg
+		}
+	}
+	element Container_Spa {
+		#Container #Spa
+		notation 'Single page application (SPA)'
+		style {
+			shape browser
+			icon @/processingWeb.svg
+		}
+	}
+	element Container_Webapp {
+		#Container #Webapp
+		notation 'Web application'
+		style {
+						icon @/serverGray.svg
+		}
+	}
+	element Container_Api {
+		#Container #Api
+		notation 'API / Service'
+		style {
+						icon @/serverGray.svg
+		}
+	}
+	element Container_Api_Geo {
+		#Container #Api #Geo
+		notation 'Mapping API'
+		style {
+						icon @/geoServerColored.svg
+		}
+	}
+	element Container_Queue {
+		#Container #Queue
+		notation 'Message queue'
+		style {
+			shape queue
+			icon bootstrap:mailbox
+		}
+	}
+	element Container_Database {
+		#Container #Database
+		notation 'Database'
+		style {
+			color storage
+			shape storage
+			icon bootstrap:database
+		}
+	}
+	element Container_DatabaseGeo {
+		#Container #Database #Geo
+		notation 'Geographic data warehouse'
+		style {
+			color storage
+			shape storage
+			icon @/geoWarehouse.svg
+		}
+	}
+	element Container_ObjectStorage {
+		#Container #ObjectStorage
+		notation 'Object storage'
+		style {
+			color storage
+			shape storage
+			icon bootstrap:bucket
+		}
+	}
+	element Container_Directory {
+		#Container #Directory
+		notation 'Directory (LDAP)'
+		style {
+			color storage
+			shape storage
+			icon @/ldap.svg
+		}
+	}
+	element Container_Mailserver {
+		#Container #Mailserver
+		notation 'Mail server'
+		style {
+						icon @/mailServer.svg
+		}
+	}
+	element Container_Loadbalancer {
+		#Container #Loadbalancer
+		notation 'Load Balancer'
+		style {
+						icon bootstrap:diagram-3
+		}
+	}
+	element Container_Firewall {
+		#Container #Firewall
+		notation 'Firewall'
+		style {
+						icon bootstrap:shield
+		}
+	}
+	element Container_DataServer {
+		#Container #DataServer
+		notation 'Data server'
+		style {
+			color storage
+			shape storage
+			icon @/dataServer.svg
+		}
+	}
+	element Container_FileServer {
+		#Container #FileServer
+		notation 'File server'
+		style {
+			color storage
+			shape storage
+			icon @/fileServer.svg
+		}
+	}
+	element Container_ProcessingServer {
+		#Container #ProcessingServer
+		notation 'Processing server'
+		style {
+						icon @/processingServer.svg
+		}
+	}
+	element Container_ExchangeServer {
+		#Container #ExchangeServer
+		notation 'Exchange server'
+		style {
+						icon @/exchangeServer.svg
+		}
+	}
+	element Container_IamServer {
+		#Container #IamServer
+		notation 'IAM server'
+		style {
+						icon @/iamServer.svg
+		}
+	}
+	element Container_WebServer {
+		#Container #WebServer
+		notation 'Web server'
+		style {
+						icon @/webServer.svg
+		}
+	}
+	element Container_ApplicationServer {
+		#Container #ApplicationServer
+		notation 'Application server'
+		style {
+			icon @/applicationServer.svg
+		}
+	}
+}

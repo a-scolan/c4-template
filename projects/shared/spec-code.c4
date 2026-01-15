@@ -1,0 +1,12 @@
+specification {
+	// Family tag for code elements
+	tag code
+
+	element Code {
+		#code
+		notation 'Code'
+		style {
+			icon bootstrap:code-slash
+		}
+	}
+}

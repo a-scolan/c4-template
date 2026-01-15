@@ -1,0 +1,62 @@
+specification {
+	// Custom colors (from shared specs)
+	color legacy #94a3b8
+	color modern #3b82f6
+	color external #ef4444
+	color storage #f59e0b
+
+	// Purpose tags (semantic categorization)
+	tag Internal {
+		color rgb(59, 130, 246)
+	}
+	tag External {
+		color rgb(220, 38, 38)
+	}
+	tag Legacy {
+		color rgb(148, 163, 184)
+	}
+
+	// Platform tags
+	tag Cloud {
+		color rgb(14, 165, 233)
+	}
+	tag Saas {
+		color rgb(34, 197, 94)
+	}
+	
+	// Technology tags
+	tag Queue {
+		color rgb(136, 107, 32)
+	}
+	
+	tag Security {
+		color rgb(220, 38, 38)
+	}
+
+	// MODEL RELATIONSHIPS (business/functional flows)
+	relationship uses {
+		notation 'Uses'
+		line solid
+	}
+	relationship calls {
+		notation 'Calls'
+		line solid
+		color blue
+	}
+	relationship async {
+		notation 'Async'
+		line dashed
+		color blue
+	}
+	relationship reads {
+		notation 'Reads'
+		line solid
+		color green
+	}
+	relationship writes {
+		notation 'Writes'
+		line solid
+		color amber
+	}
+	
+}

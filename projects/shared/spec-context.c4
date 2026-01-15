@@ -1,0 +1,82 @@
+specification {
+	// Family tags (C1 - Context level)
+	tag Actor
+	tag System
+
+	// Actor type tags
+	tag Person
+	tag Staff
+	tag Admin
+
+	// System type tags
+	tag New
+	tag Existing
+
+	element Actor {
+		#Actor
+		notation 'User'
+		style {
+			shape person
+		}
+	}
+	element Actor_Person {
+		#Actor #Person
+		notation 'External users'
+		style {
+			shape person
+			color blue
+			icon bootstrap:people
+		}
+	}
+	element Actor_Staff {
+		#Actor #Staff
+		notation 'Internal users'
+		style {
+			shape person
+			color green
+			icon bootstrap:people
+		}
+	}
+	element Actor_Admin {
+		#Actor #Admin
+		notation 'Administrators'
+		style {
+			shape person
+			color amber
+			icon bootstrap:person-badge
+		}
+	}
+
+	element System_New {
+		#System #New
+		notation 'New system'
+		style {
+			color green
+			icon bootstrap:arrow-clockwise
+		}
+	}
+	element System_Existing {
+		#System #Existing
+		notation 'Existing system'
+		style {
+			color blue
+			icon @/serverGray.svg
+		}
+	}
+	element System_Legacy {
+		#System #Legacy
+		notation 'Deprecated system'
+		style {
+			color legacy
+			icon bootstrap:exclamation-triangle
+		}
+	}
+	element System_External {
+		#System #External
+		notation 'External system'
+		style {
+			color external
+			icon @/internet.svg
+		}
+	}
+}

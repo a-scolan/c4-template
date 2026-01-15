@@ -1,0 +1,12 @@
+specification {
+	// Family tag for C3 - Component level
+	tag Component
+
+	element Component {
+		#Component
+		notation 'Component'
+		style {
+			icon bootstrap:puzzle
+		}
+	}
+}
