@@ -1,0 +1,52 @@
+// ============================================================================
+// C3 - COMPONENT LEVEL: Components inside API Server
+// ============================================================================
+// This file showcases component level detail within a container
+
+model {
+  // Create a detailed API container with internal components
+  api_container = Container_Api 'API Service' {
+    technology 'Node.js/Express'
+    description 'API service with internal component structure'
+    
+    auth_component = Component 'Authentication Module' {
+      technology 'OAuth2/JWT'
+      description 'Handles user authentication and authorization'
+    }
+    
+    validation_component = Component 'Request Validator Module' {
+      technology 'JSON Schema'
+      description 'Validates incoming API requests'
+    }
+    
+    routing_component = Component 'API Router Module' {
+      technology 'Express Router'
+      description 'Routes requests to appropriate handlers'
+    }
+    
+    persistence_component = Component 'Persistence Layer Module' {
+      technology 'ORM/Prisma'
+      description 'Manages database operations'
+    }
+    
+    caching_component = Component 'Cache Service Module' {
+      technology 'Redis'
+      description 'Handles caching for performance'
+    }
+    
+    // Component relationships
+    routing_component -> auth_component 'Verifies token'
+    routing_component -> validation_component 'Validates request'
+    routing_component -> persistence_component 'Accesses DB'
+    routing_component -> caching_component 'Cache lookup'
+  }
+  
+  // Database for the persistence layer
+  component_database = Container_Database 'PostgreSQL' {
+    technology 'PostgreSQL 15'
+    description 'Backend database for API'
+  }
+  
+  // Component to external connection
+  api_container.persistence_component -> component_database 'Queries data'
+}

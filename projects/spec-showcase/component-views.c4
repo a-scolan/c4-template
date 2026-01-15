@@ -1,0 +1,14 @@
+// ============================================================================
+// COMPONENT LEVEL VIEWS
+// ============================================================================
+// Views showcasing component-level detail
+
+views 'Component' {
+  view api_components of api_container {
+    title 'API Components'
+    description 'Internal components of API service'
+    
+    include *
+	exclude * where kind is not Component
+  }
+}

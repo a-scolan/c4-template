@@ -353,4 +353,76 @@ view production_services {
 
 ---
 
+## Using as a Git Subtree
+
+This repository can be consumed as a git subtree to share specifications, GitHub instructions, and examples across multiple projects.
+
+### Initial Setup
+
+Add this repository as a remote and pull three subtrees into your project:
+
+```bash
+# Navigate to your project repository
+cd /path/to/your/project
+
+# Add c4_template as a named remote
+git remote add c4-template https://github.com/your-org/c4_template.git
+
+# Pull three subtrees with squashed history
+git subtree add --prefix=.github c4-template main --squash
+git subtree add --prefix=projects/shared c4-template main --squash
+git subtree add --prefix=projects/spec-showcase c4-template main --squash
+
+# Commit the subtree merge
+git push
+```
+
+After this setup, your repository will contain:
+- `.github/copilot-instructions.md` and `.github/LLM-INSTRUCTIONS.md` for AI coding assistant guidance
+- `projects/shared/` with reusable LikeC4 specifications (`spec-*.c4` files)
+- `projects/spec-showcase/` with example diagrams demonstrating specification usage
+- `ADR/0000-template.md` for documenting architecture decisions
+
+### Periodic Synchronization
+
+Pull updates from c4_template as needed (recommended: quarterly or when specifications change):
+
+```bash
+# Fetch latest changes from c4_template
+git fetch c4-template main
+
+# Pull updates for each subtree with squashed history
+git subtree pull --prefix=.github c4-template main --squash
+git subtree pull --prefix=projects/shared c4-template main --squash
+git subtree pull --prefix=projects/spec-showcase c4-template main --squash
+
+# Review and commit the updates
+git push
+```
+
+**Note:** The `--squash` flag keeps your project's commit history clean by consolidating all c4_template changes into a single commit per sync. Updates are manual—subtrees do not auto-sync.
+
+### What Gets Included
+
+When cloning a repository with git subtrees, all subtree content appears automatically in the working directory—no additional commands required. Users cloning your project will see:
+
+- Shared specifications and examples immediately available
+- AI coding instructions active for Copilot/LLMs
+- ADR template ready for documenting system design decisions
+
+### Subtree vs. Submodule
+
+This template uses **subtrees** instead of **submodules** for simplicity:
+
+| Feature | Git Subtree | Git Submodule |
+|---------|-------------|---------------|
+| **Clone behavior** | Content included automatically | Requires `git submodule update --init` |
+| **History** | Integrated into parent repo | Tracked separately |
+| **User experience** | Transparent to consumers | Visible `.gitmodules` file |
+| **Update complexity** | Manual `git subtree pull` | Manual `git submodule update` |
+| **Best for** | Stable shared specs, internal sharing | External dependencies, explicit versioning |
+
+---
+
 **Ready to document your architecture!** Start by customizing `likec4.config.json`, then update `system-model.c4` with your system's structure.
+

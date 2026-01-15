@@ -1,0 +1,58 @@
+// ============================================================================
+// C1 - CONTEXT LEVEL: All Actors and Systems
+// ============================================================================
+// This file showcases all actor and system types defined in the specifications
+
+model {
+  // ========================================================================
+  // ACTORS (Context Level)
+  // ========================================================================
+  
+  // Standard person actor
+  person_external = Actor_Person 'External User' {
+    description 'A regular external user accessing the system'
+  }
+  
+  person_staff = Actor_Staff 'Staff Member' {
+    description 'Internal staff using internal systems'
+  }
+  
+  person_admin = Actor_Admin 'Administrator' {
+    description 'System administrator'
+  }
+
+  // ========================================================================
+  // SYSTEMS (Context Level) 
+  // ========================================================================
+  
+  // New system (green)
+  system_new = System_New 'New System' {
+    description 'A newly developed system'
+  }
+  
+  // Existing system (blue)
+  system_existing = System_Existing 'Current System' {
+    description 'An established, operational system'
+  }
+  
+  // Legacy system (deprecated)
+  system_legacy = System_Legacy 'Legacy System' {
+    description 'Deprecated or being phased out'
+  }
+  
+  // External system (3rd party)
+  system_external = System_External 'External Service' {
+    description 'Third-party or external service'
+  }
+
+  // ========================================================================
+  // RELATIONSHIPS - Context Level
+  // ========================================================================
+  
+  person_external -> system_new 'Accesses'
+  person_staff -> system_existing 'Works with'
+  person_admin -> system_legacy 'Maintains'
+  system_existing -> system_external 'Integrates with'
+  system_new -> system_existing 'Depends on'
+  system_legacy -> system_new 'Legacy migration'
+}

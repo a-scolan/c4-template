@@ -1,0 +1,25 @@
+// ============================================================================
+// CONTEXT LEVEL VIEWS
+// ============================================================================
+// Views showcasing actors and systems
+
+views 'Context' {
+  view actors {
+    title 'Actors'
+    description 'All actor types'
+    
+    include *
+      where tag is #Actor
+  }
+  
+  view systems {
+    title 'Systems'
+    description 'All system types'
+    
+    include *
+      where tag is #System
+      
+    include * -> *
+      where source.tag is #System
+  }
+}

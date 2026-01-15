@@ -1,0 +1,178 @@
+// ============================================================================
+// C2 - CONTAINER LEVEL: All Container Types
+// ============================================================================
+// This file showcases all container types defined in the specifications
+
+model {
+  // ========================================================================
+  // CLIENT APPLICATIONS
+  // ========================================================================
+  
+  browser = Container_Browser 'Web Browser' {
+    technology 'HTML/CSS/JavaScript'
+    description 'Client web browser application'
+  }
+  
+  mobile_app = Container_MobileApp 'Mobile App' {
+    technology 'iOS/Android'
+    description 'Native mobile application'
+  }
+  
+  spa = Container_Spa 'Single Page Application' {
+    technology 'React/Vue/Angular'
+    description 'Frontend SPA'
+  }
+
+  // ========================================================================
+  // NETWORK & SECURITY CONTAINERS
+  // ========================================================================
+  
+  reverse_proxy = Container_ReverseProxy 'Reverse Proxy' {
+    technology 'Nginx/HAProxy'
+    description 'Reverse proxy server'
+  }
+  
+  waf = Container_Waf 'WAF' {
+    technology 'ModSecurity/CloudFlare'
+    description 'Web Application Firewall'
+  }
+  
+  loadbalancer = Container_Loadbalancer 'Load Balancer' {
+    technology 'F5/AWS ELB'
+    description 'Application load balancer'
+  }
+  
+  firewall = Container_Firewall 'Firewall' {
+    technology 'pfSense/Fortinet'
+    description 'Network firewall'
+  }
+
+  // ========================================================================
+  // APPLICATION SERVERS
+  // ========================================================================
+  
+  web_server = Container_WebServer 'Web Server' {
+    technology 'Apache/Nginx'
+    description 'HTTP web server'
+  }
+  
+  app_server = Container_ApplicationServer 'Application Server' {
+    technology 'Tomcat/JBoss'
+    description 'Java application server'
+  }
+  
+  api = Container_Api 'API Service' {
+    technology 'REST/GraphQL'
+    description 'API endpoint service'
+  }
+  
+  geo_api = Container_Api_Geo 'Mapping API' {
+    technology 'PostGIS/Leaflet'
+    description 'Geographic/mapping API'
+  }
+  
+  processing_server = Container_ProcessingServer 'Processing Server' {
+    technology 'Celery/Bull'
+    description 'Background job processor'
+  }
+  
+  exchange_server = Container_ExchangeServer 'Exchange Server' {
+    technology 'Microsoft Exchange'
+    description 'Email exchange server'
+  }
+  
+  iam_server = Container_IamServer 'IAM Server' {
+    technology 'Keycloak/Auth0'
+    description 'Identity and access management'
+  }
+  
+  mailserver = Container_Mailserver 'Mail Server' {
+    technology 'Postfix/Sendmail'
+    description 'SMTP mail server'
+  }
+  
+  webapp = Container_Webapp 'Web Application' {
+    technology 'ASP.NET/Django'
+    description 'Traditional web application'
+  }
+
+  // ========================================================================
+  // MESSAGING
+  // ========================================================================
+  
+  queue = Container_Queue 'Message Queue' {
+    technology 'RabbitMQ/Kafka'
+    description 'Asynchronous message queue'
+  }
+
+  // ========================================================================
+  // DATA & STORAGE
+  // ========================================================================
+  
+  database = Container_Database 'Relational Database' {
+    technology 'PostgreSQL/MySQL'
+    description 'Primary relational database'
+  }
+  
+  geo_database = Container_DatabaseGeo 'Geo Database' {
+    technology 'PostGIS'
+    description 'Geographic data warehouse'
+  }
+  
+  directory = Container_Directory 'LDAP Directory' {
+    technology 'OpenLDAP/Active Directory'
+    description 'User directory service'
+  }
+  
+  dataserver = Container_DataServer 'Data Server' {
+    technology 'Elasticsearch'
+    description 'Distributed data server'
+  }
+  
+  fileserver = Container_FileServer 'File Server' {
+    technology 'NFS/SMB'
+    description 'Network file server'
+  }
+  
+  storage = Container_ObjectStorage 'Object Storage' {
+    technology 'S3/MinIO'
+    description 'Object/blob storage'
+  }
+
+  // ========================================================================
+  // RELATIONSHIPS - Container Level
+  // ========================================================================
+  
+  // Client to security
+  browser -> waf 'HTTPS'
+  mobile_app -> waf 'HTTPS'
+  spa -> waf 'HTTPS'
+  
+  // Security chain
+  waf -> reverse_proxy 'Forwards traffic'
+  reverse_proxy -> loadbalancer 'Routes to backend'
+  loadbalancer -> firewall 'Network access'
+  
+  // Application flows
+  api -> database 'Queries data'
+  api -> database 'Stores data'
+  webapp -> api 'Calls API'
+  geo_api -> geo_database 'Geographic queries'
+  
+  // Processing and messaging
+  api -> queue 'Enqueues jobs'
+  queue -> processing_server 'Executes jobs'
+  processing_server -> storage 'Stores results'
+  processing_server -> fileserver 'Reads input files'
+  
+  // Identity and communication
+  api -> iam_server 'Authenticates'
+  webapp -> iam_server 'Authenticates'
+  processing_server -> mailserver 'Sends notifications'
+  exchange_server -> mailserver 'Email sync'
+  
+  // Data access
+  webapp -> directory 'User lookup'
+  dataserver -> database 'Indexes data'
+  web_server -> app_server 'Routes requests'
+}

@@ -1,0 +1,65 @@
+// ============================================================================
+// CONTAINER LEVEL VIEWS
+// ============================================================================
+// Views showcasing all container types
+
+views 'Container' {
+  view clients {
+    title 'Client Applications'
+    description 'Client-side containers'
+    
+    include *
+      where kind is Container_Browser
+         or kind is Container_MobileApp
+         or kind is Container_Spa
+  }
+  
+  view security {
+    title 'Security & Network'
+    description 'Security and network containers'
+    
+    include *
+      where kind is Container_ReverseProxy
+         or kind is Container_Waf
+         or kind is Container_Loadbalancer
+         or kind is Container_Firewall
+         or kind is Container_IamServer
+         or kind is Container_Directory
+  }
+  
+  view applications {
+    title 'Application Servers'
+    description 'Application server containers'
+    
+    include *
+      where kind is Container_WebServer
+         or kind is Container_ApplicationServer
+         or kind is Container_Api
+         or kind is Container_Api_Geo
+         or kind is Container_ProcessingServer
+         or kind is Container_ExchangeServer
+         or kind is Container_Mailserver
+         or kind is Container_Webapp
+  }
+  
+  view data {
+    title 'Data & Storage'
+    description 'Data storage containers'
+    
+    include *
+      where kind is Container_Database
+         or kind is Container_DatabaseGeo
+         or kind is Container_Directory
+         or kind is Container_DataServer
+         or kind is Container_FileServer
+         or kind is Container
+  }
+  
+  view messaging {
+    title 'Messaging'
+    description 'Message queue containers'
+    
+    include *
+      where kind is Container_Queue
+  }
+}
