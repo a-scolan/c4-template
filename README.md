@@ -1,35 +1,80 @@
 ### Periodic Synchronization
 
-Pull updates quarterly or when specifications change:
+For projects using this template, pull updates quarterly or when specifications change.
+
+**Three things to always update from the template:**
+
+1. **Copilot instructions and skills** (`.github/`)
+2. **Shared specifications** (`projects/shared/`)
+3. **Example project** (`projects/spec-showcase/`)
+
+#### Recommended: Direct Checkout Method (Simpler)
 
 ```bash
-# Fetch latest
+# Fetch latest from template
 git fetch c4-template main
 
-# Method 1: Git Subtree (integrates full directory trees)
-git subtree pull --prefix=.github c4-template main --squash
-git subtree pull --prefix=projects/shared c4-template main --squash
-git subtree pull --prefix=projects/spec-showcase c4-template main --squash
-
-# Method 2: Direct Checkout (targeted file updates - simpler for shared files)
+# Update the three essentials
 git checkout c4-template/main -- .github/copilot-instructions.md .github/skills/
 git checkout c4-template/main -- projects/shared/
 git checkout c4-template/main -- projects/spec-showcase/
 
 # Review and commit
+git add .github/ projects/shared/ projects/spec-showcase/
+git commit -m "sync: update template files (copilot instructions, skills, specs, examples)"
 git push
 ```
 
-**What gets updated:**
+This method is simpler because it only pulls the specific files you need without full subtree history tracking.
 
-| Path | Contains | Updates |
+#### Alternative: Git Subtree Method (Full History)
+
+If you want to preserve complete history of template changes:
+
+```bash
+# Fetch latest
+git fetch c4-template main
+
+# Pull updates for each subtree with squashed history
+git subtree pull --prefix=.github c4-template main --squash
+git subtree pull --prefix=projects/shared c4-template main --squash
+git subtree pull --prefix=projects/spec-showcase c4-template main --squash
+
+# Review and push
+git push
+```
+
+#### What Gets Updated
+
+| Path | Files | Purpose |
 |---|---|---|
-| `.github/copilot-instructions.md` | Copilot workflow guidance | When instructions change |
-| `.github/skills/` | 14 Copilot agent skills | When skills are improved/added |
-| `projects/shared/spec-*.c4` | Reusable specifications | When specs are updated |
-| `projects/shared/images/` | Shared architecture icons | When new icons added |
-| `projects/spec-showcase/` | Example diagrams | When examples improved |
+| `.github/copilot-instructions.md` | Copilot workflow guidance | How Copilot should work in your project |
+| `.github/skills/` | 14 skill files | Architecture helpers for Copilot |
+| `projects/shared/spec-*.c4` | 6 specification files | Reusable element kinds, tags, relationships |
+| `projects/shared/images/` | 28+ SVG icons | Shared architecture diagrams |
+| `projects/spec-showcase/` | Example C4 diagrams | Reference examples |
 
-**Note:** The `--squash` flag (with git subtree) consolidates all c4-template changes into a single commit per sync, keeping history clean. Updates are manual—subtrees do not auto-sync.
+**Important:** Always update all three directories together so your project stays in sync with the template's specification standards.
 
-**Recommendation:** Use `git checkout` for targeted updates to `.github/` and `projects/shared/` since these are specifications and instructions that don't require full subtree history. Use `git subtree pull` if you want to preserve the full history of changes from the template.
+**Note:** The `--squash` flag (git subtree only) consolidates all c4-template changes into one commit per sync. Updates are manual—they do not happen automatically.
+
+#### When to Sync
+
+- **Quarterly:** Regular maintenance to stay current
+- **When template skills improve:** Better Copilot assistance
+- **When specs are updated:** Align with latest conventions
+- **When new icons added:** More diagram options
+
+---
+
+## Project-Specific READMEs
+
+This README documents the template. When creating a **project-specific repository** (e.g., for a domain like NiceLabel, banking, healthcare), create a project-specific README that:
+
+1. Documents your architecture and systems
+2. Describes how you've configured template synchronization
+3. Lists which Copilot skills apply to your domain
+4. Includes project-specific best practices
+5. Documents your ADRs and key architectural decisions
+
+**Example:** See [SCRIB Etiqueteuse](https://github.com/a-scolan/SCRIB_Etiqueteuse) for a project-specific README that extends this template.
