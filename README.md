@@ -2,6 +2,59 @@
 
 This is a minimal, ready-to-use template for creating new LikeC4 architecture documentation projects. It includes the essential files and follows best practices from the c4_hands-on-demo repository.
 
+---
+
+## Using with GitHub Copilot
+
+**Enable workspace skills:** Set `"github.copilot.chat.useAgentSkills": true` in VS Code settings.
+
+Once enabled, Copilot uses skills from `.github/skills/` to help with LikeC4 tasks:
+
+- **Automatic:** "Add an API container for authentication" → Copilot applies relevant skills
+- **Explicit:** "Use the create-element skill" or "Apply the implement-pattern skill"
+- **Guidance:** "What skills are available?" or "Show me the troubleshooting skill"
+
+### Available Skills (14)
+
+**Core model building:**
+- `understand-project-structure` - Load context before starting work
+- `create-element` - Create elements with proper naming and metadata
+- `create-relationship` - Create typed relationships between elements
+- `create-sequence-view` - Create temporal flow diagrams
+- `model-deployment` - Model infrastructure and deployments
+
+**View & visualization:**
+- `design-view` - Design views with includes/excludes and basic layout
+- `customize-view` - Advanced styling, layout control, and navigation
+
+**Project management:**
+- `configure-project-includes` - Manage likec4.config.json
+- `organize-multi-project` - Structure multi-project workspaces
+
+**Quality & patterns:**
+- `implement-pattern` - Apply common architectural patterns
+- `test-model` - Validate model correctness
+- `troubleshoot-errors` - Diagnose and fix errors
+- `document-decision` - Create Architecture Decision Records
+- `lookup-element-kinds` - Quick reference for available elements
+
+### MCP Servers (Model Context Protocol)
+
+**LikeC4 MCP** - Query architecture models:
+- `list-projects` - List all projects in workspace
+- `read-project-summary` - Get project overview (element kinds, tags, relationships)
+- `search-element` - Find elements by name or tag
+- `find-relationships` - Query relationships between elements
+- `open-view` - Preview diagram in VS Code
+
+**Context7 MCP** - Query LikeC4 documentation:
+- `resolve-library-id` - Find LikeC4 library
+- `query-docs` - Search documentation (use library `/likec4/likec4`)
+
+**Usage:** Skills automatically use MCP servers. Copilot will call `read-project-summary` before making changes and `open-view` to preview results.
+
+---
+
 ## Quick Start
 
 ### 1. Copy the Template
@@ -170,46 +223,23 @@ server -[calls]-> client 'Returns response'
 
 ## Element Kinds Reference
 
-Available element kinds from `projects/shared/`:
+For complete list of available element kinds and relationship types, use the `lookup-element-kinds` skill or check `projects/shared/spec-*.c4` files.
 
-### Actors (C1)
-- `Actor_Person` - Individual user
-- `Actor_Staff` - Internal staff member
-- `Actor_Admin` - System administrator
+**Common element kinds:**
+- **Actors (C1):** `Actor_Person`, `Actor_Staff`, `Actor_Admin`
+- **Systems (C1):** `System_Existing`, `System_New`, `System_External`
+- **Containers (C2):** `Container_Api`, `Container_Webapp`, `Container_Database`, `Container_Queue`
+- **Deployment:** `Node_Environment`, `Node_Vm`, `Node_Container`, `Zone`, `Zone_Vlan`
 
-### Systems (C1)
-- `System_Existing` - Current system
-- `System_New` - Planned system
-- `System_Legacy` - Deprecated system
-- `System_External` - Third-party system
-
-### Containers (C2)
-- `Container_Api` - API service
+**Relationship kinds:**
+- **Model:** `calls`, `async`, `reads`, `writes`, `uses`
+- **Deployment:** `http`, `https`, `tcp`, `sql`, `redis`, `amqp`
 - `Container_WebApp` - Web application
 - `Container_Database` - Database
 - `Container_Queue` - Message queue
-- `Container_Cache` - Cache service
-- `Container_WebServer` - Web server (nginx, Apache)
-- `Container_LoadBalancer` - Load balancer
-- `Container_Storage` - Object/file storage
-- And 20+ more in `projects/shared/spec-containers.c4`
-
-### Components (C3)
-- `Component` - Internal module/class
-
-### Relationship Kinds
-
-**Model relationships** (business logic):
-- `calls` - Synchronous invocation
-- `async` - Asynchronous communication
-- `reads` - Data retrieval
-- `writes` - Data persistence
-- `uses` - General usage
-
-**Deployment relationships** (infrastructure):
-- `http`, `https`, `tcp` - Network protocols
-- `nfs`, `amqp`, `sql`, `redis` - Specific protocols
-- And more in `projects/shared/spec-deployment.c4`
+**Relationship kinds:**
+- **Model:** `calls`, `async`, `reads`, `writes`, `uses`
+- **Deployment:** `http`, `https`, `tcp`, `sql`, `redis`, `amqp`
 
 ---
 
