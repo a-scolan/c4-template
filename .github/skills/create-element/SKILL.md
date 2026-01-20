@@ -7,7 +7,39 @@ description: Create elements with proper naming (PascalCase kinds, camelCase var
 
 Use this skill when creating or modifying any LikeC4 element.
 
-**Before creating:** Use LikeC4 MCP `read-project-summary` to check available element kinds in shared specifications.
+**Before creating:** 
+1. Read `c4-modeling-process` skill to understand C4 framework and top-to-bottom design (C1 → C2 → C3)
+2. **Check shared specification first** - Use `read-project-summary` MCP to list available element kinds
+3. Only create new kinds if absolutely necessary (and ask permission first)
+
+## Shared Spec First Principle
+
+**IMPORTANT:** Use existing element kinds from shared spec instead of creating new ones.
+
+### Why Use Shared Spec?
+- Consistency across models and projects
+- Maintainability - changes apply everywhere
+- Visual consistency - same kinds always look the same
+- Avoiding proliferation - keep kinds focused and organized
+
+### How to Use Shared Spec
+1. Run `read-project-summary` to see available kinds
+2. Check `spec-*.c4` files in `shared/` folder
+3. Use existing kind that matches your need
+4. **If no matching kind exists:**
+   - Ask user permission first
+   - Suggest contributing new kind to shared spec
+   - Don't create one-off custom kinds in project-specific files
+   - Add to spec so it can be reused
+
+## C4 Design Hierarchy
+
+Always design **top-to-bottom:**
+- **C1 Context:** System boundary with external actors and systems
+- **C2 Container:** Major deployable components and their relationships  
+- **C3 Component:** Internal modules within important containers (optional, for complex containers only)
+
+See `c4-modeling-process` skill for detailed step-by-step guidance.
 
 ## Validation Rules
 

@@ -7,31 +7,97 @@ description: Advanced view features: styling (colors, shapes, style predicates),
 
 Use this skill for advanced view features: styling, layout, and navigation.
 
+## Core Principles
+
+### 1. Prefer Shared Spec Over Custom Styling
+
+**Before customizing colors, shapes, or styles:**
+1. **Check shared spec first** - Use specs from `shared/spec-*.c4` files
+2. **Use defined colors** - Refer to `spec-global.c4` color definitions
+3. **Avoid custom colors** - Don't create new hex colors for styling
+4. **Avoid custom shapes** - Use kinds from shared spec, not custom shape definitions
+5. **If needed, ask & contribute** - If styling really needs something new:
+   - Ask user permission first
+   - Suggest adding it to shared spec
+   - Contribute to spec instead of one-off customization
+   - This keeps styling consistent across all projects
+
+**Why:** Shared specs ensure consistency, maintainability, and avoid proliferation of custom styles.
+
+### 2. Respect Parent Context
+
+When customizing views, always preserve the parent/surrounding element context:
+- Never hide parent container/system/zone boundaries
+- Never exclude the outer context when styling inner elements
+- Use styling to emphasize, not to isolate elements from their context
+- Apply opacity changes carefully to avoid losing context
+
+## View Organization
+
+For folder organization of views, use the `views 'FolderName'` syntax:
+
+```likec4
+views 'Deployment' {
+  view my_view { ... }
+}
+```
+
+See the **design-view** skill for full organization patterns and parent context requirements.
+
 ## Visual Styling
 
-### View-Level Style Overrides
+**IMPORTANT:** Use colors and shapes from shared spec (`shared/spec-*.c4`), not custom definitions.
+
+### Available Colors (From Shared Spec)
+
+Use only colors defined in `shared/spec-global.c4`:
+- `primary` - Primary brand color
+- `secondary` - Secondary color
+- `success` - Success/positive state
+- `warning` - Warning state
+- `danger` - Error/danger state
+- `muted` - Muted/inactive
+- (Check spec-global.c4 for complete list)
+
+**DO NOT:** Create new hex color definitions. If you need a color not in the spec:
+1. Check `spec-global.c4` first
+2. If missing, ask permission and contribute to shared spec
+3. Then use the spec color
+
+### Available Shapes (From Element Kinds)
+
+Shapes come from element kinds defined in `spec-*.c4` files:
+- Each kind has a predefined shape (box, cylinder, etc.)
+- Use the kind's shape, don't override with custom shapes
+
+**DO NOT:** Define custom shapes. If a shape is needed:
+1. Check if a kind exists with that shape
+2. If not, contribute new kind to shared spec
+3. Then use that kind
+
+### View-Level Style Overrides (Shared Spec Only)
 
 ```likec4
 view myView {
   include cloud.backend with {
     title 'Backend Services'
-    color primary
-    shape browser
+    color primary              // From shared spec
+    shape database             // From kind definition
     icon tech:java
   }
 }
 ```
 
-### Style Predicates
+### Style Predicates (Shared Spec Colors Only)
 
 ```likec4
 view apiView {
   include *
   
-  style * { color muted; opacity 10% }
-  style api.*, gateway.* { color primary; opacity 100% }
-  style element.tag = #deprecated { color muted }
-  style element.tag != #production { color secondary }
+  style * { color muted; opacity 10% }           // spec-global color
+  style api.*, gateway.* { color primary; opacity 100% }  // spec-global color
+  style element.tag = #deprecated { color muted }         // spec-global color
+  style element.tag != #production { color secondary }    // spec-global color
 }
 ```
 
