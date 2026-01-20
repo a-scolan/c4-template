@@ -3,7 +3,15 @@
 	"name": "spec-showcase",
 	"title": "Spec showcase",
 	"include": {
-		"paths": ["../shared"]
+		"paths": [
+			"../shared",
+			"actors-systems.c4",
+			"components.c4",
+			"component-views.c4",
+			"containers.c4",
+			"container-views.c4",
+			"context-views.c4"
+		]
 	},
 	"imageAliases":	{
 		"@": "../shared/images"

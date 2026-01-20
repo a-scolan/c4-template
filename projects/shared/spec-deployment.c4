@@ -46,6 +46,20 @@ specification {
 	tag SharedInfra {
 		color rgb(139, 92, 246)
 	}
+	
+	// Tier organization tags (for zone categorization)
+	tag Dmz {
+		color rgb(220, 38, 38)
+	}
+	tag AppTier {
+		color rgb(59, 130, 246)
+	}
+	tag ProcTier {
+		color rgb(168, 85, 247)
+	}
+	tag DataTier {
+		color rgb(75, 85, 99)
+	}
 
 	// Deployment pattern tags (with semantic colors)
 	tag Deployment {
@@ -194,6 +208,8 @@ specification {
 		#Node #Cluster
 		notation 'Server cluster'
 		style {
+			textSize xs
+			size xl
 			opacity 10%
 			border dotted
 			multiple true
@@ -205,6 +221,8 @@ specification {
 		#Node #Vm
 		notation 'Virtual Machine'
 		style {
+			textSize xs
+			size xl
 			icon @/vm.svg
 		}
 	}
@@ -212,6 +230,8 @@ specification {
 		#Node #Server
 		notation 'Physical Machine'
 		style {
+			textSize xs
+			size xl
 			icon @/serverGray.svg
 		}
 	}
@@ -219,6 +239,8 @@ specification {
 		#Node #App
 		notation 'Deployed application service instance'
 		style {
+			textSize xs
+			size xl
 			icon bootstrap:box
 		}
 	}
@@ -227,6 +249,8 @@ specification {
 		notation 'User terminal: web browser'
 		style {
 			shape browser
+			textSize xs
+			size xl
 			icon bootstrap:pc-display-horizontal
 		}
 	}
@@ -235,6 +259,8 @@ specification {
 		notation 'User terminal: mobile application'
 		style {
 			shape mobile
+			textSize xs
+			size xl
 			icon bootstrap:phone-landscape
 		}
 	}
@@ -242,7 +268,9 @@ specification {
 		#Node #AppRich
 		notation 'User terminal: rich client'
 		style {
-						icon @/software.svg
+			textSize xs
+			size xl
+			icon @/software.svg
 		}
 	}
 	
@@ -252,6 +280,8 @@ specification {
 		style {
 			color secondary
 			icon bootstrap:cloud
+			textSize xs
+			size xl
 		}
 	}
 	
