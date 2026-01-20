@@ -14,7 +14,7 @@ Use this skill when defining physical infrastructure in deployment.c4.
 1. **Use shared spec node kinds** - Use deployment kinds from `shared/spec-deployment.c4`, don't create custom ones
 2. **Use shared spec tags** - Use tags defined in `spec-deployment.c4` (#Production, #Networking, #Service, #Monitoring)
 3. **PascalCase variables:** Use `ProdApiVm` not `prod_api_vm` in deployment
-4. **InstanceOf:** Link `Node_App` to model Container using FQN
+4. **instanceOf (camelCase!):** Link `Node_App` to model Container using `instanceOf` (NOT `instanceof`) with FQN
 5. **Parent containment:** Always nest VMs within zones, zones within environments
 6. **Infrastructure relationships:** Use `https`, `tcp`, etc. with port descriptions
 7. **Port format:** Use `"any -> 443"` or `"8080 -> 8080"` in description blocks

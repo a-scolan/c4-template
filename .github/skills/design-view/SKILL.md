@@ -58,7 +58,13 @@ views {
   view c1_context { ... }      // System context with actors
   view c2_containers { ... }   // System internals and containers
   view c3_component1 { ... }   // Component deep-dives
-  view c3_component2 { ... }   
+  view c3_component2 { ... }
+  
+  // Index view - Entry point for architecture exploration
+  view index extends c1_context {
+    title 'Architecture Overview'
+    description 'Navigate to detailed views for deeper exploration'
+  }
 }
 
 // Use Cases - temporal flows and interactions
@@ -107,10 +113,15 @@ views 'Operations' {
   - **Naming:** View ID should reference the container: `c3_<container_name>` → Title: `C3 / <Container Name>`
   - Examples: `c3_upload_service` → "C3 / Upload Service", `c3_retrieval_service` → "C3 / Retrieval Service"
   - **✓ MUST include parent container for context** - Always show the container boundary with its components inside
+- **Index View (MANDATORY):** Architecture entry point
+  - **✓ MUST extend c1_context** - Inherits system context by default (unless explicitly asked otherwise)
+  - Provides high-level overview for navigation
+  - Typically titled "Architecture Overview" or "[System Name] - Overview"
+  - Can customize with additional navigation elements or modified styling
 
 **File:** `system-views.c4`
 
-**Example IDs:** `c1_context`, `c2_container`, `c3_upload_service`, `c3_retrieval_service`, `c3_processing_worker`
+**Example IDs:** `c1_context`, `c2_container`, `c3_upload_service`, `c3_retrieval_service`, `c3_processing_worker`, `index`
 
 #### Use Cases (`views 'Use Cases' { }`)
 **Purpose:** Temporal flows - show how system behaves during important operations
@@ -476,9 +487,9 @@ deployment view app_tier {
 4. **Directed includes:** Use `include -> mySystem.*` (incoming) or `include mySystem.* ->` (outgoing)
 5. **Tag filtering:** Use `where tag is #Tag` to focus views dynamically (requires tier/vm tags)
 6. **Avoid over-broad:** Never use `include **` or `include ** -> **` (shows too much noise)
-7. **Layout hints:** Add `rank source { actors }` and `rank sink { databases }`
-8. **Ordering:** Place `exclude` statements after `include` statements
-9. **Maintenance:** Update view tags when adding new infrastructure to keep filters working
+7. **Ordering:** Place `exclude` statements after `include` statements
+8. **Maintenance:** Update view tags when adding new infrastructure to keep filters working
+9. **Layout hints (LAST RESORT ONLY):** Only add `rank source/sink/same` when autoLayout produces poor results. Let LikeC4's automatic layout handle positioning by default.
 
 ## Simple Starter Example
 
@@ -489,8 +500,5 @@ view c2_containers {
   include user
   include mySystem.* where tag is #Service
   include externalSystem
-  
-  rank source { user }
-  rank sink { externalSystem }
 }
 ```
