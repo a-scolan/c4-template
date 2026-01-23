@@ -164,7 +164,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/switchGray.svg
+			icon @/affinity-naked/switch.svg
 		}
 	}
 	deploymentNode Zone_Internet {
@@ -173,7 +173,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/internet.svg
+			icon @/custom/internet.svg
 		}
 	}
 	deploymentNode Zone_Vlan {
@@ -182,7 +182,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/switchGray.svg
+			icon @/affinity-naked/switch.svg
 		}
 	}
 	deploymentNode Zone_Lan {
@@ -191,7 +191,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/switchNb2.svg
+			icon @/custom/switchNb2.svg
 		}
 	}
 	deploymentNode Zone_Subnet {
@@ -200,7 +200,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/switchGray.svg
+			icon @/custom/switchGray.svg
 		}
 	}
 
@@ -213,7 +213,7 @@ specification {
 			opacity 10%
 			border dotted
 			multiple true
-			icon bootstrap:bounding-box
+			icon @/lucide-static/group.svg
 		}
 	}
 
@@ -223,7 +223,7 @@ specification {
 		style {
 			textSize xs
 			size xl
-			icon @/vm.svg
+			icon @/custom/vm.svg
 		}
 	}
 	deploymentNode Node_Server {
@@ -232,7 +232,7 @@ specification {
 		style {
 			textSize xs
 			size xl
-			icon @/serverGray.svg
+			icon @/custom/serverGray.svg
 		}
 	}
 	deploymentNode Node_App {
@@ -241,7 +241,7 @@ specification {
 		style {
 			textSize xs
 			size xl
-			icon bootstrap:box
+			icon @/lucide-static/app-window.svg
 		}
 	}
 	deploymentNode Node_AppBrowser {
@@ -251,7 +251,7 @@ specification {
 			shape browser
 			textSize xs
 			size xl
-			icon bootstrap:pc-display-horizontal
+			icon @/lucide-static/monitor.svg
 		}
 	}
 	deploymentNode Node_AppMobile {
@@ -261,7 +261,7 @@ specification {
 			shape mobile
 			textSize xs
 			size xl
-			icon bootstrap:phone-landscape
+			icon @/lucide-static/smartphone.svg
 		}
 	}
 	deploymentNode Node_AppRich {
@@ -270,7 +270,7 @@ specification {
 		style {
 			textSize xs
 			size xl
-			icon @/software.svg
+			icon @/custom/software.svg
 		}
 	}
 	
@@ -279,7 +279,7 @@ specification {
 		notation 'External service or system'
 		style {
 			color secondary
-			icon bootstrap:cloud
+			icon @/lucide-static/cloud.svg
 			textSize xs
 			size xl
 		}
@@ -289,7 +289,7 @@ specification {
 		#Infra #F5
 		notation 'F5 Big-IP'
 		style {
-			icon @/serverF5.svg
+			icon @/custom/serverF5.svg
 		}
 	}
 	
@@ -297,7 +297,7 @@ specification {
 		#Infra #Fw
 		notation 'Firewall'
 		style {
-			icon bootstrap:shield
+			icon @/affinity-naked/firewall.svg
 		}
 	}
 	
@@ -305,7 +305,7 @@ specification {
 		#Infra #Router
 		notation 'Router'
 		style {
-			icon @/router.svg
+			icon @/affinity-naked/router.svg
 		}
 	}
 	
@@ -316,7 +316,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon bootstrap:layers
+			icon @/lucide-static/layers.svg
 		}
 	}
 	
@@ -326,7 +326,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon bootstrap:building
+			icon @/lucide-static/building.svg
 		}
 	}
 	
@@ -334,7 +334,7 @@ specification {
 		#Node #Cicd
 		notation 'CI/CD Infrastructure'
 		style {
-			icon bootstrap:gear
+			icon @/lucide-static/settings.svg
 		}
 	}
 	
@@ -342,7 +342,7 @@ specification {
 		#Node
 		notation 'Container'
 		style {
-			icon bootstrap:box
+			icon @/lucide-static/box.svg
 		}
 	}
 }

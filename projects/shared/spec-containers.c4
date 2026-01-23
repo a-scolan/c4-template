@@ -16,7 +16,6 @@ specification {
 	tag Directory
 	tag Mailserver
 	tag Loadbalancer
-	tag Firewall
 	tag DataServer
 	tag FileServer
 	tag ProcessingServer
@@ -27,186 +26,179 @@ specification {
 
 	element Container {
 		#Container
-		notation 'Application container'
+		notation "Application container"
 		style {
-			icon @/serverGray.svg
+			icon @/custom/serverGray.svg
 		}
 	}
 	element Container_ReverseProxy {
 		#Container #ReverseProxy
-		notation 'Reverse proxy'
+		notation "Reverse proxy"
 		style {
-						icon @/reversProxy.svg
+			icon @/custom/reversProxy.svg
 		}
 	}
 	element Container_Waf {
 		#Container #Waf
-		notation 'WAF (Web Application Firewall)'
+		notation "WAF (Web Application Firewall)"
 		style {
-						icon @/waf.svg
+			icon @/custom/waf.svg
 		}
 	}
 	element Container_Browser {
 		#Container #Browser
-		notation 'Web browser'
+		notation "Web browser"
 		style {
 			shape browser
-			icon @/processingWeb.svg
+			icon @/custom/processingWeb.svg
 		}
 	}
 	element Container_MobileApp {
 		#Container #MobileApp
-		notation 'Mobile application'
+		notation "Mobile application"
 		style {
 			shape mobile
-			icon @/smartphone.svg
+			icon @/custom/smartphone.svg
 		}
 	}
 	element Container_Spa {
 		#Container #Spa
-		notation 'Single page application (SPA)'
+		notation "Single page application (SPA)"
 		style {
 			shape browser
-			icon @/processingWeb.svg
+			icon @/custom/processingWeb.svg
 		}
 	}
 	element Container_Webapp {
 		#Container #Webapp
-		notation 'Web application'
+		notation "Web application"
 		style {
-						icon @/serverGray.svg
+			icon @/custom/serverGray.svg
 		}
 	}
 	element Container_Api {
 		#Container #Api
-		notation 'API / Service'
+		notation "API / Service"
 		style {
-						icon @/serverGray.svg
+			icon @/custom/serverGray.svg
 		}
 	}
 	element Container_Api_Geo {
 		#Container #Api #Geo
-		notation 'Mapping API'
+		notation "Mapping API"
 		style {
-						icon @/geoServerColored.svg
+			icon @/custom/geoServerColored.svg
 		}
 	}
 	element Container_Queue {
 		#Container #Queue
-		notation 'Message queue'
+		notation "Message queue"
 		style {
 			shape queue
-			icon bootstrap:mailbox
+			icon @/lucide-static/mailbox.svg
 		}
 	}
 	element Container_Database {
 		#Container #Database
-		notation 'Database'
+		notation "Database"
 		style {
 			color storage
 			shape storage
-			icon bootstrap:database
+			icon @/lucide-static/database.svg
 		}
 	}
 	element Container_DatabaseGeo {
 		#Container #Database #Geo
-		notation 'Geographic data warehouse'
+		notation "Geographic data warehouse"
 		style {
 			color storage
 			shape storage
-			icon @/geoWarehouse.svg
+			icon @/custom/geoWarehouse.svg
 		}
 	}
 	element Container_ObjectStorage {
 		#Container #ObjectStorage
-		notation 'Object storage'
+		notation "Object storage"
 		style {
 			color storage
 			shape storage
-			icon bootstrap:bucket
+			icon @/lucide-static/container.svg
 		}
 	}
 	element Container_Directory {
 		#Container #Directory
-		notation 'Directory (LDAP)'
+		notation "Directory (LDAP)"
 		style {
 			color storage
 			shape storage
-			icon @/ldap.svg
+			icon @/custom/ldap.svg
 		}
 	}
 	element Container_Mailserver {
 		#Container #Mailserver
-		notation 'Mail server'
+		notation "Mail server"
 		style {
-						icon @/mailServer.svg
+			icon @/custom/mailServer.svg
 		}
 	}
 	element Container_Loadbalancer {
 		#Container #Loadbalancer
-		notation 'Load Balancer'
+		notation "Load Balancer"
 		style {
-						icon bootstrap:diagram-3
-		}
-	}
-	element Container_Firewall {
-		#Container #Firewall
-		notation 'Firewall'
-		style {
-						icon bootstrap:shield
+			icon @/lucide-static/network.svg
 		}
 	}
 	element Container_DataServer {
 		#Container #DataServer
-		notation 'Data server'
+		notation "Data server"
 		style {
 			color storage
 			shape storage
-			icon @/dataServer.svg
+			icon @/custom/dataServer.svg
 		}
 	}
 	element Container_FileServer {
 		#Container #FileServer
-		notation 'File server'
+		notation "File server"
 		style {
 			color storage
 			shape storage
-			icon @/fileServer.svg
+			icon @/custom/fileServer.svg
 		}
 	}
 	element Container_ProcessingServer {
 		#Container #ProcessingServer
-		notation 'Processing server'
+		notation "Processing server"
 		style {
-						icon @/processingServer.svg
+			icon @/custom/processingServer.svg
 		}
 	}
 	element Container_ExchangeServer {
 		#Container #ExchangeServer
-		notation 'Exchange server'
+		notation "Exchange server"
 		style {
-						icon @/exchangeServer.svg
+			icon @/custom/exchangeServer.svg
 		}
 	}
 	element Container_IamServer {
 		#Container #IamServer
-		notation 'IAM server'
+		notation "IAM server"
 		style {
-						icon @/iamServer.svg
+			icon @/custom/iamServer.svg
 		}
 	}
 	element Container_WebServer {
 		#Container #WebServer
-		notation 'Web server'
+		notation "Web server"
 		style {
-						icon @/webServer.svg
+			icon @/custom/webServer.svg
 		}
 	}
 	element Container_ApplicationServer {
 		#Container #ApplicationServer
-		notation 'Application server'
+		notation "Application server"
 		style {
-			icon @/applicationServer.svg
+			icon @/custom/applicationServer.svg
 		}
 	}
 }

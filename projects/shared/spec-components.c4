@@ -6,7 +6,7 @@ specification {
 		#Component
 		notation 'Component'
 		style {
-			icon bootstrap:puzzle
+			icon @/lucide-static/puzzle.svg
 		}
 	}
 }
