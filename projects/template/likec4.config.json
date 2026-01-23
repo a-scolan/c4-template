@@ -6,6 +6,6 @@
     "paths": ["../shared"]
   },
   "imageAliases": {
-    "@": "../shared/images"
+		"@": "../shared/images/"
   }
 }

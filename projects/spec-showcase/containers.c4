@@ -41,11 +41,6 @@ model {
     technology 'F5/AWS ELB'
     description 'Application load balancer'
   }
-  
-  firewall = Container_Firewall 'Firewall' {
-    technology 'pfSense/Fortinet'
-    description 'Network firewall'
-  }
 
   // ========================================================================
   // APPLICATION SERVERS
@@ -151,7 +146,6 @@ model {
   // Security chain
   waf -> reverse_proxy 'Forwards traffic'
   reverse_proxy -> loadbalancer 'Routes to backend'
-  loadbalancer -> firewall 'Network access'
   
   // Application flows
   api -> database 'Queries data'
