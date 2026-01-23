@@ -291,7 +291,7 @@ specification {
 		description 'Third-party Software-as-a-Service platform hosted externally'
 		style {
 			color secondary
-			icon bootstrap:cloud-fill
+			icon @/lucide-static/cloud.svg
 			textSize xs
 			size xl
 		}
