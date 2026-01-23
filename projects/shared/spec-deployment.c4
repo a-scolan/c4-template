@@ -285,6 +285,18 @@ specification {
 		}
 	}
 	
+	deploymentNode Node_SaaS {
+		#Node #External
+		notation 'SaaS platform or cloud service'
+		description 'Third-party Software-as-a-Service platform hosted externally'
+		style {
+			color secondary
+			icon bootstrap:cloud-fill
+			textSize xs
+			size xl
+		}
+	}
+	
 	deploymentNode Infra_F5 {
 		#Infra #F5
 		notation 'F5 Big-IP'
