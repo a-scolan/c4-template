@@ -1,53 +1,107 @@
-### Periodic Synchronization
+# Dev-Forge: Modern Development Platform
 
-For projects using this template, pull updates quarterly or when specifications change.
+**An on-premises, technology-agnostic development platform powered by Forgejo and Puppet**
 
-**Three things to always update from the template:**
+Dev-Forge provides development teams with a complete, self-hosted Git platform featuring CI/CD automation, code review, package management, and automated infrastructure provisioning—all whilst remaining neutral to the programming languages and frameworks teams choose to use.
 
-1. **Copilot instructions and skills** (`.github/`)
-2. **Shared specifications** (`projects/shared/`)
-3. **Example project** (`projects/spec-showcase/`)
+## 🎯 Project Overview
 
-#### Recommended: Direct Checkout Method (Simpler)
+**Status**: Initial Planning & Documentation Phase  
+**Target Environment**: On-premises infrastructure  
+**Initial Deployment**: Staging environment with scalable Forgejo Actions runners  
+**Future**: Production environment following validated staging architecture
 
-```bash
-# Fetch latest from template
-git fetch c4-template main
+### Core Technologies
 
-# Update the three essentials
-git checkout c4-template/main -- .github/copilot-instructions.md .github/skills/
-git checkout c4-template/main -- projects/shared/
-git checkout c4-template/main -- projects/spec-showcase/
+- **Forgejo**: Git hosting, CI/CD (Actions), code review, package registry integration
+- **Puppet**: Infrastructure automation and configuration management
+- **Nexus**: External package registry (existing integration)
+- **PostgreSQL**: Forgejo database backend
 
-# Review and commit
-git add .github/ projects/shared/ projects/spec-showcase/
-git commit -m "sync: update template files (copilot instructions, skills, specs, examples)"
-git push
-```
+## 📚 Documentation Structure (Diataxis Framework)
 
-This method is simpler because it only pulls the specific files you need without full subtree history tracking.
+This project follows the [Diataxis](https://diataxis.fr/) documentation framework, organizing content by user needs:
 
-#### Alternative: Git Subtree Method (Full History)
+### 📖 [Tutorials](projects/dev-forge/docs/tutorial/) — Learning by Doing
+*For developers new to the platform*
 
-If you want to preserve complete history of template changes:
+- [01 - Onboarding Developer](projects/dev-forge/docs/tutorial/01-onboarding-developer.md) — Create your first repository
+- [02 - First Pipeline](projects/dev-forge/docs/tutorial/02-first-pipeline.md) — Set up CI/CD with Forgejo Actions
 
-```bash
-# Fetch latest
-git fetch c4-template main
+### 🔧 [How-To Guides](projects/dev-forge/docs/how-to/) — Practical Tasks
+*For working practitioners accomplishing specific goals*
 
-# Pull updates for each subtree with squashed history
-git subtree pull --prefix=.github c4-template main --squash
-git subtree pull --prefix=projects/shared c4-template main --squash
-git subtree pull --prefix=projects/spec-showcase c4-template main --squash
+- [Configure Runners](projects/dev-forge/docs/how-to/configure-runners.md) — Scale and configure Forgejo Actions runners
+- [Setup Plugins](projects/dev-forge/docs/how-to/setup-plugins.md) — Activate and configure MVP plugins
+- [Puppet Tasks](projects/dev-forge/docs/how-to/puppet-tasks.md) — Expected outcomes for deployment tasks
 
-# Review and push
-git push
-```
+### 📋 [Reference](projects/dev-forge/docs/reference/) — Technical Facts
+*For practitioners needing specifications and details*
 
-#### What Gets Updated
+- [MVP Plugins](projects/dev-forge/docs/reference/plugins-mvp.md) — Auth, Actions, Repos, Registry, Code Review
+- [Forgejo Configuration](projects/dev-forge/docs/reference/forgejo-config.md) — System configuration reference
 
-| Path | Files | Purpose |
-|---|---|---|
+### 💡 [Explanation](projects/dev-forge/ADR/) — Understanding Decisions
+*For understanding the "why" behind architectural choices*
+
+See [Architecture Decision Records (ADRs)](projects/dev-forge/ADR/) for detailed rationale:
+- ADR-0001: Forgejo Platform Selection
+- ADR-0002: Actions Scalability Strategy
+- ADR-0003: Puppet Automation
+- ADR-0004: MVP Plugins Selection
+- ADR-0005: Network Zone Architecture
+- ADR-0006: Technology Neutrality
+- ADR-0007: Nexus Registry Integration
+
+## 🏗️ Architecture & Models
+
+### C4 Architecture Models (LikeC4)
+
+Comprehensive system architecture modelled at all C4 levels:
+
+- **[System Model](projects/dev-forge/system-model.c4)** — Elements, containers, and components
+- **[System Views](projects/dev-forge/system-views.c4)** — Context, container, and component diagrams
+- **[Deployment (Staging)](projects/dev-forge/deployment-staging.c4)** — Infrastructure topology and runtime environment
+
+**Preview Models**: Use the LikeC4 MCP server or VS Code extension to visualize diagrams
+
+### Workflow Diagrams (Mermaid)
+
+*Coming in Phase 6*: Visual workflows for common tasks
+- Developer onboarding flow
+- CI/CD trigger and execution
+- Runner auto-scaling behaviour
+- Puppet deployment orchestration
+
+## 🚀 Project Progress
+
+See [PROJECT_CHECKLIST.md](projects/dev-forge/PROJECT_CHECKLIST.md) for detailed phase tracking:
+
+- ✅ **Phase 1**: Documentation Structure (Diataxis)
+- ✅ **Phase 2**: Architecture Decision Records
+- 🔄 **Phase 3**: C4 Architecture Modelling
+- ⏳ **Phase 4**: Model Validation & Preview
+- ⏳ **Phase 5**: Production Environment Extension
+- ⏳ **Phase 6**: Workflow Diagrams (Mermaid)
+
+## 💎 Key Principles
+
+1. **Technology Agnostic**: Platform supports any programming language or framework
+2. **Scalable CI/CD**: Containerized Forgejo Actions runners with auto-scaling
+3. **On-Premises First**: Complete control over infrastructure and data
+4. **Automated Operations**: Puppet-driven provisioning and configuration
+5. **Modular Design**: MVP plugin approach ensures focused, maintainable platform
+
+## 🤝 Contributing
+
+Architecture questions? Start with [ADRs](projects/dev-forge/ADR/)  
+Implementation questions? Check [How-To Guides](projects/dev-forge/docs/how-to/)  
+Need to understand something? Read [Explanations](projects/dev-forge/ADR/)  
+Ready to learn? Follow [Tutorials](projects/dev-forge/docs/tutorial/)
+
+---
+
+**Note**: This is a living architecture. As the platform evolves, documentation and models will be updated to reflect current design decisions and implementation details
 | `.github/copilot-instructions.md` | Copilot workflow guidance | How Copilot should work in your project |
 | `.github/skills/` | 14 skill files | Architecture helpers for Copilot |
 | `projects/shared/spec-*.c4` | 6 specification files | Reusable element kinds, tags, relationships |

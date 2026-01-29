@@ -1,0 +1,11 @@
+{
+  "$schema": "https://likec4.dev/schemas/config.json",
+  "name": "dev-forge",
+  "title": "Dev Forge - Modern Development Platform",
+  "include": {
+    "paths": ["../shared"]
+  },
+  "imageAliases": {
+		"@": "../shared/images/"
+  }
+}
