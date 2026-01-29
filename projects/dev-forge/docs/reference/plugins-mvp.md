@@ -1,47 +1,47 @@
-# Reference: MVP Plugins
+# Référence : Plugins MVP
 
-Technical reference for Dev-Forge's minimum viable product (MVP) plugin set.
+Référence technique pour l'ensemble de plugins minimum viable product (MVP) de Dev-Forge.
 
 ---
 
-## Plugin Overview
+## Vue d'Ensemble des Plugins
 
-| Plugin | Purpose | Implementation Status |
+| Plugin | Objectif | Statut Implémentation |
 |--------|---------|----------------------|
-| Authentication | LDAP/OIDC integration | ✅ Documented |
-| Actions | CI/CD automation | ✅ Documented |
-| Repositories | Git hosting | ✅ Documented |
-| Registry | Package management | ✅ Documented |
-| Code Review | Merge request workflows | ✅ Documented |
-| Pages | Static site hosting | ✅ Documented |
+| Authentication | Intégration LDAP/OIDC | ✅ Documenté |
+| Actions | Automatisation CI/CD | ✅ Documenté |
+| Repositories | Hébergement Git | ✅ Documenté |
+| Registry | Gestion packages | ✅ Documenté |
+| Code Review | Workflows merge request | ✅ Documenté |
+| Pages | Hébergement site statique | ✅ Documenté |
 
 ---
 
-## 1. Authentication Plugin
+## 1. Plugin Authentication
 
-### Supported Backends
+### Backends Supportés
 
 #### LDAP/Active Directory
 
-**Configuration Section**: `[auth.ldap.*]`
+**Section de Configuration** : `[auth.ldap.*]`
 
-**Required Parameters**:
-- `HOST`: LDAP server hostname or IP
-- `PORT`: LDAP server port (389 for unencrypted, 636 for LDAPS)
-- `SECURITY_PROTOCOL`: `unencrypted` | `ldaps` | `starttls`
-- `BIND_DN`: Service account distinguished name
-- `BIND_PASSWORD`: Service account password
-- `USER_BASE`: Base DN for user searches
-- `USER_FILTER`: LDAP filter for user lookup (use `%s` for username placeholder)
+**Paramètres Requis** :
+- `HOST` : Nom d'hôte ou IP serveur LDAP
+- `PORT` : Port serveur LDAP (389 non chiffré, 636 pour LDAPS)
+- `SECURITY_PROTOCOL` : `unencrypted` | `ldaps` | `starttls`
+- `BIND_DN` : Distinguished name compte service
+- `BIND_PASSWORD` : Mot de passe compte service
+- `USER_BASE` : DN de base pour recherches utilisateur
+- `USER_FILTER` : Filtre LDAP pour lookup utilisateur (utiliser `%s` comme placeholder nom d'utilisateur)
 
-**Optional Parameters**:
-- `ADMIN_FILTER`: LDAP filter to identify administrator users
-- `USERNAME_ATTRIBUTE`: Attribute containing username (default: `uid`)
-- `EMAIL_ATTRIBUTE`: Attribute containing email (default: `mail`)
-- `FIRST_NAME_ATTRIBUTE`: Attribute for first name (default: `givenName`)
-- `SURNAME_ATTRIBUTE`: Attribute for surname (default: `sn`)
+**Paramètres Optionnels** :
+- `ADMIN_FILTER` : Filtre LDAP pour identifier utilisateurs administrateur
+- `USERNAME_ATTRIBUTE` : Attribut contenant nom d'utilisateur (défaut : `uid`)
+- `EMAIL_ATTRIBUTE` : Attribut contenant email (défaut : `mail`)
+- `FIRST_NAME_ATTRIBUTE` : Attribut pour prénom (défaut : `givenName`)
+- `SURNAME_ATTRIBUTE` : Attribut pour nom (défaut : `sn`)
 
-**Example**:
+**Exemple** :
 ```ini
 [auth.ldap.corporate]
 NAME = Corporate LDAP
@@ -108,7 +108,7 @@ SCOPES = openid profile email groups
 
 ---
 
-## 2. Actions Plugin (CI/CD)
+## 2. Plugin Actions (CI/CD)
 
 ### Core Configuration
 
@@ -241,7 +241,7 @@ jobs:
 
 ---
 
-## 3. Repositories Plugin
+## 3. Plugin Repositories
 
 ### Core Features
 
@@ -333,7 +333,7 @@ Protect branch: main
 
 ---
 
-## 4. Registry Plugin (Nexus Integration)
+## 4. Plugin Registry (Intégration Nexus)
 
 ### Overview
 
@@ -512,7 +512,7 @@ twine upload --repository devforge dist/*
 
 ---
 
-## 5. Code Review Plugin
+## 5. Plugin Code Review
 
 ### Merge Request Workflow
 
@@ -677,7 +677,7 @@ jobs:
 
 ---
 
-## 6. Pages Plugin
+## 6. Plugin Pages
 
 ### Overview
 
@@ -876,8 +876,18 @@ docs.myproject.company.internal
 
 ---
 
-## See Also
+## Voir Aussi
 
-- [How-To: Setup Plugins](../how-to/setup-plugins.md) — Activation and configuration procedures
-- [Explanation: MVP Plugin Selection (ADR-0004)](../../ADR/0004-mvp-plugins.md) — Rationale for chosen plugins
-- [Reference: Forgejo Configuration](forgejo-config.md) — Complete configuration reference
+- [Guide Pratique : Configurer les Plugins](../guide-pratique/configurer-plugins.md) — Procédures activation et configuration
+- [Explication : Sélection Plugins MVP (ADR-0004)](../../ADR/0004-plugins-mvp.md) — Justification choix plugins
+- [Référence : Configuration Forgejo](configuration-forgejo.md) — Référence configuration complète
+
+---
+
+## Navigation
+
+📚 **Autre Référence** : [Configuration Forgejo](configuration-forgejo.md)  
+⬆️ [Retour aux Références](../reference/)  
+🔧 [Guides Pratiques](../guide-pratique/) | 📖 [Tutoriels](../tutoriel/)
+
+> **Note** : Ce document contient du contenu technique détaillé en anglais. Une traduction complète est en cours.

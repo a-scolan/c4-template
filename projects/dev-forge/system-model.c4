@@ -107,7 +107,7 @@ model {
         '''
         technology 'Static file serving, HTTPS'
       }
-    }
+    }  // end forgejoWeb
     
     gitBackend = Container_Api 'Git Backend API' {
       #Internal

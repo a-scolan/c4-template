@@ -1,133 +1,105 @@
-# Dev-Forge: Modern Development Platform
+# Dev-Forge : Plateforme de Développement Moderne
 
-**An on-premises, technology-agnostic development platform powered by Forgejo and Puppet**
+**Une plateforme de développement on-premises, techno-agnostique, propulsée par Forgejo et Puppet**
 
-Dev-Forge provides development teams with a complete, self-hosted Git platform featuring CI/CD automation, code review, package management, and automated infrastructure provisioning—all whilst remaining neutral to the programming languages and frameworks teams choose to use.
+Dev-Forge fournit aux équipes de développement une plateforme Git complète auto-hébergée incluant automation CI/CD, revue de code, gestion de packages, et provisioning d'infrastructure automatisé—tout en restant neutre face aux langages de programmation et frameworks que les équipes choisissent d'utiliser.
 
-## 🎯 Project Overview
+## 🎯 Présentation du Projet
 
-**Status**: Initial Planning & Documentation Phase  
-**Target Environment**: On-premises infrastructure  
-**Initial Deployment**: Staging environment with scalable Forgejo Actions runners  
-**Future**: Production environment following validated staging architecture
+**Statut** : Phase de Planification & Documentation Initiale  
+**Environnement Cible** : Infrastructure on-premises  
+**Déploiement Initial** : Environnement staging avec runners Forgejo Actions scalables  
+**Futur** : Environnement production suivant l'architecture staging validée
 
-### Core Technologies
+### Technologies Clés
 
-- **Forgejo**: Git hosting, CI/CD (Actions), code review, package registry integration
-- **Puppet**: Infrastructure automation and configuration management
-- **Nexus**: External package registry (existing integration)
-- **PostgreSQL**: Forgejo database backend
+- **Forgejo** : Hébergement Git, CI/CD (Actions), revue de code, intégration registry de packages
+- **Puppet** : Automatisation d'infrastructure et gestion de configuration
+- **Nexus** : Registry externe de packages (intégration existante)
+- **PostgreSQL** : Backend base de données Forgejo
 
-## 📚 Documentation Structure (Diataxis Framework)
+## 📚 Structure de Documentation (Framework Diataxis)
 
-This project follows the [Diataxis](https://diataxis.fr/) documentation framework, organizing content by user needs:
+Ce projet suit le framework de documentation [Diataxis](https://diataxis.fr/), organisant le contenu selon les besoins utilisateurs :
 
-### 📖 [Tutorials](projects/dev-forge/docs/tutorial/) — Learning by Doing
-*For developers new to the platform*
+### 📖 [Tutoriels](projects/dev-forge/docs/tutoriel/) — Apprendre en Faisant
+*Pour les développeurs nouveaux sur la plateforme*
 
-- [01 - Onboarding Developer](projects/dev-forge/docs/tutorial/01-onboarding-developer.md) — Create your first repository
-- [02 - First Pipeline](projects/dev-forge/docs/tutorial/02-first-pipeline.md) — Set up CI/CD with Forgejo Actions
+- [01 - Intégration Développeur](projects/dev-forge/docs/tutoriel/01-integration-developpeur.md) — Créer votre premier dépôt
+- [02 - Premier Pipeline](projects/dev-forge/docs/tutoriel/02-premier-pipeline.md) — Configurer CI/CD avec Forgejo Actions
 
-### 🔧 [How-To Guides](projects/dev-forge/docs/how-to/) — Practical Tasks
-*For working practitioners accomplishing specific goals*
+### 🔧 [Guides Pratiques](projects/dev-forge/docs/guide-pratique/) — Tâches Pratiques
+*Pour les praticiens accomplissant des objectifs spécifiques*
 
-- [Configure Runners](projects/dev-forge/docs/how-to/configure-runners.md) — Scale and configure Forgejo Actions runners
-- [Setup Plugins](projects/dev-forge/docs/how-to/setup-plugins.md) — Activate and configure MVP plugins
-- [Puppet Tasks](projects/dev-forge/docs/how-to/puppet-tasks.md) — Expected outcomes for deployment tasks
+- [Configurer les Runners](projects/dev-forge/docs/guide-pratique/configurer-runners.md) — Mettre à l'échelle et configurer les runners Forgejo Actions
+- [Configurer les Plugins](projects/dev-forge/docs/guide-pratique/configurer-plugins.md) — Activer et configurer les plugins MVP
+- [Tâches Puppet](projects/dev-forge/docs/guide-pratique/taches-puppet.md) — Résultats attendus pour les tâches de déploiement
 
-### 📋 [Reference](projects/dev-forge/docs/reference/) — Technical Facts
-*For practitioners needing specifications and details*
+### 📋 [Référence](projects/dev-forge/docs/reference/) — Faits Techniques
+*Pour les praticiens nécessitant spécifications et détails*
 
-- [MVP Plugins](projects/dev-forge/docs/reference/plugins-mvp.md) — Auth, Actions, Repos, Registry, Code Review
-- [Forgejo Configuration](projects/dev-forge/docs/reference/forgejo-config.md) — System configuration reference
+- [Plugins MVP](projects/dev-forge/docs/reference/plugins-mvp.md) — Auth, Actions, Repos, Registry, Code Review, Pages
+- [Configuration Forgejo](projects/dev-forge/docs/reference/configuration-forgejo.md) — Référence de configuration système
 
-### 💡 [Explanation](projects/dev-forge/ADR/) — Understanding Decisions
-*For understanding the "why" behind architectural choices*
+### 💡 [Explication](projects/dev-forge/ADR/) — Comprendre les Décisions
+*Pour comprendre le "pourquoi" derrière les choix architecturaux*
 
-See [Architecture Decision Records (ADRs)](projects/dev-forge/ADR/) for detailed rationale:
-- ADR-0001: Forgejo Platform Selection
-- ADR-0002: Actions Scalability Strategy
-- ADR-0003: Puppet Automation
-- ADR-0004: MVP Plugins Selection
-- ADR-0005: Network Zone Architecture
-- ADR-0006: Technology Neutrality
-- ADR-0007: Nexus Registry Integration
+Voir [Architecture Decision Records (ADRs)](projects/dev-forge/ADR/) pour la justification détaillée :
+- ADR-0001 : Sélection de la Plateforme Forgejo
+- ADR-0002 : Stratégie de Scalabilité Actions
+- ADR-0003 : Automatisation Puppet
+- ADR-0004 : Sélection des Plugins MVP
+- ADR-0005 : Architecture des Zones Réseau
+- ADR-0006 : Neutralité Technologique
+- ADR-0007 : Intégration Registry Nexus
 
-## 🏗️ Architecture & Models
+## 🏗️ Architecture & Modèles
 
-### C4 Architecture Models (LikeC4)
+### Modèles d'Architecture C4 (LikeC4)
 
-Comprehensive system architecture modelled at all C4 levels:
+Architecture système complète modélisée à tous les niveaux C4 :
 
-- **[System Model](projects/dev-forge/system-model.c4)** — Elements, containers, and components
-- **[System Views](projects/dev-forge/system-views.c4)** — Context, container, and component diagrams
-- **[Deployment (Staging)](projects/dev-forge/deployment-staging.c4)** — Infrastructure topology and runtime environment
+- **[Modèle Système](projects/dev-forge/system-model.c4)** — Éléments, containers et composants
+- **[Vues Système](projects/dev-forge/system-views.c4)** — Diagrammes de contexte, container et composants
+- **[Déploiement (Staging)](projects/dev-forge/deployment-staging.c4)** — Topologie d'infrastructure et environnement runtime
 
-**Preview Models**: Use the LikeC4 MCP server or VS Code extension to visualize diagrams
+**Prévisualiser les Modèles** : Utiliser le serveur MCP LikeC4 ou l'extension VS Code pour visualiser les diagrammes
 
-### Workflow Diagrams (Mermaid)
+### Diagrammes de Workflow (Mermaid)
 
-*Coming in Phase 6*: Visual workflows for common tasks
-- Developer onboarding flow
-- CI/CD trigger and execution
-- Runner auto-scaling behaviour
-- Puppet deployment orchestration
+*À venir en Phase 6* : Workflows visuels pour tâches courantes
+- Flow d'intégration développeur
+- Déclenchement et exécution CI/CD
+- Comportement d'auto-scaling des runners
+- Orchestration de déploiement Puppet
 
-## 🚀 Project Progress
+## 🚀 Progression du Projet
 
-See [PROJECT_CHECKLIST.md](projects/dev-forge/PROJECT_CHECKLIST.md) for detailed phase tracking:
+Voir [PROJECT_CHECKLIST.md](projects/dev-forge/PROJECT_CHECKLIST.md) pour le suivi détaillé des phases :
 
-- ✅ **Phase 1**: Documentation Structure (Diataxis)
-- ✅ **Phase 2**: Architecture Decision Records
-- 🔄 **Phase 3**: C4 Architecture Modelling
-- ⏳ **Phase 4**: Model Validation & Preview
-- ⏳ **Phase 5**: Production Environment Extension
-- ⏳ **Phase 6**: Workflow Diagrams (Mermaid)
+- ✅ **Phase 1** : Structure de Documentation (Diataxis)
+- ✅ **Phase 2** : Architecture Decision Records
+- 🔄 **Phase 3** : Modélisation d'Architecture C4
+- ⏳ **Phase 4** : Validation & Prévisualisation des Modèles
+- ⏳ **Phase 5** : Extension Environnement Production
+- ⏳ **Phase 6** : Diagrammes de Workflow (Mermaid)
 
-## 💎 Key Principles
+## 💎 Principes Clés
 
-1. **Technology Agnostic**: Platform supports any programming language or framework
-2. **Scalable CI/CD**: Containerized Forgejo Actions runners with auto-scaling
-3. **On-Premises First**: Complete control over infrastructure and data
-4. **Automated Operations**: Puppet-driven provisioning and configuration
-5. **Modular Design**: MVP plugin approach ensures focused, maintainable platform
+1. **Techno-Agnostique** : La plateforme supporte tout langage de programmation ou framework
+2. **CI/CD Scalable** : Runners Forgejo Actions containerisés avec auto-scaling
+3. **On-Premises First** : Contrôle complet sur infrastructure et données
+4. **Opérations Automatisées** : Provisioning et configuration pilotés par Puppet
+5. **Conception Modulaire** : Approche plugin MVP assure une plateforme focalisée et maintenable
 
-## 🤝 Contributing
+## 🤝 Contribuer
 
-Architecture questions? Start with [ADRs](projects/dev-forge/ADR/)  
-Implementation questions? Check [How-To Guides](projects/dev-forge/docs/how-to/)  
-Need to understand something? Read [Explanations](projects/dev-forge/ADR/)  
-Ready to learn? Follow [Tutorials](projects/dev-forge/docs/tutorial/)
-
----
-
-**Note**: This is a living architecture. As the platform evolves, documentation and models will be updated to reflect current design decisions and implementation details
-| `.github/copilot-instructions.md` | Copilot workflow guidance | How Copilot should work in your project |
-| `.github/skills/` | 14 skill files | Architecture helpers for Copilot |
-| `projects/shared/spec-*.c4` | 6 specification files | Reusable element kinds, tags, relationships |
-| `projects/shared/images/` | 28+ SVG icons | Shared architecture diagrams |
-| `projects/spec-showcase/` | Example C4 diagrams | Reference examples |
-
-**Important:** Always update all three directories together so your project stays in sync with the template's specification standards.
-
-**Note:** The `--squash` flag (git subtree only) consolidates all c4-template changes into one commit per sync. Updates are manual—they do not happen automatically.
-
-#### When to Sync
-
-- **Quarterly:** Regular maintenance to stay current
-- **When template skills improve:** Better Copilot assistance
-- **When specs are updated:** Align with latest conventions
-- **When new icons added:** More diagram options
+Questions d'architecture ? Commencez par les [ADRs](projects/dev-forge/ADR/)  
+Questions d'implémentation ? Consultez les [Guides Pratiques](projects/dev-forge/docs/guide-pratique/)  
+Besoin de comprendre quelque chose ? Lisez les [Explications](projects/dev-forge/ADR/)  
+Prêt à apprendre ? Suivez les [Tutoriels](projects/dev-forge/docs/tutoriel/)
 
 ---
 
-## Project-Specific READMEs
-
-This README documents the template. When creating a **project-specific repository** (e.g., for a domain like NiceLabel, banking, healthcare), create a project-specific README that:
-
-1. Documents your architecture and systems
-2. Describes how you've configured template synchronization
-3. Lists which Copilot skills apply to your domain
-4. Includes project-specific best practices
-5. Documents your ADRs and key architectural decisions
+**Note** : Cette architecture est vivante. Au fur et à mesure que la plateforme évolue, la documentation et les modèles seront mis à jour pour refléter les décisions de conception actuelles et les détails d'implémentation.
 
