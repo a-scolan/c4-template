@@ -76,7 +76,6 @@ model {
 ```likec4
 model {
   apiGateway = Container_Gateway 'API Gateway' {
-    #critical #production
     technology 'Kong'
     
     description """
@@ -88,6 +87,8 @@ model {
       
       **Availability:** 99.9% SLA
     """
+    
+    #critical, #production
   }
 }
 ```
@@ -97,12 +98,13 @@ model {
 ```likec4
 model {
   paymentService = Component_Service 'Payment Service' {
-    #pci-compliant #production
     technology 'Node.js, Stripe SDK'
     description 'Handles payment processing'
     
     link https://docs.stripe.com 'Stripe API Docs'
     link https://github.com/myorg/payment-service 'Source Code'
+    
+    #pci-compliant, #production
   }
 }
 ```
@@ -112,17 +114,17 @@ model {
 ```likec4
 model {
   database = Container_Database 'PostgreSQL' {
-    #production
     technology 'PostgreSQL 15'
     description 'Primary application database'
     icon tech:postgresql
+    #production
   }
   
   cache = Container_Cache 'Redis Cache' {
-    #production
     technology 'Redis 7'
     description 'Session and data cache'
     icon tech:redis
+    #production
   }
 }
 ```
@@ -134,33 +136,33 @@ Common icon namespaces: `tech:`, `aws:`, `gcp:`, `azure:`
 ### Environment Tags
 ```likec4
 prodAPI = Container_API 'Production API' {
-  #production #us-east-1
   technology 'Node.js'
   description 'Production API server'
+  #production, #us-east-1
 }
 ```
 
 ### Architectural Tags
 ```likec4
 frontend = Container_WebApp 'Frontend' {
-  #presentation #public-facing
   technology 'React'
   description 'User interface'
+  #presentation, #public-facing
 }
 
 database = Container_Database 'Database' {
-  #data #persistent
   technology 'PostgreSQL'
   description 'Data storage'
+  #data, #persistent
 }
 ```
 
 ### Status and Compliance
 ```likec4
 legacyService = Component_Service 'Legacy Service' {
-  #deprecated #migration-pending
   technology 'Java 8'
   description 'Legacy user service'
+  #deprecated, #migration-pending
 }
 
 paymentDB = Container_Database 'Payment Data' {

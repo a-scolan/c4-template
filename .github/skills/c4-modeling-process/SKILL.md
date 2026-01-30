@@ -74,20 +74,20 @@ Determine WHAT other systems your system integrates with:
 model {
   // Payment processing
   paymentGateway = System_Existing 'Payment Gateway' {
-    #external
     description 'Third-party payment processing'
+    #external
   }
   
   // Data integration
   warehouse = System_Existing 'Data Warehouse' {
-    #external
     description 'Cloud data warehouse for analytics'
+    #external
   }
   
   // Communication
   emailService = System_Existing 'Email Service' {
-    #external
     description 'Third-party email delivery'
+    #external
   }
 }
 ```
