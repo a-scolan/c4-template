@@ -18,33 +18,30 @@ Dev-Forge fournit aux équipes de développement une plateforme Git complète au
 - **Nexus** : Registry externe de packages (intégration existante)
 - **PostgreSQL** : Backend base de données Forgejo
 
-## 📚 Structure de Documentation (Framework Diataxis)
+## 📚 Documentation
 
-Ce projet suit le framework de documentation [Diataxis](https://diataxis.fr/), organisant le contenu selon les besoins utilisateurs :
+### Pour Démarrer
 
-### 📖 [Tutoriels](projects/dev-forge/docs/tutoriel/) — Apprendre en Faisant
-*Pour les développeurs nouveaux sur la plateforme*
+**Nouveau sur Dev-Forge ?** Commencez ici :
+- [Intégration Développeur](projects/dev-forge/docs/tutoriel/01-integration-developpeur.md) — Créer votre premier dépôt
+- [Premier Pipeline](projects/dev-forge/docs/tutoriel/02-premier-pipeline.md) — Configurer CI/CD avec Forgejo Actions
 
-- [01 - Intégration Développeur](projects/dev-forge/docs/tutoriel/01-integration-developpeur.md) — Créer votre premier dépôt
-- [02 - Premier Pipeline](projects/dev-forge/docs/tutoriel/02-premier-pipeline.md) — Configurer CI/CD avec Forgejo Actions
+### Guides de Configuration
 
-### 🔧 [Guides Pratiques](projects/dev-forge/docs/guide-pratique/) — Tâches Pratiques
-*Pour les praticiens accomplissant des objectifs spécifiques*
+**Besoin de configurer quelque chose ?** Consultez les guides pratiques :
+- [Configurer les Runners](projects/dev-forge/docs/guide-pratique/configurer-runners.md) — Mise à l'échelle et configuration
+- [Configurer les Plugins](projects/dev-forge/docs/guide-pratique/configurer-plugins.md) — Activer les fonctionnalités MVP
+- [Tâches Puppet](projects/dev-forge/docs/guide-pratique/taches-puppet.md) — Automatisation des déploiements
 
-- [Configurer les Runners](projects/dev-forge/docs/guide-pratique/configurer-runners.md) — Mettre à l'échelle et configurer les runners Forgejo Actions
-- [Configurer les Plugins](projects/dev-forge/docs/guide-pratique/configurer-plugins.md) — Activer et configurer les plugins MVP
-- [Tâches Puppet](projects/dev-forge/docs/guide-pratique/taches-puppet.md) — Résultats attendus pour les tâches de déploiement
+### Références Techniques
 
-### 📋 [Référence](projects/dev-forge/docs/reference/) — Faits Techniques
-*Pour les praticiens nécessitant spécifications et détails*
-
+**Besoin de spécifications détaillées ?**
 - [Plugins MVP](projects/dev-forge/docs/reference/plugins-mvp.md) — Auth, Actions, Repos, Registry, Code Review, Pages
-- [Configuration Forgejo](projects/dev-forge/docs/reference/configuration-forgejo.md) — Référence de configuration système
+- [Configuration Forgejo](projects/dev-forge/docs/reference/configuration-forgejo.md) — Paramètres système
 
-### 💡 [Explication](projects/dev-forge/ADR/) — Comprendre les Décisions
-*Pour comprendre le "pourquoi" derrière les choix architecturaux*
+### Comprendre les Décisions
 
-Voir [Architecture Decision Records (ADRs)](projects/dev-forge/ADR/) pour la justification détaillée :
+**Pourquoi cette architecture ?** Consultez les [Architecture Decision Records (ADRs)](projects/dev-forge/ADR/) :
 - ADR-0001 : Sélection de la Plateforme Forgejo
 - ADR-0002 : Stratégie de Scalabilité Actions
 - ADR-0003 : Automatisation Puppet
@@ -92,14 +89,27 @@ Voir [PROJECT_CHECKLIST.md](projects/dev-forge/PROJECT_CHECKLIST.md) pour le sui
 4. **Opérations Automatisées** : Provisioning et configuration pilotés par Puppet
 5. **Conception Modulaire** : Approche plugin MVP assure une plateforme focalisée et maintenable
 
-## 🤝 Contribuer
+## 🤝 Trouver ce dont vous avez besoin
 
-Questions d'architecture ? Commencez par les [ADRs](projects/dev-forge/ADR/)  
-Questions d'implémentation ? Consultez les [Guides Pratiques](projects/dev-forge/docs/guide-pratique/)  
-Besoin de comprendre quelque chose ? Lisez les [Explications](projects/dev-forge/ADR/)  
-Prêt à apprendre ? Suivez les [Tutoriels](projects/dev-forge/docs/tutoriel/)
+- **Questions d'architecture ?** → [ADRs](projects/dev-forge/ADR/)
+- **Comment faire X ?** → [Guides Pratiques](projects/dev-forge/docs/guide-pratique/)
+- **Débuter avec la plateforme ?** → [Tutoriels](projects/dev-forge/docs/tutoriel/)
+- **Spécifications techniques ?** → [Référence](projects/dev-forge/docs/reference/)
+
+---
+
+<details>
+<summary>💡 À propos de l'organisation de cette documentation</summary>
+
+Cette documentation suit le framework [Diataxis](https://diataxis.fr/), qui organise le contenu selon 4 besoins utilisateurs :
+- **Tutoriels** : Apprendre en faisant (orientation apprentissage)
+- **Guides pratiques** : Accomplir des tâches spécifiques (orientation résolution de problèmes)
+- **Référence** : Consulter des spécifications techniques (orientation information)
+- **Explication** : Comprendre les concepts et décisions (orientation compréhension)
+
+Cette structure aide à trouver rapidement le bon type d'information selon votre besoin.
+</details>
 
 ---
 
 **Note** : Cette architecture est vivante. Au fur et à mesure que la plateforme évolue, la documentation et les modèles seront mis à jour pour refléter les décisions de conception actuelles et les détails d'implémentation.
-

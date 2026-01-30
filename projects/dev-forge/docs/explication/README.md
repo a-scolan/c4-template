@@ -1,19 +1,14 @@
-# Explication : Dossiers de Décision d'Architecture
+# Architecture Decision Records
 
-Ce répertoire contient les Architecture Decision Records (ADRs) documentant les décisions significatives prises lors de la conception et de la mise en œuvre de la plateforme Dev-Forge.
+Ce répertoire documente les décisions architecturales majeures de la plateforme Dev-Forge.
 
----
+## Pourquoi des ADRs ?
 
-## Qu'est-ce qu'un ADR ?
-
-Les Architecture Decision Records capturent le **pourquoi** derrière les choix architecturaux. Ils documentent :
-- Le contexte et les forces qui ont conduit à une décision
-- La décision elle-même et sa justification
-- Les conséquences (positives, négatives et neutres) de ce choix
+Les ADRs capturent le **contexte** et la **justification** des choix techniques, pas seulement la décision finale. Ils répondent aux questions "Pourquoi avons-nous choisi X plutôt que Y ?" et documentent les conséquences connues de chaque choix.
 
 ---
 
-## Index des ADRs
+## Index des Décisions
 
 ### Sélection de Plateforme & Technologie
 

@@ -1,22 +1,34 @@
 # Checklist du Projet Dev-Forge
 
-## Phase 1: Structure de Documentation (Diataxis) ✅ TERMINÉ
+## Phase 1: Documentation Utilisateur 🔄 EN COURS (80%)
 
-- [x] README.md racine avec navigation Diataxis
-- [x] **Tutoriels** (2 fichiers)
-  - [x] `01-onboarding-developer.md` - Premier dépôt pour un nouveau développeur
+- [x] README.md racine avec navigation claire
+- [ ] **Tutoriels** (2 fichiers - 1 à mettre à jour)
+  - [ ] `01-onboarding-developer.md` - ⚠️ À METTRE À JOUR : Ajouter section configuration SSH
+    - [ ] Générer une paire de clés SSH (ssh-keygen)
+    - [ ] Ajouter la clé publique dans Forgejo (Settings > SSH Keys)
+    - [ ] Tester la connexion SSH (`ssh -T git@forgejo.example.com`)
+    - [ ] Cloner les dépôts via SSH (git@forgejo.example.com:org/repo.git)
   - [x] `02-first-pipeline.md` - Configuration du premier pipeline CI/CD
-- [x] **Guides pratiques** (3 fichiers)
+- [ ] **Guides pratiques** (4 fichiers - 1 manquant)
   - [x] `configure-runners.md` - Configuration de l'auto-scaling des runners
   - [x] `setup-plugins.md` - Activation des plugins MVP
   - [x] `puppet-tasks.md` - Attentes pour les tâches de déploiement
+  - [ ] `forgejo-web-ui.md` - ❌ NOUVEAU : Guide interface web pour chefs de projet / profils non techniques
+    - [ ] Navigation dans l'interface Forgejo
+    - [ ] Créer et gérer des projets/organisations
+    - [ ] Gérer les membres et permissions
+    - [ ] Suivre l'activité des dépôts
+    - [ ] Visualiser les pipelines CI/CD
+    - [ ] Consulter les pages statiques (Forgejo Pages)
+    - [ ] ⚠️ Nécessite validation sur environnement web réel
 - [x] **Références** (2 fichiers)
   - [x] `plugins-mvp.md` - Référence technique des 6 plugins MVP (incluant Forgejo Pages)
   - [x] `forgejo-config.md` - Configuration système Forgejo
 - [x] **Explications**
   - [x] `explanation/README.md` - Pointeur vers les ADR
 
-## Phase 2: Architecture Decision Records ✅ TERMINÉ
+## Phase 2: Architecture Decision Records 🔄 EN COURS (87%)
 
 - [x] ADR-0001: Sélection de la plateforme Forgejo
   - [x] Analyse détaillée des alternatives (GitLab, Gitea, GitHub Enterprise, BitBucket)
@@ -31,31 +43,58 @@
 - [x] ADR-0005: Zones réseau
 - [x] ADR-0006: Neutralité technologique
 - [x] ADR-0007: Intégration Nexus
+- [ ] ADR-0008: Politique SSH obligatoire pour Git ❌ NOUVEAU
+  - [ ] **Décision** : TOUS les accès Git doivent utiliser SSH (jamais HTTPS)
+  - [ ] **Contexte** : Sécurité, gestion centralisée des clés, traçabilité
+  - [ ] **Conséquences** : Configuration SSH obligatoire pour tous les développeurs
+  - [ ] **Alternatives rejetées** : HTTPS avec tokens (moins sécurisé, gestion distribuée)
 
-## Phase 3: Modélisation Architecture C4 ⏸️ EN PAUSE
+## Phase 3: System Design & Modélisation Architecture C4 ❌ NON COMMENCÉ (0%)
 
-### Modèle Système
-- [x] C1 Acteurs (developer, admin, ciSystem)
-- [x] C1 Systèmes (devforge, nexus, ldapServer, puppetForge, publicRepos)
-- [x] C2 Containers (forgejoWeb, gitBackend, actionsScheduler, runnerPool, postgresDb, puppetMaster, puppetAgents)
-- [x] **C3 Components** (authModule, repoModule, actionsModule, registryBridge, codeReviewModule, **pagesModule**)
-- [x] Toutes les relations définies (niveaux C1/C2/C3)
-- [x] Tags corrigés (placement après l'accolade ouvrante)
+### 3.1 Planification System Design (REQUIS AVANT MODÉLISATION)
+- [ ] **Clarifier le périmètre fonctionnel de chaque système**
+  - [ ] Définir les responsabilités précises de `devforge` (quelles fonctionnalités?)
+  - [ ] Définir les responsabilités de `nexus` (rôle exact dans l'écosystème)
+  - [ ] Définir les responsabilités de `ldapServer` (authentification uniquement? gestion groupes?)
+  - [ ] Définir les responsabilités de `puppetForge` (modules communautaires uniquement?)
+  - [ ] Définir les responsabilités de `publicRepos` (quels repos? GitHub, GitLab, autres?)
+- [ ] **Documenter les capacités de chaque container**
+  - [ ] `forgejoWeb`: Quelles fonctionnalités expose l'interface web?
+  - [ ] `gitBackend`: Quelles opérations Git supportées?
+  - [ ] `actionsScheduler`: Algorithme de scheduling, priorités?
+  - [ ] `runnerPool`: Gestion lifecycle, health checks?
+  - [ ] `postgresDb`: Schémas, tables principales, stratégie backup?
+  - [ ] `puppetMaster`: Configuration management, catalogues?
+  - [ ] `puppetAgents`: Fréquence de sync, modes d'exécution?
+- [ ] **Identifier les cas d'usage critiques**
+  - [ ] Quels workflows métier doivent être documentés?
+  - [ ] Quelles interactions utilisateur sont prioritaires?
+  - [ ] Quels scénarios de performance/scalabilité tester?
 
-### Vues Système
-- [ ] ⏸️ EN PAUSE: system-views.c4
-  - Statut: Fichier créé avec erreurs de syntaxe
-  - Problème bloquant: Syntaxe LikeC4 pour composants imbriqués pas claire
+### 3.2 Modèle Système (EN ATTENTE DE PLANIFICATION)
+- [ ] system-model.c4
+  - [ ] C1 Acteurs (developer, admin, ciSystem)
+  - [ ] C1 Systèmes (devforge, nexus, ldapServer, puppetForge, publicRepos)
+  - [ ] C2 Containers (forgejoWeb, gitBackend, actionsScheduler, runnerPool, postgresDb, puppetMaster, puppetAgents)
+  - [ ] C3 Components (authModule, repoModule, actionsModule, registryBridge, codeReviewModule, pagesModule)
+  - [ ] Relations entre éléments (C1/C2/C3)
 
-### Modèle Déploiement
-- [ ] ❌ NON COMMENCÉ: deployment-staging.c4
-  - Topologie infrastructure environnement staging
-  - Zones réseau (DMZ, AppTier, DataTier, InfraZone)
-  - Spécifications VM avec tableaux markdown
-  - Relations instanceOf
+### 3.3 Vues Système (EN ATTENTE DU MODÈLE)
+- [ ] system-views.c4
+  - [ ] C1: Vue contexte système
+  - [ ] C2: Vues containers (focus CI/CD, automation)
+  - [ ] C3: Vues composants (plugins MVP)
+  - [ ] Vues dynamiques: cas d'usage identifiés en phase de planification
 
-### Modèle Code
-- [ ] ❌ NON COMMENCÉ: system-code.c4 (priorité basse)
+### 3.4 Modèle Déploiement (EN ATTENTE DES VUES SYSTÈME)
+- [ ] deployment-staging.c4
+  - [ ] Topologie infrastructure environnement staging
+  - [ ] Zones réseau (DMZ, AppTier, DataTier, InfraZone)
+  - [ ] Spécifications VM avec tableaux markdown
+  - [ ] Relations instanceOf
+- [ ] deployment-views.c4
+  - [ ] Vues topologie réseau
+  - [ ] Vues placement VM
 
 ## Phase 4: Validation ⏳ EN ATTENTE
 
@@ -84,31 +123,96 @@
 - [ ] Flux de déploiement Puppet
 - [ ] Flux d'authentification (LDAP/OIDC)
 
-## Obstacles Actuels
+## Prochaines Étapes IMMÉDIATES
 
-1. **Références Composants LikeC4** : Besoin de résoudre la syntaxe pour accéder aux composants imbriqués dans les containers depuis les vues
-2. **Références Systèmes Externes** : Confirmer pourquoi les systèmes externes définis dans system-model.c4 ne se résolvent pas dans system-views.c4
+### Priorité Haute (Compléter Phases 1 & 2)
 
-## Prochaines Étapes (Lors de la Reprise du Travail C4)
+1. **📝 PHASE 2: ADR-0008 - Politique SSH** (RAPIDE)
+   - Créer ADR-0008 documentant la décision SSH obligatoire
+   - Justifier le rejet de HTTPS (sécurité, gestion centralisée)
+   - Documenter les implications pour les développeurs
 
-1. Rechercher la documentation LikeC4 pour les patterns d'accès aux composants imbriqués
-2. Corriger la syntaxe des références de composants dans system-views.c4
-3. Valider le modèle avec le skill test-model
-4. Prévisualiser les vues clés pour assurer le rendu correct
-5. Créer deployment-staging.c4
+2. **📚 PHASE 1: Mise à jour tutoriel développeur** (MOYEN)
+   - Mettre à jour `01-onboarding-developer.md` avec section SSH complète
+   - Étapes : génération clés, ajout dans Forgejo, test connexion
+   - Exemples de commandes SSH pour clone/push/pull
+
+3. **🖥️ PHASE 1: Nouveau guide interface web** (LONG - NÉCESSITE VALIDATION WEB)
+   - Créer `forgejo-web-ui.md` pour profils non techniques
+   - Navigation, gestion projets, permissions, suivi activité
+   - ⚠️ Requiert accès à environnement Forgejo pour screenshots/validation
+
+### Priorité Normale (Phase 3)
+
+4. **📋 PHASE 3.1: Planification System Design**
+   - Clarifier les responsabilités fonctionnelles de chaque système
+   - Documenter les capacités de chaque container
+   - Identifier les cas d'usage critiques à modéliser
+   - **Output attendu**: Document de design système (markdown ou ADR)
+
+5. **🏗️ PHASE 3.2: Modélisation** (après planification)
+   - Créer system-model.c4 avec définitions claires
+   - Créer system-views.c4 basé sur cas d'usage identifiés
+
+6. **🏛️ PHASE 3.4: Déploiement** (après modèle système)
+   - Créer deployment-staging.c4
+   - Créer deployment-views.c4
+
+7. **✅ PHASE 4: Validation** (après modèle complet)
+   - Valider avec skill test-model
+   - Prévisualiser vues avec mcp_likec4_open-view
+
+## Leçons Apprises & Skills Disponibles
+
+**Skills LikeC4 améliorés** (disponibles pour utilisation future):
+- **create-relationship**: Syntaxe correcte `-[kind]->` documentée avec anti-patterns
+- **create-sequence-view**: Interdiction parent-child dans vues dynamiques
+- **troubleshoot-errors**: Erreurs courantes (syntax, parent-child, rank same)
 
 ## Résumé de Progression
 
-- **Phase 1**: 100% (8/8 fichiers de documentation créés)
-- **Phase 2**: 100% (7/7 ADRs créés et mis à jour)
-- **Phase 3**: 50% (system-model.c4 terminé, system-views.c4 en pause)
-- **Phase 4**: 0% (en attente Phase 3)
-- **Phase 5**: 0% (en attente Phase 4)
-- **Phase 6**: 0% (en attente)
+- **Phase 1**: 🔄 80% (8/10 fichiers - 1 guide manquant + 1 tutoriel à mettre à jour)
+- **Phase 2**: 🔄 87% (7/8 ADRs - ADR-0008 SSH à créer)
+- **Phase 3**: ❌ 0% (RÉINITALISÉ - planification system design requise avant modélisation)
+- **Phase 4**: ⏳ 0% (en attente Phase 3)
+- **Phase 5**: ⏳ 0% (en attente Phase 4)
+- **Phase 6**: ⏳ 0% (en attente Phase 5)
 
-**Progression Globale**: ~40% (2.5/6 phases terminées)
+**Progression Globale**: ~28% (1.67/6 phases terminées)
+
+### Fichiers Documentation à Compléter
+- ⚠️ `tutoriel/01-onboarding-developer.md` : Ajouter section configuration SSH (génération clés, ajout dans Forgejo, test connexion)
+- ❌ `guide-pratique/forgejo-web-ui.md` : Nouveau guide pour profils non techniques / chefs de projet
+
+### Détails Phase 3
+- ❌ **3.1 Planification System Design**: Non commencé (PRIORITÉ)
+- ❌ **3.2 system-model.c4**: Non commencé (bloqué par 3.1)
+- ❌ **3.3 system-views.c4**: Non commencé (bloqué par 3.2)
+- ❌ **3.4 deployment-staging.c4**: Non commencé (bloqué par 3.3)
+- ❌ **3.4 deployment-views.c4**: Non commencé (bloqué par 3.3)
+
+### Raison de la Réinitialisation
+Besoin de clarifier le périmètre fonctionnel de chaque système et les capacités de chaque container AVANT de modéliser. Une planification system design solide évitera les ambiguïtés et garantira un modèle C4 cohérent.
 
 ## Notes Importantes
+
+### 🔐 Politique SSH Obligatoire (SANS EXCEPTION)
+
+**RÈGLE ABSOLUE** : Tous les accès Git à Dev-Forge DOIVENT utiliser SSH, jamais HTTPS.
+
+**Raisons** :
+- 🔒 **Sécurité renforcée** : Clés SSH plus robustes que passwords/tokens HTTPS
+- 🏢 **Gestion centralisée** : Clés publiques gérées dans Forgejo, révocation immédiate
+- 📊 **Traçabilité** : Chaque clé SSH identifie uniquement un utilisateur
+- 🚫 **Pas de credentials en clair** : Aucun token/password stocké localement
+
+**Implications pour les développeurs** :
+- ✅ Génération obligatoire de clés SSH (ssh-keygen)
+- ✅ Ajout de la clé publique dans Forgejo (Settings > SSH Keys)
+- ✅ Utilisation exclusive de URLs SSH : `git@forgejo.example.com:org/repo.git`
+- ❌ URLs HTTPS désactivées : `https://forgejo.example.com/org/repo.git` (non supporté)
+
+**Documentation** : Voir tutoriel `01-onboarding-developer.md` (section SSH à ajouter) et ADR-0008 (à créer)
 
 ### ⚠️ Rôle de l'Environnement Staging
 
@@ -164,11 +268,14 @@
 - ADR-0004: Plugins MVP (6 plugins incluant Forgejo Pages)
 - Documentation Forgejo Pages: https://forgejo.org/docs/next/user/packages/pages/
 
-- **Documentation**: 100% (8/8 files)
-- **ADRs**: 100% (7/7 decisions)
-- **System Model**: 90% (model complete, views paused)
-- **Deployment Model**: 0% (not started)
-- **Validation**: 0% (pending model completion)
-- **Production**: 0% (pending staging validation)
+- **Documentation**: 🔄 80% (8/10 files - 1 guide + 1 màj manquants)
+- **ADRs**: 🔄 87% (7/8 decisions - ADR-0008 SSH manquant)
+- **System Design**: ❌ 0% (planning required)
+- **System Model**: ❌ 0% (blocked by system design)
+- **Deployment Model**: ❌ 0% (blocked by system model)
+- **Validation**: ⏳ 0% (pending models)
+- **Production**: ⏳ 0% (pending staging validation)
 
-**Overall Project Progress**: ~45%
+**Overall Project Progress**: ~28%
+
+**NEXT ACTION**: Compléter Phases 1 & 2 (ADR-0008 SSH + tutoriel SSH + guide interface web)

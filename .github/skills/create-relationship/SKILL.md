@@ -81,19 +81,58 @@ retrievalService -[reads]-> storage 'Fetch encrypted file'
 retrievalService -[calls]-> metadata   // ANTI-PATTERN!
 ```
 
-## Example
+## Relationship Syntax (CRITICAL)
+
+**The relationship kind MUST be in the arrow, NEVER in the property block:**
 
 ```likec4
-mySystem.api -[calls]-> externalService 'Fetches data' {
-  description 'HTTPS REST API with OAuth 2.0'
+// ✅ CORRECT: Type in arrow, label inline, properties in block
+source -[calls]-> target 'Action description' {
+  technology 'HTTPS'
+}
+
+// ✅ CORRECT: Type in arrow, minimal syntax
+source -[reads]-> database 'Query data'
+
+// ❌ WRONG: Type in block (compilation error!)
+source -> target {
+  calls 'Action description'    // ❌ INVALID!
+  technology 'HTTPS'
+}
+
+// ❌ WRONG: Missing relationship kind
+source -> target 'Action'       // ❌ Must specify type!
+```
+
+## Complete Examples
+
+```likec4
+// Synchronous call with metadata
+mySystem.api -[calls]-> externalService 'Fetches user data' {
+  technology 'HTTPS REST API'
+  description 'OAuth 2.0 authentication with JWT tokens'
+}
+
+// Database read
+mySystem.service -[reads]-> mySystem.postgres 'Query customer records' {
+  technology 'PostgreSQL wire protocol'
+}
+
+// Async message
+mySystem.publisher -[async]-> mySystem.queue 'Publish order event'
+
+// Container to external system
+devforge.forgejoWeb -[calls]-> ldapServer 'Authenticate user' {
+  technology 'LDAP protocol'
 }
 ```
 
 ## Anti-patterns
 
 ```likec4
-❌ api -> service 'Calls'                    // Missing relationship kind
-❌ mySystem.api -[invokes]-> service         // Invalid relationship kind
+❌ api -> service 'Calls'                     // Missing relationship kind
+❌ api -> service { calls 'Action' }          // Type in block (INVALID!)
+❌ mySystem.api -[invokes]-> service          // Invalid relationship kind
 ❌ client -[calls]-> server 'Request'
-   server -[calls]-> client 'Response'      // No return relationships!
+   server -[calls]-> client 'Response'       // No return relationships!
 ```
