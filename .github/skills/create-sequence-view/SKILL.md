@@ -45,6 +45,26 @@ views 'Use Cases' {
 5. **Temporal order:** Steps execute top-to-bottom showing sequence
 6. **Folder organization:** Group all use cases in `views 'Use Cases'` subfolder
 7. **Title format:** "Use Cases / [WorkflowName]" (e.g., "Use Cases / Upload")
+8. **CRITICAL: No parent-child relationships** - Cannot show `container -> container.component`
+
+## Parent-Child Restriction
+
+**Dynamic views CANNOT show a parent element calling its own child:**
+
+```likec4
+// ❌ INVALID: Container calling its own component
+developer -> mySystem.webapp
+mySystem.webapp -> mySystem.webapp.authModule   // ❌ COMPILATION ERROR!
+
+// ✅ CORRECT: Actor directly accesses component
+developer -> mySystem.webapp.authModule 'Initiates login'
+mySystem.webapp.authModule -> ldapServer 'Validates credentials'
+```
+
+**Why this restriction exists:**
+- Dynamic views show interactions BETWEEN independent parts
+- Parent-child is a containment relationship, not an interaction
+- In real systems, actors interact with specific components, not abstract containers
 
 ## Example
 
