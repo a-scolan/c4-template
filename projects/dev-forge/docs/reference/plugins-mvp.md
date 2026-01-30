@@ -641,7 +641,7 @@ SMTP_PORT = 587
 - Can be enabled per merge request
 - Respects merge strategy configuration
 
-###Integration with Actions
+### Integration with Actions
 
 **Status Check Integration**:
 ```yaml
