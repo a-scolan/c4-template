@@ -41,14 +41,14 @@ Dev-Forge fournit aux équipes de développement une plateforme Git complète au
 
 ### Comprendre les Décisions
 
-**Pourquoi cette architecture ?** Consultez les [Architecture Decision Records (ADRs)](projects/dev-forge/ADR/) :
-- ADR-0001 : Sélection de la Plateforme Forgejo
-- ADR-0002 : Stratégie de Scalabilité Actions
-- ADR-0003 : Automatisation Puppet
-- ADR-0004 : Sélection des Plugins MVP
-- ADR-0005 : Architecture des Zones Réseau
-- ADR-0006 : Neutralité Technologique
-- ADR-0007 : Intégration Registry Nexus
+**Pourquoi cette architecture ?** Consultez les Architecture Decision Records (ADRs) :
+- [ADR-0001 : Sélection de la Plateforme Forgejo](projects/dev-forge/ADR/0001-plateforme-forgejo.md)
+- [ADR-0002 : Stratégie de Scalabilité Actions](projects/dev-forge/ADR/0002-scalabilite-actions.md)
+- [ADR-0003 : Automatisation Puppet](projects/dev-forge/ADR/0003-automatisation-puppet.md)
+- [ADR-0004 : Sélection des Plugins MVP](projects/dev-forge/ADR/0004-plugins-mvp.md)
+- [ADR-0005 : Architecture des Zones Réseau](projects/dev-forge/ADR/0005-zones-reseau.md)
+- [ADR-0006 : Neutralité Technologique](projects/dev-forge/ADR/0006-neutralite-technologique.md)
+- [ADR-0007 : Intégration Registry Nexus](projects/dev-forge/ADR/0007-integration-nexus.md)
 
 ## 🏗️ Architecture & Modèles
 
