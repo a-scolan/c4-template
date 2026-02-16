@@ -178,6 +178,23 @@ encryptor = Component 'Encryption Service'
 | `#Ingress` | Green `rgb(34, 197, 94)` | Entry points |
 | `#Routing` | Blue `rgb(59, 130, 246)` | Traffic routing |
 
+#### Deployment Tier Tags (Colored) 🆕
+| Tag | Color | Purpose | Usage |
+|-----|-------|---------|-------|
+| `#Dmz` | Red `rgb(220, 38, 38)` | DMZ security zone | Edge services, reverse proxy, SSL termination |
+| `#AppTier` | Blue `rgb(59, 130, 246)` | Application tier | Business logic, Web UI, API servers |
+| `#ProcTier` | Purple `rgb(168, 85, 247)` | Processing tier | CPU-intensive workloads, transcoding, ML |
+| `#DataTier` | Gray `rgb(75, 85, 99)` | Data persistence tier | Databases, cache, object storage |
+
+**Tag-Based Filtering Example:**
+```likec4
+deployment view dmz_tier {
+  title 'DMZ Tier - Edge Services'
+  include element.tag == #Dmz  // Includes all DMZ zone elements automatically
+  autoLayout TopBottom
+}
+```
+
 #### Messaging/Async Tags (Colored)
 | Tag | Color | Purpose |
 |-----|-------|---------|

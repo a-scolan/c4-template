@@ -6,7 +6,7 @@ specification {
 		#code
 		notation 'Code'
 		style {
-			icon bootstrap:code-slash
+			icon @/lucide-static/code.svg
 		}
 	}
 }

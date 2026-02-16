@@ -25,7 +25,7 @@ specification {
 		style {
 			shape person
 			color blue
-			icon bootstrap:people
+			icon @/lucide-static/user-2.svg
 		}
 	}
 	element Actor_Staff {
@@ -34,7 +34,7 @@ specification {
 		style {
 			shape person
 			color green
-			icon bootstrap:people
+			icon @/lucide-static/users.svg
 		}
 	}
 	element Actor_Admin {
@@ -43,7 +43,7 @@ specification {
 		style {
 			shape person
 			color amber
-			icon bootstrap:person-badge
+			icon @/lucide-static/badge.svg
 		}
 	}
 
@@ -52,7 +52,7 @@ specification {
 		notation 'New system'
 		style {
 			color green
-			icon bootstrap:arrow-clockwise
+			icon @/lucide-static/refresh-cw.svg
 		}
 	}
 	element System_Existing {
@@ -60,7 +60,7 @@ specification {
 		notation 'Existing system'
 		style {
 			color blue
-			icon @/serverGray.svg
+			icon @/custom/serverGray.svg
 		}
 	}
 	element System_Legacy {
@@ -68,7 +68,7 @@ specification {
 		notation 'Deprecated system'
 		style {
 			color legacy
-			icon bootstrap:exclamation-triangle
+			icon @/lucide-static/triangle-alert.svg
 		}
 	}
 	element System_External {
@@ -76,7 +76,7 @@ specification {
 		notation 'External system'
 		style {
 			color external
-			icon @/internet.svg
+			icon @/custom/internet.svg
 		}
 	}
 }

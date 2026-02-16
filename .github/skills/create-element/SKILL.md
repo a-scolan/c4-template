@@ -7,7 +7,39 @@ description: Create elements with proper naming (PascalCase kinds, camelCase var
 
 Use this skill when creating or modifying any LikeC4 element.
 
-**Before creating:** Use LikeC4 MCP `read-project-summary` to check available element kinds in shared specifications.
+**Before creating:** 
+1. Read `c4-modeling-process` skill to understand C4 framework and top-to-bottom design (C1 → C2 → C3)
+2. **Check shared specification first** - Use `read-project-summary` MCP to list available element kinds
+3. Only create new kinds if absolutely necessary (and ask permission first)
+
+## Shared Spec First Principle
+
+**IMPORTANT:** Use existing element kinds from shared spec instead of creating new ones.
+
+### Why Use Shared Spec?
+- Consistency across models and projects
+- Maintainability - changes apply everywhere
+- Visual consistency - same kinds always look the same
+- Avoiding proliferation - keep kinds focused and organized
+
+### How to Use Shared Spec
+1. Run `read-project-summary` to see available kinds
+2. Check `spec-*.c4` files in `shared/` folder
+3. Use existing kind that matches your need
+4. **If no matching kind exists:**
+   - Ask user permission first
+   - Suggest contributing new kind to shared spec
+   - Don't create one-off custom kinds in project-specific files
+   - Add to spec so it can be reused
+
+## C4 Design Hierarchy
+
+Always design **top-to-bottom:**
+- **C1 Context:** System boundary with external actors and systems
+- **C2 Container:** Major deployable components and their relationships  
+- **C3 Component:** Internal modules within important containers (optional, for complex containers only)
+
+See `c4-modeling-process` skill for detailed step-by-step guidance.
 
 ## Validation Rules
 
@@ -44,6 +76,7 @@ model {
 ```likec4
 model {
   apiGateway = Container_Gateway 'API Gateway' {
+    #critical #production
     technology 'Kong'
     
     description """
@@ -55,8 +88,6 @@ model {
       
       **Availability:** 99.9% SLA
     """
-    
-    #critical, #production
   }
 }
 ```
@@ -66,13 +97,12 @@ model {
 ```likec4
 model {
   paymentService = Component_Service 'Payment Service' {
+    #pci-compliant #production
     technology 'Node.js, Stripe SDK'
     description 'Handles payment processing'
     
     link https://docs.stripe.com 'Stripe API Docs'
     link https://github.com/myorg/payment-service 'Source Code'
-    
-    #pci-compliant, #production
   }
 }
 ```
@@ -82,17 +112,17 @@ model {
 ```likec4
 model {
   database = Container_Database 'PostgreSQL' {
+    #production
     technology 'PostgreSQL 15'
     description 'Primary application database'
     icon tech:postgresql
-    #production
   }
   
   cache = Container_Cache 'Redis Cache' {
+    #production
     technology 'Redis 7'
     description 'Session and data cache'
     icon tech:redis
-    #production
   }
 }
 ```
@@ -104,33 +134,33 @@ Common icon namespaces: `tech:`, `aws:`, `gcp:`, `azure:`
 ### Environment Tags
 ```likec4
 prodAPI = Container_API 'Production API' {
+  #production #us-east-1
   technology 'Node.js'
   description 'Production API server'
-  #production, #us-east-1
 }
 ```
 
 ### Architectural Tags
 ```likec4
 frontend = Container_WebApp 'Frontend' {
+  #presentation #public-facing
   technology 'React'
   description 'User interface'
-  #presentation, #public-facing
 }
 
 database = Container_Database 'Database' {
+  #data #persistent
   technology 'PostgreSQL'
   description 'Data storage'
-  #data, #persistent
 }
 ```
 
 ### Status and Compliance
 ```likec4
 legacyService = Component_Service 'Legacy Service' {
+  #deprecated #migration-pending
   technology 'Java 8'
   description 'Legacy user service'
-  #deprecated, #migration-pending
 }
 
 paymentDB = Container_Database 'Payment Data' {

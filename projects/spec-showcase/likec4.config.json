@@ -3,9 +3,11 @@
 	"name": "spec-showcase",
 	"title": "Spec showcase",
 	"include": {
-		"paths": ["../shared"]
+		"paths": [
+			"../shared",
+		]
 	},
 	"imageAliases":	{
-		"@": "../shared/images"
+		"@": "../shared/images/"
 	}
 }

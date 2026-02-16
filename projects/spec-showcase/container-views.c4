@@ -22,7 +22,6 @@ views 'Container' {
       where kind is Container_ReverseProxy
          or kind is Container_Waf
          or kind is Container_Loadbalancer
-         or kind is Container_Firewall
          or kind is Container_IamServer
          or kind is Container_Directory
   }

@@ -83,6 +83,30 @@ Use Context7 MCP `query-docs` to verify:
 - [ ] Check for compilation errors in VS Code Problems panel
 - [ ] Run `likec4 start` locally to ensure diagrams render
 
+## Parent Context Validation
+
+**Critical requirement:** Every view MUST explicitly include its parent/surrounding element.
+
+For detailed context requirements, see `PARENT_CONTEXT_REFERENCE.md`
+
+### Context Checklist for Views
+
+- [ ] **C1 Context view:** System boundary clearly shown? External systems included?
+- [ ] **C2 Container view:** System boundary shown? Containers appear WITHIN system?
+- [ ] **C2 Container view:** Neighboring containers shown? (include -> vault.* and vault.* ->)
+- [ ] **C3 Component view:** Parent container boundary shown? Components appear WITHIN container?
+- [ ] **C3 Component view:** Neighboring containers shown? (include -> service and service ->)
+- [ ] **Deployment Zone view:** Zone container shown? VMs appear WITHIN zone? Parent environment included?
+- [ ] **Deployment VM view:** VM container shown? Instances appear WITHIN VM? Parent zone included?
+- [ ] **Dynamic/Sequence view:** Initiating actor shown at start? Causality clear?
+
+**Common mistakes:**
+- ❌ C3 view without parent container boundary
+- ❌ C2 view without system boundary
+- ❌ Deployment VM without parent zone
+- ❌ Sequence without initiating actor
+- ✅ Every view contextualized by showing what contains it
+
 ## Output
 
 Comprehensive validation report identifying:

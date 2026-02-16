@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="128" height="128" viewBox="-4 -4 50 75">
+  
+  <g transform="translate(-401.32227,-313.73393)">
+    <g transform="matrix(0.03543307,0,0,0.03543307,151.2711,204.63551)">
+      <path d="m 7905,3079 -743,0 c -58,0 -105,47 -105,105 l 0,0 0,1748 954,0 0,-1748 c 0,-58 -48,-105 -106,-105 z m -79,1641 -584,0 0,-79 584,0 0,79 z m 0,-238 -584,0 0,-80 584,0 0,80 z m 0,-1086 -584,0 0,-79 584,0 0,79 z" style="fill:#666666;stroke:none" />
+    </g>
+  </g>
+  
+  <g transform="translate(24, 38) scale(0.23)">
+    <rect x="0" y="0" width="110" height="110" rx="25" fill="#ffffff"/>
+    
+    <rect x="12" y="12" width="86" height="86" rx="15" fill="#2072b8"/>
+    
+    <text x="55" y="77" 
+          font-family="Arial, Helvetica, sans-serif" 
+          font-weight="bold" 
+          font-size="50"
+          fill="#ffffff" 
+          text-anchor="middle">VM</text>
+  </g>
+
+</svg>

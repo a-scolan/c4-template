@@ -1,22 +1,25 @@
 /**
  * System Views
  * 
- * Defines visualizations of the system architecture:
- * - C1: System Context (high-level view showing system and external actors)
- * - C2: Container View (detailed view showing internal containers)
+ * Defines visualizations of the system architecture.
+ * All views must be nested inside category folders (C1, C2, C3, Use Cases, Deployment, Operations).
  */
-
 views {
-  
+ view index extends c1_context {}
+}
+views 'C1' {
   /**
    * C1: System Context
    * Shows the system in its environment with users and external dependencies
    */
   view c1_context {
-    title 'C1 / System Context'
+    title 'System Context'
     
     include user
-    include mySystem
+    include mySystem with {
+      // Drill down to containers from the system context
+      navigateTo c2_containers
+    }
     include emailService
     
     // Layout hints: actors at the top, external systems at the bottom
@@ -24,15 +27,22 @@ views {
     rank sink { emailService }
   }
   
+}
+
+views 'C2' {
   /**
    * C2: Container View
    * Shows the internal structure of the system with its containers
    */
   view c2_containers {
-    title 'C2 / Containers'
+    title 'Containers'
     
     include user
     include mySystem.*        // All containers within mySystem
+    include mySystem.webapp with {
+      // Example: click the Web Application to drill down
+      navigateTo c2_webapp_details
+    }
     include emailService
     
     // Layout hints
@@ -45,12 +55,27 @@ views {
    * Alternative view showing only core containers without external dependencies
    */
   view c2_containers_focused {
-    title 'C2 / Containers (Core)'
+    title 'Containers (Core)'
     
     include user
     include mySystem.*
     
     rank source { user }
     rank sink { mySystem.database }
+  }
+
+  /**
+   * C2: Web App Detail
+   * Demonstrates navigateTo from c2_containers
+   */
+  view c2_webapp_details {
+    title 'Web App Detail'
+
+    include user
+    include mySystem.webapp
+    include mySystem.api
+
+    rank source { user }
+    rank sink { mySystem.api }
   }
 }

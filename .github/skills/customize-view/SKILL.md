@@ -7,31 +7,120 @@ description: Advanced view features: styling (colors, shapes, style predicates),
 
 Use this skill for advanced view features: styling, layout, and navigation.
 
+## Core Principles
+
+### 1. Prefer Shared Spec Over Custom Styling
+
+**Before customizing colors, shapes, or styles:**
+1. **Check shared spec first** - Use specs from `shared/spec-*.c4` files
+2. **Use defined colors** - Refer to `spec-global.c4` color definitions
+3. **Avoid custom colors** - Don't create new hex colors for styling
+4. **Avoid custom shapes** - Use kinds from shared spec, not custom shape definitions
+5. **If needed, ask & contribute** - If styling really needs something new:
+   - Ask user permission first
+   - Suggest adding it to shared spec
+   - Contribute to spec instead of one-off customization
+   - This keeps styling consistent across all projects
+
+**Why:** Shared specs ensure consistency, maintainability, and avoid proliferation of custom styles.
+
+### 2. Respect Parent Context
+
+When customizing views, always preserve the parent/surrounding element context:
+- Never hide parent container/system/zone boundaries
+- Never exclude the outer context when styling inner elements
+- Use styling to emphasize, not to isolate elements from their context
+- Apply opacity changes carefully to avoid losing context
+
+## View Organization (Mandatory)
+
+**Hard rule:** Every view MUST be nested inside a category folder using the `views 'FolderName'` syntax, **except** the **index** view.
+
+**Index exception:** The index view must live at the root:
+```likec4
+views {
+  view index extends c1_context { }
+}
+```
+
+Do not place any other views in the root `views { }` block.
+
+**Avoid duplicate prefixes:** If a view is inside a category folder (e.g., `views 'C1'`), do not prefix the view title with the same category (e.g., avoid `title 'C1 / System Context'`). Use either folder name OR title prefix, not both.
+
+**Allowed categories (must use these exact folder names):**
+- `C1` (System Context)
+- `C2` (Containers)
+- `C3` (Components)
+- `Use Cases` (Dynamic/sequence views)
+- `Deployment` (Infrastructure views)
+- `Operations` (Security/monitoring/DR/CI/CD)
+
+```likec4
+views 'Deployment' {
+  deployment view prod_overview { ... }
+}
+
+views 'Operations' {
+  deployment view security { ... }
+}
+```
+
+See the **design-view** skill for full organization patterns and parent context requirements.
+
 ## Visual Styling
 
-### View-Level Style Overrides
+**IMPORTANT:** Use colors and shapes from shared spec (`shared/spec-*.c4`), not custom definitions.
+
+### Available Colors (From Shared Spec)
+
+Use only colors defined in `shared/spec-global.c4`:
+- `primary` - Primary brand color
+- `secondary` - Secondary color
+- `success` - Success/positive state
+- `warning` - Warning state
+- `danger` - Error/danger state
+- `muted` - Muted/inactive
+- (Check spec-global.c4 for complete list)
+
+**DO NOT:** Create new hex color definitions. If you need a color not in the spec:
+1. Check `spec-global.c4` first
+2. If missing, ask permission and contribute to shared spec
+3. Then use the spec color
+
+### Available Shapes (From Element Kinds)
+
+Shapes come from element kinds defined in `spec-*.c4` files:
+- Each kind has a predefined shape (box, cylinder, etc.)
+- Use the kind's shape, don't override with custom shapes
+
+**DO NOT:** Define custom shapes. If a shape is needed:
+1. Check if a kind exists with that shape
+2. If not, contribute new kind to shared spec
+3. Then use that kind
+
+### View-Level Style Overrides (Shared Spec Only)
 
 ```likec4
 view myView {
   include cloud.backend with {
     title 'Backend Services'
-    color primary
-    shape browser
+    color primary              // From shared spec
+    shape database             // From kind definition
     icon tech:java
   }
 }
 ```
 
-### Style Predicates
+### Style Predicates (Shared Spec Colors Only)
 
 ```likec4
 view apiView {
   include *
   
-  style * { color muted; opacity 10% }
-  style api.*, gateway.* { color primary; opacity 100% }
-  style element.tag = #deprecated { color muted }
-  style element.tag != #production { color secondary }
+  style * { color muted; opacity 10% }           // spec-global color
+  style api.*, gateway.* { color primary; opacity 100% }  // spec-global color
+  style element.tag = #deprecated { color muted }         // spec-global color
+  style element.tag != #production { color secondary }    // spec-global color
 }
 ```
 
@@ -138,6 +227,8 @@ view balanced {
 
 ## Navigation
 
+**Rule:** When creating a new view, add a `navigateTo` link in the parent overview view so users can drill down from the higher level.
+
 ### View-to-View Navigation
 
 ```likec4
@@ -170,13 +261,11 @@ view cloudContainers of cloud {
 ```
 
 **Hub-spoke:** Central index with links to specialized views
+
+Index views should extend `c1_context` (or `c0_landscape` if a landscape view exists) and always include braces.
+
 ```likec4
-view index {
-  title "Architecture Index"
-  include *
-  include cloud.api with { navigateTo apiServices }
-  include cloud.storage with { navigateTo dataArchitecture }
-}
+view index extends c1_context {}
 ```
 
 ### External Documentation Links

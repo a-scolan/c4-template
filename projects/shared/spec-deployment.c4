@@ -46,6 +46,20 @@ specification {
 	tag SharedInfra {
 		color rgb(139, 92, 246)
 	}
+	
+	// Tier organization tags (for zone categorization)
+	tag Dmz {
+		color rgb(220, 38, 38)
+	}
+	tag AppTier {
+		color rgb(59, 130, 246)
+	}
+	tag ProcTier {
+		color rgb(168, 85, 247)
+	}
+	tag DataTier {
+		color rgb(75, 85, 99)
+	}
 
 	// Deployment pattern tags (with semantic colors)
 	tag Deployment {
@@ -150,7 +164,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/switchGray.svg
+			icon @/affinity-naked/switch.svg
 		}
 	}
 	deploymentNode Zone_Internet {
@@ -159,7 +173,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/internet.svg
+			icon @/custom/internet.svg
 		}
 	}
 	deploymentNode Zone_Vlan {
@@ -168,7 +182,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/switchGray.svg
+			icon @/affinity-naked/switch.svg
 		}
 	}
 	deploymentNode Zone_Lan {
@@ -177,7 +191,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/switchNb2.svg
+			icon @/custom/switchNb2.svg
 		}
 	}
 	deploymentNode Zone_Subnet {
@@ -186,7 +200,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/switchGray.svg
+			icon @/affinity-naked/tree.svg
 		}
 	}
 
@@ -194,10 +208,12 @@ specification {
 		#Node #Cluster
 		notation 'Server cluster'
 		style {
+			textSize xs
+			size xl
 			opacity 10%
 			border dotted
 			multiple true
-			icon bootstrap:bounding-box
+			icon @/lucide-static/group.svg
 		}
 	}
 
@@ -205,21 +221,27 @@ specification {
 		#Node #Vm
 		notation 'Virtual Machine'
 		style {
-			icon @/vm.svg
+			textSize xs
+			size xl
+			icon @/custom/vm.svg
 		}
 	}
 	deploymentNode Node_Server {
 		#Node #Server
 		notation 'Physical Machine'
 		style {
-			icon @/serverGray.svg
+			textSize xs
+			size xl
+			icon @/custom/serverGray.svg
 		}
 	}
 	deploymentNode Node_App {
 		#Node #App
 		notation 'Deployed application service instance'
 		style {
-			icon bootstrap:box
+			textSize xs
+			size xl
+			icon @/lucide-static/app-window.svg
 		}
 	}
 	deploymentNode Node_AppBrowser {
@@ -227,7 +249,9 @@ specification {
 		notation 'User terminal: web browser'
 		style {
 			shape browser
-			icon bootstrap:pc-display-horizontal
+			textSize xs
+			size xl
+			icon @/lucide-static/monitor.svg
 		}
 	}
 	deploymentNode Node_AppMobile {
@@ -235,14 +259,18 @@ specification {
 		notation 'User terminal: mobile application'
 		style {
 			shape mobile
-			icon bootstrap:phone-landscape
+			textSize xs
+			size xl
+			icon @/lucide-static/smartphone.svg
 		}
 	}
 	deploymentNode Node_AppRich {
 		#Node #AppRich
 		notation 'User terminal: rich client'
 		style {
-						icon @/software.svg
+			textSize xs
+			size xl
+			icon @/custom/software.svg
 		}
 	}
 	
@@ -251,7 +279,21 @@ specification {
 		notation 'External service or system'
 		style {
 			color secondary
-			icon bootstrap:cloud
+			icon @/lucide-static/cloud.svg
+			textSize xs
+			size xl
+		}
+	}
+	
+	deploymentNode Node_SaaS {
+		#Node #External
+		notation 'SaaS platform or cloud service'
+		description 'Third-party Software-as-a-Service platform hosted externally'
+		style {
+			color secondary
+			icon @/lucide-static/cloud.svg
+			textSize xs
+			size xl
 		}
 	}
 	
@@ -259,7 +301,7 @@ specification {
 		#Infra #F5
 		notation 'F5 Big-IP'
 		style {
-			icon @/serverF5.svg
+			icon @/custom/serverF5.svg
 		}
 	}
 	
@@ -267,7 +309,7 @@ specification {
 		#Infra #Fw
 		notation 'Firewall'
 		style {
-			icon bootstrap:shield
+			icon @/affinity-naked/firewall.svg
 		}
 	}
 	
@@ -275,7 +317,7 @@ specification {
 		#Infra #Router
 		notation 'Router'
 		style {
-			icon @/router.svg
+			icon @/affinity-naked/router.svg
 		}
 	}
 	
@@ -286,7 +328,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon bootstrap:layers
+			icon @/lucide-static/layers.svg
 		}
 	}
 	
@@ -296,7 +338,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon bootstrap:building
+			icon @/lucide-static/building.svg
 		}
 	}
 	
@@ -304,7 +346,7 @@ specification {
 		#Node #Cicd
 		notation 'CI/CD Infrastructure'
 		style {
-			icon bootstrap:gear
+			icon @/lucide-static/settings.svg
 		}
 	}
 	
@@ -312,7 +354,7 @@ specification {
 		#Node
 		notation 'Container'
 		style {
-			icon bootstrap:box
+			icon @/lucide-static/box.svg
 		}
 	}
 }

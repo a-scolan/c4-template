@@ -7,30 +7,132 @@ description: Create typed relationships with FQN, proper kinds (calls/async/read
 
 Use this skill when connecting elements in model or deployment files.
 
-## Requirements
+## Async & Event-Driven Patterns
 
-1. **Check for duplicates (RECOMMENDED):** Use LikeC4 MCP `find-relationships` to verify no duplicate relationships exist
-2. **Use FQN:** Fully qualified names for nested elements (e.g., `mySystem.api`)
-3. **Typed relationships:** Always specify relationship kind
-   - Model: `calls`, `async`, `reads`, `writes`, `uses`
-   - Deployment: `http`, `https`, `tcp`, `nfs`, `amqp`, `sql`, `redis`, `smtp`, `ldap`, `oidc_saml`
-4. **Label:** Required descriptive text
-5. **No returns:** Never create reverse relationships (responses are implicit)
-6. **Optional description:** Add block with details if needed
+### The Async Relationship Kind
 
-## Example
+Use `-[async]->` for message queue and event-driven flows. This creates **no return path** — workers never call back to the publisher.
 
 ```likec4
-mySystem.api -[calls]-> externalService 'Fetches data' {
-  description 'HTTPS REST API with OAuth 2.0'
+// ✅ Correct: Upload service queues a job, worker consumes it
+uploadService -[async]-> jobQueue 'Queue file for processing'
+jobQueue -[async]-> worker 'Deliver job'
+
+// ❌ Wrong: Do NOT create call relationships FROM/TO workers
+worker -[calls]-> uploadService   // ANTI-PATTERN!
+uploadService -[calls]-> worker   // ANTI-PATTERN!
+```
+
+### Fail-Fast Pattern with Sync Validation
+
+Validation happens **synchronously** in the producer service BEFORE queuing:
+
+```likec4
+model {
+  vault = System {
+    // Upload service validates FIRST (synchronous)
+    uploadService = Container_Service 'Upload Service' {
+      validateModule = Component 'Validate' { ... }
+      queueModule = Component 'Queue Publisher' { ... }
+    }
+    
+    jobs = Container_Queue 'Job Queue' { ... }
+    
+    worker = Container_Service 'Worker' {
+      // Worker ONLY consumes and processes
+      consumerModule = Component 'Consumer' { ... }
+    }
+  }
+  
+  // Flow: Validation (sync) → Queue (async) → Processing (async)
+  vault.uploadService.validateModule -[uses]-> vault.uploadService.queueModule 'Publish if valid'
+  vault.uploadService.queueModule -[async]-> vault.jobs 'Queue validated job'
+  vault.worker.consumerModule -[async]-> vault.jobs 'Consume jobs'
+}
+```
+
+### Relationship Kinds for Async
+
+```likec4
+// Async patterns (one-way, no return)
+-[async]->       // Message queue, events, notifications
+-[sends]->       // Email, alerts, webhooks
+-[writes]->      // Database persist (not a call, just mutation)
+-[reads]->       // Database query (not a call, just retrieval)
+
+// Example upload → processing flow
+uploadService -[async]-> jobQueue 'Queue file'     // ✅ One direction
+jobQueue -[async]-> worker 'Deliver job'          // ✅ Message flow
+worker -[writes]-> database 'Update status'       // ✅ Persistence, not call
+worker -[writes]-> storage 'Save file'            // ✅ Persistence, not call
+```
+
+### Retrieval Flow Pattern
+
+For services that fetch from storage/cache, use `-[reads]->` not `-[calls]->`:
+
+```likec4
+// ✅ Correct: Reading from database/cache
+retrievalService -[reads]-> metadata 'Fetch document metadata'
+retrievalService -[reads]-> cache 'Check cache for data'
+retrievalService -[reads]-> storage 'Fetch encrypted file'
+
+// ❌ Wrong: Database queries are not "calls"
+retrievalService -[calls]-> metadata   // ANTI-PATTERN!
+```
+
+## Relationship Syntax (CRITICAL)
+
+**The relationship kind MUST be in the arrow, NEVER in the property block:**
+
+```likec4
+// ✅ CORRECT: Type in arrow, label inline, properties in block
+source -[calls]-> target 'Action description' {
+  technology 'HTTPS'
+}
+
+// ✅ CORRECT: Type in arrow, minimal syntax
+source -[reads]-> database 'Query data'
+
+// ❌ WRONG: Type in block (compilation error!)
+source -> target {
+  calls 'Action description'    // ❌ INVALID!
+  technology 'HTTPS'
+}
+
+// ❌ WRONG: Missing relationship kind
+source -> target 'Action'       // ❌ Must specify type!
+```
+
+## Complete Examples
+
+```likec4
+// Synchronous call with metadata
+mySystem.api -[calls]-> externalService 'Fetches user data' {
+  technology 'HTTPS REST API'
+  description 'OAuth 2.0 authentication with JWT tokens'
+}
+
+// Database read
+mySystem.service -[reads]-> mySystem.postgres 'Query customer records' {
+  technology 'PostgreSQL wire protocol'
+}
+
+// Async message
+mySystem.publisher -[async]-> mySystem.queue 'Publish order event'
+
+// Container to external system
+devforge.forgejoWeb -[calls]-> ldapServer 'Authenticate user' {
+  technology 'LDAP protocol'
 }
 ```
 
 ## Anti-patterns
 
 ```likec4
-❌ api -> service 'Calls'                    // Missing relationship kind
-❌ mySystem.api -[invokes]-> service         // Invalid relationship kind
+❌ api -> service 'Calls'                     // Missing relationship kind
+❌ api -> service { calls 'Action' }          // Type in block (INVALID!)
+❌ mySystem.api -[invokes]-> service          // Invalid relationship kind
 ❌ client -[calls]-> server 'Request'
-   server -[calls]-> client 'Response'      // No return relationships!
+   server -[calls]-> client 'Response'       // No return relationships!
 ```
