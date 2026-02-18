@@ -444,6 +444,134 @@ views 'Use Cases' {
 }
 ```
 
+### Deployment Subfolder: Explicit Element Includes (Best Practice)
+
+**CRITICAL RULE:** Every deployment view MUST explicitly list every deployment element that should appear in the diagram. Never use wildcards (`*` or `**`). Always add comments documenting which elements are shown.
+
+**Why?** Explicit includes make architecture hierarchy obvious, prevent unexpected element bloat, and serve as self-documenting architecture (the view file IS the documentation).
+
+#### Pattern 1: Overview with Zones and All Elements Explicit
+
+```likec4
+views 'Deployment' {
+  /**
+   * Infrastructure Overview
+   * Elements explicitly shown:
+   * - Zone1: pc1, designer1, print1, printer1
+   * - Zone2: pc2, designer2, print2, printer2
+   */
+  deployment view infrastructure {
+    title 'Infrastructure - 2 Postes avec Imprimantes'
+    description 'Two identical zones: each with PC, Designer, Print, and USB printer.'
+    
+    // Zone 1 - List all elements explicitly
+    include lanInterne.zone1.posteWindows1
+    include lanInterne.zone1.posteWindows1.designerApp1
+    include lanInterne.zone1.posteWindows1.printApp1
+    include lanInterne.zone1.printer1
+    include lanInterne.zone1
+    
+    // Zone 2 - List all elements explicitly  
+    include lanInterne.zone2.posteWindows2
+    include lanInterne.zone2.posteWindows2.designerApp2
+    include lanInterne.zone2.posteWindows2.printApp2
+    include lanInterne.zone2.printer2
+    include lanInterne.zone2
+    
+    // Parent environment for context/flows
+    include lanInterne
+  }
+}
+```
+
+#### Pattern 2: Detail View with All Services Explicit
+
+```likec4
+views 'Deployment' {
+  /**
+   * Server Zone Details
+   * Elements explicitly shown:
+   * - serveur (parent node)
+   * - automationService
+   * - printServer
+   * - templateShare
+   * - fileDropShare
+   * - eventLog
+   */
+  deployment view zone_serveur_details {
+    title 'Server Node - Services & Storage'
+    description 'Inside server: Automation Service, Print Server, SMB shares, Event Log.'
+    
+    // Explicitly list each service (DO NOT use wildcards)
+    include lanInterne.zoneServeur.serveur.automationService
+    include lanInterne.zoneServeur.serveur.printServer
+    include lanInterne.zoneServeur.serveur.templateShare
+    include lanInterne.zoneServeur.serveur.fileDropShare
+    include lanInterne.zoneServeur.serveur.eventLog
+    
+    // Include parent nodes for context
+    include lanInterne.zoneServeur.serveur
+    include lanInterne.zoneServeur
+  }
+}
+```
+
+**Key principles:**
+- **ALWAYS explicit lists**, never wildcards
+- **ALWAYS add comments** documenting which elements appear in the view
+- **ALWAYS include parent** (zone or environment) for context and relationships
+- **ALWAYS document in view comment** the exact list of elements shown
+- **Order matters:** Children first, then parent (ensures visibility)
+
+### Deployment Subfolder: Zone-Based Overview with Explicit Includes
+Shows infrastructure organized by network zones with explicit zone and elements includes for clarity
+```likec4
+views 'Deployment' {
+  // Overview: Show ALL zones explicitly (hierarchy is clear from nesting)
+  deployment view lan_overview {
+    title 'Infrastructure - Network Overview'
+    description 'Complete infrastructure: client zones, server zones, and devices. Each zone represents a logical network segment with controlled access.'
+    
+    // Explicitly include each major zone and key elements
+    include lanInterne.zoneClients.pc1.app1
+    include lanInterne.zoneClients.pc1
+    include lanInterne.zoneClients
+    
+    include lanInterne.zoneServers.server1.service1
+    include lanInterne.zoneServers.server1
+    include lanInterne.zoneServers
+    
+    include lanInterne.zoneDevices.device1
+    include lanInterne.zoneDevices
+    
+    // Include the parent zone for context and flows
+    include lanInterne
+  }
+
+  // Detail view: Zoom into one zone to show internals
+  deployment view server_zone_details {
+    title 'Server Zone - Internals'
+    description 'Detailed view of server zone: VMs, applications, storage, monitoring.'
+    
+    // Explicitly include internal nodes/services in this zone
+    include lanInterne.zoneServers.appServer.webApp
+    include lanInterne.zoneServers.appServer.database
+    include lanInterne.zoneServers.appServer.monitoring
+    
+    // Include parent for context
+    include lanInterne.zoneServers.appServer
+    include lanInterne.zoneServers
+  }
+}
+```
+
+**Key principle:** 
+- **ALWAYS explicit** → List every element that should appear in the diagram
+- **NEVER use wildcards** → `*` and `**` are forbidden in production deployment views
+- **ADD COMMENTS** → Document exactly which elements are shown for maintainability
+- **Parent context** → Always include the parent container/zone for navigation and flows
+- **Why?** Explicit includes make architecture hierarchy obvious and serve as self-documenting architecture
+
 ### Deployment Subfolder: Application Tier Infrastructure
 Shows how services are deployed across VMs with tier connectivity
 ```likec4
