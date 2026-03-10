@@ -1,13 +1,15 @@
 ---
 name: name-deployment-nodes
-description: Systematic naming for deployment nodes (VMs, zones, environments) enables consistent infrastructure documentation. Use {Environment}{Service}Vm for VMs, {Tier} for zones, and include VLAN/network details.
+description: Use when naming deployment nodes consistently ({Environment}{Service}Vm for VMs, {Tier}Zone for zones). Ensures scannable, self-documenting infrastructure identifiers.
 ---
 
 # Name Deployment Nodes Consistently
 
-Use this skill when creating VMs, zones, or deployment nodes in deployment.c4 or operations.c4.
+Use this skill to establish systematic naming for VMs, zones, and deployment elements.
 
-**Prerequisite:** Read `model-deployment` skill for basic structure and hierarchy.
+**REQUIRED BACKGROUND:** See `model-deployment-infrastructure` skill for complete hierarchy, descriptions, and infrastructure requirements.
+
+**Keywords:** naming, convention, VM, zone, environment, identifier, deployment, consistency
 
 ## Naming Formula
 
@@ -121,7 +123,7 @@ Zone SomeTier "Human Readable Zone Name (VLAN N: CIDR)" {
 
 ## VM Description with Infrastructure Specs
 
-Use Markdown tables to make deployment specs scannable and self-documenting:
+Use Markdown tables to make deployment specs scannable and self-documenting. Put network interfaces first (eth0, eth1) and avoid repeating the hostname (it's already in the element title).
 
 ```likec4
 ProdUploadVm = Node_Vm "prod-upload-vm" {
@@ -133,8 +135,7 @@ ProdUploadVm = Node_Vm "prod-upload-vm" {
     
     | Property | Value |
     |:---------|:------|
-    | Hostname | prod-upload-vm |
-    | IP Address | 10.1.0.12/24 |
+    | eth0 | 10.1.0.12/24 |
     | OS | Ubuntu 22.04 LTS |
     | CPU | 2 vCPU |
     | RAM | 4 GB |
@@ -163,8 +164,7 @@ Node_Vm "vm-name" {
     
     | Property | Value |
     |:---------|:------|
-    | Hostname | prod-service-vm |
-    | IP | 10.x.x.y/24 |
+    | eth0 | 10.x.x.y/24 |
     | OS | Ubuntu 22.04 LTS |
     | CPU | 2 vCPU |
     | RAM | 4 GB |

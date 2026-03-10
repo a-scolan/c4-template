@@ -164,13 +164,14 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/affinity-naked/switch.svg
+			icon @/affinity-naked/interconnect.svg
 		}
 	}
 	deploymentNode Zone_Internet {
 		#Zone #Internet
 		notation 'Internet zone'
 		style {
+			color amber
 			opacity 10%
 			border dotted
 			icon @/custom/internet.svg
@@ -180,18 +181,30 @@ specification {
 		#Zone #Vlan #Networking
 		notation 'VLAN'
 		style {
+			color green
 			opacity 10%
 			border dotted
-			icon @/affinity-naked/switch.svg
+			icon @/affinity-naked/router.svg
 		}
 	}
 	deploymentNode Zone_Lan {
 		#Zone #Lan #Networking
 		notation 'Physical LAN'
 		style {
+			color green
 			opacity 10%
 			border dotted
-			icon @/custom/switchNb2.svg
+			icon @/affinity-naked/tree.svg
+		}
+	}
+	deploymentNode Zone_Office {
+		#Zone #Lan #Networking
+		notation 'Office LAN'
+		style {
+			color gray
+			opacity 10%
+			border dotted
+			icon @/affinity-naked/office.svg
 		}
 	}
 	deploymentNode Zone_Subnet {
@@ -200,7 +213,7 @@ specification {
 		style {
 			opacity 10%
 			border dotted
-			icon @/affinity-naked/tree.svg
+			icon @/affinity-naked/switch.svg
 		}
 	}
 
@@ -278,7 +291,7 @@ specification {
 		#Node #External
 		notation 'External service or system'
 		style {
-			color secondary
+			color red
 			icon @/lucide-static/cloud.svg
 			textSize xs
 			size xl

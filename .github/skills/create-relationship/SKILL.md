@@ -7,6 +7,14 @@ description: Create typed relationships with FQN, proper kinds (calls/async/read
 
 Use this skill when connecting elements in model or deployment files.
 
+**REQUIRED BACKGROUND:** Read `create-element` skill and understand element kinds before creating relationships.
+
+## Quick Rules
+
+- Put the relationship kind in the arrow (never in the properties block).
+- Use one-way async relationships for queues/events (no return relationships).
+- Use `reads`/`writes` for data access; reserve `calls` for service-to-service requests.
+
 ## Async & Event-Driven Patterns
 
 ### The Async Relationship Kind
@@ -104,28 +112,83 @@ source -> target {
 source -> target 'Action'       // ❌ Must specify type!
 ```
 
-## Complete Examples
+## Relationship Documentation Standard
+
+Always document relationships with:
+1. **Relationship Kind** (in arrow) - `calls`, `async`, `reads`, `writes`, `uses`
+2. **Short Label** (inline) - Action-focused: "Fetches data", "Proxies requests", "Builds images"
+3. **Technology** (in properties) - Protocol only: "HTTPS", "SSH", "LDAP". Add port only for non-default: "HTTP/8080"
+4. **Description** (optional) - Only if label doesn't fully explain the interaction
+
+**NEVER use descriptions for clarification if a better label works.** Keep technology field to protocol only, add port after "/" only for non-default ports.
 
 ```likec4
-// Synchronous call with metadata
+// ✅ Good: Clear label + protocol (default port)
+api -[calls]-> service 'Fetches user data' {
+  technology 'HTTPS'
+}
+
+// ✅ Good: Non-default port specified
+proxy -[calls]-> backend 'Routes requests' {
+  technology 'HTTP/8080'
+}
+
+// ✅ Good: Minimal (tech is obvious)
+cache -[reads]-> config 'Load settings'
+
+// ❌ Bad: Verbose technology field
+api -[calls]-> service 'Fetches user data' {
+  technology 'HTTPS REST API'   // Too verbose! Just "HTTPS"
+}
+
+// ❌ Bad: Redundant description
+api -[calls]-> service 'Fetches data via HTTPS' {
+  technology 'HTTPS'
+  description 'OAuth 2.0 authentication with JWT tokens'   // Too much detail!
+}
+```
+
+## Complete Examples
+
+**Format:** `relationship kind` (in arrow) + `label` (inline) + `technology` (protocol only, port for non-default) in properties block. No need for descriptions if label is clear.
+
+```likec4
+// Synchronous call with protocol (default port)
 mySystem.api -[calls]-> externalService 'Fetches user data' {
-  technology 'HTTPS REST API'
-  description 'OAuth 2.0 authentication with JWT tokens'
+  technology 'HTTPS'
+}
+
+// Non-default port
+mySystem.api -[calls]-> backend 'Routes requests' {
+  technology 'HTTP/8080'
 }
 
 // Database read
-mySystem.service -[reads]-> mySystem.postgres 'Query customer records' {
-  technology 'PostgreSQL wire protocol'
+mySystem.service -[reads]-> mySystem.postgres 'Query records' {
+  technology 'PostgreSQL'
 }
 
-// Async message
-mySystem.publisher -[async]-> mySystem.queue 'Publish order event'
+// Async message (one-way, no response)
+mySystem.publisher -[async]-> mySystem.queue 'Publish event' {
+  technology 'AMQP'
+}
 
 // Container to external system
 devforge.forgejoWeb -[calls]-> ldapServer 'Authenticate user' {
-  technology 'LDAP protocol'
+  technology 'LDAP'
 }
+
+// Write operation (persistence, not call)
+worker -[writes]-> database 'Persist results' {
+  technology 'PostgreSQL'
+}
+
+// Minimal syntax (when tech is obvious)
+api -[calls]-> service 'Call endpoint'
+cache -[reads]-> config 'Load settings'
 ```
+
+**Best Practice:** Use protocol only for technology (e.g., "HTTPS", "SSH", "AMQP"), add port after "/" only for non-default ports (e.g., "HTTP/8080"). Keep labels short and action-focused. Descriptions in properties block are optional if the label is already clear.
 
 ## Anti-patterns
 

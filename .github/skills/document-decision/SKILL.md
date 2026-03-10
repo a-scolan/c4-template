@@ -1,6 +1,6 @@
 ---
 name: document-decision
-description: Create Architecture Decision Records (ADRs) documenting WHY decisions were made. Uses standard ADR format (Status/Context/Decision/Consequences).
+description: Use when recording WHY architectural choices were made (technology selection, pattern decisions, infrastructure design). Captures context, trade-offs, and consequences using standard ADR format.
 ---
 
 # Document Architecture Decision

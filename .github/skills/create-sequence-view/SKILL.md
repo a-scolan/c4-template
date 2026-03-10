@@ -7,6 +7,14 @@ description: Create sequence views showing temporal flows and user interactions.
 
 Use this skill when documenting use case flows and interactions.
 
+## Quick Checklist
+
+- Start with the initiating actor.
+- Use plain arrows (`->`), no relationship kinds.
+- Keep labels action-focused and time-ordered.
+- Place all dynamic views in `views 'Use Cases'`.
+- Avoid parent → child calls inside the same container.
+
 ## Core Requirement: Always Include Initiating Actors
 
 **Dynamic views MUST explicitly show the actor(s) that initiate the flow for context:**
@@ -72,12 +80,13 @@ mySystem.webapp.authModule -> ldapServer 'Validates credentials'
 views 'Use Cases' {
   dynamic view sequence_upload {
     title 'Document Upload Flow'
-  
-  user -> mySystem.webapp 'Opens upload form'
-  mySystem.webapp -> mySystem.api 'POST /upload'
-  mySystem.api -> mySystem.storage 'Store file'
-  mySystem.api -> mySystem.queue 'Queue processing job'
-  mySystem.queue -> mySystem.worker 'Execute job'
-  mySystem.worker -> mySystem.database 'Update metadata'
+    
+    user -> mySystem.webapp 'Opens upload form'
+    mySystem.webapp -> mySystem.api 'POST /upload'
+    mySystem.api -> mySystem.storage 'Store file'
+    mySystem.api -> mySystem.queue 'Queue processing job'
+    mySystem.queue -> mySystem.worker 'Execute job'
+    mySystem.worker -> mySystem.database 'Update metadata'
+  }
 }
 ```

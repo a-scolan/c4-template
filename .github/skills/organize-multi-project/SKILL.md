@@ -37,6 +37,8 @@ workspace/
 
 Each project needs `likec4.config.json` with shared includes:
 
+**Tip:** Use `configure-project-includes` when updating include paths or image aliases.
+
 ```json
 {
   "$schema": "https://likec4.dev/schemas/config.json",

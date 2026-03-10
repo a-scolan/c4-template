@@ -7,6 +7,11 @@ description: Advanced view features: styling (colors, shapes, style predicates),
 
 Use this skill for advanced view features: styling, layout, and navigation.
 
+## When to Use
+
+- Use **design-view** for base view structure (includes/excludes, parent context, neighbors).
+- Use **customize-view** only when you need advanced styling, layout control, or navigation.
+
 ## Core Principles
 
 ### 1. Prefer Shared Spec Over Custom Styling

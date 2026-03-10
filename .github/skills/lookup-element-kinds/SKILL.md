@@ -1,11 +1,15 @@
 ---
 name: lookup-element-kinds
-description: Quick reference for available element kinds and relationship types from shared specifications.
+description: Use when creating elements or relationships and you need to validate kind names, discover available types, or check specification consistency.
 ---
 
 # LikeC4 Element Kinds and Relationship Types Reference
 
 Use this skill when you need to check available element kinds and relationship types.
+
+**Keywords:** Actor, System, Container, Component, Zone, Node, Infrastructure, relationship kinds, type validation, specification
+
+**Always confirm with MCP:** Use `read-project-summary` to validate the current shared spec in the active workspace. This list is a quick reference and may evolve.
 
 ## Actors (C1)
 

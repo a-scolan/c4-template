@@ -9,10 +9,7 @@ Use this skill when starting work on a LikeC4 project or before making significa
 
 ## C4 Framework Foundation
 
-Before understanding the project, familiarize yourself with the C4 model:
-- Read the `c4-modeling-process` skill to understand the methodology
-- Understand how architecture is organized: C1 Context → C2 Container → C3 Component
-- This project follows these conventions for all models
+**REQUIRED BACKGROUND:** Read `c4-modeling-process` skill to understand the C4 methodology and design hierarchy (C1 Context → C2 Container → C3 Component).
 
 ## Workspace Structure
 

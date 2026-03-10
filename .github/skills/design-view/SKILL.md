@@ -1,703 +1,543 @@
 ---
 name: design-view
-description: Design views with proper includes/excludes and basic layout. Use for include patterns, tag filtering, and simple rank hints. For advanced styling/navigation, use customize-view.
+description: Design views with proper includes/excludes and basic layout. Use for include patterns, tag filtering, and simple rank hints. For advanced styling/navigation, use customize-view. Always include parent context (containers in systems, components in containers, VMs in zones). Show neighboring elements via relationship includes (-> element, element ->). Organize views by category (C1/C2/C3/Use Cases/Deployment/Operations).
 ---
 
 # Design LikeC4 View
 
-Use this skill when creating or modifying visualization views.
+Creates architecture visualization views with proper element inclusion, layout hints, and organization.
 
-## Core Principles
+## Core Principles Quick Reference
 
-### 1. Always Include Parent/Surrounding Context
+| Principle | Rule | Why |
+|-----------|------|-----|
+| **🔲 Parent Context** | Always include surroundings | Shows "what is this IN?" |
+| **🔗 Neighbors** | Include related elements | Shows "what uses this?" |
+| **📦 Shared Spec** | Use `shared/spec-*.c4` | Ensures consistency |
+| **🔍 Navigation** | Wire `navigateTo` links | Enables drill-down |
+| **📁 Organization** | Nest in category folders | Maintains structure |
 
-**Every view MUST explicitly include the parent/surrounding element for context:**
+## Four Step Workflow
 
-| View Type | Shows | Must Include |
-|-----------|-------|------------------|
-| C3 Component | Internal modules | Parent Container |
-| C2 Container | System building blocks | Parent System |
-| C1 Context | System in landscape | External Systems |
-| Deployment VM | VM internals | Parent Zone |
-| Deployment Zone | Infrastructure services | Parent Environment |
-| Dynamic Sequence | Step-by-step flows | Initiating Actor |
+### 1. Choose View Type & Category
 
-This ensures every view answers: "What is this IN? What surrounds it?"
+**View types:**
+- C1 (Context): System boundary with external actors
+- C2 (Container): System building blocks (services, APIs, databases)
+- C3 (Component): Container internals (modules, classes)
+- Use Cases (Dynamic): Temporal flows showing step-by-step interactions
+- Deployment: Infrastructure topology (zones, VMs, apps)
+- Operations: Security, monitoring, DR, CI/CD
 
-### 2. Show Neighboring Elements (Focused C2/C3 Views)
+**Category rules:**
+- ALL views MUST be in category folders
+- ONLY exception: `view index` lives at root
+- Use exact folder names: `C1`, `C2`, `C3`, `Use Cases`, `Deployment`, `Operations`
 
-**Focused views of containers and components MUST show related/neighboring elements:**
-- Include all elements that have relationships WITH the focused element(s)
-- Shows incoming relationships: `include -> element.*` (what calls this?)
-- Shows outgoing relationships: `include element.*` then `include element.* ->` (what does this call?)
-- Provides interaction context: "How does this fit in the larger system?"
+### 2. Include Elements (Parent + Focus + Neighbors)
 
-This ensures every focused view answers: "What uses this? What does it use?"
-
-### 3. Use Shared Spec for Elements & Styling
-
-**When designing views, always prefer shared specification:**
-- Use element kinds defined in `shared/spec-*.c4`
-- Use colors defined in `shared/spec-global.c4`
-- Don't create custom kinds, colors, or styles in view-specific files
-- If something is needed:
-  1. Check shared spec first
-  2. Ask permission from user
-  3. Contribute to shared spec instead
-  4. Then use the spec definition
-
-This ensures consistency and maintainability across all views and projects.
-
-### 4. Wire Drill-Down Navigation (navigateTo)
-
-**When you create a new view, also update the parent overview view with a `navigateTo` link** so users can zoom in from the higher-level diagram.
-
-**Rule of thumb (C4):**
-- C1 → C2: add `navigateTo` from system context to container view
-- C2 → C3: add `navigateTo` from container overview to component view
-- Deployment overview → tier/zone details: add `navigateTo` from overview elements
-
-**Example (C2 to C3 drill-down):**
+**Always include three layers:**
 ```likec4
-view c2_containers {
-  include mySystem.*
-  include mySystem.webapp with {
-    navigateTo c3_webapp
-  }
-}
-
-view c3_webapp {
-  include mySystem.webapp
-  include mySystem.webapp.*
+view c3_uploadService {
+  // 1. PARENT: Shows "what is this IN?"
+  include vault.uploadService           // Parent container
+  
+  // 2. FOCUS: Shows "what are we analyzing?"
+  include vault.uploadService.*         // All child components
+  
+  // 3. NEIGHBORS: Shows "what interacts with this?"
+  include -> vault.uploadService        // Incoming relationships
+  include vault.uploadService ->        // Outgoing relationships
 }
 ```
 
-## View Organization Hierarchy
+**Parent context requirement by view type:**
 
-**Hard rule:** Every view MUST be nested inside a category folder using the `views 'FolderName'` syntax, **except** the **index** view.
+| View Type | Must Include Parent |
+|-----------|---------------------|
+| C3 Component | Parent container |
+| C2 Container | Parent system |
+| C1 Context | External systems |
+| Deployment VM | Parent zone |
+| Deployment Zone | Parent environment |
+| Dynamic Sequence | Initiating actor |
 
-**Index exception:** The index view **must** live at the root:
+### 3. Add Basic Layout (Optional)
+
+**Only when autoLayout produces poor results:**
 ```likec4
+view c2_containers {
+  // ... include statements ...
+  
+  rank source { user }        // Top of diagram
+  rank sink { database }      // Bottom of diagram
+  rank same { api, cache }    // Horizontal alignment
+}
+```
+
+**Default:** Let LikeC4's automatic layout handle positioning.
+
+### 4. Wire Navigation (If Creating Detailed View)
+
+**When you create a new detail view, update the parent overview:**
+```likec4
+// Parent overview (system-views.c4)
+views 'C2' {
+  view c2_containers {
+    include vault.*
+    include vault.api with {
+      navigateTo c3_api       // ← Add this
+    }
+  }
+}
+
+// New detail view (system-views.c4)
+views 'C3' {
+  view c3_api {
+    title 'API Service'
+    include vault.api
+    include vault.api.*
+    include -> vault.api
+    include vault.api ->
+  }
+}
+```
+
+## View Organization Structure
+
+**Mandatory folder nesting (except index):**
+
+```likec4
+// Root index ONLY
 views {
   view index extends c1_context { }
 }
-```
 
-Do not place any other views in the root `views { }` block.
-
-**Avoid duplicate category prefixes:** When a view is inside a category folder, **do not** prefix the view title with the same category (e.g., avoid `title 'C1 / System Context'` inside `views 'C1'`). Choose **one**: folder name OR title prefix, not both.
-
-**Allowed categories (must use these exact folder names):**
-- `C1` (System Context)
-- `C2` (Containers)
-- `C3` (Components)
-- `Use Cases` (Dynamic/sequence views)
-- `Deployment` (Infrastructure views)
-- `Operations` (Security/monitoring/DR/CI/CD)
-
-**Example (all views inside folders):**
-
-```likec4
-// Root index view (ONLY view allowed at root)
-views {
-  view index extends c1_context {
-    title 'Architecture Overview'
-    description 'Navigate to detailed views for deeper exploration'
-  }
-}
-
-// C1 - System Context
+// All other views in folders
 views 'C1' {
   view c1_context { ... }
 }
 
-// C2 - Containers
 views 'C2' {
   view c2_containers { ... }
 }
 
-// C3 - Components
 views 'C3' {
-  view c3_component1 { ... }
-  view c3_component2 { ... }
+  view c3_apiService { ... }
+  view c3_workerService { ... }
 }
 
-// Use Cases - temporal flows and interactions
 views 'Use Cases' {
-  dynamic view upload_flow { ... }
-  dynamic view retrieval_flow { ... }
-  dynamic view data_replication { ... }
+  dynamic view uploadFlow { ... }
 }
 
-// Deployment - infrastructure and physical layout
 views 'Deployment' {
   deployment view overview { ... }
-  deployment view user_access { ... }
-  deployment view app_tier { ... }
-  deployment view data_tier { ... }
+  deployment view appTier { ... }
 }
 
-// Operations - monitoring, security, disaster recovery
 views 'Operations' {
   deployment view security { ... }
-  deployment view backup_recovery { ... }
-  deployment view cicd { ... }
+  deployment view cicdPipeline { ... }
 }
 ```
 
-### Detailed Subfolder Contents
+### Category Guidelines
 
-#### C1 Context (`views 'C1' { }`)
-**Purpose:** System boundary with external actors and systems
+#### C1 Context
+**Purpose:** System boundary and external landscape
+- ✅ Static relationships: actors, systems, boundaries
+- ❌ Flow diagrams: use `views 'Use Cases'` instead
+- **Index view:** Must extend `c1_context` (or `c0_landscape` if exists)
 
-**Content:**
-- Who uses the system?
-- External systems it integrates with?
-- High-level information flows
-- **✓ MUST include system boundary** - Always show what is INSIDE vs. OUTSIDE the system
-- **Index View (MANDATORY):** Architecture entry point
-  - **✓ MUST extend c1_context** - Inherits system context by default (unless explicitly asked otherwise)
-  - **If a C0 landscape view exists, extend that instead** (e.g., `view index extends c0_landscape { }`)
-  - **Always include braces** (even if empty) to keep the syntax explicit
-  - Typically titled "Architecture Overview" or "[System Name] - Overview"
-
-**Minimal example (with braces):**
-```likec4
-views {
-  view index extends c1_context {
-  }
-}
-```
-
-#### C2 Containers (`views 'C2' { }`)
-**Purpose:** System building blocks and their relationships
-
-**Content:**
-- Services, databases, message queues, APIs, integration points
-- Technology choices
-- **✓ MUST include system for container context** - Always show containers WITHIN the system boundary
-
-#### C3 Components (`views 'C3' { }`)
-**Purpose:** Deep-dive into specific containers (one view per major container)
-
-**Content:**
-- Internal modules/components within a container
-- Design patterns and responsibilities
-- One dedicated view per major service/container
-- **Naming:** View ID should reference the container: `c3_<container_name>` → Title: `<Container Name>`
-- Examples: `c3_upload_service` → "Upload Service", `c3_retrieval_service` → "Retrieval Service"
-- **✓ MUST include parent container for context** - Always show the container boundary with its components inside
-
-**File:** `system-views.c4`
-
-**Example IDs:** `c1_context`, `c2_container`, `c3_upload_service`, `c3_retrieval_service`, `c3_processing_worker`, `index`
-
-#### Use Cases (`views 'Use Cases' { }`)
-**Purpose:** Temporal flows - show how system behaves during important operations
-
-**Content:**
-- **Sequence diagrams** (dynamic views) showing step-by-step interactions
-- **User workflows:** Happy path, validation, error handling
-- **Data flows:** Movement of data through the system
-- **Async patterns:** Message processing, notifications, background jobs
-- **Disaster recovery:** Failover, replication, recovery procedures
-- Titles should be plain (no category prefix) since the folder provides the category
-- **✓ MUST include actors initiating flows** - Always show who/what starts the sequence
-
-**File:** `system-sequences.c4`
-
-**Example IDs:** `usecases_upload_flow`, `usecases_retrieval_flow`, `usecases_backup_flow`
-
-#### Deployment (`views 'Deployment' { }`)
-**Purpose:** Physical infrastructure - show how system runs in production
-
-**Content:**
-- **Network topology:** Zones, VLANs, internet gateways
-- **User access:** Browser → CDN → servers → APIs
-- **Service tier breakdown:** Separate views for each tier (app, data, processing)
-- **VM and container placement:** Where services run
-- **Service-to-infrastructure mapping:** Which services use which resources
-- **High-level availability:** Multi-node clusters, load balancers
-- **✓ MUST include parent zones/environments** - Always show VMs WITHIN their zones, zones WITHIN their environments
-
-**File:** `deployment-views.c4`
-
-**Example IDs:** `user_access`, `overview`, `app_tier`, `proc_tier`, `data_tier`
-
-#### Operations (`views 'Operations' { }`)
-**Purpose:** Runtime concerns - monitoring, security, reliability
-
-**Content:**
-- **Security & Monitoring:** Monitoring infrastructure, log aggregation, metrics
-  - Alert systems and notification channels
-  - Intrusion detection and firewalls
-- **Backup & Disaster Recovery:** High availability and failover
-  - Replication across regions/zones
-  - Backup storage and recovery procedures
-  - RTO/RPO specifications
-- **CI/CD Pipeline:** Build, test, and deployment automation
-  - Build agents and artifact storage
-  - Test environments and production deployments
-  - Rollback and rollforward procedures
-
-**File:** `operations-views.c4`
-
-**Example IDs:** `security`, `backup_recovery`, `cicd`
-
-### File Organization Best Practice
-
-```
-project/
-  system-model.c4           # ← Elements, containers, components
-  system-views.c4           # ← views 'C1'/'C2'/'C3' → architecture hierarchy
-  system-sequences.c4       # ← views 'Use Cases' { } → workflows
-  deployment.c4             # ← Deployment nodes and VMs
-  deployment-views.c4       # ← views 'Deployment' { } → infrastructure
-  operations.c4             # ← Operations infrastructure
-  operations-views.c4       # ← views 'Operations' { } → monitoring/DR
-```
-
-## Including Neighboring Elements (Related by Relationships)
-
-For **focused C2 or C3 views**, always include neighboring elements to show interaction context:
-
-### Syntax for Including Relationships
-
-```likec4
-view c2_container {
-  // Core focus: the container(s) being analyzed
-  include mySystem.uploadService
-  
-  // What calls this container?
-  include -> mySystem.uploadService
-  
-  // What does this container call?
-  include mySystem.uploadService ->
-  
-  // Include parent for context
-  include mySystem
-}
-```
-
-### Examples of Related Element Inclusion
-
-**Include direct callers (incoming):**
-```likec4
-// Add all elements that have relationships TO this component
-include -> vault.uploadService
-```
-
-**Include dependencies (outgoing):**
-```likec4
-// Add all elements that this component depends on
-include vault.uploadService ->
-```
-
-**Include related child components:**
-```likec4
-// Include related nested services/components
-include vault.uploadService.*
-include vault.minio.*  // What it depends on
-```
-
-### Why Show Neighbors?
-
-Without neighboring elements:
-- ❌ View shows isolated container/component
-- ❌ Unclear how it fits in larger system
-- ❌ Missing interaction context
-
-With neighboring elements:
-- ✓ View shows focused element + related elements
-- ✓ Clear what uses it and what it uses
-- ✓ Complete interaction context
-
----
-
-## Complete Examples from Refactored Project
-
-### C1 Folder: C1 Context View
-Shows system boundary and external actors/systems
 ```likec4
 views 'C1' {
   view c1_context {
-    title 'Secure Vault System'
-    include customer
-    include browser
-    include vault
-    include scanner
-    
-    rank source { customer }
-    rank sink { scanner }
+    title 'System Context'
+    include customer                    // Actor
+    include vault                       // Your system
+    include externalPaymentGateway      // External system
   }
+}
+
+views {
+  view index extends c1_context { }     // Inherits c1_context
 }
 ```
 
-### C2 Folder: C2 Container View
-Shows major components (containers) and their relationships + neighboring elements
+#### C2 Container
+**Purpose:** System internals (zoom into ONE system's containers)
+- ✅ All containers within one system + dependencies
+- ❌ All actors from C1 (too broad)
+
 ```likec4
 views 'C2' {
-  view c2_container {
-    title 'Vault System Internals'
-    
-    // Focus: system and its containers
-    include customer
-    include browser
-    include vault.*
-    include scanner
-    
-    // Show complete interaction context
-    include -> vault.*    // What calls our containers?
-    include vault.* ->    // What do our containers call?
-    
-    rank source { customer }
-    rank sink { scanner }
+  view c2_vaultContainers {
+    title 'Vault Containers'
+    include vault                       // System (parent)
+    include vault.*                     // All containers
+    include -> vault.*                  // What calls our containers?
+    include vault.* ->                  // What do we depend on?
   }
 }
 ```
 
-### C3 Folder: C3 Component Deep-Dives
-Shows internal modules within a specific container (one view per major service)
-- **Naming:** C3 view ID should reference the container it explains: `c3_<container_name>`
-- **Title:** `<Container Name>` (e.g., "Upload Service", "Retrieval Service")
-- **Content:** Include the container, its child components, and related external systems + neighboring containers
+#### C3 Component
+**Purpose:** Container internals (one view per major container)
+- **Naming:** `c3_<containerName>` → Title: `<Container Name>`
+- **Content:** Container + children + neighbors
 
 ```likec4
 views 'C3' {
-  view c3_upload_service {
+  view c3_uploadService {
     title 'Upload Service'
-    
-    // Focus: container and its components
-    include vault.uploadService.*
-    
-    // Parent container for context
-    include vault.uploadService
-    
-    // Neighboring containers (what interacts with this service)
-    include customer
-    include browser
-    include -> vault.uploadService    // What calls it?
-    include vault.uploadService ->    // What does it call?
-    
-    rank source { customer }
-    rank sink { vault.minio }
-  }
-  
-  view c3_retrieval_service {
-    title 'Retrieval Service'
-    
-    // Focus: container and its components
-    include vault.retrievalService.*
-    include vault.retrievalService
-    
-    // Neighboring elements
-    include customer
-    include browser
-    include -> vault.retrievalService
-    include vault.retrievalService ->
-    
-    rank source { customer }
-    rank sink { vault.minio }
-  }
-  
-  view c3_processing_worker {
-    title 'Processing Worker'
-    
-    // Focus: container and its components
-    include vault.worker.*
-    include vault.worker
-    
-    // Neighboring elements
-    include -> vault.worker
-    include vault.worker ->
-    
-    rank source { vault.messageQueue }
-    rank sink { vault.minio }
+    include vault.uploadService         // Container (parent)
+    include vault.uploadService.*       // Components inside
+    include -> vault.uploadService      // Incoming calls
+    include vault.uploadService ->      // Outgoing calls
   }
 }
+```
 
-### Use Cases Subfolder: Upload Workflow Sequence
-Shows temporal flow from customer action to final storage
+#### Use Cases (Dynamic)
+**Purpose:** Temporal flows showing step-by-step interactions
+- **Content:** User workflows, data flows, async patterns, DR procedures
+- **Always include:** Actors that initiate flows
+
 ```likec4
 views 'Use Cases' {
-  dynamic view usecases_upload_flow {
-    title 'Upload'
-    
+  dynamic view uploadFlow {
+    title 'Upload Workflow'
     customer -> browser 'Upload file'
-    browser -> vault.webServer 'Load SPA (if needed)'
-    vault.webServer -> browser 'Serve React SPA'
-    browser -> vault.frontend 'SPA loaded in browser'
-    vault.frontend -> vault.api.router 'POST /api/upload'
-    vault.api.router -> vault.api.auth 'Authenticate'
-    vault.api.router -> vault.uploadService.uploadModule 'Route to upload module'
-    vault.uploadService.uploadModule -> vault.uploadService.uploadModule 'Validate file (fail-fast)'
-    vault.uploadService.uploadModule -> vault.jobs 'Publish FileValidated'
-    vault.worker.consumerModule -> vault.jobs 'Consume message'
-    vault.worker.orchestratorModule -> vault.worker.scannerModule 'Scan for viruses'
-    vault.worker.scannerModule -> scanner 'Check file'
-    scanner -> vault.worker.scannerModule 'Clean'
-    vault.worker.encryptorModule -> vault.docDB 'Store encryption key'
-    vault.worker.minioModule -> vault.minio 'Put encrypted object (primary)'
-    vault.minio -> vault.worker.minioModule 'Stored'
-    vault.worker.metadataModule -> vault.docDB 'Set READY'
+    browser -> vault.api 'POST /upload'
+    vault.api -> vault.processor 'Process async'
+    vault.processor -> vault.storage 'Store file'
   }
 }
 ```
 
-### Deployment Subfolder: Explicit Element Includes (Best Practice)
+#### Deployment
+**Purpose:** Physical infrastructure topology and architecture
+- **List ALL elements explicitly** from environment down to each VM
+- **NEVER use wildcards** (e.g., `production.*` or `dmz.**`) in deployment views
+- **Include hierarchy:** Environment → Zones → Clusters (optional) → VMs
+- **Stop at VM level** (don't drill into app instances unless showing deployment relationships)
 
-**CRITICAL RULE:** Every deployment view MUST explicitly list every deployment element that should appear in the diagram. Never use wildcards (`*` or `**`). Always add comments documenting which elements are shown.
-
-**Why?** Explicit includes make architecture hierarchy obvious, prevent unexpected element bloat, and serve as self-documenting architecture (the view file IS the documentation).
-
-#### Pattern 1: Overview with Zones and All Elements Explicit
-
+**Mandatory inclusion pattern:**
 ```likec4
 views 'Deployment' {
-  /**
-   * Infrastructure Overview
-   * Elements explicitly shown:
-   * - Zone1: pc1, designer1, print1, printer1
-   * - Zone2: pc2, designer2, print2, printer2
-   */
-  deployment view infrastructure {
-    title 'Infrastructure - 2 Postes avec Imprimantes'
-    description 'Two identical zones: each with PC, Designer, Print, and USB printer.'
+  deployment view overview {
+    title 'Infrastructure Overview'
     
-    // Zone 1 - List all elements explicitly
-    include lanInterne.zone1.posteWindows1
-    include lanInterne.zone1.posteWindows1.designerApp1
-    include lanInterne.zone1.posteWindows1.printApp1
-    include lanInterne.zone1.printer1
-    include lanInterne.zone1
+    // 1. Always include the environment first
+    include production
     
-    // Zone 2 - List all elements explicitly  
-    include lanInterne.zone2.posteWindows2
-    include lanInterne.zone2.posteWindows2.designerApp2
-    include lanInterne.zone2.posteWindows2.printApp2
-    include lanInterne.zone2.printer2
-    include lanInterne.zone2
+    // 2. Include each zone explicitly
+    include production.dmzVlan
+    include production.appVlan
+    include production.dbVlan
     
-    // Parent environment for context/flows
-    include lanInterne
+    // 3. Include clusters (if any) within zones
+    include production.appVlan.webCluster
+    include production.dbVlan.redisCluster
+    
+    // 4. Include EVERY VM individually within each zone/cluster
+    include production.dmzVlan.lemonldapVm
+    include production.appVlan.webCluster.web01Vm
+    include production.appVlan.webCluster.web02Vm
+    include production.appVlan.apiVm
+    include production.dbVlan.redisCluster.redis01Vm
+    include production.dbVlan.redisCluster.redis02Vm
+    include production.dbVlan.postgresVm
+    
+    autoLayout TopBottom
   }
 }
 ```
 
-#### Pattern 2: Detail View with All Services Explicit
+**Complete hierarchy example:**
+```
+production (Environment)
+├── dmzVlan (Zone)
+│   └── lemonldapVm (VM)
+├── appVlan (Zone)
+│   ├── webCluster (Cluster grouping - optional)
+│   │   ├── web01Vm (VM)
+│   │   └── web02Vm (VM)
+│   └── apiVm (VM - can be standalone)
+└── dbVlan (Zone)
+    ├── redisCluster (Cluster grouping)
+    │   ├── redis01Vm (VM)
+    │   └── redis02Vm (VM)
+    └── postgresVm (VM)
+```
 
+**Why explicit includes?**
+- ✅ Ensures all infrastructure is visible and documented
+- ✅ Makes dependencies and relationships clear
+- ✅ Allows proper VM descriptions and metadata (IP, specs, etc.)
+- ❌ Wildcards hide infrastructure complexity and skip important details
+
+**❌ DON'T:**
 ```likec4
-views 'Deployment' {
-  /**
-   * Server Zone Details
-   * Elements explicitly shown:
-   * - serveur (parent node)
-   * - automationService
-   * - printServer
-   * - templateShare
-   * - fileDropShare
-   * - eventLog
-   */
-  deployment view zone_serveur_details {
-    title 'Server Node - Services & Storage'
-    description 'Inside server: Automation Service, Print Server, SMB shares, Event Log.'
-    
-    // Explicitly list each service (DO NOT use wildcards)
-    include lanInterne.zoneServeur.serveur.automationService
-    include lanInterne.zoneServeur.serveur.printServer
-    include lanInterne.zoneServeur.serveur.templateShare
-    include lanInterne.zoneServeur.serveur.fileDropShare
-    include lanInterne.zoneServeur.serveur.eventLog
-    
-    // Include parent nodes for context
-    include lanInterne.zoneServeur.serveur
-    include lanInterne.zoneServeur
-  }
-}
+// Too vague - missing VMs
+include production.*
+
+// Too deep - drilling into app instances
+include production.appVlan.apiVm.appInstance
+
+// Wildcard - hides which VMs exist
+include production.appVlan.**
 ```
 
-**Key principles:**
-- **ALWAYS explicit lists**, never wildcards
-- **ALWAYS add comments** documenting which elements appear in the view
-- **ALWAYS include parent** (zone or environment) for context and relationships
-- **ALWAYS document in view comment** the exact list of elements shown
-- **Order matters:** Children first, then parent (ensures visibility)
-
-### Deployment Subfolder: Zone-Based Overview with Explicit Includes
-Shows infrastructure organized by network zones with explicit zone and elements includes for clarity
+**✅ DO:**
 ```likec4
-views 'Deployment' {
-  // Overview: Show ALL zones explicitly (hierarchy is clear from nesting)
-  deployment view lan_overview {
-    title 'Infrastructure - Network Overview'
-    description 'Complete infrastructure: client zones, server zones, and devices. Each zone represents a logical network segment with controlled access.'
-    
-    // Explicitly include each major zone and key elements
-    include lanInterne.zoneClients.pc1.app1
-    include lanInterne.zoneClients.pc1
-    include lanInterne.zoneClients
-    
-    include lanInterne.zoneServers.server1.service1
-    include lanInterne.zoneServers.server1
-    include lanInterne.zoneServers
-    
-    include lanInterne.zoneDevices.device1
-    include lanInterne.zoneDevices
-    
-    // Include the parent zone for context and flows
-    include lanInterne
-  }
+// Explicit environment
+include production
 
-  // Detail view: Zoom into one zone to show internals
-  deployment view server_zone_details {
-    title 'Server Zone - Internals'
-    description 'Detailed view of server zone: VMs, applications, storage, monitoring.'
-    
-    // Explicitly include internal nodes/services in this zone
-    include lanInterne.zoneServers.appServer.webApp
-    include lanInterne.zoneServers.appServer.database
-    include lanInterne.zoneServers.appServer.monitoring
-    
-    // Include parent for context
-    include lanInterne.zoneServers.appServer
-    include lanInterne.zoneServers
-  }
-}
+// Explicit zones
+include production.appVlan
+include production.dbVlan
+
+// Explicit clusters (if used for grouping)
+include production.appVlan.webCluster
+
+// Explicit VMs (every single one)
+include production.appVlan.webCluster.web01Vm
+include production.appVlan.webCluster.web02Vm
+include production.appVlan.apiVm
+include production.dbVlan.postgresVm
 ```
 
-**Key principle:** 
-- **ALWAYS explicit** → List every element that should appear in the diagram
-- **NEVER use wildcards** → `*` and `**` are forbidden in production deployment views
-- **ADD COMMENTS** → Document exactly which elements are shown for maintainability
-- **Parent context** → Always include the parent container/zone for navigation and flows
-- **Why?** Explicit includes make architecture hierarchy obvious and serve as self-documenting architecture
+**Multiple deployment views strategy:**
+- **overview:** All zones + all VMs (complete topology)
+- **appTier:** Focus on one zone with all its VMs
+- **security:** DMZ zones + firewall rules visualization
 
-### Deployment Subfolder: Application Tier Infrastructure
-Shows how services are deployed across VMs with tier connectivity
-```likec4
-views 'Deployment' {
-  deployment view app_tier {
-    title 'Application Tier'
-    description 'Microservices deployed across VM instances with external interactions'
-    
-    include
-      Prod.AppTier.** where tag is #Vm,
-      Internet._ ->,
-      Prod.Dmz._ ->,
-      -> Prod.DataTier._,
-      -> Prod.ProcTier._,
-  }
-}
-```
+#### Operations
+**Purpose:** Security, monitoring, DR, CI/CD
+- **Security:** Monitoring, logs, alerts, firewalls
+- **Backup/DR:** HA, replication, backup storage, RTO/RPO
+- **CI/CD:** Build agents, test environments, deployment automation
 
-### Operations Subfolder: Security & Monitoring Infrastructure
-Shows monitoring systems and how all services are monitored
 ```likec4
 views 'Operations' {
   deployment view security {
     title 'Security & Monitoring'
-    description 'Monitoring infrastructure with all monitored systems'
-    
-    include
-      Prod.SecZone.** where tag is #Vm,
-      Prod.Dmz.** where tag is #Vm,
-      Prod.AppTier.** where tag is #Vm,
-      Prod.ProcTier.** where tag is #Vm,
-      Prod.DataTier.** where tag is #Vm,
-      -> Prod.SecZone.*,
-      Prod.SecZone.* ->
+    include prod.secZone.monitoring
+    include prod.secZone.firewall
+    include -> prod.secZone.*           // What is monitored?
   }
 }
 ```
 
-## Advanced Filtering with `where` Clauses
+## Including Neighbors (Relationship-Based)
 
-Use `where tag is #Tag` and wildcard patterns to create focused views without listing every element.
+**Always show interaction context for focused views:**
+
+```likec4
+view c2_apiService {
+  // Focus element
+  include vault.api
+  
+  // What calls this? (incoming)
+  include -> vault.api
+  
+  // What does this call? (outgoing)
+  include vault.api ->
+  
+  // Parent for context
+  include vault
+}
+```
+
+**Why include neighbors?**
+- ❌ Without: Isolated component, unclear interactions
+- ✅ With: Complete context showing usage and dependencies
+
+## Filtering Patterns
 
 ### Tag-Based Filtering
 
-Filter by tags to show only specific categories:
-
 ```likec4
-// Show only VMs (not zones or other nodes)
-include Prod.AppTier.** where tag is #Vm
+// Only VMs (not zones)
+include prod.appTier.** where tag is #Vm
 
-// Show only monitoring infrastructure
-include Prod.SecZone.** where tag is #Monitoring
-
-// Show only external systems
+// Only external systems
 include * where tag is #External
 
-// Combine: VMs tagged as production
-include Prod.** where tag is #Vm,
-       Prod.** where tag is #Production
+// Combine multiple filters
+include prod.** where tag is #Vm,
+       prod.** where tag is #Production
 ```
 
-### Wildcard Expansion Patterns
+### Wildcard Patterns
 
 ```likec4
-// All descendants (recursive)
-include Prod.AppTier.**           // Shows Prod.AppTier and everything inside
-
-// Direct children only
-include Prod.AppTier.*            // Shows immediate VMs in AppTier
-
-// Directed edges with wildcards
-include -> Prod.AppTier.*         // Incoming edges TO AppTier VMs
-include Prod.AppTier.* ->         // Outgoing edges FROM AppTier VMs
+include vault.*                  // Direct children
+include vault.**                 // All descendants (recursive)
+include -> vault.api             // Incoming to specific element
+include vault.api ->             // Outgoing from specific element
+include -> vault.*               // Incoming to any child
+include vault.* ->               // Outgoing from any child
 ```
 
-### Complex Filtering Example
-
-Create focused views by combining patterns:
+### Directed Includes (Multi-Tier)
 
 ```likec4
-deployment view app_tier {
-  title 'Application Tier with Dependencies'
-  description 'All app tier services with connections to adjacent tiers'
-  
-  include
-    Prod.AppTier,              // The tier container itself
-    Prod.AppTier.** where tag is #Vm,  // Only VMs, not zones
-    Internet._ ->,             // Incoming from Internet
-    Prod.Dmz._ ->,             // Incoming from DMZ
-    -> Prod.DataTier._,        // Outgoing to DataTier
-    -> Prod.ProcTier._         // Outgoing to ProcTier
+deployment view appTier {
+  include prod.appTier.**          // All VMs in app tier
+  include internet._ ->            // Incoming from internet
+  include prod.dmz._ ->            // Incoming from DMZ
+  include -> prod.dataTier._       // Outgoing to data tier
 }
 ```
 
-### When to Use Filtering
+## Deployment View Best Practice: Explicit Includes
 
-| Pattern | Use Case |
-|---------|----------|
-| `include Zone.**` | Show entire zone including all VMs |
-| `include Zone.** where tag is #Vm` | Show only VMs, hide nested zones |
-| `include -> Zone._` | Incoming dependencies to the zone |
-| `include Zone._ ->` | Outgoing from zone to other zones |
-| `include * where tag is #External` | All external systems across entire deployment |
-
-## Best Practices
-
-1. **Preview with MCP (RECOMMENDED):** Use LikeC4 MCP `open-view` to preview changes after editing
-2. **Organize by type:** Group related views (context, containers, deployments) in subfolders
-3. **Scoped includes:** Use `include mySystem.*` (children) or `include mySystem.**` (all descendants)
-4. **Directed includes:** Use `include -> mySystem.*` (incoming) or `include mySystem.* ->` (outgoing)
-5. **Tag filtering:** Use `where tag is #Tag` to focus views dynamically (requires tier/vm tags)
-6. **Avoid over-broad:** Never use `include **` or `include ** -> **` (shows too much noise)
-7. **Ordering:** Place `exclude` statements after `include` statements
-8. **Maintenance:** Update view tags when adding new infrastructure to keep filters working
-9. **Layout hints (LAST RESORT ONLY):** Only add `rank source/sink/same` when autoLayout produces poor results. Let LikeC4's automatic layout handle positioning by default.
-
-## Simple Starter Example
+**CRITICAL:** Always list deployment elements explicitly (never use wildcards in production):
 
 ```likec4
-views 'C2' {
-  view c2_containers {
-    title 'Container Overview'
+deployment view infrastructure {
+  /**
+   * Elements shown:
+   * - Zone1: pc1, designer1, print1, printer1
+   * - Zone2: pc2, designer2, print2, printer2
+   */
+  
+  // Zone 1 - explicit list
+  include network.zone1.pc1
+  include network.zone1.pc1.designer1
+  include network.zone1.pc1.print1
+  include network.zone1.printer1
+  include network.zone1                // Zone (parent)
+  
+  // Zone 2 - explicit list  
+  include network.zone2.pc2
+  include network.zone2.pc2.designer2
+  include network.zone2.pc2.print2
+  include network.zone2.printer2
+  include network.zone2                // Zone (parent)
+  
+  include network                      // Environment (parent)
+}
+```
+
+**Why explicit?**
+- Self-documenting architecture (the view IS the documentation)
+- Prevents unexpected element bloat
+- Makes hierarchy obvious
+
+## Basic Examples
+
+### C1 Context View
+```likec4
+views 'C1' {
+  view c1_context {
+    title 'System Context'
+    include customer
+    include vault                      // Your system
+    include externalPaymentGateway
+    include scanner
     
-    include user
-    include mySystem.* where tag is #Service
-    include externalSystem
+    rank source { customer }
+    rank sink { scanner }
   }
 }
 ```
+
+### C2 Container View
+```likec4
+views 'C2' {
+  view c2_containers {
+    title 'System Containers'
+    include customer                   // Actor
+    include vault                      // System (parent)
+    include vault.*                    // All containers
+    include scanner                    // External system
+    include -> vault.*                 // Incoming relationships
+    include vault.* ->                 // Outgoing relationships
+    
+    rank source { customer }
+    rank sink { scanner }
+  }
+}
+```
+
+### C3 Component View
+```likec4
+views 'C3' {
+  view c3_uploadService {
+    title 'Upload Service'
+    include vault.uploadService        // Container (parent)
+    include vault.uploadService.*      // Components
+    include customer                   // Actor
+    include -> vault.uploadService     // Incoming
+    include vault.uploadService ->     // Outgoing
+    
+    rank source { customer }
+  }
+}
+```
+
+### Dynamic Sequence View
+```likec4
+views 'Use Cases' {
+  dynamic view uploadFlow {
+    title 'Upload Workflow'
+    
+    customer -> browser 'Select file'
+    browser -> vault.webServer 'Load SPA'
+    vault.webServer -> browser 'Serve React app'
+    browser -> vault.api 'POST /upload'
+    vault.api -> vault.processor 'Validate file'
+    vault.processor -> vault.storage 'Store encrypted'
+    vault.storage -> vault.processor 'Confirmation'
+    vault.processor -> vault.api 'Success'
+    vault.api -> browser 'Upload complete'
+  }
+}
+```
+
+### Deployment View
+```likec4
+views 'Deployment' {
+  deployment view overview {
+    title 'Production Infrastructure'
+    
+    // Explicit includes (not wildcards)
+    include production.dmzTier.webVm
+    include production.appTier.apiVm
+    include production.appTier.workerVm
+    include production.dataTier.dbVm
+    
+    // Include parent zones and environment
+    include production.dmzTier
+    include production.appTier
+    include production.dataTier
+    include production
+  }
+}
+```
+
+## Best Practices
+
+1. ✅ **Preview with MCP:** Use LikeC4 MCP `open-view` to preview changes
+2. ✅ **Include parent:** Always show surrounding context for hierarchy
+3. ✅ **Include neighbors:** Show related elements via `->` and `<-` includes
+4. ✅ **Use shared spec:** Reference `shared/spec-*.c4` for kinds/colors/shapes
+5. ✅ **Explicit deployment includes:** List all elements, never wildcards
+6. ✅ **Tag filtering:** Use `where tag is #Tag` for dynamic filtering
+7. ✅ **Wire navigation:** Add `navigateTo` when creating detail views
+8. ✅ **Organize by category:** Nest views in proper folders
+9. ⚠️ **Layout hints last resort:** Only add `rank` when autoLayout fails
+10. ❌ **Avoid over-broad:** Never use `include **` (shows too much)
+
+## Common Patterns Reference
+
+See [PATTERNS.md](PATTERNS.md) for:
+- Complete multi-tier deployment examples
+- Advanced filtering techniques
+- Zone-based organization patterns
+- Complex relationship includes
+- Tag-based dynamic filtering

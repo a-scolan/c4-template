@@ -9,8 +9,11 @@ Use this skill when creating or modifying any LikeC4 element.
 
 **Before creating:** 
 1. Read `c4-modeling-process` skill to understand C4 framework and top-to-bottom design (C1 → C2 → C3)
-2. **Check shared specification first** - Use `read-project-summary` MCP to list available element kinds
+2. **Check shared specification first** - Use LikeC4 MCP `read-project-summary` to list available element kinds
 3. Only create new kinds if absolutely necessary (and ask permission first)
+4. When adding relationships, follow `create-relationship` skill
+
+**If you need rich descriptions:** Use `write-rich-descriptions` for metadata blocks (system models) or markdown tables (deployment models).
 
 ## Shared Spec First Principle
 
@@ -23,7 +26,7 @@ Use this skill when creating or modifying any LikeC4 element.
 - Avoiding proliferation - keep kinds focused and organized
 
 ### How to Use Shared Spec
-1. Run `read-project-summary` to see available kinds
+1. Run LikeC4 MCP `read-project-summary` to see available kinds
 2. Check `spec-*.c4` files in `shared/` folder
 3. Use existing kind that matches your need
 4. **If no matching kind exists:**
@@ -51,7 +54,8 @@ See `c4-modeling-process` skill for detailed step-by-step guidance.
    - Use model tags (#System, #External, #Service, #Queue) in system-model.c4
    - Use deployment tags (#Production, #Networking, #Monitoring) in deployment.c4
    - Never repeat tags already in the element kind specification
-6. **Hierarchy:** Place in correct parent (Containers inside Systems, Components inside Containers)
+6. **Metadata:** Optional (only add if you filter/query by the field)
+7. **Hierarchy:** Place in correct parent (Containers inside Systems, Components inside Containers)
 
 ## Essential Metadata
 
@@ -173,17 +177,18 @@ paymentDB = Container_Database 'Payment Data' {
 ## Validation Checklist
 
 - [ ] Technology specified for Containers, Components, and Nodes
-- [ ] Description provided for ALL elements (explain purpose)
+- [ ] Description provided for ALL elements (explain purpose and responsibilities)
 - [ ] Descriptions use Markdown for structure when multi-line
 - [ ] Links use HTTPS and descriptive text (not "click here")
-- [ ] Icons use valid namespace (tech:, aws:, gcp:, azure:)
+- [ ] Icons use valid namespace (tech:, aws:, gcp:, azure:) if adding icons
 - [ ] Tags lowercase, hyphen-separated, match spec declarations
 - [ ] Element placed in correct parent hierarchy
+- [ ] Metadata (optional) — only if you filter/query by those fields
 
 ## MCP Validation
 
-**Before creating:** Use `read-project-summary` to check declared element kinds and tags  
-**After creating:** Use `read-element` to verify metadata completeness  
+**Before creating:** Use LikeC4 MCP `read-project-summary` to check declared element kinds and tags  
+**After creating:** Use `read-element` to verify description quality and technology field  
 **For searching:** Use `search-element` to find elements by tag
 
 ## Context7 Validation
@@ -195,4 +200,4 @@ Use Context7 MCP `query-docs` with library `/likec4/likec4` if uncertain about:
 
 ## Output
 
-Well-documented elements with complete metadata, proper hierarchy, and consistent naming.
+Well-documented elements with complete descriptions, proper hierarchy, and consistent naming. Metadata is optional and minimal.

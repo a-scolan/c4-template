@@ -1,11 +1,13 @@
 ---
 name: test-model
-description: Validate model correctness using MCP tools. Checks element references, relationships, view definitions, and syntax.
+description: Use when validating model integrity—element references are valid, relationships are typed correctly, views render without errors, syntax is correct.
 ---
 
 # Test LikeC4 Model
 
 Use this skill when validating LikeC4 model correctness and integrity.
+
+**When to use:** Element compilation errors, invalid references, missing relationships, rendering failures, syntax issues in diagrams
 
 ## Validation Workflow
 
@@ -87,7 +89,7 @@ Use Context7 MCP `query-docs` to verify:
 
 **Critical requirement:** Every view MUST explicitly include its parent/surrounding element.
 
-For detailed context requirements, see `PARENT_CONTEXT_REFERENCE.md`
+For detailed context requirements, see the `design-view` skill.
 
 ### Context Checklist for Views
 

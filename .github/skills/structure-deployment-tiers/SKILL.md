@@ -1,13 +1,15 @@
 ---
 name: structure-deployment-tiers
-description: Organize deployment infrastructure into logical tiers (DMZ → AppTier → ProcTier → DataTier) with clear responsibility separation and firewall rules between zones.
+description: Use when organizing deployment infrastructure into logical tiers (DMZ→AppTier→ProcTier→DataTier) with clear responsibility separation and firewall rules between zones.
 ---
 
 # Structure Deployment Tiers
 
-Use this skill when designing deployment architecture. Organize zones/nodes into logical tiers following the standard layered architecture pattern.
+Use this skill when designing layered deployment architecture with clear tier responsibilities.
 
-**Prerequisite:** Read `model-deployment` and `name-deployment-nodes` skills for basic structure and naming.
+**REQUIRED BACKGROUND:** Read `model-deployment-infrastructure` skill for core hierarchy and naming conventions before designing tiers.
+
+**Keywords:** deployment, tiers, DMZ, AppTier, DataTier, ProcTier, firewall, layered architecture, zones
 
 ## Core Principle: Show Tier Hierarchy & Parent Context
 

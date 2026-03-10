@@ -145,7 +145,7 @@ specification {
 		#Container #Loadbalancer
 		notation "Load Balancer"
 		style {
-			icon @/lucide-static/network.svg
+			icon @/affinity-naked/loadbalancer.svg
 		}
 	}
 	element Container_DataServer {

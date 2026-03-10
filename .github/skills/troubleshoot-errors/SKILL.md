@@ -1,11 +1,15 @@
 ---
 name: troubleshoot-errors
-description: Diagnose common LikeC4 errors (element not found, unknown kinds, invalid relationships). Provides causes and solutions.
+description: Use when resolving LikeC4 errors—element not found, unknown kinds, invalid relationships, type mismatches, syntax failures. Provides root causes and fixes.
 ---
 
 # Troubleshoot LikeC4 Errors
 
 Use this skill when resolving common LikeC4 syntax or reference errors.
+
+**Symptoms:** "Element not found" errors, "Unknown kind" compilation failures, syntax violations, invalid references, diagram rendering issues
+
+**Tip:** Use `read-project-summary` to confirm valid element kinds, tags, and relationship types before editing.
 
 ## Common Issues
 

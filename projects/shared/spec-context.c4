@@ -59,8 +59,7 @@ specification {
 		#System #Existing
 		notation 'Existing system'
 		style {
-			color blue
-			icon @/custom/serverGray.svg
+			color secondary
 		}
 	}
 	element System_Legacy {
