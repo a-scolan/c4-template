@@ -65,7 +65,7 @@ def parse_args() -> argparse.Namespace:
         "--workspace-root",
         type=Path,
         default=repo_root_default / "tests" / "skills",
-        help="Directory where evaluation workspaces are persisted",
+        help="Directory where evaluation workspaces are persisted. Must live outside .github/skills",
     )
     parser.add_argument(
         "--configs",
@@ -405,6 +405,17 @@ def prepare_mcp_config(temp_home: Path, source_path: Path | None, *, enabled: bo
 
 def path_has_prefix(path: Path, prefix: Path) -> bool:
     return path == prefix or prefix in path.parents
+
+
+def validate_workspace_root(repo_root: Path, workspace_root: Path) -> None:
+    skills_root = (repo_root / ".github" / "skills").resolve()
+    if path_has_prefix(workspace_root, skills_root):
+        recommended_root = repo_root / "tests" / "skills"
+        raise SystemExit(
+            "Invalid --workspace-root: evaluation workspaces must live outside .github/skills.\n"
+            f"Received: {workspace_root}\n"
+            f"Recommended: {recommended_root}"
+        )
 
 
 def repo_copy_ignore(repo_root: Path, extra_ignored_prefixes: list[Path] | None = None):
@@ -1891,6 +1902,7 @@ def main() -> int:
     args = parse_args()
     repo_root = args.repo_root.resolve()
     workspace_root = args.workspace_root.resolve()
+    validate_workspace_root(repo_root, workspace_root)
     skill_names = discover_skill_names(repo_root)
     requested_skill_names = skill_names if args.skill_name == "all" else [args.skill_name]
     unknown_skills = [skill_name for skill_name in requested_skill_names if skill_name not in skill_names]

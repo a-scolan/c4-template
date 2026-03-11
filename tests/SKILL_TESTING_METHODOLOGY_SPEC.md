@@ -23,6 +23,24 @@ This specification applies to:
 
 This specification does **not** yet guarantee isolation from globally installed or user-level skills outside the repository. That concern is explicitly deferred to a later hardening phase.
 
+## Relationship to external testing skills
+
+This repository's methodology is compatible with the evaluation guidance from Anthropic's [`skill-creator`](https://skills.sh/anthropics/skills/skill-creator), and intentionally mirrors several of its ideas:
+
+- iteration-based workspaces
+- baseline comparisons
+- persisted benchmark artefacts
+- human review after automated grading
+
+But `skill-creator` itself is treated as **operator guidance**, not as part of the measured runtime skill set.
+
+The reason is methodological: `skill-creator` teaches how to run and evaluate skill tests. Exposing that meta-skill inside the benchmark sandbox would contaminate the result, because the measured run would no longer reflect only the target skill delta.
+
+Therefore, this specification distinguishes between:
+
+- **evaluation methodology inputs** (for the human or orchestrating agent), which may be inspired by or derived from `skill-creator`
+- **visible runtime skills inside a benchmark sandbox**, which must stay limited to the intended test configuration
+
 ## Goals
 
 The methodology MUST:
@@ -82,6 +100,8 @@ The repository MUST preserve this separation:
 - evaluation artefacts: `tests/skills/`
 
 Evaluation workspaces MUST NOT remain under `.github/skills/`.
+
+The runner MUST reject any configured workspace root that resolves to `.github/skills/` or one of its descendants.
 
 A test workspace MUST NOT contain an active `SKILL.md` file in a location where the repository skill discovery mechanism could treat it as a live skill.
 

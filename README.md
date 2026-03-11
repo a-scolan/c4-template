@@ -114,6 +114,19 @@ The runner now also refreshes aggregated reports from the persisted workspaces:
 
 Use `all` to run every skill with eval definitions. Use `--report-only` to regenerate the workspace/global reports from existing iteration benchmarks without launching fresh Copilot runs.
 
+### Relationship to `skill-creator`
+
+The evaluation workflow in this repository intentionally borrows ideas from Anthropic's [`skill-creator`](https://skills.sh/anthropics/skills/skill-creator):
+
+- iteration-based workspaces
+- `with_skill` / `old_skill` / `without_skill` comparisons
+- persisted `benchmark.json` / `benchmark.md` / review artifacts
+- human review after automated comparison
+
+However, `skill-creator` is treated here as **methodology for the harness/operator**, not as a skill that should be exposed inside the measured sandbox.
+
+Why? Because enabling `skill-creator` during the evaluated run would contaminate the measurement: it teaches how to orchestrate and judge skill tests, not how to solve the benchmark task itself. The benchmark should measure the target skill's effect, not the side effects of a meta-skill about testing.
+
 **Important:** Never keep a `SKILL.md` inside a test workspace. Only live skill definitions belong in `.github/skills/`.
 
 For local details and examples, see `tests/skills/README.md`.

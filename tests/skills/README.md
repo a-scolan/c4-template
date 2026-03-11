@@ -60,3 +60,21 @@ The runner always refreshes:
 - a global multi-skill overview across all workspaces under `tests/skills/`
 
 Use `--report-only` when you want to rebuild those reports without paying for another round of Copilot executions.
+
+## About `skill-creator`
+
+This repo's testing flow is inspired by Anthropic's [`skill-creator`](https://skills.sh/anthropics/skills/skill-creator), especially for:
+
+- iteration folders
+- baseline comparisons
+- benchmark aggregation
+- human review loops
+
+But `skill-creator` is **not** intended to be made visible inside the benchmarked sandbox itself.
+
+It is a **meta-skill for designing and running evaluations**. If you expose it during the measured run, you risk changing the model's behavior for reasons unrelated to the target skill being benchmarked.
+
+In other words:
+
+- use `skill-creator` to shape the evaluation methodology
+- do **not** count it as part of the skill-under-test environment

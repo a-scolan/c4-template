@@ -1,1 +1,3 @@
+# Skill evaluation workspaces belong under tests/skills/, never under .github/skills/
+.github/skills/*-workspace/
 
