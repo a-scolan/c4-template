@@ -1,0 +1,169 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "workspace_dirname": "model-deployment-infrastructure-workspace",
+  "generated_at": "2026-03-11T14:08:12Z",
+  "workspace_path": "C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\tests\\skills\\model-deployment-infrastructure-workspace",
+  "iteration_count": 2,
+  "latest_iteration": 2,
+  "latest_timestamp": "2026-03-10T18:05:00Z",
+  "latest_primary_pass_rate": 1.0,
+  "latest_baseline_pass_rate": 0.0,
+  "latest_delta": {
+    "pass_rate": "+1.00",
+    "time_seconds": "+0.0",
+    "tokens": "+0"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "timestamp": "2026-03-10T17:32:51Z",
+      "evals_run": [
+        0,
+        1
+      ],
+      "runs_per_configuration": 3,
+      "primary_config": "with_skill",
+      "baseline_config": "without_skill",
+      "primary_pass_rate": 1.0,
+      "baseline_pass_rate": 0.0,
+      "primary_time_seconds": 0.0,
+      "baseline_time_seconds": 0.0,
+      "primary_tokens": 0.0,
+      "baseline_tokens": 0.0,
+      "delta": {
+        "pass_rate": "+1.00",
+        "time_seconds": "+0.0",
+        "tokens": "+0"
+      },
+      "run_summary": {
+        "with_skill": {
+          "pass_rate": {
+            "mean": 1.0,
+            "stddev": 0.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "without_skill": {
+          "pass_rate": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "delta": {
+          "pass_rate": "+1.00",
+          "time_seconds": "+0.0",
+          "tokens": "+0"
+        }
+      },
+      "notes": [],
+      "benchmark_json_path": "iteration-1/benchmark.json",
+      "benchmark_markdown_path": "iteration-1/benchmark.md",
+      "review_path": "iteration-1/review.html"
+    },
+    {
+      "iteration": 2,
+      "timestamp": "2026-03-10T18:05:00Z",
+      "evals_run": [
+        0,
+        1
+      ],
+      "runs_per_configuration": 1,
+      "primary_config": "with_skill",
+      "baseline_config": "without_skill",
+      "primary_pass_rate": 1.0,
+      "baseline_pass_rate": 0.0,
+      "primary_time_seconds": 0.0,
+      "baseline_time_seconds": 0.0,
+      "primary_tokens": 0.0,
+      "baseline_tokens": 0.0,
+      "delta": {
+        "pass_rate": "+1.00",
+        "time_seconds": "+0.0",
+        "tokens": "+0"
+      },
+      "run_summary": {
+        "with_skill": {
+          "pass_rate": {
+            "mean": 1.0,
+            "stddev": 0.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "without_skill": {
+          "pass_rate": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "delta": {
+          "pass_rate": "+1.00",
+          "time_seconds": "+0.0",
+          "tokens": "+0"
+        }
+      },
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "L'eval hiérarchie/instanceOf discrimine fortement : le baseline oublie `Node_App`, `instanceOf` et les relations héritées.",
+        "L'eval de handoff confirme bien le périmètre : le skill passe correctement la main à `structure-deployment-tiers`.",
+        "Cette itération n'a qu'1 run par configuration : la tendance est nette mais reste légère statistiquement."
+      ],
+      "benchmark_json_path": "iteration-2/benchmark.json",
+      "benchmark_markdown_path": "iteration-2/benchmark.md",
+      "review_path": "iteration-2/review.html"
+    }
+  ]
+}

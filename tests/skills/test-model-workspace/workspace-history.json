@@ -1,0 +1,174 @@
+{
+  "skill_name": "test-model",
+  "workspace_dirname": "test-model-workspace",
+  "generated_at": "2026-03-11T14:08:12Z",
+  "workspace_path": "C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\tests\\skills\\test-model-workspace",
+  "iteration_count": 2,
+  "latest_iteration": 2,
+  "latest_timestamp": "2026-03-10T18:10:00Z",
+  "latest_primary_pass_rate": 1.0,
+  "latest_baseline_pass_rate": 0.333,
+  "latest_delta": {
+    "pass_rate": "+0.67",
+    "time_seconds": "+0.0",
+    "tokens": "+0"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "timestamp": "2026-03-10T17:31:01Z",
+      "evals_run": [
+        0,
+        1
+      ],
+      "runs_per_configuration": 1,
+      "primary_config": "with_skill",
+      "baseline_config": "without_skill",
+      "primary_pass_rate": 1.0,
+      "baseline_pass_rate": 0.333,
+      "primary_time_seconds": 0.0,
+      "baseline_time_seconds": 0.0,
+      "primary_tokens": 0.0,
+      "baseline_tokens": 0.0,
+      "delta": {
+        "pass_rate": "+0.67",
+        "time_seconds": "+0.0",
+        "tokens": "+0"
+      },
+      "run_summary": {
+        "with_skill": {
+          "pass_rate": {
+            "mean": 1.0,
+            "stddev": 0.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "without_skill": {
+          "pass_rate": {
+            "mean": 0.333,
+            "stddev": 0.0,
+            "min": 0.333,
+            "max": 0.333
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "delta": {
+          "pass_rate": "+0.67",
+          "time_seconds": "+0.0",
+          "tokens": "+0"
+        }
+      },
+      "notes": [
+        "L'eval de handoff vers `design-view` discrimine bien le skill : le baseline parle rendu/includes mais ne renvoie pas le skill spécialisé.",
+        "Le skill ajoute une vraie séquence de validation (structure → références → relations → rendu), alors que le baseline reste partiel.",
+        "Les métriques temps/tokens valent 0 ici faute de métadonnées d'exécution récupérables dans cette session ; compare surtout les pass rates.",
+        "Cette itération n'a qu'1 run par configuration : la tendance est utile, mais encore peu robuste statistiquement."
+      ],
+      "benchmark_json_path": "iteration-1/benchmark.json",
+      "benchmark_markdown_path": "iteration-1/benchmark.md",
+      "review_path": "iteration-1/review.html"
+    },
+    {
+      "iteration": 2,
+      "timestamp": "2026-03-10T18:10:00Z",
+      "evals_run": [
+        0,
+        1
+      ],
+      "runs_per_configuration": 1,
+      "primary_config": "with_skill",
+      "baseline_config": "without_skill",
+      "primary_pass_rate": 1.0,
+      "baseline_pass_rate": 0.333,
+      "primary_time_seconds": 0.0,
+      "baseline_time_seconds": 0.0,
+      "primary_tokens": 0.0,
+      "baseline_tokens": 0.0,
+      "delta": {
+        "pass_rate": "+0.67",
+        "time_seconds": "+0.0",
+        "tokens": "+0"
+      },
+      "run_summary": {
+        "with_skill": {
+          "pass_rate": {
+            "mean": 1.0,
+            "stddev": 0.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "without_skill": {
+          "pass_rate": {
+            "mean": 0.333,
+            "stddev": 0.0,
+            "min": 0.333,
+            "max": 0.333
+          },
+          "time_seconds": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          },
+          "tokens": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0,
+            "max": 0
+          }
+        },
+        "delta": {
+          "pass_rate": "+0.67",
+          "time_seconds": "+0.0",
+          "tokens": "+0"
+        }
+      },
+      "notes": [
+        "Le skill impose une séquence de validation complète (structure -> références -> relations -> rendu -> Problems) que le baseline ne reconstruit pas spontanément.",
+        "L’eval de contexte de vue discrimine bien la valeur du skill : le baseline parle d’includes et de rendu, mais oublie le contexte parent et le handoff vers `design-view`.",
+        "Les métriques temps/tokens restent à 0 dans cette itération car aucun exécuteur séparé n’a exposé de télémétrie récupérable.",
+        "Une seule exécution par configuration suffit pour une comparaison directionnelle, mais pas pour mesurer la variance."
+      ],
+      "benchmark_json_path": "iteration-2/benchmark.json",
+      "benchmark_markdown_path": "iteration-2/benchmark.md",
+      "review_path": "iteration-2/review.html"
+    }
+  ]
+}

@@ -82,6 +82,38 @@ Live skills stay under `.github/skills/`. Generated evaluation artifacts and rep
 - Iterations: `tests/skills/<skill-name>-workspace/iteration-N/`
 - Optional baseline snapshots: `tests/skills/<skill-name>-workspace/skill-snapshot/BASELINE_SKILL.md`
 
+### MVP runner
+
+The repository now includes an OS-independent runner at `tests/run_skill_evals.py`.
+
+It:
+
+- executes prompts via `gh copilot -- -p ...`
+- isolates `HOME`, `USERPROFILE`, and `COPILOT_HOME` per run to reduce user-global skill leakage
+- can re-inject MCP servers from `~/.vscode/mcp.json` so isolated runs still have access to the same VS Code MCP setup
+
+Typical usage:
+
+```bash
+python tests/run_skill_evals.py create-element
+python tests/run_skill_evals.py create-element --eval-ids 0 1 --configs with_skill without_skill
+python tests/run_skill_evals.py create-element --without-skill-mode no-repo-skills
+python tests/run_skill_evals.py all --report-only
+```
+
+The runner now also refreshes aggregated reports from the persisted workspaces:
+
+- per-skill workspace history:
+	- `tests/skills/<skill-name>-workspace/workspace-history.json`
+	- `tests/skills/<skill-name>-workspace/workspace-history.md`
+	- `tests/skills/<skill-name>-workspace/workspace-history.html`
+- global multi-skill overview:
+	- `tests/skills/skills-overview.json`
+	- `tests/skills/skills-overview.md`
+	- `tests/skills/skills-overview.html`
+
+Use `all` to run every skill with eval definitions. Use `--report-only` to regenerate the workspace/global reports from existing iteration benchmarks without launching fresh Copilot runs.
+
 **Important:** Never keep a `SKILL.md` inside a test workspace. Only live skill definitions belong in `.github/skills/`.
 
 For local details and examples, see `tests/skills/README.md`.

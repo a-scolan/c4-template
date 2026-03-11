@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft specification. This document defines the required testing methodology for repository-local Copilot skills. It hardens the evaluation process conceptually now; implementation may follow later.
+Draft specification with an MVP runner implemented in `tests/run_skill_evals.py`. This document defines the required testing methodology for repository-local Copilot skills and the constraints that the runner is expected to follow.
 
 ## Purpose
 
@@ -215,6 +215,8 @@ Each iteration SHOULD persist:
 - `benchmark.md`
 - `review.html`
 
+Each workspace SHOULD additionally persist iteration-aware history reports derived from all `iteration-N/benchmark.json` files, and the shared `tests/skills/` root SHOULD persist a repo-wide multi-skill overview report.
+
 ## Validation Rules
 
 Before executing a run, the runner MUST validate sandbox state.
@@ -260,6 +262,15 @@ A minimal future runner SHOULD:
 5. execute the prompt using the sandbox as the workspace root
 6. write run artefacts into `tests/skills/<skill-name>-workspace/iteration-N/`
 7. aggregate and grade after all runs finish
+
+This repository now ships an MVP implementation at `tests/run_skill_evals.py` that follows this shape with `gh copilot -- -p ...`, per-run temporary home directories, and optional MCP reinjection from `~/.vscode/mcp.json`.
+
+The runner also regenerates:
+
+- per-workspace history reports at `tests/skills/<skill-name>-workspace/workspace-history.{json,md,html}`
+- a global overview at `tests/skills/skills-overview.{json,md,html}`
+
+This makes historical iteration numbers first-class in the persisted reporting, rather than only in the folder layout.
 
 ## Deferred Hardening
 
