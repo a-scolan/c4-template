@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse dit explicitement que C3 n'est pas obligatoire pour chaque container.",
+      "passed": true,
+      "evidence": "La première phrase dit : `la vue C3 est sélective, pas obligatoire pour chaque container`."
+    },
+    {
+      "text": "La réponse réserve C3 aux containers complexes, critiques ou qui méritent du détail.",
+      "passed": true,
+      "evidence": "La réponse réserve C3 au cas où le container est `complexe ou critique` et où sa structure interne apporte de la valeur."
+    },
+    {
+      "text": "La réponse garde le raisonnement aligné sur C1→C2→C3.",
+      "passed": false,
+      "evidence": "La réponse compare surtout `C2` et `C3`, mais ne rappelle pas explicitement la progression complète `C1 → C2 → C3`."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 1,
+    "total": 3,
+    "pass_rate": 0.67
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "skill_name": "create-relationship",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je dois relier `mySystem.webapp` à `mySystem.api` dans `projects/template/system-model.c4`. Montre-moi la syntaxe LikeC4 correcte et dis-moi où va le type de relation.",
+      "expected_output": "La réponse met le kind dans la flèche, garde le label inline et la technologie dans le bloc de propriétés.",
+      "files": [],
+      "expectations": [
+        "La réponse utilise une flèche typée `-[calls]->` entre `mySystem.webapp` et `mySystem.api`.",
+        "La réponse place le type de relation dans la flèche, pas dans le bloc de propriétés.",
+        "La réponse garde le label inline et `technology 'HTTPS'` dans le bloc.",
+        "La réponse évite une syntaxe invalide du type `-> { calls ... }`."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Je modélise un flux d'upload asynchrone : `uploadService` publie dans `jobQueue`, puis `worker` consomme et écrit en base. Est-ce que je dois aussi dessiner un retour du worker vers l'upload service ?",
+      "expected_output": "La réponse utilise `async` pour la file, garde un flux à sens unique et emploie `writes` pour la persistance.",
+      "files": [],
+      "expectations": [
+        "La réponse utilise `-[async]->` entre le producteur et la queue, puis entre la queue et le worker.",
+        "La réponse indique explicitement qu'il ne faut pas de relation de retour du worker vers le producteur.",
+        "La réponse utilise `-[writes]->` pour l'écriture en base plutôt qu'un `calls` générique.",
+        "La réponse maintient le pattern asynchrone one-way sans ACK modélisé comme appel retour."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Mon `retrievalService` lit Redis puis PostgreSQL. Je mets `calls`, `reads` ou autre ? Donne-moi la règle et un exemple court.",
+      "expected_output": "La réponse réserve `calls` aux appels de service et emploie `reads`/`writes` pour les accès de données.",
+      "files": [],
+      "expectations": [
+        "La réponse utilise `-[reads]->` pour les lectures sur cache et base de données.",
+        "La réponse réserve `-[calls]->` aux interactions service-à-service.",
+        "La réponse mentionne `-[writes]->` pour la persistance ou la mutation des données.",
+        "La réponse fournit un exemple court cohérent avec cette règle."
+      ]
+    }
+  ]
+}

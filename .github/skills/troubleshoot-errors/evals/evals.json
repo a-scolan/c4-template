@@ -1,0 +1,27 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Après édition de `projects/template/system-model.c4`, LikeC4 me remonte `Unknown kind Container_WebUi` et `Element not found: api`. Comment diagnostiquer ça proprement ?",
+      "expected_output": "Diagnostic propre d'un kind invalide et d'une référence FQN incorrecte.",
+      "files": [],
+      "expectations": [
+        "La réponse identifie `Container_WebUi` comme kind invalide à vérifier dans les specs partagées.",
+        "La réponse explique que `api` doit probablement être référencé en FQN (`mySystem.api`).",
+        "La réponse part des causes racines et suggère `read-project-summary` avant de renommer au hasard."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Dans une dynamic view, j’ai mis `mySystem -> mySystem.api` puis `rank same user, mySystem.api` et ça casse. Quelle est la vraie cause et quoi corriger ?",
+      "expected_output": "Explication des erreurs conceptuelles de dynamic view et de contrainte de rang.",
+      "files": [],
+      "expectations": [
+        "La réponse explique qu’un parent ne doit pas appeler son propre child dans une dynamic view.",
+        "La réponse explique que `rank same` ne groupe que des éléments partageant le même parent.",
+        "La réponse propose une correction ciblée plutôt qu’un contournement vague."
+      ]
+    }
+  ]
+}

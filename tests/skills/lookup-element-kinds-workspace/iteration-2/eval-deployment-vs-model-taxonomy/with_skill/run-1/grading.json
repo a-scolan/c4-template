@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse distingue relations de déploiement et de modèle logique.",
+      "passed": true,
+      "evidence": "Extrait : En déploiement, parle en `tcp` ou `sql` selon le lien réseau/service."
+    },
+    {
+      "text": "La réponse mentionne `tcp`/`sql` côté déploiement et `calls`/`reads`/`writes` côté modèle.",
+      "passed": true,
+      "evidence": "Extrait : En déploiement, parle en `tcp` ou `sql` selon le lien réseau/service."
+    },
+    {
+      "text": "La réponse explique que les taxonomies sont différentes.",
+      "passed": true,
+      "evidence": "Extrait : Déploiement et modèle logique n'utilisent pas la même taxonomie."
+    },
+    {
+      "text": "La réponse renvoie vers `spec-deployment.c4` et/ou `read-project-summary`.",
+      "passed": true,
+      "evidence": "Extrait : Confirme dans `spec-deployment.c4` ou avec `read-project-summary`."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 262,
+    "transcript_chars": 262
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Harness statique : temps et tokens non collectés, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

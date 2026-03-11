@@ -1,0 +1,11 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-classify-generic-vs-local",
+  "prompt": "J’ai modifié `.github/skills/create-relationship/SKILL.md`, `projects/shared/spec-context.c4`, `projects/payments/system-model.c4` et `README.md`. Qu’est-ce qui peut remonter vers le template, qu’est-ce qui doit rester local ?",
+  "assertions": [
+    "La réponse classe `.github/skills/create-relationship/SKILL.md` et `projects/shared/spec-context.c4` comme génériques/synchronisables.",
+    "La réponse garde `projects/payments/system-model.c4` et `README.md` hors du push template.",
+    "La réponse demande de généraliser et retirer les noms de projet avant push.",
+    "La réponse impose une revue confidentialité avant push."
+  ]
+}

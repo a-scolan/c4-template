@@ -1,0 +1,10 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-unknown-kind-and-fqn",
+  "prompt": "Après édition de `projects/template/system-model.c4`, LikeC4 me remonte `Unknown kind Container_WebUi` et `Element not found: api`. Comment diagnostiquer ça proprement ?",
+  "assertions": [
+    "La réponse identifie `Container_WebUi` comme kind invalide à vérifier dans les specs partagées.",
+    "La réponse explique que `api` doit probablement être référencé en FQN (`mySystem.api`).",
+    "La réponse part des causes racines et suggère `read-project-summary` avant de renommer au hasard."
+  ]
+}

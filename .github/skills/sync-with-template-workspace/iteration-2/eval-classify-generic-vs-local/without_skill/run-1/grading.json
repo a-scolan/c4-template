@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse classe `.github/skills/create-relationship/SKILL.md` et `projects/shared/spec-context.c4` comme génériques/synchronisables.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : `.github/skills/create-relationship/SKILL.md`, `projects/shared/spec-context.c4`."
+    },
+    {
+      "text": "La réponse garde `projects/payments/system-model.c4` et `README.md` hors du push template.",
+      "passed": true,
+      "evidence": "Extrait : `projects/payments/system-model.c4` et `README.md` restent locaux."
+    },
+    {
+      "text": "La réponse demande de généraliser et retirer les noms de projet avant push.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : généralise, supprime les noms de projet."
+    },
+    {
+      "text": "La réponse impose une revue confidentialité avant push.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : revue confidentialité."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 3,
+    "total": 4,
+    "pass_rate": 0.25
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Le baseline identifie le local mais ne formalise pas le tri générique/privé."
+  }
+}

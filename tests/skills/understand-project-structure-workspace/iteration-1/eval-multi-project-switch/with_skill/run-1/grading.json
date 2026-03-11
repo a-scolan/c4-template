@@ -1,0 +1,62 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse impose de revalider le projet actif après switch.",
+      "passed": true,
+      "evidence": "La réponse commence par `list-projects` pour confirmer le projet actif après switch."
+    },
+    {
+      "text": "La réponse inclut au minimum list-projects + read-project-summary dans la séquence.",
+      "passed": true,
+      "evidence": "La séquence explicite `list-projects` puis `read-project-summary`."
+    },
+    {
+      "text": "La réponse mentionne la relecture des specs partagées avant édition C3.",
+      "passed": true,
+      "evidence": "La réponse demande explicitement de consulter `projects/shared/spec-components.c4` et `spec-containers.c4`."
+    },
+    {
+      "text": "La réponse explicite au moins deux risques évités (contexte obsolète, kind invalide, mauvais parent C3).",
+      "passed": true,
+      "evidence": "La réponse cite le mauvais projet actif, les références invalides et les kinds non autorisés."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [
+    {
+      "claim": "Le mauvais projet actif est la source d'erreur n°1 en workspace multi-projet.",
+      "type": "quality",
+      "verified": true,
+      "evidence": "La réponse le formule explicitement dans l'étape 1."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Métadonnées timing non disponibles via la sortie subagent actuelle."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "No suggestions, evals look solid"
+  }
+}

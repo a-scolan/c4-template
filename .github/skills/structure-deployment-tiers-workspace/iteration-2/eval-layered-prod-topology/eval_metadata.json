@@ -1,0 +1,10 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-layered-prod-topology",
+  "prompt": "Je conçois la prod d'un coffre documentaire avec API gateway, services métier, RabbitMQ, worker async, MongoDB, MinIO et monitoring. Découpe-moi ça en tiers LikeC4 cohérents et précise les responsabilités/règles réseau essentielles.",
+  "assertions": [
+    "La réponse organise l'infra en `Dmz`, `AppTier`, `ProcTier`, `DataTier`, avec `SecZone` ou `InfraZone` en option si utile.",
+    "La réponse place la file/les workers en `ProcTier` et les stockages persistants (`MongoDB`, `MinIO`) en `DataTier`.",
+    "La réponse documente des règles réseau/firewall entre tiers et évite d'exposer `DataTier` à Internet."
+  ]
+}

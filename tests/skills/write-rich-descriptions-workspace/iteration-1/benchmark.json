@@ -1,0 +1,225 @@
+{
+  "metadata": {
+    "skill_name": "write-rich-descriptions",
+    "skill_path": "c:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\.github\\skills\\write-rich-descriptions",
+    "executor_model": "GPT-5.4",
+    "analyzer_model": "GPT-5.4",
+    "timestamp": "2026-03-10T17:31:01Z",
+    "evals_run": [
+      0,
+      1
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "eval_name": "eval-prerequisite-handoff",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit qu’il faut d’abord créer l’élément avant de travailler sa description.",
+          "passed": true,
+          "evidence": "La première puce dit explicitement : `D’abord il faut créer les éléments`."
+        },
+        {
+          "text": "La réponse renvoie la création d’un élément système vers `create-element`.",
+          "passed": true,
+          "evidence": "La deuxième puce renvoie explicitement à `create-element`."
+        },
+        {
+          "text": "La réponse renvoie l’infrastructure de déploiement vers le vrai skill `model-deployment-infrastructure`.",
+          "passed": false,
+          "evidence": "Le handoff déploiement cite `model-deployment`, pas le vrai skill `model-deployment-infrastructure`."
+        },
+        {
+          "text": "La réponse distingue ensuite `metadata {}` pour le système et tableau Markdown pour le déploiement.",
+          "passed": true,
+          "evidence": "La dernière puce oppose explicitement `metadata {}` côté système et `tableau Markdown` côté déploiement."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "eval_name": "eval-prerequisite-handoff",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit qu’il faut d’abord créer l’élément avant de travailler sa description.",
+          "passed": true,
+          "evidence": "La réponse commence par `Crée d’abord les éléments`, ce qui couvre le prérequis."
+        },
+        {
+          "text": "La réponse renvoie la création d’un élément système vers `create-element`.",
+          "passed": false,
+          "evidence": "Aucun renvoi explicite à `create-element` n'apparaît."
+        },
+        {
+          "text": "La réponse renvoie l’infrastructure de déploiement vers le vrai skill `model-deployment-infrastructure`.",
+          "passed": false,
+          "evidence": "Aucun handoff vers `model-deployment-infrastructure` n'apparaît."
+        },
+        {
+          "text": "La réponse distingue ensuite `metadata {}` pour le système et tableau Markdown pour le déploiement.",
+          "passed": false,
+          "evidence": "La réponse distingue applicatif vs infra, mais ne nomme ni `metadata {}` ni `tableau Markdown`."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "eval-deployment-vm-table",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse demande un tableau Markdown pour le VM.",
+          "passed": true,
+          "evidence": "La première phrase demande explicitement un `tableau Markdown`."
+        },
+        {
+          "text": "La réponse met les interfaces réseau (`eth0`, `eth1`) en premier.",
+          "passed": true,
+          "evidence": "L'ordre conseillé commence par `Interfaces réseau d’abord (`eth0`, puis `eth1`)`."
+        },
+        {
+          "text": "La réponse dit que le gateway appartient plutôt à la zone qu’au VM standard.",
+          "passed": true,
+          "evidence": "La dernière phrase dit que `le gateway vit plutôt au niveau de la zone`."
+        },
+        {
+          "text": "La réponse garde la metadata optionnelle, seulement si l’automatisation la requiert.",
+          "passed": true,
+          "evidence": "La réponse dit explicitement : `La metadata reste optionnelle` et ne doit être répétée que pour une automatisation."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "eval-deployment-vm-table",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse demande un tableau Markdown pour le VM.",
+          "passed": true,
+          "evidence": "La réponse demande `un tableau simple`, ce qui valide la forme générale."
+        },
+        {
+          "text": "La réponse met les interfaces réseau (`eth0`, `eth1`) en premier.",
+          "passed": false,
+          "evidence": "Elle ne met pas explicitement `eth0`/`eth1` en premier ni ne parle d'ordre réseau d'abord."
+        },
+        {
+          "text": "La réponse dit que le gateway appartient plutôt à la zone qu’au VM standard.",
+          "passed": false,
+          "evidence": "Elle conseille d'ajouter le `gateway` au VM, à l'inverse de la règle du skill."
+        },
+        {
+          "text": "La réponse garde la metadata optionnelle, seulement si l’automatisation la requiert.",
+          "passed": false,
+          "evidence": "Elle recommande de recopier les infos en metadata `pour être exhaustif`, au lieu de garder la metadata optionnelle."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 0.875,
+        "stddev": 0.125,
+        "min": 0.75,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.25,
+        "stddev": 0.0,
+        "min": 0.25,
+        "max": 0.25
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.62",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": [
+    "L'eval de prérequis révèle un point faible réel : le handoff cite `model-deployment` au lieu du vrai skill `model-deployment-infrastructure`.",
+    "En revanche, le skill reste fort sur l'ordre des infos ops (`eth0` d'abord, gateway côté zone, metadata optionnelle).",
+    "Les métriques temps/tokens valent 0 ici faute de métadonnées d'exécution récupérables dans cette session ; compare surtout les pass rates.",
+    "Cette itération n'a qu'1 run par configuration : la tendance est utile, mais encore peu robuste statistiquement."
+  ]
+}

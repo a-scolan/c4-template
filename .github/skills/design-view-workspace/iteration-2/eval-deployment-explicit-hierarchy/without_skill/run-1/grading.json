@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse utilise `views 'Deployment'` avec un `deployment view`.",
+      "passed": true,
+      "evidence": "Le snippet est bien structuré avec `views 'Deployment' {` et `deployment view prod_overview {`."
+    },
+    {
+      "text": "La réponse liste explicitement l'environnement, les zones et les VMs sans wildcard `*` ou `**`.",
+      "passed": false,
+      "evidence": "La proposition repose sur `include production.*` et `include production.appTier.**`, donc précisément sur des wildcards interdites par le skill."
+    },
+    {
+      "text": "La réponse garde la hiérarchie parentale et s'arrête au niveau VM.",
+      "passed": false,
+      "evidence": "La hiérarchie n'est pas explicitée élément par élément et `production.appTier.**` peut descendre au-delà du niveau VM."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.33
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

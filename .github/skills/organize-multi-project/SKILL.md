@@ -1,11 +1,32 @@
 ---
 name: organize-multi-project
-description: Structure multi-project workspaces with shared specifications. Use template project for new projects, organize by domain/team/layer.
+description: Use when structuring a LikeC4 workspace with multiple projects sharing specifications, or when creating a new project derived from the template.
 ---
 
 # Organize Multi-Project Workspace
 
-Use this skill when structuring LikeC4 workspace with multiple projects.
+## Overview
+
+Defines folder structure, configuration, and shared-spec patterns for LikeC4 workspaces containing multiple projects. Each project has its own `likec4.config.json` and includes the shared specification directory. New projects are created from the `projects/template/` starting point.
+
+## When to Use
+
+- Initializing a new LikeC4 workspace with several architectural domains
+- Adding a new project to an existing multi-project workspace
+- Deciding how to split a growing single-project workspace into domain-scoped projects
+- Understanding how cross-project references and shared external systems work
+
+**Tip:** Use `configure-project-includes` when updating include paths or image aliases.
+
+## Quick Reference
+
+| Decision | Recommended Choice |
+|---------|---------------------|
+| Shared kinds/tags | Keep in `projects/shared/spec-*.c4` |
+| Project boundaries | One domain/team/layer per project folder |
+| Config ownership | Each project owns its `likec4.config.json` |
+| New project bootstrap | Copy/adapt from `projects/template/` |
+| Cross-project dependencies | Keep explicit, minimal, and documented |
 
 ## Multi-Project Structure
 
@@ -189,6 +210,18 @@ Let users define their own structure based on needs:
 - Architecture layers (frontend, backend, infrastructure)
 - Team ownership (team-web, team-mobile, team-platform)
 - Any other organizational pattern
+
+## Common Mistakes
+
+❌ **Project-specific models in shared specs** — `projects/shared/` must only contain reusable definitions; never put project elements (systems, containers) there
+
+❌ **Absolute paths in config** — all `include.paths` must be relative (`../shared`), never absolute
+
+❌ **Circular project dependencies** — project A includes project B which includes project A; restructure so shared content lives in `shared/`
+
+❌ **Missing or inconsistent image aliases** — all projects should use the same `"@": "../shared/images"` alias to keep icon references consistent
+
+❌ **Not using the template project** — always copy `projects/template/` as a starting point to preserve the correct config and file structure
 
 ## Validation Checklist
 

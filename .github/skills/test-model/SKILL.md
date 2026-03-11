@@ -5,9 +5,17 @@ description: Use when validating model integrity—element references are valid,
 
 # Test LikeC4 Model
 
-Use this skill when validating LikeC4 model correctness and integrity.
+## Overview
 
-**When to use:** Element compilation errors, invalid references, missing relationships, rendering failures, syntax issues in diagrams
+Validates LikeC4 model correctness and integrity by checking element references, relationship kinds, view rendering, and syntax against project specifications.
+
+## When to Use
+
+- Compilation errors appear in VS Code Problems panel
+- Elements or relationships reference undefined kinds or FQNs
+- Views render with unexpected elements or layout issues
+- After structural changes (new elements, kinds, or topology)
+- Before committing significant model changes
 
 ## Validation Workflow
 
@@ -75,7 +83,7 @@ Use Context7 MCP `query-docs` to verify:
 ✅ include mySystem.*              // Scoped
 ```
 
-## Testing Checklist
+## Quick Reference
 
 - [ ] Run LikeC4 MCP `read-project-summary` - verify all element kinds exist
 - [ ] Search for all FQN references - use `search-element` to validate
@@ -108,6 +116,15 @@ For detailed context requirements, see the `design-view` skill.
 - ❌ Deployment VM without parent zone
 - ❌ Sequence without initiating actor
 - ✅ Every view contextualized by showing what contains it
+
+## Common Mistakes
+
+- ❌ Verifying syntax only without checking FQN references via MCP
+- ❌ Skipping `open-view` preview — render failures can be silent
+- ❌ Using element kinds not declared in `spec-*.c4` files
+- ❌ Relationships without typed kinds (`->` instead of `-[calls]->`)
+- ❌ Views that omit the parent container or zone boundary
+- ❌ Forgetting to check the VS Code Problems panel for compile errors
 
 ## Output
 

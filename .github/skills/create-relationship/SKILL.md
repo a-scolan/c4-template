@@ -1,15 +1,26 @@
 ---
 name: create-relationship
-description: Create typed relationships with FQN, proper kinds (calls/async/reads/writes), descriptive labels, and no return relationships.
+description: Use when connecting elements in model or deployment files with typed relationships (calls, async, reads, writes), proper FQN usage, and descriptive labels.
 ---
 
 # Create LikeC4 Relationship
 
-Use this skill when connecting elements in model or deployment files.
+## Overview
+
+Defines how to declare typed directional relationships between LikeC4 elements. Relationship kind goes in the arrow (`-[kind]->`), never in the property block. Labels are action-focused, technology is protocol-only, and there are no return relationships.
+
+## When to Use
+
+- Connecting two elements in a system model or deployment file
+- Choosing between `calls`, `async`, `reads`, `writes`, or `uses`
+- Documenting async queue/event flows (no return paths)
+- Adding protocol and technology details to a relationship
+
+**Do not use** for creating elements themselves — see `create-element`. For sequence views, use `create-sequence-view` (plain `->` arrows, no kinds).
 
 **REQUIRED BACKGROUND:** Read `create-element` skill and understand element kinds before creating relationships.
 
-## Quick Rules
+## Quick Reference
 
 - Put the relationship kind in the arrow (never in the properties block).
 - Use one-way async relationships for queues/events (no return relationships).
@@ -190,7 +201,7 @@ cache -[reads]-> config 'Load settings'
 
 **Best Practice:** Use protocol only for technology (e.g., "HTTPS", "SSH", "AMQP"), add port after "/" only for non-default ports (e.g., "HTTP/8080"). Keep labels short and action-focused. Descriptions in properties block are optional if the label is already clear.
 
-## Anti-patterns
+## Common Mistakes
 
 ```likec4
 ❌ api -> service 'Calls'                     // Missing relationship kind

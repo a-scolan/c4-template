@@ -1,0 +1,11 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-prerequisite-handoff",
+  "prompt": "Je n’ai pas encore créé mon service de traitement ni le VM de prod, mais je veux déjà documenter leurs descriptions. Quel skill je dois utiliser d’abord, puis quel format de description choisir ensuite ?",
+  "assertions": [
+    "La réponse dit qu’il faut d’abord créer l’élément avant de travailler sa description.",
+    "La réponse renvoie la création d’un élément système vers `create-element`.",
+    "La réponse renvoie l’infrastructure de déploiement vers le vrai skill `model-deployment-infrastructure`.",
+    "La réponse distingue ensuite `metadata {}` pour le système et tableau Markdown pour le déploiement."
+  ]
+}

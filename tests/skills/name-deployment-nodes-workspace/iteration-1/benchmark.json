@@ -1,0 +1,196 @@
+{
+  "metadata": {
+    "skill_name": "name-deployment-nodes",
+    "skill_path": "C:/Users/ascolan/Documents/Workspace/c4_template/.github/skills/name-deployment-nodes",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-03-10T17:32:53Z",
+    "evals_run": [
+      0,
+      1
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse dit que ce skill couvre surtout le naming et renvoie la mod\u00e9lisation compl\u00e8te \u00e0 `model-deployment-infrastructure`.",
+          "passed": true,
+          "evidence": "La r\u00e9ponse dit `Ce skill sert surtout \u00e0 verrouiller les noms` puis renvoie explicitement vers `model-deployment-infrastructure`."
+        },
+        {
+          "text": "La r\u00e9ponse conserve les patterns de nommage utiles en entr\u00e9e (`{Env}{Service}Vm`, `{Tier}Tier` ou `{Function}Zone`).",
+          "passed": true,
+          "evidence": "La conclusion conserve explicitement `{Env}{Service}Vm`, `{Tier}Tier` et `{Function}Zone`."
+        },
+        {
+          "text": "La r\u00e9ponse n'essaie pas de d\u00e9tailler elle-m\u00eame toute la hi\u00e9rarchie, les descriptions et les `instanceOf`.",
+          "passed": true,
+          "evidence": "La r\u00e9ponse renvoie ces d\u00e9tails \u00e0 l'autre skill et n'essaie pas de fournir elle-m\u00eame la hi\u00e9rarchie ou les tables Markdown."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse applique le pattern VM `{Environment}{Service}Vm` et corrige `ProdApiVM` / `prod_upload_vm` vers des noms du type `ProdApigwVm` / `ProdUploadVm`.",
+          "passed": true,
+          "evidence": "La r\u00e9ponse corrige explicitement `ProdApiVM` en `ProdApigwVm` et `prod_upload_vm` en `ProdUploadVm`, puis rappelle le pattern `{Environment}{Service}Vm`."
+        },
+        {
+          "text": "La r\u00e9ponse distingue les zones de couche (`AppTier`, `ProcTier`, `DataTier`) des zones fonctionnelles (`SecZone`, `InfraZone`) et corrige `AppServers` / `MonitoringTier`.",
+          "passed": true,
+          "evidence": "La r\u00e9ponse s\u00e9pare `Zones de couche` et `Zone fonctionnelle monitoring`, puis corrige `AppServers` en `AppTier` et `MonitoringTier` en `SecZone`."
+        },
+        {
+          "text": "La r\u00e9ponse garde des identifiants en PascalCase avec suffixe `Vm`, pas `VM` ni snake_case.",
+          "passed": true,
+          "evidence": "La r\u00e9ponse dit explicitement `PascalCase avec suffixe Vm` et `\u00c9vite donc VM en majuscules, le snake_case`."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.33,
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse dit que ce skill couvre surtout le naming et renvoie la mod\u00e9lisation compl\u00e8te \u00e0 `model-deployment-infrastructure`.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse dit `\u00e7a peut rester le bon skill` et ne renvoie jamais vers `model-deployment-infrastructure`."
+        },
+        {
+          "text": "La r\u00e9ponse conserve les patterns de nommage utiles en entr\u00e9e (`{Env}{Service}Vm`, `{Tier}Tier` ou `{Function}Zone`).",
+          "passed": true,
+          "evidence": "La r\u00e9ponse garde des exemples conformes comme `ProdUploadVm`, `AppTier` et `DataTier`, ce qui pr\u00e9serve les patterns de nommage."
+        },
+        {
+          "text": "La r\u00e9ponse n'essaie pas de d\u00e9tailler elle-m\u00eame toute la hi\u00e9rarchie, les descriptions et les `instanceOf`.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse propose justement de d\u00e9finir `les Node_App, les descriptions techniques ... et les instanceOf au m\u00eame endroit`."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 3,
+        "total": 3,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse applique le pattern VM `{Environment}{Service}Vm` et corrige `ProdApiVM` / `prod_upload_vm` vers des noms du type `ProdApigwVm` / `ProdUploadVm`.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse garde pr\u00e9cis\u00e9ment `ProdApiVM` et `prod_upload_vm` au lieu de les corriger vers le pattern `{Environment}{Service}Vm`."
+        },
+        {
+          "text": "La r\u00e9ponse distingue les zones de couche (`AppTier`, `ProcTier`, `DataTier`) des zones fonctionnelles (`SecZone`, `InfraZone`) et corrige `AppServers` / `MonitoringTier`.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse conserve `AppServers` et `MonitoringTier` et ne distingue pas zones de couche et zones fonctionnelles."
+        },
+        {
+          "text": "La r\u00e9ponse garde des identifiants en PascalCase avec suffixe `Vm`, pas `VM` ni snake_case.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse utilise `ProdApiVM` avec `VM` en majuscules et `prod_upload_vm` en snake_case."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.165,
+        "stddev": 0.2333,
+        "min": 0.0,
+        "max": 0.33
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.83",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": []
+}

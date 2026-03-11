@@ -1,0 +1,49 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse réutilise un kind existant du shared spec (`Container_Api`) au lieu d’inventer un kind custom.",
+      "passed": false,
+      "evidence": "Le snippet déclare `fileIngestion = Container 'File Ingestion API'` au lieu de réutiliser `Container_Api`."
+    },
+    {
+      "text": "La réponse place le nouvel élément sous `mySystem` avec un nom de variable en camelCase.",
+      "passed": true,
+      "evidence": "Le nouvel élément est bien placé sous `mySystem` et la variable `fileIngestion` est en camelCase."
+    },
+    {
+      "text": "La réponse inclut `technology` et `description` dans la déclaration.",
+      "passed": false,
+      "evidence": "Le bloc contient `technology 'Node.js'`, mais aucune ligne `description` n’est fournie."
+    },
+    {
+      "text": "La réponse garde le focus sur la déclaration d’élément, sans partir dans les relations ou les vues.",
+      "passed": false,
+      "evidence": "La phrase finale dévie vers `le relier à la base et faire une vue C2`, au lieu de rester strictement sur la déclaration d’élément."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 3,
+    "total": 4,
+    "pass_rate": 0.25
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

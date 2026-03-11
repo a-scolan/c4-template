@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-push-workflow-command-sequence",
+  "prompt": "J’ai amélioré `.github/skills/create-relationship/SKILL.md`. Donne-moi la séquence sûre pour pousser cette amélioration vers `c4-template` avec un branch `sync/*`, en gardant la revue confidentialité avant le push.",
+  "assertions": [
+    "La réponse fetch `c4-template/main` et crée un branch `sync/*` depuis cette base.",
+    "La réponse ne récupère que le fichier générique depuis `main`.",
+    "La réponse impose une revue de diff/confidentialité avant `git push`.",
+    "La réponse pousse depuis un branch `sync/*`, pas directement depuis `main`."
+  ]
+}

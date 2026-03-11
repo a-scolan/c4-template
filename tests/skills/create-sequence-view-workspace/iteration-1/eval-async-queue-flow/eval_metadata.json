@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-async-queue-flow",
+  "prompt": "Je veux illustrer le flux asynchrone `person_external` -> `webapp` -> `api` -> `queue` -> `processing_server` -> `database` dans le showcase. Propose la vue LikeC4.",
+  "assertions": [
+    "La réponse crée une vue dans `views 'Use Cases'` avec un `dynamic view`.",
+    "La séquence commence avec l'acteur initiateur `person_external`.",
+    "Le passage `api -> queue -> processing_server` est montré en ordre temporel avec des labels d'action et sans kinds relationnels."
+  ]
+}

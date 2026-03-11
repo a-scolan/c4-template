@@ -1,0 +1,49 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse identifie `System_External` pour le système tiers et un kind interne existant comme `Container_Api` pour l’API.",
+      "passed": true,
+      "evidence": "La réponse mentionne explicitement `virusTotal` comme `System_External` et `scanApi` comme `Container_Api`."
+    },
+    {
+      "text": "La réponse renvoie explicitement les flèches à `create-relationship`.",
+      "passed": false,
+      "evidence": "La réponse propose directement `une flèche scanApi -> virusTotal` et ne cite pas `create-relationship`."
+    },
+    {
+      "text": "La réponse renvoie explicitement la vue C2 à `design-view`.",
+      "passed": false,
+      "evidence": "La réponse propose directement `une vue C2 avec les deux` sans renvoyer à `design-view`."
+    },
+    {
+      "text": "La réponse garde `create-element` centré sur les déclarations d’éléments.",
+      "passed": false,
+      "evidence": "La réponse mélange dans le même mouvement éléments, flèche et vue C2, puis conclut `Pas besoin de découper entre plusieurs skills`."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 3,
+    "total": 4,
+    "pass_rate": 0.25
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

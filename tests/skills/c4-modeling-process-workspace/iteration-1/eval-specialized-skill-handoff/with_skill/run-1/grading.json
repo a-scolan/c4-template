@@ -1,0 +1,49 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse présente ce skill comme cadre de séquencement, pas comme skill unique qui absorbe tout.",
+      "passed": true,
+      "evidence": "La réponse parle explicitement d’un `skill d’orchestration` plutôt que d’un skill qui détaillerait tout."
+    },
+    {
+      "text": "La réponse renvoie le déploiement à `model-deployment-infrastructure`.",
+      "passed": true,
+      "evidence": "La réponse renvoie explicitement l’infra de prod à `model-deployment-infrastructure`."
+    },
+    {
+      "text": "La réponse renvoie les flux temporels à `create-sequence-view`.",
+      "passed": true,
+      "evidence": "La réponse renvoie explicitement le scénario nominal utilisateur à `create-sequence-view`."
+    },
+    {
+      "text": "La réponse rappelle que Deployment et Dynamic viennent après le noyau C1/C2, de façon optionnelle ou ciblée.",
+      "passed": true,
+      "evidence": "La réponse commence par `confirmer que le C2 est assez stable` avant d’orienter vers les étapes suivantes."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

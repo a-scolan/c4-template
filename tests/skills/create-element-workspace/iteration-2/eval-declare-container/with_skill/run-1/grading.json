@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse réutilise `Container_Api` et pas un kind invalide/custom.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : `Container_Api`."
+    },
+    {
+      "text": "La réponse place l'élément sous `mySystem` avec une variable en camelCase.",
+      "passed": true,
+      "evidence": "Extrait : Sous `mySystem`, ajoute directement la déclaration d'élément suivante et reste sur l'élément uniquement :"
+    },
+    {
+      "text": "La réponse inclut `technology` et `description`.",
+      "passed": true,
+      "evidence": "Extrait : technology 'Node.js, Express'"
+    },
+    {
+      "text": "La réponse reste centrée sur la déclaration d'élément seulement.",
+      "passed": true,
+      "evidence": "Extrait : Sous `mySystem`, ajoute directement la déclaration d'élément suivante et reste sur l'élément uniquement :"
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 420,
+    "transcript_chars": 420
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Harness statique : temps et tokens non collectés, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

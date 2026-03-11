@@ -1,13 +1,24 @@
 ---
 name: create-sequence-view
-description: Create sequence views showing temporal flows and user interactions. Uses plain arrows with descriptive labels (no relationship kinds).
+description: Use when documenting use case interactions, temporal flows, or async patterns as dynamic views. Place dynamic views in the "Use Cases" folder and use plain arrows.
 ---
 
 # Create Dynamic Sequence View
 
-Use this skill when documenting use case flows and interactions.
+## Overview
 
-## Quick Checklist
+Dynamic (sequence) views show HOW the system behaves during important operations: who initiates, what happens, in what order. They use plain `->` arrows (no relationship kinds), always start with the triggering actor, and are grouped in the `'Use Cases'` view folder.
+
+## When to Use
+
+- Documenting a user workflow (upload, login, checkout)
+- Showing async patterns (queue publish → consume → persist)
+- Clarifying error flows, validation paths, or recovery procedures
+- Any scenario where temporal order and causality need to be explicit
+
+**Do not use** for structural diagrams (C1/C2/C3 static views) — use `design-view` for those. Dynamic views cannot show parent → own-child relationships.
+
+## Quick Reference
 
 - Start with the initiating actor.
 - Use plain arrows (`->`), no relationship kinds.
@@ -90,3 +101,15 @@ views 'Use Cases' {
   }
 }
 ```
+
+## Common Mistakes
+
+❌ **Omitting the initiating actor** — every sequence MUST start with the external actor (user, system, scheduler)
+
+❌ **Using `-[calls]->`** — dynamic views MUST use plain `->` only; relationship kinds cause compilation errors
+
+❌ **Placing views outside `'Use Cases'`** — all dynamic views belong in the `views 'Use Cases'` folder
+
+❌ **Parent calling its own child** (`container -> container.component`) — dynamic views cannot show containment; have the actor address the component directly
+
+❌ **Steps out of temporal order** — each arrow must represent the next real action in time; avoid circular or back-and-forth patterns

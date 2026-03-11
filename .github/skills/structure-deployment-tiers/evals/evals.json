@@ -1,0 +1,27 @@
+{
+  "skill_name": "structure-deployment-tiers",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je conçois la prod d'un coffre documentaire avec API gateway, services métier, RabbitMQ, worker async, MongoDB, MinIO et monitoring. Découpe-moi ça en tiers LikeC4 cohérents et précise les responsabilités/règles réseau essentielles.",
+      "expected_output": "Réponse organisée en tiers DMZ/AppTier/ProcTier/DataTier (avec SecZone/InfraZone optionnels), avec placement correct des rôles et règles réseau essentielles.",
+      "files": [],
+      "expectations": [
+        "La réponse organise l'infra en `Dmz`, `AppTier`, `ProcTier`, `DataTier`, avec `SecZone` ou `InfraZone` en option si utile.",
+        "La réponse place la file/les workers en `ProcTier` et les stockages persistants (`MongoDB`, `MinIO`) en `DataTier`.",
+        "La réponse documente des règles réseau/firewall entre tiers et évite d'exposer `DataTier` à Internet."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "J'ai compris le découpage DMZ/AppTier/ProcTier/DataTier. Maintenant je veux fixer les noms exacts des VM, écrire les tables Markdown de specs et brancher les `instanceOf` des Node_App. Est-ce que ce skill doit tout détailler ?",
+      "expected_output": "La réponse garde ce skill sur les responsabilités de tiers et renvoie le détail d'infrastructure à `model-deployment-infrastructure`, avec mention optionnelle de `name-deployment-nodes` pour le naming.",
+      "files": [],
+      "expectations": [
+        "La réponse renvoie les noms, la hiérarchie détaillée, les descriptions Markdown et les `instanceOf` vers `model-deployment-infrastructure`.",
+        "La réponse garde ce skill focalisé sur les responsabilités de tiers, l'isolation et les règles firewall.",
+        "La réponse peut mentionner `name-deployment-nodes` comme aide complémentaire pour le nommage fin, mais sans perdre le handoff principal."
+      ]
+    }
+  ]
+}

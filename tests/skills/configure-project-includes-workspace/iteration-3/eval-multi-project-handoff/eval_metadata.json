@@ -1,0 +1,11 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-multi-project-handoff",
+  "prompt": "Je veux ajouter un deuxième projet LikeC4 dans ce workspace avec des specs partagées. Est-ce que ce skill suffit, ou faut-il le combiner avec un autre skill ?",
+  "assertions": [
+    "La réponse dit que ce skill couvre la configuration `likec4.config.json` et les includes/aliases.",
+    "La réponse évite de présenter ce skill comme solution unique pour toute l'organisation multi-projet.",
+    "La réponse renvoie la structuration globale vers `organize-multi-project`.",
+    "La réponse maintient les règles de chemins relatifs vers les specs partagées."
+  ]
+}

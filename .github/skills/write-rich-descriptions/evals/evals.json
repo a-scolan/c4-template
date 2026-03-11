@@ -1,0 +1,29 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je n’ai pas encore créé mon service de traitement ni le VM de prod, mais je veux déjà documenter leurs descriptions. Quel skill je dois utiliser d’abord, puis quel format de description choisir ensuite ?",
+      "expected_output": "Handoff de prérequis vers les skills de création, puis choix du bon format de description.",
+      "files": [],
+      "expectations": [
+        "La réponse dit qu’il faut d’abord créer l’élément avant de travailler sa description.",
+        "La réponse renvoie la création d’un élément système vers `create-element`.",
+        "La réponse renvoie l’infrastructure de déploiement vers le vrai skill `model-deployment-infrastructure`.",
+        "La réponse distingue ensuite `metadata {}` pour le système et tableau Markdown pour le déploiement."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Pour un futur `ProdApiVm`, je veux une description utile aux ops. Quelles infos je mets, dans quel ordre, et qu’est-ce qu’il ne faut pas dupliquer ?",
+      "expected_output": "Règles concrètes pour documenter un VM de déploiement avec un tableau utile aux ops.",
+      "files": [],
+      "expectations": [
+        "La réponse demande un tableau Markdown pour le VM.",
+        "La réponse met les interfaces réseau (`eth0`, `eth1`) en premier.",
+        "La réponse dit que le gateway appartient plutôt à la zone qu’au VM standard.",
+        "La réponse garde la metadata optionnelle, seulement si l’automatisation la requiert."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "skill_name": "create-sequence-view",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Dans `projects/template/system-views.c4`, je veux documenter le parcours de connexion entre `user`, `mySystem.webapp`, `mySystem.api`, `mySystem.database` et `emailService`. Donne-moi un squelette LikeC4 pour une vue dynamique.",
+      "expected_output": "Une vue dynamique dans `views 'Use Cases'`, démarrant par l'acteur initiateur et n'utilisant que des flèches `->` avec des labels d'action.",
+      "files": [],
+      "expectations": [
+        "La réponse place la séquence dans `views 'Use Cases'` avec un `dynamic view`.",
+        "La séquence démarre explicitement avec l'acteur `user`.",
+        "Les interactions utilisent uniquement des flèches `->` avec des labels d'action, sans `-[kind]->`."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Je pensais écrire `api_container -> api_container.auth_component` dans une vue dynamique pour montrer l'authentification. Corrige-moi l'approche sur `projects/spec-showcase/component-views.c4`.",
+      "expected_output": "Une réponse qui explique la restriction parent→child en dynamique, puis propose une vue corrigée où l'acteur cible directement le composant avec des flèches simples.",
+      "files": [],
+      "expectations": [
+        "La réponse explique explicitement qu'une vue dynamique ne doit pas montrer `parent -> own-child`.",
+        "La version corrigée fait cibler directement le composant par l'acteur, au lieu de garder `api_container -> api_container.auth_component`.",
+        "La proposition corrigée reste dans `views 'Use Cases'` avec un `dynamic view` et des flèches `->` simples."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Je veux illustrer le flux asynchrone `person_external` -> `webapp` -> `api` -> `queue` -> `processing_server` -> `database` dans le showcase. Propose la vue LikeC4.",
+      "expected_output": "Une vue dynamique de type use case, initiée par `person_external`, montrant le passage par la queue en ordre temporel avec des labels d'action.",
+      "files": [],
+      "expectations": [
+        "La réponse crée une vue dans `views 'Use Cases'` avec un `dynamic view`.",
+        "La séquence commence avec l'acteur initiateur `person_external`.",
+        "Le passage `api -> queue -> processing_server` est montré en ordre temporel avec des labels d'action et sans kinds relationnels."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse place la vue dans `views 'C2'` plutôt qu'à la racine.",
+      "passed": true,
+      "evidence": "Le snippet est bien dans `views 'C2' {` même s'il reste minimal."
+    },
+    {
+      "text": "La réponse inclut explicitement le parent `mySystem`, le focus `mySystem.*` et le contexte voisin.",
+      "passed": false,
+      "evidence": "La réponse inclut `mySystem.*`, `user` et `emailService`, mais pas le parent explicite `mySystem`, ni les includes relationnels de voisinage."
+    },
+    {
+      "text": "La réponse ajoute un `navigateTo` pertinent depuis `mySystem.webapp`.",
+      "passed": false,
+      "evidence": "Aucun `navigateTo` n'apparaît dans la proposition."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.33
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

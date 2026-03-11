@@ -1,0 +1,11 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-declare-container",
+  "prompt": "Je travaille dans `projects/template/system-model.c4`. Ajoute sous `mySystem` un nouveau conteneur API pour l’ingestion de fichiers. Je veux une déclaration LikeC4 correcte et minimale, sans inventer de kind custom.",
+  "assertions": [
+    "La réponse réutilise un kind existant du shared spec (`Container_Api`) au lieu d’inventer un kind custom.",
+    "La réponse place le nouvel élément sous `mySystem` avec un nom de variable en camelCase.",
+    "La réponse inclut `technology` et `description` dans la déclaration.",
+    "La réponse garde le focus sur la déclaration d’élément, sans partir dans les relations ou les vues."
+  ]
+}

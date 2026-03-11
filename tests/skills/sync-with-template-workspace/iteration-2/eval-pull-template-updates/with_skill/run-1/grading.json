@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse donne `git fetch c4-template main`.",
+      "passed": true,
+      "evidence": "Extrait : - `git fetch c4-template main`"
+    },
+    {
+      "text": "La réponse donne les deux `git subtree pull` ciblés sur `.github` et `projects/shared`.",
+      "passed": true,
+      "evidence": "Extrait : - `git subtree pull --prefix=.github c4-template main --squash` ; - `git subtree pull --prefix=projects/shared c4-template main --squash`"
+    },
+    {
+      "text": "La réponse explique que `--squash` garde un historique plus propre/compact.",
+      "passed": true,
+      "evidence": "Extrait : `--squash` garde un historique plus propre et plus compact."
+    },
+    {
+      "text": "La réponse évite de proposer un pull pour des fichiers projet-spécifiques.",
+      "passed": true,
+      "evidence": "Extrait : Cette synchro vise `.github` et `projects/shared`, pas les fichiers projet-spécifiques."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

@@ -1,13 +1,24 @@
 ---
 name: design-view
-description: Design views with proper includes/excludes and basic layout. Use for include patterns, tag filtering, and simple rank hints. For advanced styling/navigation, use customize-view. Always include parent context (containers in systems, components in containers, VMs in zones). Show neighboring elements via relationship includes (-> element, element ->). Organize views by category (C1/C2/C3/Use Cases/Deployment/Operations).
+description: Use when creating or updating architecture views with proper element inclusion, parent context, neighbor relationships, and category folder organization (C1/C2/C3/Use Cases/Deployment/Operations).
 ---
 
 # Design LikeC4 View
 
-Creates architecture visualization views with proper element inclusion, layout hints, and organization.
+## Overview
 
-## Core Principles Quick Reference
+Creates architecture visualization views with correct element inclusion patterns: always show the parent boundary, the focused elements, and their neighbors. Views must live in named category folders (except the root index view). For advanced styling and navigation, use `customize-view` after this skill.
+
+## When to Use
+
+- Creating a new C1/C2/C3, Use Cases, Deployment, or Operations view
+- Deciding which elements (parent + focus + neighbors) to include
+- Organizing views into the correct category folders
+- Adding basic rank hints without advanced styling
+
+**Do not use** for sequence/dynamic flows — use `create-sequence-view`. For styling, layout control, or navigateTo links — use `customize-view`.
+
+## Quick Reference
 
 | Principle | Rule | Why |
 |-----------|------|-----|
@@ -519,6 +530,20 @@ views 'Deployment' {
   }
 }
 ```
+
+## Common Mistakes
+
+❌ **Missing parent element** — never show containers without their parent system, or components without their parent container
+
+❌ **No neighbors** — always include `-> element` and `element ->` to show what interacts with the focus element
+
+❌ **Wildcards in deployment views** — always list every VM explicitly; `include production.*` skips important details
+
+❌ **View outside category folder** — every view except `view index` must be inside a `views 'FolderName'` block
+
+❌ **Dynamic view in C1 folder** — sequence/temporal flows belong in `views 'Use Cases'`, not in structural folders
+
+❌ **Duplicate title prefix** — if inside `views 'C2'`, don’t start title with “C2 /”; use folder scope OR title prefix, not both
 
 ## Best Practices
 

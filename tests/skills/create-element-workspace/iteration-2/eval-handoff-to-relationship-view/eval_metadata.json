@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-handoff-to-relationship-view",
+  "prompt": "Je dois ajouter un `virusTotal` externe et une `scanApi` interne, puis dessiner leurs flèches et une vue C2. Quel skill utiliser pour chaque partie ?",
+  "assertions": [
+    "La réponse identifie `System_External` et un kind interne API existant valide.",
+    "La réponse renvoie les flèches vers `create-relationship`.",
+    "La réponse renvoie la vue C2 vers `design-view`.",
+    "La réponse garde `create-element` centré sur les déclarations d'éléments."
+  ]
+}

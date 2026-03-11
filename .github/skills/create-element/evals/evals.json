@@ -1,0 +1,40 @@
+{
+  "skill_name": "create-element",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je travaille dans `projects/template/system-model.c4`. Ajoute sous `mySystem` un nouveau conteneur API pour l’ingestion de fichiers. Je veux une déclaration LikeC4 correcte et minimale, sans inventer de kind custom.",
+      "expected_output": "Une déclaration d’élément réutilisant `Container_Api` sous `mySystem`, avec technology et description.",
+      "files": [],
+      "expectations": [
+        "La réponse réutilise un kind existant du shared spec (`Container_Api`) au lieu d’inventer un kind custom.",
+        "La réponse place le nouvel élément sous `mySystem` avec un nom de variable en camelCase.",
+        "La réponse inclut `technology` et `description` dans la déclaration.",
+        "La réponse garde le focus sur la déclaration d’élément, sans partir dans les relations ou les vues."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Je pense créer un kind `Container_UploadOrchestrator` juste pour un service d’upload. Est-ce une bonne idée dans ce repo ? Explique la règle et quoi faire avant d’ajouter un nouveau kind.",
+      "expected_output": "La réponse impose de vérifier d’abord le shared spec, déconseille les kinds one-off et demande une autorisation avant toute création de nouveau kind.",
+      "files": [],
+      "expectations": [
+        "La réponse demande d’abord de vérifier les kinds existants du shared spec ou via `read-project-summary`.",
+        "La réponse déconseille de créer un kind one-off si un kind existant couvre déjà le besoin.",
+        "La réponse dit de demander l’autorisation avant d’introduire un nouveau kind."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Je dois ajouter un `virusTotal` externe et une `scanApi` interne, puis dessiner leurs flèches et une vue C2. Quel skill utiliser pour chaque partie ?",
+      "expected_output": "La réponse garde create-element centré sur les déclarations d’éléments et délègue les flèches et la vue aux bons skills.",
+      "files": [],
+      "expectations": [
+        "La réponse identifie `System_External` pour le système tiers et un kind interne existant comme `Container_Api` pour l’API.",
+        "La réponse renvoie explicitement les flèches à `create-relationship`.",
+        "La réponse renvoie explicitement la vue C2 à `design-view`.",
+        "La réponse garde `create-element` centré sur les déclarations d’éléments."
+      ]
+    }
+  ]
+}

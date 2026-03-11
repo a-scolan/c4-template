@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse demande un tableau Markdown pour le VM.",
+      "passed": true,
+      "evidence": "La première phrase demande explicitement un tableau Markdown dans la description du VM."
+    },
+    {
+      "text": "La réponse met les interfaces réseau (`eth0`, `eth1`) en premier.",
+      "passed": true,
+      "evidence": "L’ordre proposé commence explicitement par les interfaces réseau `eth0` puis `eth1`."
+    },
+    {
+      "text": "La réponse dit que le gateway appartient plutôt à la zone qu’au VM standard.",
+      "passed": true,
+      "evidence": "La dernière phrase dit que le gateway standard vit plutôt au niveau de la zone, pas du VM."
+    },
+    {
+      "text": "La réponse garde la metadata optionnelle, seulement si l’automatisation la requiert.",
+      "passed": true,
+      "evidence": "La réponse dit explicitement que la metadata reste optionnelle, seulement pour une automatisation qui requête ces champs."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_tokens": 0,
+    "duration_ms": 0,
+    "total_duration_seconds": 0,
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Aucune suggestion majeure sur cet eval."
+  }
+}

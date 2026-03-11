@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse identifie `Infra_Fw` comme kind exact.",
+      "passed": true,
+      "evidence": "Extrait : Le kind exact pour un firewall est `Infra_Fw`, pas `Infra_Firewall`."
+    },
+    {
+      "text": "La réponse donne au moins deux kinds proches réellement valides.",
+      "passed": true,
+      "evidence": "Extrait : Deux kinds proches vraiment valides dans ce dépôt sont `Infra_F5` et `Infra_Router`."
+    },
+    {
+      "text": "La réponse renvoie vers `spec-deployment.c4` et/ou `read-project-summary`.",
+      "passed": true,
+      "evidence": "Extrait : Vérifie dans `spec-deployment.c4` ou via `read-project-summary`."
+    },
+    {
+      "text": "La réponse évite de présenter un kind invalide comme valide.",
+      "passed": true,
+      "evidence": "Extrait : Ne présente pas `Infra_Firewall` comme un kind valide."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 274,
+    "transcript_chars": 274
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Harness statique : temps et tokens non collectés, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

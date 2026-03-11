@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse redirige explicitement le flow temporel vers `create-sequence-view`.",
+      "passed": true,
+      "evidence": "Le premier bullet dit que le `parcours temporel` relève de `create-sequence-view`, dans `views 'Use Cases'`."
+    },
+    {
+      "text": "La réponse redirige explicitement le styling vers `customize-view`.",
+      "passed": true,
+      "evidence": "Le second bullet attribue explicitement la mise en avant visuelle à `customize-view`."
+    },
+    {
+      "text": "La réponse limite `design-view` au cadrage d'une vue structurelle compagnon.",
+      "passed": true,
+      "evidence": "La réponse précise que `design-view` sert à cadrer une `vue structurelle compagnon` et déconseille d'y mélanger flow dynamique et styling avancé."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

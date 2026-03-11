@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-progressive-file-split",
+  "prompt": "J'ai un seul `system.c4` de 1200 lignes. Comment le découper progressivement dans ce template, et dans quels fichiers mettre les vues C1/C2/C3, les Use Cases, le deployment et les ops ?",
+  "assertions": [
+    "La réponse commence par un split minimal cohérent avec le template (au moins `system-model.c4` et `system-views.c4`).",
+    "La réponse place les vues C1/C2/C3 dans `system-views.c4`.",
+    "La réponse place les Use Cases dans un fichier dédié comme `system-sequences.c4` quand les flux justifient l'extraction, au lieu de les mélanger aveuglément partout.",
+    "La réponse sépare les définitions et vues de déploiement/opérations dans des fichiers dédiés (`deployment*.c4`, `operations*.c4`) quand ces sujets existent."
+  ]
+}

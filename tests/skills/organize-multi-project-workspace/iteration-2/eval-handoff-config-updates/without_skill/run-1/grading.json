@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse couvre la structure multi-projet / bootstrap via ce skill.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : ce skill couvre la structure multi-projet."
+    },
+    {
+      "text": "La réponse renvoie les détails d'`include.paths`/`imageAliases` vers `configure-project-includes`.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : `configure-project-includes`."
+    },
+    {
+      "text": "La réponse rappelle qu’un `likec4.config.json` appartient à chaque projet.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : chaque projet garde son `likec4.config.json`."
+    },
+    {
+      "text": "La réponse maintient l’usage de chemins relatifs vers `../shared`.",
+      "passed": true,
+      "evidence": "Extrait : Pour l'ajout du nouveau projet, crée le dossier et référence `../shared` dans le config."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 3,
+    "total": 4,
+    "pass_rate": 0.25
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Le baseline capture le chemin relatif mais pas la coordination entre skills."
+  }
+}

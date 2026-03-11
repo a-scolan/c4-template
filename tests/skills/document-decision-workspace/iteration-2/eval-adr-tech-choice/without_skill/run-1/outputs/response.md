@@ -1,0 +1,1 @@
+Écris une note courte sur pourquoi PostgreSQL est préférable pour `mySystem.database`, avec quelques raisons principales.

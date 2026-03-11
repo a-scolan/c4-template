@@ -1,0 +1,38 @@
+{
+  "skill_name": "design-view",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Dans `projects/template/system-views.c4`, je veux une vraie vue C2 pour `mySystem` qui montre le système, ses conteneurs, l'utilisateur et `emailService`, avec un drill-down depuis la webapp. Propose-moi le squelette LikeC4 au bon endroit.",
+      "expected_output": "Une vue C2 structurée dans le bon dossier avec parent, focus, voisins et navigation.",
+      "files": [],
+      "expectations": [
+        "La réponse place la vue dans `views 'C2'` plutôt qu'à la racine.",
+        "La réponse inclut explicitement le parent `mySystem`, le focus `mySystem.*` et le contexte voisin.",
+        "La réponse ajoute un `navigateTo` pertinent depuis `mySystem.webapp`."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Je dois créer une vue d'infrastructure prod avec DMZ, app tier et data tier. Donne-moi un exemple LikeC4 de vue Deployment conforme aux conventions du repo.",
+      "expected_output": "Une vue Deployment avec hiérarchie explicite environnement → zones → VMs, sans wildcard.",
+      "files": [],
+      "expectations": [
+        "La réponse utilise `views 'Deployment'` avec un `deployment view`.",
+        "La réponse liste explicitement l'environnement, les zones et les VMs sans wildcard `*` ou `**`.",
+        "La réponse garde la hiérarchie parentale et s'arrête au niveau VM."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Je veux documenter le parcours d'upload pas à pas, avec des couleurs pour mettre en avant les éléments critiques. Quelle approche LikeC4 me recommandes-tu ?",
+      "expected_output": "Une réponse qui sépare structure, dynamique et personnalisation, avec les bons handoffs.",
+      "files": [],
+      "expectations": [
+        "La réponse redirige explicitement le flow temporel vers `create-sequence-view`.",
+        "La réponse redirige explicitement le styling vers `customize-view`.",
+        "La réponse limite `design-view` au cadrage d'une vue structurelle compagnon."
+      ]
+    }
+  ]
+}

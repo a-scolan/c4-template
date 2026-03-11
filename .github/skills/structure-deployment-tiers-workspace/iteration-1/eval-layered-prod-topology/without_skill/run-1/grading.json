@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse organise l'infra en `Dmz`, `AppTier`, `ProcTier`, `DataTier`, avec `SecZone` ou `InfraZone` en option si utile.",
+      "passed": false,
+      "evidence": "La réponse parle seulement d'`une zone front, une zone applicative et une zone data` et ne structure pas l'infra en `Dmz` / `AppTier` / `ProcTier` / `DataTier`."
+    },
+    {
+      "text": "La réponse place la file/les workers en `ProcTier` et les stockages persistants (`MongoDB`, `MinIO`) en `DataTier`.",
+      "passed": false,
+      "evidence": "La réponse met `RabbitMQ et le worker ... avec l'applicatif pour simplifier`, donc elle ne réserve pas l'async au `ProcTier`."
+    },
+    {
+      "text": "La réponse documente des règles réseau/firewall entre tiers et évite d'exposer `DataTier` à Internet.",
+      "passed": true,
+      "evidence": "La dernière phrase dit explicitement que la base et le stockage ne sont `pas exposés directement à Internet` et que seul le backend doit y accéder."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.33
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

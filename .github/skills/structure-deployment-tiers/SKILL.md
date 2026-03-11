@@ -5,9 +5,29 @@ description: Use when organizing deployment infrastructure into logical tiers (D
 
 # Structure Deployment Tiers
 
-Use this skill when designing layered deployment architecture with clear tier responsibilities.
+## Overview
+
+Organizes deployment infrastructure into 4–5 logical tiers (DMZ → AppTier → ProcTier → DataTier, plus optional SecZone and InfraZone). Each tier has clear responsibilities, specific firewall rules, and network isolation. All tiers and zones must be explicitly nested within their parent environment.
+
+## When to Use
+
+- Designing a new production deployment from scratch
+- Reviewing whether existing zones have clear, single responsibilities
+- Documenting firewall rules between network segments
+- Adding a monitoring zone (SecZone) or backup/DR zone (InfraZone) to an existing architecture
 
 **REQUIRED BACKGROUND:** Read `model-deployment-infrastructure` skill for core hierarchy and naming conventions before designing tiers.
+
+## Quick Reference
+
+| Tier | Purpose | Internet-facing | Key services |
+|------|---------|-----------------|---------------|
+| DMZ | Edge security, TLS termination | ✅ HTTPS 443 | API Gateway, Web Server |
+| AppTier | Microservices logic | ❌ Internal | Upload, Retrieval, Search |
+| ProcTier | Async job processing | ❌ Internal | Queue (RabbitMQ), Worker |
+| DataTier | Persistent storage | ❌ Internal | Database (MongoDB), Object Storage |
+| SecZone | Observability (optional) | ❌ Internal | Prometheus, Grafana, ELK |
+| InfraZone | Backup/DR (optional) | ❌ Internal | Backup storage, Failover |
 
 **Keywords:** deployment, tiers, DMZ, AppTier, DataTier, ProcTier, firewall, layered architecture, zones
 

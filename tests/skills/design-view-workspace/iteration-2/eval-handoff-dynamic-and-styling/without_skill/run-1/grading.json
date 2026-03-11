@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse redirige explicitement le flow temporel vers `create-sequence-view`.",
+      "passed": false,
+      "evidence": "La réponse propose au contraire de garder les étapes d'upload dans une vue C2 unique et ne mentionne jamais `create-sequence-view`."
+    },
+    {
+      "text": "La réponse redirige explicitement le styling vers `customize-view`.",
+      "passed": false,
+      "evidence": "La mise en couleur est absorbée dans la même vue, sans handoff vers `customize-view`."
+    },
+    {
+      "text": "La réponse limite `design-view` au cadrage d'une vue structurelle compagnon.",
+      "passed": false,
+      "evidence": "La réponse mélange structure, flow pas à pas et styling dans un seul diagramme, donc elle ne limite pas `design-view` à une vue structurelle compagnon."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 3,
+    "total": 3,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

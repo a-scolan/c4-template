@@ -1,0 +1,1 @@
+Avant commit, je relirais `system-model.c4` et `system-views.c4`, je vérifierais que le container est nommé pareil partout, que ses relations ont du sens, puis j’ouvrirais la vue pour voir si le diagramme reste lisible.

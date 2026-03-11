@@ -65,7 +65,27 @@ git push
 - **When specs are updated:** Align with latest conventions
 - **When new icons added:** More diagram options
 
----
+## Skill Evaluation Workspaces
+
+Live skills stay under `.github/skills/`. Generated evaluation artifacts and reports live under `tests/skills/`.
+
+### Why this separation exists
+
+- Prevent test workspaces from being discovered as active skills during handoffs
+- Keep `benchmark.json`, `benchmark.md`, `review.html`, and iteration outputs out of the live skill namespace
+- Make future re-runs easier from one dedicated root test area
+
+### Convention
+
+- Live skill source: `.github/skills/<skill-name>/`
+- Evaluation workspace: `tests/skills/<skill-name>-workspace/`
+- Iterations: `tests/skills/<skill-name>-workspace/iteration-N/`
+- Optional baseline snapshots: `tests/skills/<skill-name>-workspace/skill-snapshot/BASELINE_SKILL.md`
+
+**Important:** Never keep a `SKILL.md` inside a test workspace. Only live skill definitions belong in `.github/skills/`.
+
+For local details and examples, see `tests/skills/README.md`.
+For the hardened skill-testing specification, see `tests/SKILL_TESTING_METHODOLOGY_SPEC.md`.
 
 ## Project-Specific READMEs
 

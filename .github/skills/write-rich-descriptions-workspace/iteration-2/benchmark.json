@@ -1,0 +1,225 @@
+{
+  "metadata": {
+    "skill_name": "write-rich-descriptions",
+    "skill_path": "c:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\.github\\skills\\write-rich-descriptions",
+    "executor_model": "GPT-5.4",
+    "analyzer_model": "GPT-5.4",
+    "timestamp": "2026-03-10T18:30:00Z",
+    "evals_run": [
+      0,
+      1
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "eval_name": "eval-prerequisite-handoff",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit qu’il faut d’abord créer l’élément avant de travailler sa description.",
+          "passed": true,
+          "evidence": "La phrase d’ouverture dit explicitement qu’on ne décrit pas richement un élément qui n’existe pas encore."
+        },
+        {
+          "text": "La réponse renvoie la création d’un élément système vers `create-element`.",
+          "passed": true,
+          "evidence": "La première étape envoie explicitement le service système vers `create-element`."
+        },
+        {
+          "text": "La réponse renvoie l’infrastructure de déploiement vers le vrai skill `model-deployment-infrastructure`.",
+          "passed": true,
+          "evidence": "La deuxième étape renvoie explicitement le VM / déploiement vers `model-deployment-infrastructure`."
+        },
+        {
+          "text": "La réponse distingue ensuite `metadata {}` pour le système et tableau Markdown pour le déploiement.",
+          "passed": true,
+          "evidence": "La troisième étape distingue clairement `metadata {}` côté système et tableau Markdown côté déploiement."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "eval_name": "eval-prerequisite-handoff",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit qu’il faut d’abord créer l’élément avant de travailler sa description.",
+          "passed": false,
+          "evidence": "La réponse parle de cadrage général, mais ne dit pas explicitement qu’il faut d’abord créer l’élément."
+        },
+        {
+          "text": "La réponse renvoie la création d’un élément système vers `create-element`.",
+          "passed": false,
+          "evidence": "Aucun handoff vers `create-element` n’apparaît."
+        },
+        {
+          "text": "La réponse renvoie l’infrastructure de déploiement vers le vrai skill `model-deployment-infrastructure`.",
+          "passed": false,
+          "evidence": "Aucun handoff vers `model-deployment-infrastructure` n’apparaît."
+        },
+        {
+          "text": "La réponse distingue ensuite `metadata {}` pour le système et tableau Markdown pour le déploiement.",
+          "passed": true,
+          "evidence": "Elle distingue bien les métadonnées côté système et le tableau côté déploiement."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "eval-deployment-vm-table",
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse demande un tableau Markdown pour le VM.",
+          "passed": true,
+          "evidence": "La première phrase demande explicitement un tableau Markdown dans la description du VM."
+        },
+        {
+          "text": "La réponse met les interfaces réseau (`eth0`, `eth1`) en premier.",
+          "passed": true,
+          "evidence": "L’ordre proposé commence explicitement par les interfaces réseau `eth0` puis `eth1`."
+        },
+        {
+          "text": "La réponse dit que le gateway appartient plutôt à la zone qu’au VM standard.",
+          "passed": true,
+          "evidence": "La dernière phrase dit que le gateway standard vit plutôt au niveau de la zone, pas du VM."
+        },
+        {
+          "text": "La réponse garde la metadata optionnelle, seulement si l’automatisation la requiert.",
+          "passed": true,
+          "evidence": "La réponse dit explicitement que la metadata reste optionnelle, seulement pour une automatisation qui requête ces champs."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "eval_name": "eval-deployment-vm-table",
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse demande un tableau Markdown pour le VM.",
+          "passed": true,
+          "evidence": "La réponse demande explicitement un tableau pour le VM."
+        },
+        {
+          "text": "La réponse met les interfaces réseau (`eth0`, `eth1`) en premier.",
+          "passed": false,
+          "evidence": "L’ordre proposé commence par l’OS et les ressources, pas par `eth0` / `eth1`."
+        },
+        {
+          "text": "La réponse dit que le gateway appartient plutôt à la zone qu’au VM standard.",
+          "passed": false,
+          "evidence": "Aucune mention du fait que le gateway standard appartient à la zone."
+        },
+        {
+          "text": "La réponse garde la metadata optionnelle, seulement si l’automatisation la requiert.",
+          "passed": false,
+          "evidence": "La réponse dit seulement qu’on peut ajouter des métadonnées pour enrichir la doc, sans limiter cela aux besoins d’automatisation."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.25,
+        "stddev": 0.0,
+        "min": 0.25,
+        "max": 0.25
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.75",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": [
+    "Le skill apporte un vrai handoff de prérequis : créer d’abord l’élément, puis seulement choisir le format de description adapté.",
+    "Sur le VM de déploiement, les attentes distinguent bien la logique ops (interfaces réseau d’abord, gateway au niveau zone, metadata seulement si requêtée).",
+    "Le baseline retrouve l’idée générale tableau vs métadonnées, mais pas les règles fines qui évitent la duplication ou le sur-documentage.",
+    "Temps et tokens restent nuls dans cette itération faute de télémétrie exécuteur disponible."
+  ]
+}

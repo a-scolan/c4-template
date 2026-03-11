@@ -1,0 +1,10 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-caching-layer",
+  "prompt": "Je veux ajouter Redis devant Postgres pour accélérer les lectures de `vault.api`. Comment modéliser ce cache sans faire croire qu’il remplace la base ?",
+  "assertions": [
+    "La réponse introduit un cache explicite (ex. `Container_Cache`) avec Redis.",
+    "La réponse utilise `reads`/`writes` pour le cache et garde la base en lecture sur cache miss.",
+    "La réponse rappelle que la base reste la source de vérité et que le cache n’est pas la source primaire."
+  ]
+}

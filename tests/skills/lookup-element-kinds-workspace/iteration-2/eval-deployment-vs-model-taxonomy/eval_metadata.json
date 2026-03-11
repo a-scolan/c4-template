@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-deployment-vs-model-taxonomy",
+  "prompt": "Entre une VM d'app et une VM base de données en déploiement, dois-je écrire `calls`, `tcp` ou `sql` ? Et dans le modèle logique applicatif, qu'est-ce qui reste valable ?",
+  "assertions": [
+    "La réponse distingue relations de déploiement et de modèle logique.",
+    "La réponse mentionne `tcp`/`sql` côté déploiement et `calls`/`reads`/`writes` côté modèle.",
+    "La réponse explique que les taxonomies sont différentes.",
+    "La réponse renvoie vers `spec-deployment.c4` et/ou `read-project-summary`."
+  ]
+}

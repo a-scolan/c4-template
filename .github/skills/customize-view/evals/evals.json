@@ -1,0 +1,38 @@
+{
+  "skill_name": "customize-view",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Dans `projects/template/system-views.c4`, je veux améliorer `c2_containers` pour rendre le flux de gauche à droite, garder `user` en entrée, `mySystem.database` et `emailService` en sortie, et conserver le drill-down sur `mySystem.webapp`. Donne-moi juste le bloc LikeC4.",
+      "expected_output": "Un bloc de personnalisation qui ajoute un autoLayout cohérent, garde les rank hints source/sink et préserve le `navigateTo` existant sans bricoler la structure.",
+      "files": [],
+      "expectations": [
+        "La réponse ajoute un `autoLayout LeftRight` et conserve des `rank source` / `rank sink` cohérents avec la demande.",
+        "La réponse préserve un `navigateTo c2_webapp_details` sur `mySystem.webapp`.",
+        "La réponse reste dans le périmètre de la personnalisation et n'introduit ni couleur hexadécimale ni refonte structurelle inutile."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Sur le showcase, je veux mettre en avant les éléments API et atténuer le reste dans une vue existante, mais sans inventer de palette locale. Quelle personnalisation LikeC4 proposerais-tu ?",
+      "expected_output": "Une personnalisation par `style` utilisant la palette partagée (`primary`, `muted`, etc.), qui souligne les éléments API tout en gardant le contexte visible.",
+      "files": [],
+      "expectations": [
+        "La réponse utilise des noms de palette partagée (`primary`, `muted`, etc.) plutôt que des hex codes.",
+        "La réponse emploie des règles `style` ou des `with` blocks pour mettre en avant les éléments API et atténuer le reste.",
+        "La réponse rappelle ou préserve le contexte structurel au lieu de le masquer totalement."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Je veux enrichir une vue C2 du template avec un lien externe vers la spec interne et un drill-down stable vers `c2_webapp_details`. Propose le bloc de personnalisation.",
+      "expected_output": "Un bloc de personnalisation avec `link https://... '...'`, un `navigateTo` stable vers un view ID existant et aucune dérive hors du périmètre du skill.",
+      "files": [],
+      "expectations": [
+        "La réponse ajoute un `link https://... '...'` explicite.",
+        "La réponse garde ou ajoute `navigateTo c2_webapp_details` sur `mySystem.webapp`.",
+        "La réponse cible un view ID existant et reste dans un scope de personnalisation sans reconstruire la vue entière."
+      ]
+    }
+  ]
+}

@@ -5,11 +5,30 @@ description: Use when resolving LikeC4 errors—element not found, unknown kinds
 
 # Troubleshoot LikeC4 Errors
 
-Use this skill when resolving common LikeC4 syntax or reference errors.
+## Overview
 
-**Symptoms:** "Element not found" errors, "Unknown kind" compilation failures, syntax violations, invalid references, diagram rendering issues
+Diagnoses and resolves common LikeC4 compilation and rendering errors by mapping symptoms to root causes and targeted fixes.
 
-**Tip:** Use `read-project-summary` to confirm valid element kinds, tags, and relationship types before editing.
+## When to Use
+
+- Compilation errors appear in VS Code Problems panel
+- LikeC4 MCP returns "element not found" or "unknown kind" responses
+- Diagram rendering fails or shows unexpected elements
+- Syntax errors after editing model or view files
+
+**Tip:** Use `read-project-summary` first to confirm valid element kinds, tags, and relationship types.
+
+## Quick Reference
+
+| Symptom | Root Cause | Fix |
+|---------|-----------|-----|
+| "Element not found" | Short name instead of FQN | Use `mySystem.api` not `api` |
+| "Unknown kind" | Invalid element kind | Check `projects/shared/spec-*.c4` |
+| "Invalid relationship kind" | Undefined relationship type | Use `calls`, `async`, `reads`, `writes` |
+| Syntax error in relationship block | Kind in property block | Move type to arrow: `-[calls]->` |
+| Parent-child in dynamic view | Conceptual violation | Have actor access component directly |
+| Unexpected elements in diagram | Over-broad wildcard include | Scope: `include mySystem.*` |
+| "instanceOf target not found" | Wrong element type or FQN | Target must be a Container, use FQN |
 
 ## Common Issues
 
@@ -75,3 +94,11 @@ Use this skill when resolving common LikeC4 syntax or reference errors.
 ### "instanceOf target not found"
 - **Cause:** Referencing non-existent or wrong element type
 - **Solution:** Ensure target is a Container from model, use FQN: `instanceOf mySystem.api`
+
+## Common Mistakes
+
+- ❌ Fixing the symptom (renaming) without finding the root cause (wrong FQN or kind)
+- ❌ Using generic kinds (`Container`) instead of spec-defined kinds (`Container_Api`)
+- ❌ Retrying the same syntax without checking Context7 MCP for current DSL docs
+- ❌ Editing view includes to work around a model error instead of fixing the model
+- ❌ Skipping `read-project-summary` — always verify valid kinds before manual edits

@@ -21,7 +21,7 @@ Detailed explanations, examples, and clarifications for C4 modeling process.
 ```likec4
 model {
   // Your system
-  vault = System 'Secure Vault' {
+  vault = System_Existing 'Secure Vault' {
     description 'Document management with encryption'
   }
   
@@ -31,14 +31,13 @@ model {
   }
   
   // External systems
-  scanner = System_Existing 'Virus Scanner' {
-    #external
+  scanner = System_External 'Virus Scanner' {
     description 'Cloud antivirus service'
   }
   
   // Relationships
-  customer -> vault 'Uploads and retrieves files'
-  vault -> scanner 'Scans uploaded files'
+  customer -[calls]-> vault 'Uploads and retrieves files'
+  vault -[calls]-> scanner 'Scans uploaded files'
 }
 ```
 
@@ -78,7 +77,7 @@ A container is a **runtime boundary** - something that must be running for the s
 
 ```likec4
 model {
-  vault = System 'Secure Vault' {
+  vault = System_Existing 'Secure Vault' {
     // Frontend container
     webApp = Container_Spa 'Web App' {
       technology 'React'
@@ -86,12 +85,12 @@ model {
     }
     
     // Backend containers
-    api = Container_API 'API Gateway' {
+    api = Container_Api 'API Gateway' {
       technology 'Kong'
       description 'Routes and validates requests'
     }
     
-    uploadService = Container_Service 'Upload Service' {
+    uploadService = Container_Api 'Upload Service' {
       technology 'Node.js'
       description 'Handles file uploads and validation'
     }
@@ -113,7 +112,7 @@ model {
       description 'Async processing queue'
     }
     
-    worker = Container_Service 'Worker' {
+    worker = Container_ProcessingServer 'Worker' {
       technology 'Go'
       description 'Background file processing'
     }
@@ -166,18 +165,20 @@ A component is a **grouping of related functionality** behind a well-defined int
 
 ```likec4
 model {
-  uploadService = Container_Service 'Upload Service' {
+  mySystem = System_Existing 'My System' {
+    uploadService = Container_Api 'Upload Service' {
     // Components
-    validateModule = Component 'Validation' {
-      description 'File validation (size, type, malware check)'
+      validateModule = Component 'Validation' {
+        description 'File validation (size, type, malware check)'
+      }
+      
+      queueModule = Component 'Queue Publisher' {
+        description 'Publishes validated jobs to queue'
+      }
+      
+      // Internal relationships
+      validateModule -[uses]-> queueModule 'Publish if valid'
     }
-    
-    queueModule = Component 'Queue Publisher' {
-      description 'Publishes validated jobs to queue'
-    }
-    
-    // Internal relationships
-    validateModule -[uses]-> queueModule 'Publish if valid'
   }
 }
 ```
@@ -241,34 +242,38 @@ API router
 ```likec4
 // CONTAINER LEVEL (C2)
 model {
-  uploadService = Container_Service 'Upload Service' {
+  mySystem = System_Existing 'My System' {
+    uploadService = Container_Api 'Upload Service' {
     technology 'Node.js'
     description 'Handles file uploads'
-  }
+    }
   
-  database = Container_Database 'Database' {
-    technology 'MongoDB'
-    description 'Stores metadata'
-  }
+    database = Container_Database 'Database' {
+      technology 'MongoDB'
+      description 'Stores metadata'
+    }
   
-  // These are separate deployable units
-  uploadService -[writes]-> database 'Persist metadata'
+    // These are separate deployable units
+    uploadService -[writes]-> database 'Persist metadata'
+  }
 }
 
 // COMPONENT LEVEL (C3)
 model {
-  uploadService = Container_Service 'Upload Service' {
-    // These execute within uploadService's Node.js process
-    validator = Component 'Validator' {
-      description 'Validates uploads'
+  mySystem = System_Existing 'My System' {
+    uploadService = Container_Api 'Upload Service' {
+      // These execute within uploadService's Node.js process
+      validator = Component 'Validator' {
+        description 'Validates uploads'
+      }
+      
+      repository = Component 'Data Access' {
+        description 'Database queries'
+      }
+      
+      // Internal communication (same process space)
+      validator -[uses]-> repository 'Save validated data'
     }
-    
-    repository = Component 'Data Access' {
-      description 'Database queries'
-    }
-    
-    // Internal communication (same process space)
-    validator -[uses]-> repository 'Save validated data'
   }
 }
 ```
@@ -348,8 +353,7 @@ views 'Use Cases' {
     customer -> vault.webApp 'Upload file'
     vault.webApp -> vault.api 'POST /upload'
     vault.api -> vault.uploadService 'Route to upload service'
-    vault.uploadService -> vault.uploadService.validateModule 'Validate file'
-    vault.uploadService.queueModule -> vault.queue 'Queue processing job'
+    vault.uploadService -> vault.queue 'Queue processing job'
     vault.queue -> vault.worker 'Deliver job'
     vault.worker -> vault.storage 'Store encrypted file'
     vault.worker -> vault.database 'Update metadata'
@@ -494,7 +498,7 @@ api_gateway, ApiGateway, api-gateway, apiGateway (all different elements)
 ✅ **Solution:** Consistent naming
 
 ```
-Element kinds: PascalCase (Container_API, Node_Vm)
+Element kinds: PascalCase (Container_Api, Node_Vm)
 Variables: camelCase (apiGateway, prodVm)
 View IDs: snake_case (c1_context, c2_containers)
 ```
@@ -535,11 +539,11 @@ component3 = Container_Component 'Component' { }
 ✅ **Solution:** Descriptive names reflecting domain
 
 ```
-uploadService = Container_Service 'Upload Service' {
+uploadService = Container_Api 'Upload Service' {
   description 'Handles file upload and validation'
 }
 
-authService = Container_Service 'Auth Service' {
+authService = Container_Api 'Auth Service' {
   description 'User authentication and authorization'
 }
 ```

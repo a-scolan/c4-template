@@ -1,16 +1,32 @@
 ---
 name: customize-view
-description: Advanced view features: styling (colors, shapes, style predicates), layout control (autoLayout, rank hints), and navigation (navigateTo, links).
+description: Use when applying advanced styling (colors, shapes, style predicates), layout control (autoLayout, rank hints), or navigation (navigateTo, links) to LikeC4 views.
 ---
 
 # Customize View
 
-Use this skill for advanced view features: styling, layout, and navigation.
+## Overview
+
+Provides advanced view features beyond basic element inclusion: visual styling via shared-spec colors and style predicates, layout control with autoLayout and rank hints, and navigation links between views. Always start with `design-view` for structure before applying customizations.
 
 ## When to Use
 
-- Use **design-view** for base view structure (includes/excludes, parent context, neighbors).
-- Use **customize-view** only when you need advanced styling, layout control, or navigation.
+- Applying colors, shapes, or opacity to elements in a view (use shared-spec palette only)
+- Controlling diagram layout direction or element ordering with `autoLayout` and rank hints
+- Adding `navigateTo` links to enable drill-down navigation between views
+- Attaching external documentation links to a view
+
+**Do not use** for base view structure (includes/excludes, parent context, neighbors) — use `design-view` first.
+
+## Quick Reference
+
+| Need | Primary Feature | Constraint |
+|------|------------------|-----------|
+| Highlight element type | `style` / kind style predicates | Prefer shared-spec colors and shapes |
+| Improve readability | `autoLayout` + rank hints | Keep parent context visible |
+| Enable drill-down | `navigateTo` | Link only to stable, existing view IDs |
+| Add external docs | `link` | Use trusted and maintained URLs |
+| De-emphasize noise | Opacity/style predicates | Never hide critical context boundaries |
 
 ## Core Principles
 
@@ -324,6 +340,20 @@ view myView {
 **MCP:** Use `open-view` to preview layout and navigation interactively
 
 **Context7:** Query `/likec4/likec4` for syntax validation if uncertain
+
+## Common Mistakes
+
+❌ **Custom hex colors** — never define new colors inline; use only palette names from `spec-global.c4` (primary, muted, danger, etc.)
+
+❌ **Custom shape definitions** — shapes come from element kinds; do not override with custom shape values
+
+❌ **Hiding parent context with styling** — never exclude or fully opacity-hide the parent container/system boundary
+
+❌ **Duplicate title prefix** — if a view is inside `views 'C1'`, don't prefix the title with "C1 /"; use folder name OR title prefix, not both
+
+❌ **navigateTo target doesn't exist** — always verify the target view ID exists before adding a `navigateTo` link
+
+❌ **Conflicting rank hints** — an element cannot be both `rank source` and `rank sink`; also, `rank same` only works for siblings
 
 ## Output
 

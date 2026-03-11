@@ -1,0 +1,27 @@
+{
+  "skill_name": "name-deployment-nodes",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je dois nommer l'environnement, les zones et les VM d'une prod avec API gateway, upload, worker, MongoDB et monitoring. Propose des noms cohérents et corrige aussi ces candidats : `ProdApiVM`, `prod_upload_vm`, `AppServers`, `MonitoringTier`.",
+      "expected_output": "Réponse qui applique strictement les patterns de nommage des VM/zones/environnements et corrige les contre-exemples donnés.",
+      "files": [],
+      "expectations": [
+        "La réponse applique le pattern VM `{Environment}{Service}Vm` et corrige `ProdApiVM` / `prod_upload_vm` vers des noms du type `ProdApigwVm` / `ProdUploadVm`.",
+        "La réponse distingue les zones de couche (`AppTier`, `ProcTier`, `DataTier`) des zones fonctionnelles (`SecZone`, `InfraZone`) et corrige `AppServers` / `MonitoringTier`.",
+        "La réponse garde des identifiants en PascalCase avec suffixe `Vm`, pas `VM` ni snake_case."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Je ne veux pas seulement les noms : je veux aussi la hiérarchie complète Environment→Zone→VM→Node_App, les descriptions Markdown avec IP/CPU/RAM et les `instanceOf` vers les containers. Est-ce le bon skill ?",
+      "expected_output": "La réponse garde le scope sur le naming et renvoie la modélisation complète à `model-deployment-infrastructure`.",
+      "files": [],
+      "expectations": [
+        "La réponse dit que ce skill couvre surtout le naming et renvoie la modélisation complète à `model-deployment-infrastructure`.",
+        "La réponse conserve les patterns de nommage utiles en entrée (`{Env}{Service}Vm`, `{Tier}Tier` ou `{Function}Zone`).",
+        "La réponse n'essaie pas de détailler elle-même toute la hiérarchie, les descriptions et les `instanceOf`."
+      ]
+    }
+  ]
+}

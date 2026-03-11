@@ -1,0 +1,27 @@
+{
+  "skill_name": "test-model",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je viens d'ajouter un container `mySystem.worker` et une vue C2 dédiée dans `projects/template/system-model.c4` et `system-views.c4`. Avant commit, donne-moi un plan de validation LikeC4 pour vérifier kinds, FQN, relations et rendu.",
+      "expected_output": "Plan de validation LikeC4 structuré pour les changements du projet template.",
+      "files": [],
+      "expectations": [
+        "La réponse commence par vérifier la structure et les kinds via `read-project-summary`.",
+        "La réponse vérifie les références/FQN et les relations via `search-element` ou `find-relationships`.",
+        "La réponse inclut la validation du rendu des vues et du panneau Problems avant commit."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Dans `projects/template/system-views.c4`, ma vue `c2_webapp_details` montre `user`, `mySystem.webapp` et `mySystem.api`. Comment valider qu’elle garde bien le bon contexte parent et qu’aucun include n’est trop large ?",
+      "expected_output": "Conseils de validation d'une vue C2 avec contrôle du contexte parent et handoff vers design-view.",
+      "files": [],
+      "expectations": [
+        "La réponse rappelle qu’une vue doit garder un contexte parent explicite.",
+        "La réponse renvoie explicitement les règles détaillées au skill `design-view`.",
+        "La réponse propose de contrôler le rendu réel de la vue et les include patterns."
+      ]
+    }
+  ]
+}

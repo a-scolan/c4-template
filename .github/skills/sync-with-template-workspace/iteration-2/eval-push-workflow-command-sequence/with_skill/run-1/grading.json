@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse fetch `c4-template/main` et crée un branch `sync/*` depuis cette base.",
+      "passed": true,
+      "evidence": "Extrait : 1. `git fetch c4-template main` ; 2. `git checkout -b sync/update c4-template/main`"
+    },
+    {
+      "text": "La réponse ne récupère que le fichier générique depuis `main`.",
+      "passed": true,
+      "evidence": "Extrait : 3. `git checkout main -- .github/skills/create-relationship/SKILL.md`"
+    },
+    {
+      "text": "La réponse impose une revue de diff/confidentialité avant `git push`.",
+      "passed": true,
+      "evidence": "Extrait : 5. `git diff --cached` puis revue confidentialité"
+    },
+    {
+      "text": "La réponse pousse depuis un branch `sync/*`, pas directement depuis `main`.",
+      "passed": true,
+      "evidence": "Extrait : Et surtout : pas directement depuis `main`."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

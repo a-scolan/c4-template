@@ -1,0 +1,27 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je dois documenter le déploiement de prod d'une plateforme documentaire avec un API gateway, un service d'upload, un worker de traitement et MongoDB. Donne-moi la structure LikeC4 à suivre pour les environnements, zones, VM et Node_App. Explique aussi comment relier les apps déployées au modèle logique et s'il faut recopier les relations de déploiement à la main.",
+      "expected_output": "Réponse structurée autour de Environment → Zone → VM → Node_App, `instanceOf`, relations héritées, et descriptions riches des VM/zones.",
+      "files": [],
+      "expectations": [
+        "La réponse impose la hiérarchie `Environment → Zone → VM → Node_App`.",
+        "La réponse relie les `Node_App` aux containers du modèle via `instanceOf` et dit que les relations sont héritées plutôt que recopiées.",
+        "La réponse demande des descriptions riches pour VM/zones avec réseau et specs, en mettant `eth0` en premier dans la table VM."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Je veux surtout découper la prod en `Dmz`, `AppTier`, `ProcTier` et `DataTier`, avec des règles firewall entre zones. Est-ce que ce skill doit détailler ça lui-même ou faut-il passer à un autre skill ?",
+      "expected_output": "La réponse garde le cadre de déploiement mais renvoie l'organisation par tiers et les règles firewall à `structure-deployment-tiers`.",
+      "files": [],
+      "expectations": [
+        "La réponse renvoie explicitement l'organisation par tiers et les règles firewall à `structure-deployment-tiers`.",
+        "La réponse rappelle que la hiérarchie de base reste `Environment → Zone → VM → Node_App`.",
+        "La réponse présente ce skill comme cadre de modélisation de l'infrastructure, pas comme skill unique pour tout le design réseau."
+      ]
+    }
+  ]
+}

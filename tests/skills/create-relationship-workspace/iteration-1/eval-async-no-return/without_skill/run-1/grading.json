@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse utilise `-[async]->` du producteur vers la queue puis de la queue vers le worker.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : uploadService -[async]-> jobQueue, jobQueue -[async]-> worker."
+    },
+    {
+      "text": "La réponse refuse une relation retour du worker vers le producteur.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : pas de relation retour."
+    },
+    {
+      "text": "La réponse utilise `-[writes]->` pour l'écriture en base.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : worker -[writes]-> database."
+    },
+    {
+      "text": "La réponse garde un pattern asynchrone one-way sans ACK de retour.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : one-way, sans ACK."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 4,
+    "total": 4,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 164,
+    "transcript_chars": 164
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Harness statique : temps et tokens non collectés, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

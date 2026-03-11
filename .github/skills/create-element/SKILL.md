@@ -1,19 +1,41 @@
 ---
 name: create-element
-description: Create elements with proper naming (PascalCase kinds, camelCase vars), required metadata (technology, description), and correct hierarchy.
+description: Use when creating or modifying LikeC4 elements (systems, containers, components, nodes) with proper naming conventions, required metadata, and correct C4 hierarchy placement.
 ---
 
 # Create LikeC4 Element
 
-Use this skill when creating or modifying any LikeC4 element.
+## Overview
 
-**Before creating:** 
+Defines the rules and patterns for declaring LikeC4 elements: naming conventions (PascalCase kinds, camelCase variables), required fields (technology, description), tag usage, icon references, and correct parent-child hierarchy (System → Container → Component).
+
+## When to Use
+
+- Creating a new system, container, component, or deployment node
+- Modifying element properties (technology, description, tags, icon)
+- Checking whether an existing shared-spec kind fits your need before creating a custom one
+- Adding metadata fields used for filtering or automation
+
+**Do not use** to create relationship arrows or design views — use `create-relationship` and `design-view` respectively.
+
+**Before creating:**
 1. Read `c4-modeling-process` skill to understand C4 framework and top-to-bottom design (C1 → C2 → C3)
 2. **Check shared specification first** - Use LikeC4 MCP `read-project-summary` to list available element kinds
 3. Only create new kinds if absolutely necessary (and ask permission first)
 4. When adding relationships, follow `create-relationship` skill
 
 **If you need rich descriptions:** Use `write-rich-descriptions` for metadata blocks (system models) or markdown tables (deployment models).
+
+## Quick Reference
+
+| Topic | Rule |
+|------|------|
+| Kind naming | `Category_Subtype` in PascalCase (`Container_Api`, `Node_Vm`) |
+| Variable naming | camelCase (`apiGateway`, `prodUploadVm`) |
+| Required fields | `technology` + `description` (where applicable by kind) |
+| Tag source | Reuse declared shared-spec tags with exact spelling/case; do not duplicate them in metadata |
+| Hierarchy | System → Container → Component; Environment → Zone → VM → App |
+| New kind creation | Prefer shared spec first; ask before introducing new kinds |
 
 ## Shared Spec First Principle
 
@@ -46,14 +68,14 @@ See `c4-modeling-process` skill for detailed step-by-step guidance.
 
 ## Validation Rules
 
-1. **Naming:** Element kind uses `Category_Subtype` PascalCase (e.g., `Container_API`, `Node_VM`)
+1. **Naming:** Element kind uses `Category_Subtype` PascalCase exactly as declared in shared specs (e.g., `Container_Api`, `Node_Vm`)
 2. **Variable:** Instance name uses camelCase (e.g., `apiGateway`, `prodVM`)
 3. **Technology:** Required for Containers, Components, and Nodes
 4. **Description:** Required for ALL elements (explain purpose and responsibilities)
 5. **Tags:** 
-   - Use model tags (#System, #External, #Service, #Queue) in system-model.c4
-   - Use deployment tags (#Production, #Networking, #Monitoring) in deployment.c4
-   - Never repeat tags already in the element kind specification
+  - Reuse declared shared-spec tags only when they add meaning beyond the kind itself
+  - Keep the declared spelling/case exactly as-is (for example `#Production`, not `#production`)
+  - Never repeat family/type tags already implied by the element kind specification
 6. **Metadata:** Optional (only add if you filter/query by the field)
 7. **Hierarchy:** Place in correct parent (Containers inside Systems, Components inside Containers)
 
@@ -63,12 +85,12 @@ See `c4-modeling-process` skill for detailed step-by-step guidance.
 
 ```likec4
 model {
-  api = Container_API 'REST API' {
+  api = Container_Api 'REST API' {
     technology 'Node.js, Express'
     description 'Handles business logic and data processing'
   }
   
-  service = Component_Service 'User Service' {
+  userService = Component 'User Service' {
     technology 'Java 17, Spring Boot, Hibernate'
     description 'User management and authentication'
   }
@@ -79,16 +101,15 @@ model {
 
 ```likec4
 model {
-  apiGateway = Container_Gateway 'API Gateway' {
-    #critical #production
-    technology 'Kong'
+  ingestionApi = Container_Api 'Ingestion API' {
+    technology 'Node.js, Fastify'
     
     description """
-      Central entry point for all API requests.
+      Receives file uploads and starts the ingestion workflow.
       
       **Responsibilities:**
-      - Authentication and authorization
-      - Rate limiting and request routing
+      - Validate upload requests
+      - Forward accepted files to downstream processing
       
       **Availability:** 99.9% SLA
     """
@@ -100,8 +121,7 @@ model {
 
 ```likec4
 model {
-  paymentService = Component_Service 'Payment Service' {
-    #pci-compliant #production
+  paymentIntegration = Component 'Payment Integration' {
     technology 'Node.js, Stripe SDK'
     description 'Handles payment processing'
     
@@ -116,17 +136,15 @@ model {
 ```likec4
 model {
   database = Container_Database 'PostgreSQL' {
-    #production
     technology 'PostgreSQL 15'
     description 'Primary application database'
     icon tech:postgresql
   }
   
-  cache = Container_Cache 'Redis Cache' {
-    #production
-    technology 'Redis 7'
-    description 'Session and data cache'
-    icon tech:redis
+  queue = Container_Queue 'Async Queue' {
+    technology 'RabbitMQ'
+    description 'Buffers background jobs and asynchronous processing'
+    icon tech:rabbitmq
   }
 }
 ```
@@ -135,42 +153,23 @@ Common icon namespaces: `tech:`, `aws:`, `gcp:`, `azure:`
 
 ## Tagging Guidelines
 
-### Environment Tags
+Prefer tags only when they add queryable operational meaning. The element kind already carries most family/type semantics.
+
+### Deployment / runtime tags
 ```likec4
-prodAPI = Container_API 'Production API' {
-  #production #us-east-1
-  technology 'Node.js'
-  description 'Production API server'
+prodApiVm = Node_Vm 'Production API VM' {
+  #Production #Service
+  technology 'Ubuntu 22.04'
+  description 'Hosts the production API workload'
 }
 ```
 
-### Architectural Tags
+### Backup / recovery tags
 ```likec4
-frontend = Container_WebApp 'Frontend' {
-  #presentation #public-facing
-  technology 'React'
-  description 'User interface'
-}
-
-database = Container_Database 'Database' {
-  #data #persistent
-  technology 'PostgreSQL'
-  description 'Data storage'
-}
-```
-
-### Status and Compliance
-```likec4
-legacyService = Component_Service 'Legacy Service' {
-  #deprecated #migration-pending
-  technology 'Java 8'
-  description 'Legacy user service'
-}
-
-paymentDB = Container_Database 'Payment Data' {
-  technology 'PostgreSQL'
-  description 'Payment transactions'
-  #pci-compliant, #encrypted, #pii
+backupWorker = Node_App 'Backup Worker' {
+  #Backup #Recovery
+  technology 'BorgBackup'
+  description 'Runs scheduled backups and restore checks'
 }
 ```
 
@@ -181,7 +180,7 @@ paymentDB = Container_Database 'Payment Data' {
 - [ ] Descriptions use Markdown for structure when multi-line
 - [ ] Links use HTTPS and descriptive text (not "click here")
 - [ ] Icons use valid namespace (tech:, aws:, gcp:, azure:) if adding icons
-- [ ] Tags lowercase, hyphen-separated, match spec declarations
+- [ ] Tags match shared-spec spelling/case exactly when reusing declared tags
 - [ ] Element placed in correct parent hierarchy
 - [ ] Metadata (optional) — only if you filter/query by those fields
 
@@ -197,6 +196,22 @@ Use Context7 MCP `query-docs` with library `/likec4/likec4` if uncertain about:
 - Element property syntax (technology, description, link, icon)
 - Markdown formatting in descriptions
 - Icon namespace conventions
+
+## Common Mistakes
+
+❌ **Using guessed kind names** — `Container_API`, `Container_Gateway`, `Component_Service`, `Node_VM` are not declared in this repo.
+
+❌ **Using a generic base kind when a shared subtype exists** — prefer `Container_Api` or `Container_Database` over bare `Container` for common application elements.
+
+❌ **camelCase kind, PascalCase variable** — kinds must be `PascalCase_Subtype`; variables must be `camelCase`
+
+❌ **Missing technology on Containers/Components** — `technology` field is required for all non-actor elements
+
+❌ **Description missing** — all elements must have a description explaining their purpose and responsibilities
+
+❌ **Creating one-off custom kinds** — always check shared spec first; contributing to spec ensures consistency across projects
+
+❌ **Placing Containers outside their System** — hierarchy must be: System → Container → Component
 
 ## Output
 

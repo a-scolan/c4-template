@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-shared-vs-project-specific",
+  "prompt": "Je veux mettre un système `paymentsCore` et un acteur `backOfficeUser` dans `projects/shared/` pour qu'ils soient visibles partout. Bonne idée ou non ? Et comment gérer les références croisées entre projets ?",
+  "assertions": [
+    "La réponse dit que `projects/shared/` ne doit contenir que des définitions réutilisables, pas des modèles projet-spécifiques.",
+    "La réponse propose de garder `paymentsCore` / `backOfficeUser` dans le projet concerné, ou de modéliser un vrai externe partagé séparément.",
+    "La réponse mentionne une stratégie de références croisées explicites/minimales (systèmes externes partagés ou projet `externals`).",
+    "La réponse évite les dépendances circulaires entre projets."
+  ]
+}

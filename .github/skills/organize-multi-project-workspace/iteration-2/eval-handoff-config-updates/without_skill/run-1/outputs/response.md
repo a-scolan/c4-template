@@ -1,0 +1,1 @@
+Pour l'ajout du nouveau projet, crée le dossier et référence `../shared` dans le config.

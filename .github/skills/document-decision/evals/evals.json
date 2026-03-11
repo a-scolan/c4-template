@@ -1,0 +1,28 @@
+{
+  "skill_name": "document-decision",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "On choisit PostgreSQL plutôt que MongoDB pour `mySystem.database` dans le projet template. Aide-moi à cadrer l’ADR à écrire.",
+      "expected_output": "Cadre ADR standard pour un choix technologique lié à un élément LikeC4.",
+      "files": [],
+      "expectations": [
+        "La réponse utilise la structure ADR standard `Status / Context / Decision / Consequences`.",
+        "La réponse traite les conséquences positives et négatives, pas seulement les avantages.",
+        "La réponse propose un chemin/fichier au format `ADR/NNNN-...` aligné sur le template.",
+        "La réponse relie la décision à l’élément LikeC4 concerné (`mySystem.database`)."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Je viens de changer le workflow GitHub Actions du dépôt. Est-ce que je dois écrire un ADR avec ce skill ?",
+      "expected_output": "Refus motivé d'utiliser ce skill pour un changement CI/CD hors périmètre architectural.",
+      "files": [],
+      "expectations": [
+        "La réponse dit explicitement que ce skill n’est pas pour le tooling repo / CI-CD.",
+        "La réponse évite de forcer un ADR hors périmètre.",
+        "La réponse propose au moins une alternative courte (README, doc d’exploitation, note de repo, etc.)."
+      ]
+    }
+  ]
+}

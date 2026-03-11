@@ -1,168 +1,225 @@
 ---
 name: c4-modeling-process
-description: C4 modeling methodology - design system hierarchy top-to-bottom from Context to Components. Use when creating or reviewing architecture diagrams, ensuring C1→C2→C3 progression, or validating model completeness.
+description: Use when planning, reviewing, or correcting a LikeC4 model and you need to decide the right top-down design order (C1→C2→C3), whether C3 detail is warranted, or when to hand off from structural modeling to deployment or dynamic-view skills.
 ---
 
 # C4 Modeling Process
 
-**Core principle:** Design top-to-bottom (C1 → C2 → C3) for clarity and progressive detail.
+## Overview
+
+This skill is the **sequencing guide** for LikeC4 work. It decides what level to model next, what can stay out for now, and which specialized skill should take over for the detailed edit.
+
+**Core principle:** design top-down — **C1 Context → C2 Containers → C3 Components**. Add **Dynamic** and **Deployment** only after the structural model is stable enough to support them.
+
+## When to Use
+
+- Starting a new LikeC4 model from a blank page
+- Reviewing an existing model that feels too detailed too early
+- Deciding whether a container deserves a C3 view
+- Deciding whether a requested diagram belongs in C1/C2/C3, `Use Cases`, or `Deployment`
+- Coordinating several LikeC4 skills without losing the big picture
+
+**Do not use** for the detailed edit itself when a more specific skill applies:
+- use `create-element` for element declarations
+- use `create-relationship` for typed relationships
+- use `design-view` for static views
+- use `create-sequence-view` for dynamic flows
+- use `model-deployment-infrastructure` for deployment topology
 
 ## Quick Reference
 
-| Level | Focus | Key Question |
-|-------|-------|--------------|
-| **C1** | System boundary | Who/what interacts? |
-| **C2** | Containers (runtime units) | How is it built? |
-| **C3** | Components (code groupings) | What's inside? |
+| Stage | Question | Output | Supporting skills |
+|---|---|---|---|
+| **0. Context** | What project/rules am I editing? | Valid workspace understanding | `understand-project-structure` |
+| **1. C1** | What is the system boundary? | Actors, systems, external dependencies | `create-element`, `create-relationship`, `design-view` |
+| **2. C2** | What runtime building blocks make it work? | Containers and their interactions | `create-element`, `create-relationship`, `design-view` |
+| **3. C3** | Which containers truly need internal detail? | Selected component views only | `create-element`, `create-relationship`, `design-view` |
+| **4. Dynamic** | Which workflows need temporal order? | `views 'Use Cases'` dynamic views | `create-sequence-view` |
+| **5. Deployment** | Where does it run? | Environments, zones, VMs, instances | `model-deployment-infrastructure` |
+| **6. Validate** | Is the model coherent and renderable? | Confidence before commit | `test-model` |
 
-**Optional add-ons:** Deployment (where runs), Dynamic (how behaves)
+## Supporting Files
 
-See [REFERENCE.md](REFERENCE.md) for detailed guidance.
+- Read `REFERENCE.md` when you need deeper examples, anti-pattern explanations, or a sharper container-vs-component distinction.
+- Read `CHECKLIST.md` before signoff when you want a more exhaustive validation pass than the short done-criteria in this file.
 
-## Workflow
+## Order of Work
 
-```
-1. C1 Context
-   ├─ Define system boundary
-   ├─ Identify actors (users, external systems)
-  └─ Create relationships (see `create-relationship` skill)
+1. **If the workspace is unfamiliar, start with `understand-project-structure`.**
+   - confirm project structure, shared specs, valid kinds, and existing view organization
+   - do this before inventing new kinds or drilling into details
 
-2. C2 Containers  
-   ├─ Break into deployable units
-   ├─ Show container relationships
-   └─ Document technologies
+2. **Model C1 first.**
+   - define the system boundary
+   - identify actors and external systems
+   - keep the view static
 
-3. C3 Components (selective)
-   ├─ Detail complex containers only
-   └─ Show code-level groupings
+3. **Then model C2.**
+   - split the system into runtime/deployable containers
+   - add relationships that explain how the system actually works
 
-4. Deployment (optional)
-  └─ Model infrastructure (where)
+4. **Only create C3 where it earns its keep.**
+   - choose containers that are complex, risky, or central to the architecture
+   - skip C3 for trivial containers
 
-5. Dynamic (optional)
-  └─ Document workflows (how)
+5. **Add Dynamic views when order-in-time matters.**
+   - user workflows, async flows, validation/error paths
 
-6. Validate
-   └─ Run: npx likec4 validate
-```
+6. **Add Deployment views when runtime topology matters.**
+   - environments, zones, VMs, deployed apps, `instanceOf`
 
-## Step 1: C1 Context
+7. **Validate before finishing.**
 
-Define system boundary and external interactions:
+## Step 1 — C1 Context
+
+Start by modeling the system in its environment.
 
 ```likec4
 model {
-  mySystem = System 'Product Name' {
-    description 'Core business system'
+  user = Actor_Person 'User' {
+    description 'End user of the system'
   }
-  
-  customer = Actor_Person 'Customer' {
-    description 'End user'
+
+  mySystem = System_Existing 'My System' {
+    description 'The main system being documented'
   }
-  
-  externalService = System_Existing 'Payment API' {
-    #external
-    description 'Third-party payment processor'
+
+  emailService = System_External 'Email Service' {
+    technology 'SendGrid'
+    description 'Third-party email delivery service'
   }
-  
-  customer -> mySystem 'Uses'
-  mySystem -> externalService 'Processes payments via'
+
+  user -[calls]-> mySystem 'Uses'
+  mySystem -[calls]-> emailService 'Sends notifications'
 }
 ```
 
-**Checklist:**
-- [ ] System defined with description
-- [ ] All actors identified
-- [ ] External systems tagged #external
-- [ ] C1 view created in `views 'C1'` folder
+**C1 rule:** this level shows **boundary and environment**, not temporal flow.
 
-**CRITICAL:** C1 views must be static (no flows). Temporal sequences belong in `views 'Use Cases'`.
+```likec4
+views 'C1' {
+  view c1_context {
+    title 'System Context'
+    include user
+    include mySystem
+    include emailService
+  }
+}
+```
 
-## Step 2: C2 Containers
+**Do not** put step-by-step sequences in C1. If the request sounds like “first the user does X, then the webapp does Y”, that belongs in `views 'Use Cases'`.
 
-Break system into runtime boundaries:
+## Step 2 — C2 Containers
+
+Once the system boundary is clear, break the system into **runtime units**.
 
 ```likec4
 model {
-  mySystem = System 'Product' {
-    frontend = Container_Spa 'Web UI' {
-      technology 'React'
-      description 'User interface'
+  mySystem = System_Existing 'My System' {
+    webapp = Container_Webapp 'Web Application' {
+      technology 'React, TypeScript'
+      description 'Single-page application providing the user interface'
     }
-    
-    api = Container_API 'API' {
-      technology 'Node.js'
-      description 'Business logic'
+
+    api = Container_Api 'API Server' {
+      technology 'Node.js, Express'
+      description 'RESTful API handling business logic'
     }
-    
+
     database = Container_Database 'Database' {
-      technology 'PostgreSQL'
-      description 'Data persistence'
+      technology 'PostgreSQL 15'
+      description 'Stores application data and user information'
     }
   }
-  
-  frontend -[calls]-> api 'HTTP requests'
-  api -[reads]-> database 'Queries'
-  api -[writes]-> database 'Updates'
+
+  user -[calls]-> mySystem.webapp 'Interacts with'
+  mySystem.webapp -[calls]-> mySystem.api 'Makes API requests'
+  mySystem.api -[reads]-> mySystem.database 'Queries data'
+  mySystem.api -[writes]-> mySystem.database 'Persists data'
 }
 ```
 
-**Container definition:** Runtime boundary - something that must be running for the system to work. Can be deployed independently.
+**Container test:** if it must be running as a distinct runtime boundary for the system to work, it is a candidate container. If it is just code organization inside a container, it is not.
 
-**Not containers:** Classes, modules, folders, layers (those are components or code organization).
+Use `design-view` to build the C2 view once the container set is stable.
 
-**Checklist:**
-- [ ] Containers are independently deployable
-- [ ] Technologies documented
-- [ ] Relationships show sync vs async
-- [ ] C2 view created showing all containers
+## Step 3 — C3 Components, Selectively
 
-See [REFERENCE.md](REFERENCE.md) for container vs component distinction.
+Do **not** create a C3 view for every container. Create C3 only for containers that are:
 
-## Step 3: C3 Components
-
-Detail internal structure of complex containers only:
+- architecturally central
+- risky or difficult to reason about
+- internally complex enough that C2 is no longer explanatory
 
 ```likec4
 model {
-  api = Container_API 'API' {
-    router = Component_Service 'Router' {
-      description 'Request routing'
-    }
-    auth = Component_Service 'Auth' {
-      description 'Authentication logic'
-    }
-    business = Component_Service 'Business' {
-      description 'Domain logic'
+  mySystem = System_Existing 'My System' {
+    api = Container_Api 'API Server' {
+      technology 'Node.js, Express'
+      description 'RESTful API handling business logic'
+
+      routing = Component 'Routing' {
+        technology 'Express Router'
+        description 'Maps incoming requests to handlers'
+      }
+
+      auth = Component 'Authentication' {
+        technology 'JWT'
+        description 'Validates identity and permissions'
+      }
+
+      application = Component 'Application Services' {
+        technology 'TypeScript'
+        description 'Runs core business use cases'
+      }
     }
   }
-  
-  router -[uses]-> auth 'Validates'
-  router -[uses]-> business 'Delegates'
+
+  mySystem.api.routing -[uses]-> mySystem.api.auth 'Validates access'
+  mySystem.api.routing -[uses]-> mySystem.api.application 'Delegates work'
 }
 ```
 
-**Component definition:** Code-level grouping with well-defined interface. NOT separately deployable.
+**Component rule:** components are **logical code groupings**, not deployable units.
 
-**Checklist:**
-- [ ] Only detail critical/complex containers
-- [ ] Components are logical groupings, not classes
-- [ ] C3 view shows parent container boundary
-- [ ] Neighboring elements included for context
+If a container is simple and well understood from C2, stop at C2.
 
-## Deployment Diagrams
+## Step 4 — Dynamic Views (Optional, After C2)
 
-Show where software runs:
+Dynamic views are for **time-ordered behavior**, not structure.
+
+- place them in `views 'Use Cases'`
+- use plain `->` arrows
+- start with the initiating actor/system
+- create them only for workflows worth explaining
+
+```likec4
+views 'Use Cases' {
+  dynamic view request_flow {
+    title 'User Request Flow'
+
+    user -> mySystem.webapp 'Opens page'
+    mySystem.webapp -> mySystem.api 'Requests data'
+    mySystem.api -> emailService 'Sends notification'
+  }
+}
+```
+
+Use `create-sequence-view` for the detailed dynamic-view rules.
+
+## Step 5 — Deployment Views (Optional, After Structure Stabilizes)
+
+Deployment answers **where it runs**, not **what the system is**.
 
 ```likec4
 deployment {
-  Prod = Node_Environment 'Production' {
-    AppTier = Zone 'App Tier (VLAN 101)' {
-      ApiVm = Node_Vm 'api-vm' {
-        technology 'Docker'
-        description '| IP | 10.1.0.10/24 |'
-        
-        apiApp = Node_App 'API' {
+  prod = Node_Environment 'Production' {
+    appTier = Zone 'Application Tier' {
+      apiVm = Node_Vm 'prod-api-vm' {
+        technology 'Docker on Ubuntu'
+        description 'Hosts the API runtime'
+
+        apiApp = Node_App 'API App' {
           instanceOf mySystem.api
         }
       }
@@ -171,54 +228,15 @@ deployment {
 }
 ```
 
-Use `model-deployment` skill for detailed infrastructure modeling.
-
-## Dynamic Diagrams
-
-Show runtime behavior for key use cases:
-
-```likec4
-views 'Use Cases' {
-  dynamic view upload_flow {
-    title 'File Upload'
-    
-    customer -> mySystem.frontend 'Uploads file'
-    mySystem.frontend -> mySystem.api 'POST /upload'
-    mySystem.api -> mySystem.storage 'Store file'
-    mySystem.api -> mySystem.queue 'Queue processing'
-  }
-}
-```
-
-**Place in `views 'Use Cases'`**, never in C1. Requires C2+ elements.
-
-Create 2-5 dynamic diagrams for important workflows only.
-
-Use `create-sequence-view` skill for detailed guidance.
-
-## Validation
-
-Run validation before committing:
-
-```bash
-npx likec4 validate
-```
-
-**Manual checks:**
-- [ ] Every element has description and technology
-- [ ] Every relationship has label
-- [ ] Every view has title and description
-- [ ] Naming consistent (C1/C2/C3 prefixes)
-
-See [CHECKLIST.md](CHECKLIST.md) for complete validation criteria.
+Use `model-deployment-infrastructure` for naming, hierarchy, rich descriptions, and `instanceOf` rules.
 
 ## View Organization
 
-**Mandatory structure:**
+Use category folders consistently. The root `index` view is the only common exception.
 
 ```likec4
 views {
-  view index extends c1_context { }  // Required at root
+  view index extends c1_context {}
 }
 
 views 'C1' {
@@ -230,51 +248,57 @@ views 'C2' {
 }
 
 views 'C3' {
-  view c3_component_name { }
+  view c3_api { }
 }
 
 views 'Use Cases' {
-  dynamic view workflow_name { }
+  dynamic view request_flow { }
 }
 
 views 'Deployment' {
-  deployment view environment_name { }
+  deployment view prod_overview { }
 }
 ```
 
-All views except index must be in category folders.
+**Important:**
+- `C3` is optional — create it only if you actually need component detail
+- `Use Cases` is optional — create it only for meaningful flows
+- `Deployment` is optional — create it only when topology matters
 
-## Common Anti-Patterns
+## Handoff Rules
 
-❌ Bottom-up design (starting with code)
-✅ Top-to-bottom (C1 → C2 → C3)
+This skill decides **what comes next**. The detailed work belongs to more specific skills.
 
-❌ Every class as container
-✅ Containers are runtime boundaries
+- unfamiliar workspace or unknown kinds → `understand-project-structure`
+- creating or changing elements → `create-element`
+- choosing relationship kinds/labels → `create-relationship`
+- building static views → `design-view`
+- documenting runtime flows → `create-sequence-view`
+- modeling environments/zones/VMs → `model-deployment-infrastructure`
+- validating integrity/rendering → `test-model`
 
-❌ Components are deployable
-✅ Only containers are deployable
+## Common Mistakes
 
-❌ C3 for every container
-✅ C3 only for complex containers
+❌ Starting from classes, folders, or frameworks  
+✅ Start from system boundary, then runtime containers, then selected components
 
-❌ Flow views in C1
-✅ Flows belong in 'Use Cases'
+❌ Treating every container as if it needs a C3 view  
+✅ Create C3 only where extra internal detail improves understanding
 
-See [REFERENCE.md](REFERENCE.md) for detailed anti-pattern explanations.
+❌ Putting temporal flows in C1  
+✅ Keep C1 static; move temporal behavior to `views 'Use Cases'`
 
-## Related Skills
+❌ Using this skill to do every detailed edit itself  
+✅ Use it as the orchestration layer, then hand off to specialized skills
 
-Use these skills at each step:
+❌ Jumping to deployment before the logical model exists  
+✅ Stabilize C1/C2 first, then add deployment if runtime topology matters
 
-- `create-element` - Create systems, containers, components
-- `create-relationship` - Define interactions
-- `design-view` - Organize views in subfolders
-- `model-deployment` - Infrastructure modeling
-- `create-sequence-view` - Dynamic diagrams
-- `test-model` - Validation workflow
+## Done Criteria
 
-## Resources
-
-- **C4 Model:** https://c4model.com/
-- **LikeC4:** https://likec4.dev/
+- C1 boundary is clear
+- C2 explains the main runtime structure
+- C3 exists only where it adds real value
+- dynamic and deployment views are added only when justified
+- the next detailed edit is delegated to the right specialized skill
+- `test-model` can validate the result before commit

@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse présente ce skill comme cadre de séquencement, pas comme skill unique qui absorbe tout.",
+      "passed": true,
+      "evidence": "La réponse le présente comme un guide d’orientation plutôt que comme un skill qui détaille tout."
+    },
+    {
+      "text": "La réponse renvoie le déploiement à `model-deployment-infrastructure`.",
+      "passed": false,
+      "evidence": "La réponse renvoie le déploiement à `model-deployment`, pas au skill correct `model-deployment-infrastructure`."
+    },
+    {
+      "text": "La réponse renvoie les flux temporels à `create-sequence-view`.",
+      "passed": true,
+      "evidence": "La réponse renvoie explicitement le scénario nominal à `create-sequence-view`."
+    },
+    {
+      "text": "La réponse rappelle que Deployment et Dynamic viennent après le noyau C1/C2, de façon optionnelle ou ciblée.",
+      "passed": true,
+      "evidence": "La dernière phrase place explicitement deployment et dynamique après `C1/C2`, seulement si utiles."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 1,
+    "total": 4,
+    "pass_rate": 0.75
+  }
+}

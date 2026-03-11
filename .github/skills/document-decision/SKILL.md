@@ -5,25 +5,35 @@ description: Use when recording WHY architectural choices were made (technology 
 
 # Document Architecture Decision
 
-Use this skill when recording system design decisions for LikeC4-modeled architectures.
+## Overview
 
-## Purpose
+Creates Architecture Decision Records (ADRs) to capture WHY architectural choices were made in a LikeC4-modeled system. Uses standard ADR format: Status, Context, Decision, Consequences. Stored in `ADR/NNNN-decision-title.md`.
 
-Create Architecture Decision Records (ADRs) that explain WHY architectural choices were made in the system diagrams, not HOW the diagrams are built or maintained.
+## When to Use
+
+- Selecting a technology for a container or system (Kong vs HAProxy, MongoDB vs PostgreSQL)
+- Choosing an architectural pattern (async processing, microservices, CQRS)
+- Making a deployment infrastructure decision (VM sizing, replication strategy, zone topology)
+- Any decision whose rationale would be unclear six months from now
+
+**Do not use** for repository tooling, CI/CD setup, or LikeC4 modeling process decisions.
+
+## Quick Reference
+
+| Field | Content |
+|-------|---------|
+| **Filename** | `ADR/NNNN-decision-title.md` (manually increment NNNN) |
+| **Template** | `ADR/0000-template.md` |
+| **Status** | Proposed / Accepted / Deprecated / Superseded |
+| **Sections** | Context → Decision → Consequences (Positive / Negative / Neutral) |
 
 ## Scope
 
-- ✅ System design decisions (e.g., why Kong API Gateway vs HAProxy, why MongoDB vs PostgreSQL)
-- ✅ Container-level technology choices (e.g., why RabbitMQ for queuing, why MinIO for storage)
-- ✅ Component architecture patterns (e.g., why async processing, why microservices)
-- ✅ Deployment infrastructure choices (e.g., why 3-node replication, why specific VM sizing)
+- ✅ System design decisions (why Kong API Gateway vs HAProxy, why MongoDB vs PostgreSQL)
+- ✅ Container-level technology choices (why RabbitMQ for queuing, why MinIO for storage)
+- ✅ Component architecture patterns (why async processing, why microservices)
+- ✅ Deployment infrastructure choices (why 3-node replication, why specific VM sizing)
 - ❌ NOT repository structure, tooling, CI/CD setup, or LikeC4 modeling decisions
-
-## Format
-
-1. **Filename:** `ADR/NNNN-decision-title.md` (manually increment NNNN)
-2. **Template:** Use `ADR/0000-template.md` as reference
-3. **Sections:** Status, Context, Decision, Consequences (Positive/Negative/Neutral)
 
 ## Example
 
@@ -56,6 +66,16 @@ Upgrade from HAProxy to Kong API Gateway
 - Requires learning Kong admin API and declarative config
 - Higher resource footprint (but acceptable for use case)
 ```
+
+## Common Mistakes
+
+❌ **Documenting HOW the model was built** — ADRs capture WHY a design choice was made, not how to use LikeC4
+
+❌ **Missing Context section** — without context the decision is meaningless in the future; always explain what constraints drove it
+
+❌ **Only Positive consequences** — every real decision has trade-offs; omitting negatives makes the ADR incomplete and less trustworthy
+
+❌ **Wrong filename format** — use `ADR/NNNN-title.md` with leading zeros (0001, 0002, ...), not arbitrary filenames
 
 ## Integration with LikeC4
 

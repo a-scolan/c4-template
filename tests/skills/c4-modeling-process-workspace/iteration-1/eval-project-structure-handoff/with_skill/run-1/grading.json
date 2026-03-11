@@ -1,0 +1,49 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse commence par établir ou vérifier la structure du projet avant d'éditer.",
+      "passed": true,
+      "evidence": "L’étape 1 commence par `understand-project-structure d’abord` et recentre sur projet actif, config et specs."
+    },
+    {
+      "text": "La réponse cite `understand-project-structure` comme prérequis ou étape de cadrage.",
+      "passed": true,
+      "evidence": "La réponse cite explicitement `understand-project-structure`."
+    },
+    {
+      "text": "La réponse garde la progression C1→C2 plutôt qu'un saut direct au détail.",
+      "passed": true,
+      "evidence": "Elle demande d’abord de vérifier que le `C1 est clair`, puis seulement de modéliser les containers et la vue C2."
+    },
+    {
+      "text": "La réponse délègue la création détaillée à des skills spécialisés comme `create-element`, `create-relationship` ou `design-view`.",
+      "passed": true,
+      "evidence": "La réponse délègue explicitement à `create-element`, `create-relationship`, `design-view` et `test-model`."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

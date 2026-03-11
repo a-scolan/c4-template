@@ -1,0 +1,66 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse identifie explicitement le projet actif ou la méthode fiable pour l'identifier.",
+      "passed": true,
+      "evidence": "Le résultat indique explicitement 'Projet actif : projects/template/'."
+    },
+    {
+      "text": "La réponse cite les sources of truth (config, specs partagées, modèle/vues).",
+      "passed": true,
+      "evidence": "Le résultat liste likec4.config.json, system-model.c4, system-views.c4 et projects/shared/."
+    },
+    {
+      "text": "La réponse mentionne des kinds/relations/tags valides sans les inventer.",
+      "passed": true,
+      "evidence": "Le résultat cite des kinds C1/C2, les relations calls/reads/writes/async/uses et des tags de container API."
+    },
+    {
+      "text": "La réponse fournit un plan ordonné C1→C2→C3 avant modification.",
+      "passed": true,
+      "evidence": "Le résultat inclut un plan explicite C1, C2, C3 puis update des vues."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [
+    {
+      "claim": "Le projet actif est template.",
+      "type": "factual",
+      "verified": true,
+      "evidence": "Mention explicite du projet template dans la réponse."
+    }
+  ],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Métadonnées timing non disponibles via la sortie subagent actuelle."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [
+      {
+        "reason": "Les assertions sont utiles mais peuvent être non discriminantes si baseline et with_skill passent toutes les deux. Ajouter des assertions sur l'ordre strict des étapes MCP (list-projects puis read-project-summary) peut mieux distinguer la valeur du skill."
+      }
+    ],
+    "overall": "Grading valide; discrimation baseline/with_skill à renforcer."
+  }
+}

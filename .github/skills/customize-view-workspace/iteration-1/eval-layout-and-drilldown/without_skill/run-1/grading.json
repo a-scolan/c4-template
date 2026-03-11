@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse ajoute un `autoLayout LeftRight` et conserve des `rank source` / `rank sink` cohérents avec la demande.",
+      "passed": false,
+      "evidence": "La proposition garde `rank source { user }` mais n'ajoute ni `autoLayout LeftRight` ni `rank sink` pour `mySystem.database` et `emailService`."
+    },
+    {
+      "text": "La réponse préserve un `navigateTo c2_webapp_details` sur `mySystem.webapp`.",
+      "passed": false,
+      "evidence": "Le bloc `include mySystem.webapp with { color #ff6600 }` n'inclut aucun `navigateTo`."
+    },
+    {
+      "text": "La réponse reste dans le périmètre de la personnalisation et n'introduit ni couleur hexadécimale ni refonte structurelle inutile.",
+      "passed": false,
+      "evidence": "La réponse introduit la couleur hexadécimale `#ff6600`, explicitement déconseillée par le skill."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 3,
+    "total": 3,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

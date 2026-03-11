@@ -1,0 +1,1 @@
+Avant commit, relis `system-model.c4` et `system-views.c4`, vérifie que le nouveau container est nommé pareil partout, regarde aussi ses relations principales, puis ouvre la vue pour voir si le diagramme reste propre.

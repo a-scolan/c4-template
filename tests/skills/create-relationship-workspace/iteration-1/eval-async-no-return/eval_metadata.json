@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-async-no-return",
+  "prompt": "Je modélise un flux d'upload asynchrone : `uploadService` publie dans `jobQueue`, puis `worker` consomme et écrit en base. Est-ce que je dois aussi dessiner un retour du worker vers l'upload service ?",
+  "assertions": [
+    "La réponse utilise `-[async]->` du producteur vers la queue puis de la queue vers le worker.",
+    "La réponse refuse une relation retour du worker vers le producteur.",
+    "La réponse utilise `-[writes]->` pour l'écriture en base.",
+    "La réponse garde un pattern asynchrone one-way sans ACK de retour."
+  ]
+}

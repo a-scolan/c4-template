@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-out-of-scope-ci-cd",
+  "prompt": "Je viens de changer le workflow GitHub Actions du dépôt. Est-ce que je dois écrire un ADR avec ce skill ?",
+  "assertions": [
+    "La réponse dit explicitement que ce skill n’est pas pour le tooling repo / CI-CD.",
+    "La réponse évite de forcer un ADR hors périmètre.",
+    "La réponse propose au moins une alternative courte (README, doc d’exploitation, note de repo, etc.)."
+  ]
+}

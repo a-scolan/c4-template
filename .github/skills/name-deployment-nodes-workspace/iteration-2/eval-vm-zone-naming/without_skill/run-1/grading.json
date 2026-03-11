@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse applique le pattern VM `{Environment}{Service}Vm` et corrige `ProdApiVM` / `prod_upload_vm` vers des noms du type `ProdApigwVm` / `ProdUploadVm`.",
+      "passed": false,
+      "evidence": "La réponse garde précisément `ProdApiVM` et `prod_upload_vm` au lieu de les corriger vers le pattern `{Environment}{Service}Vm`."
+    },
+    {
+      "text": "La réponse distingue les zones de couche (`AppTier`, `ProcTier`, `DataTier`) des zones fonctionnelles (`SecZone`, `InfraZone`) et corrige `AppServers` / `MonitoringTier`.",
+      "passed": false,
+      "evidence": "La réponse conserve `AppServers` et `MonitoringTier` et ne distingue pas zones de couche et zones fonctionnelles."
+    },
+    {
+      "text": "La réponse garde des identifiants en PascalCase avec suffixe `Vm`, pas `VM` ni snake_case.",
+      "passed": false,
+      "evidence": "La réponse utilise `ProdApiVM` avec `VM` en majuscules et `prod_upload_vm` en snake_case."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 3,
+    "total": 3,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

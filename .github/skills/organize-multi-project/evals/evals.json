@@ -1,0 +1,41 @@
+{
+  "skill_name": "organize-multi-project",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Dans ce repo avec `projects/shared/`, `projects/template/` et `projects/spec-showcase/`, je dois ajouter `projects/payments/`. Comment je le bootstrappe proprement et quels fichiers/config minimum je dois créer ?",
+      "expected_output": "La réponse part du template, crée un projet autonome avec config locale et garde les specs réutilisables dans shared.",
+      "files": [],
+      "expectations": [
+        "La réponse dit de partir de `projects/template/`.",
+        "La réponse crée un `likec4.config.json` par projet avec `include.paths: [\"../shared\"]`.",
+        "La réponse garde un split minimal type `system-model.c4` + `system-views.c4`.",
+        "La réponse garde `projects/shared/` pour les specs réutilisables, pas pour les modèles du projet."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Je veux mettre un système `paymentsCore` et un acteur `backOfficeUser` dans `projects/shared/` pour qu'ils soient visibles partout. Bonne idée ou non ? Et comment gérer les références croisées entre projets ?",
+      "expected_output": "La réponse refuse de mettre des modèles projet-spécifiques dans shared et propose des références croisées explicites, minimales et non circulaires.",
+      "files": [],
+      "expectations": [
+        "La réponse dit que `projects/shared/` ne doit contenir que des définitions réutilisables, pas des modèles projet-spécifiques.",
+        "La réponse propose de garder `paymentsCore` / `backOfficeUser` dans le projet concerné, ou de modéliser un vrai externe partagé séparément.",
+        "La réponse mentionne une stratégie de références croisées explicites/minimales (systèmes externes partagés ou projet `externals`).",
+        "La réponse évite les dépendances circulaires entre projets."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "J’ajoute un nouveau projet et je dois aussi ajuster ses include paths et ses aliases d’images. Ce skill suffit-il, ou faut-il en combiner un autre ?",
+      "expected_output": "La réponse garde la structure multi-projet ici, mais renvoie les détails de config vers `configure-project-includes`.",
+      "files": [],
+      "expectations": [
+        "La réponse couvre la structure multi-projet / bootstrap via ce skill.",
+        "La réponse renvoie les détails d'`include.paths`/`imageAliases` vers `configure-project-includes`.",
+        "La réponse rappelle qu’un `likec4.config.json` appartient à chaque projet.",
+        "La réponse maintient l’usage de chemins relatifs vers `../shared`."
+      ]
+    }
+  ]
+}

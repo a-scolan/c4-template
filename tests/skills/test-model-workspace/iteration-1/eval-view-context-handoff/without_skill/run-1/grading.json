@@ -1,0 +1,50 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse rappelle qu’une vue doit garder un contexte parent explicite.",
+      "passed": false,
+      "evidence": "La réponse parle de lisibilité générale, mais ne mentionne pas explicitement le contexte parent."
+    },
+    {
+      "text": "La réponse renvoie explicitement les règles détaillées au skill `design-view`.",
+      "passed": false,
+      "evidence": "Aucun handoff vers `design-view` n'apparaît."
+    },
+    {
+      "text": "La réponse propose de contrôler le rendu réel de la vue et les include patterns.",
+      "passed": true,
+      "evidence": "La réponse demande de vérifier que `les includes ne ramènent pas trop d’éléments` et que `le rendu final reste propre`."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.333
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_tokens": 0,
+    "duration_ms": 0,
+    "total_duration_seconds": 0,
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Aucune suggestion majeure sur cet eval."
+  }
+}

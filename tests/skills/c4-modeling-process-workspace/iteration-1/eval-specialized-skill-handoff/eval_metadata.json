@@ -1,0 +1,11 @@
+{
+  "eval_id": 4,
+  "eval_name": "eval-specialized-skill-handoff",
+  "prompt": "J'ai déjà mon C2. Je veux maintenant documenter l'infra de prod et un scénario nominal utilisateur. Est-ce que ce skill doit tout détailler lui-même ou s'appuyer sur d'autres skills ?",
+  "assertions": [
+    "La réponse présente ce skill comme cadre de séquencement, pas comme skill unique qui absorbe tout.",
+    "La réponse renvoie le déploiement à `model-deployment-infrastructure`.",
+    "La réponse renvoie les flux temporels à `create-sequence-view`.",
+    "La réponse rappelle que Deployment et Dynamic viennent après le noyau C1/C2, de façon optionnelle ou ciblée."
+  ]
+}

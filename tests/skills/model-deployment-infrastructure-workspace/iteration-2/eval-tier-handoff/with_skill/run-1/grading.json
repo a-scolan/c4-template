@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse renvoie explicitement l'organisation par tiers et les règles firewall à `structure-deployment-tiers`.",
+      "passed": true,
+      "evidence": "La première phrase dit explicitement qu'il faut basculer vers `structure-deployment-tiers` pour le découpage par tiers et les règles firewall."
+    },
+    {
+      "text": "La réponse rappelle que la hiérarchie de base reste `Environment → Zone → VM → Node_App`.",
+      "passed": true,
+      "evidence": "La réponse rappelle le socle `Environment → Zone → VM → Node_App` dans la deuxième phrase."
+    },
+    {
+      "text": "La réponse présente ce skill comme cadre de modélisation de l'infrastructure, pas comme skill unique pour tout le design réseau.",
+      "passed": true,
+      "evidence": "La conclusion dit `ce skill ne doit pas absorber tout le design réseau à lui seul` et le présente comme un cadre avant handoff."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

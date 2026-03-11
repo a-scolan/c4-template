@@ -5,7 +5,9 @@ description: Use when pushing improvements to upstream template or pulling enhan
 
 # Sync with Template Upstream
 
-Manage bidirectional improvements between a derived project and its upstream template (c4-template) using git subtree.
+## Overview
+
+Manages bidirectional improvement flows between a derived project and its upstream template (c4-template) using git subtree. Generic content (skills, shared specs, copilot instructions) flows to the template; project-specific content stays local.
 
 ## Core Concept
 
@@ -20,7 +22,7 @@ A derived project contains two types of content:
 
 ---
 
-## What to Push vs Keep Local
+## Quick Reference
 
 ### Always Push to Template ✅
 
@@ -190,6 +192,17 @@ echo "If all no: proceed:"
 git push c4-template sync/skills-template --set-upstream
 # Then create PR via GitHub UI
 ```
+
+---
+
+## Common Mistakes
+
+- ❌ Pushing project-specific models, ADRs, or README content to the template
+- ❌ Pushing directly from `main` — always use a `sync/*` branch
+- ❌ Skipping the confidentiality review before pushing
+- ❌ Committing project-specific and generic template changes in the same commit
+- ❌ Omitting `--squash` on subtree pulls, polluting project commit history
+- ❌ Leaving `sync/*` branches long-lived after the PR is merged
 
 ---
 

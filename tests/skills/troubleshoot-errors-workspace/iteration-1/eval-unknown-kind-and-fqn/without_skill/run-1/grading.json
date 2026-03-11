@@ -1,0 +1,50 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse identifie `Container_WebUi` comme kind invalide à vérifier dans les specs partagées.",
+      "passed": true,
+      "evidence": "La réponse parle d'un `kind absent` et invite à vérifier la liste des kinds disponibles."
+    },
+    {
+      "text": "La réponse explique que `api` doit probablement être référencé en FQN (`mySystem.api`).",
+      "passed": false,
+      "evidence": "La réponse ne donne pas le FQN attendu `mySystem.api` et reste sur un alignement de nom générique."
+    },
+    {
+      "text": "La réponse part des causes racines et suggère `read-project-summary` avant de renommer au hasard.",
+      "passed": false,
+      "evidence": "Elle ne cite pas `read-project-summary` et ne structure pas explicitement le diagnostic par cause racine."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.333
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_tokens": 0,
+    "duration_ms": 0,
+    "total_duration_seconds": 0,
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Aucune suggestion majeure sur cet eval."
+  }
+}

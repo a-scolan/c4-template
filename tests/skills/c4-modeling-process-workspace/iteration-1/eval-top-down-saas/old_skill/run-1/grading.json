@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse impose une progression top-down C1→C2→C3.",
+      "passed": true,
+      "evidence": "La réponse est structurée en étapes `C1 — Contexte`, `C2 — Conteneurs`, puis `C3 — Composants`, dans cet ordre."
+    },
+    {
+      "text": "La réponse explicite que Deployment et Dynamic sont optionnels.",
+      "passed": true,
+      "evidence": "Les sections `Déploiement` et `Dynamique / Use Cases` sont toutes deux marquées `👉 Optionnel` et le résumé final répète `Déploiement : optionnel` et `Dynamique / Use Cases : optionnel`."
+    },
+    {
+      "text": "La réponse évite une approche bottom-up centrée sur le code.",
+      "passed": true,
+      "evidence": "La conclusion dit explicitement : `on conçoit de haut en bas, jamais l’inverse`."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

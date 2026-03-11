@@ -1,0 +1,50 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse demande de vérifier d'abord les kinds existants du shared spec ou via `read-project-summary`.",
+      "passed": true,
+      "evidence": "Extrait : Vérifie d'abord le shared spec, idéalement via `read-project-summary`, pour voir si un kind existant couvre déjà le besoin."
+    },
+    {
+      "text": "La réponse déconseille les kinds one-off si un kind existant couvre le besoin.",
+      "passed": true,
+      "evidence": "Extrait : Évite un kind one-off si un kind existant suffit."
+    },
+    {
+      "text": "La réponse demande l'autorisation avant tout nouveau kind.",
+      "passed": true,
+      "evidence": "Extrait : Si vraiment rien ne convient, demande l'autorisation avant d'introduire un nouveau kind."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 284,
+    "transcript_chars": 284
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Harness statique : temps et tokens non collectés, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

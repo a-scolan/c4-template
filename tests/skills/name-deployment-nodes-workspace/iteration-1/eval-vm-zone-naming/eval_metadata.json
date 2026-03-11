@@ -1,0 +1,10 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-vm-zone-naming",
+  "prompt": "Je dois nommer l'environnement, les zones et les VM d'une prod avec API gateway, upload, worker, MongoDB et monitoring. Propose des noms cohérents et corrige aussi ces candidats : `ProdApiVM`, `prod_upload_vm`, `AppServers`, `MonitoringTier`.",
+  "assertions": [
+    "La réponse applique le pattern VM `{Environment}{Service}Vm` et corrige `ProdApiVM` / `prod_upload_vm` vers des noms du type `ProdApigwVm` / `ProdUploadVm`.",
+    "La réponse distingue les zones de couche (`AppTier`, `ProcTier`, `DataTier`) des zones fonctionnelles (`SecZone`, `InfraZone`) et corrige `AppServers` / `MonitoringTier`.",
+    "La réponse garde des identifiants en PascalCase avec suffixe `Vm`, pas `VM` ni snake_case."
+  ]
+}

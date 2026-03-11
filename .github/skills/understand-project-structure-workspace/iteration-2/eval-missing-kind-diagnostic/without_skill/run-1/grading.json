@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "Le diagnostic commence par la source of truth (specs partagées + résumé projet), pas par du guessing.",
+      "passed": false,
+      "evidence": "La réponse commence par le message d’erreur et des exemples, sans imposer d’abord les specs partagées et le résumé projet."
+    },
+    {
+      "text": "La réponse compare explicitement kind/relationship demandé avec la taxonomie valide.",
+      "passed": true,
+      "evidence": "La réponse demande explicitement de comparer orthographe, casse et niveau d’usage du kind ou de la relation."
+    },
+    {
+      "text": "La réponse décrit une séquence de confirmation avant correction.",
+      "passed": true,
+      "evidence": "La réponse enchaîne message d’erreur, specs/exemples, puis vérification locale avant correction."
+    },
+    {
+      "text": "La réponse propose un fallback si le résumé projet paraît incohérent.",
+      "passed": false,
+      "evidence": "Aucun fallback n’est proposé pour le cas où le résumé projet ou les includes seraient incohérents."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  }
+}

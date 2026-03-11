@@ -1,0 +1,11 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-kind-in-arrow",
+  "prompt": "Je dois relier `mySystem.webapp` à `mySystem.api` dans `projects/template/system-model.c4`. Montre-moi la syntaxe LikeC4 correcte et dis-moi où va le type de relation.",
+  "assertions": [
+    "La réponse utilise `-[calls]->` entre `mySystem.webapp` et `mySystem.api`.",
+    "La réponse place le type de relation dans la flèche, pas dans le bloc.",
+    "La réponse garde le label inline et `technology 'HTTPS'` dans le bloc.",
+    "La réponse évite la forme invalide `-> { calls ... }`."
+  ]
+}

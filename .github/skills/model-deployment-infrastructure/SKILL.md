@@ -5,11 +5,33 @@ description: Use when modeling deployment infrastructure (environments, zones, V
 
 # Model Deployment Infrastructure
 
-Use this skill when defining physical infrastructure in deployment.c4 and operations.c4 files.
+## Overview
+
+Defines how to model physical deployment infrastructure in `deployment.c4` and `operations.c4` files: Environment → Zone → VM → Node_App hierarchy, naming conventions, rich Markdown table descriptions with network specs, and `instanceOf` links to system model containers. Relationships are inherited automatically from the model.
+
+## When to Use
+
+- Creating a new deployment environment (Production, Staging, Dev, Test)
+- Adding VMs, zones, or deployment nodes to an existing environment
+- Linking deployed app instances to system model containers via `instanceOf`
+- Documenting infrastructure specs (IPs, OS, CPU, RAM, RTO) in VM descriptions
+
+**Do not use** for system model elements (containers, components) — use `create-element`. For zone layering and firewall rules, use `structure-deployment-tiers`.
 
 **Keywords:** deployment, infrastructure, VM, zone, environment, instanceOf, VLAN, network, tier, hierarchy
 
 **Next steps:** For advanced tier organization, see `structure-deployment-tiers` skill.
+
+## Quick Reference
+
+| Task | Recommended Pattern |
+|------|----------------------|
+| Name a VM | `{Environment}{Service}Vm` (e.g., `ProdUploadVm`) |
+| Name a zone | `{Function}Zone` or `{Tier}Tier` |
+| Build hierarchy | Environment → Zone → VM → Node_App |
+| Link runtime to model | `instanceOf` with container FQN |
+| Document VM specs | Markdown table with `eth0` first |
+| Add metadata | Only if queried by automation/compliance |
 
 ## Core Requirements
 
@@ -201,6 +223,18 @@ For comprehensive multi-environment setups with all tiers, zone descriptions, VM
 - **structure-deployment-tiers** — Advanced: organizing zones into DMZ→AppTier→ProcTier→DataTier with firewall rules
 - **write-rich-descriptions** — Markdown table formatting for deployment specs
 - **design-view** — Creating deployment views that visualize this infrastructure
+
+## Common Mistakes
+
+❌ **VMs floating outside zones** — every VM must be nested inside a zone; zones must be nested inside an environment
+
+❌ **Missing `instanceOf` link** — every `Node_App` must reference a Container from the system model via `instanceOf FQN`
+
+❌ **Creating deployment relationships manually** — relationships between deployed apps are inherited automatically from the system model via `instanceOf`; don’t duplicate them
+
+❌ **Omitting network interface in description** — eth0 (and eth1 if dual-homed) must be the first rows in every VM description table
+
+❌ **Hostname repeated in metadata** — the hostname is already in the element title; don’t duplicate it in the metadata block
 
 ## Checklist
 

@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse identifie explicitement le projet actif ou la méthode fiable pour l'identifier.",
+      "passed": true,
+      "evidence": "La première puce impose `list-projects`, `read-project-summary` et cite explicitement `template-project`."
+    },
+    {
+      "text": "La réponse cite les sources of truth (config, specs partagées, modèle/vues).",
+      "passed": true,
+      "evidence": "La section `Sources of truth` liste le config, les specs partagées, `system-model.c4`, `system-views.c4` et le résumé projet."
+    },
+    {
+      "text": "La réponse mentionne des kinds/relations/tags valides sans les inventer.",
+      "passed": true,
+      "evidence": "La section `Taxonomie à ne pas inventer` cite `Container_Api`, `Container_Webapp`, `Container_Database`, puis `calls/reads/writes/async/uses` et des tags issus du projet."
+    },
+    {
+      "text": "La réponse fournit un plan ordonné C1→C2→C3 avant modification.",
+      "passed": true,
+      "evidence": "Le plan est explicitement ordonné en `C1`, `C2`, mise à jour des vues C2 puis `C3`."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

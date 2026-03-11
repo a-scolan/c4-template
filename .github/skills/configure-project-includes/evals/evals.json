@@ -1,0 +1,53 @@
+{
+  "skill_name": "configure-project-includes",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je crée `projects/payments/likec4.config.json` à partir du template. Quels champs dois-je garder et comment référencer les specs/images partagées sans casser les imports ?",
+      "expected_output": "La réponse conserve la structure minimale du config et utilise des chemins relatifs vers `../shared` et `../shared/images/`.",
+      "files": [],
+      "expectations": [
+        "La réponse conserve les champs de base du config (`$schema`, `name`, `title`, `include`, `imageAliases`).",
+        "La réponse utilise des chemins relatifs depuis le dossier du projet, pas depuis la racine du workspace.",
+        "La réponse cite `../shared` pour les includes et `@`: `../shared/images/` pour les images.",
+        "La réponse déconseille les chemins absolus."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "J'ai un seul `system.c4` de 1200 lignes. Comment le découper progressivement dans ce template, et dans quels fichiers mettre les vues C1/C2/C3, les Use Cases, le deployment et les ops ?",
+      "expected_output": "La réponse propose un découpage progressif cohérent avec le template et sépare structure, vues, séquences, déploiement et opérations sans imposer tout d'un coup si ce n'est pas nécessaire.",
+      "files": [],
+      "expectations": [
+        "La réponse commence par un split minimal cohérent avec le template (au moins `system-model.c4` et `system-views.c4`).",
+        "La réponse place les vues C1/C2/C3 dans `system-views.c4`.",
+        "La réponse place les Use Cases dans un fichier dédié comme `system-sequences.c4` quand les flux justifient l'extraction, au lieu de les mélanger aveuglément partout.",
+        "La réponse sépare les définitions et vues de déploiement/opérations dans des fichiers dédiés (`deployment*.c4`, `operations*.c4`) quand ces sujets existent."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Mon projet a déjà `include.paths: ['../shared', '../platform-shared']`. Je dois ajouter une nouvelle source commune et garder les icônes. Quelles règles de modif je suis pour éviter de casser l'existant ?",
+      "expected_output": "La réponse préserve les chemins existants, ajoute sans écraser, et rappelle de conserver l'alias d'images partagé.",
+      "files": [],
+      "expectations": [
+        "La réponse dit d'ajouter le nouveau chemin sans remplacer les chemins existants.",
+        "La réponse rappelle de conserver l'alias d'images existant au lieu de le supprimer.",
+        "La réponse garde les chemins relatifs et déconseille les chemins absolus.",
+        "La réponse traite le changement comme une modification ciblée du config, pas comme une réorganisation complète du modèle."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Je veux ajouter un deuxième projet LikeC4 dans ce workspace avec des specs partagées. Est-ce que ce skill suffit, ou faut-il le combiner avec un autre skill ?",
+      "expected_output": "La réponse explique que ce skill couvre `likec4.config.json` mais renvoie la structuration d'ensemble vers le skill multi-projet.",
+      "files": [],
+      "expectations": [
+        "La réponse dit que ce skill couvre la configuration `likec4.config.json` et les includes/aliases.",
+        "La réponse évite de présenter ce skill comme solution unique pour toute l'organisation multi-projet.",
+        "La réponse renvoie la structuration globale vers `organize-multi-project`.",
+        "La réponse maintient les règles de chemins relatifs vers les specs partagées."
+      ]
+    }
+  ]
+}

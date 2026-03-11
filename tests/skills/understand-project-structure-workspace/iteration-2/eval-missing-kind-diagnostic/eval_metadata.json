@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-missing-kind-diagnostic",
+  "prompt": "J'obtiens une erreur de kind/relationship non reconnu. Fais un diagnostic structuré: où vérifier d'abord, quoi comparer, et comment confirmer la bonne taxonomie avant de corriger.",
+  "assertions": [
+    "Le diagnostic commence par la source of truth (specs partagées + résumé projet), pas par du guessing.",
+    "La réponse compare explicitement kind/relationship demandé avec la taxonomie valide.",
+    "La réponse décrit une séquence de confirmation avant correction.",
+    "La réponse propose un fallback si le résumé projet paraît incohérent."
+  ]
+}

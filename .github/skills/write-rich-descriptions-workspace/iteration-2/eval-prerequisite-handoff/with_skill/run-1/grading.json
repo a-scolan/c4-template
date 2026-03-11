@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse dit qu’il faut d’abord créer l’élément avant de travailler sa description.",
+      "passed": true,
+      "evidence": "La phrase d’ouverture dit explicitement qu’on ne décrit pas richement un élément qui n’existe pas encore."
+    },
+    {
+      "text": "La réponse renvoie la création d’un élément système vers `create-element`.",
+      "passed": true,
+      "evidence": "La première étape envoie explicitement le service système vers `create-element`."
+    },
+    {
+      "text": "La réponse renvoie l’infrastructure de déploiement vers le vrai skill `model-deployment-infrastructure`.",
+      "passed": true,
+      "evidence": "La deuxième étape renvoie explicitement le VM / déploiement vers `model-deployment-infrastructure`."
+    },
+    {
+      "text": "La réponse distingue ensuite `metadata {}` pour le système et tableau Markdown pour le déploiement.",
+      "passed": true,
+      "evidence": "La troisième étape distingue clairement `metadata {}` côté système et tableau Markdown côté déploiement."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_tokens": 0,
+    "duration_ms": 0,
+    "total_duration_seconds": 0,
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Aucune suggestion majeure sur cet eval."
+  }
+}

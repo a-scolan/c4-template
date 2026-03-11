@@ -1,0 +1,309 @@
+{
+  "metadata": {
+    "skill_name": "organize-multi-project",
+    "skill_path": "c:/Users/ascolan/Documents/Workspace/c4_template/.github/skills/organize-multi-project",
+    "executor_model": "GPT-5.4",
+    "analyzer_model": "GPT-5.4",
+    "timestamp": "2026-03-10T17:53:30Z",
+    "evals_run": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse dit de partir de `projects/template/`.",
+          "passed": true,
+          "evidence": "Extrait : Pars de `projects/template/` puis copie sa structure vers `projects/payments/`."
+        },
+        {
+          "text": "La r\u00e9ponse cr\u00e9e un `likec4.config.json` par projet avec `include.paths: [\"../shared\"]`.",
+          "passed": true,
+          "evidence": "Extrait : Dans le nouveau projet, garde un `likec4.config.json` local avec `include.paths: [\"../shared\"]`."
+        },
+        {
+          "text": "La r\u00e9ponse garde un split minimal type `system-model.c4` + `system-views.c4`.",
+          "passed": true,
+          "evidence": "Extrait : Commence avec `system-model.c4` et `system-views.c4`."
+        },
+        {
+          "text": "La r\u00e9ponse garde `projects/shared/` pour les specs r\u00e9utilisables, pas pour les mod\u00e8les du projet.",
+          "passed": true,
+          "evidence": "Extrait : Laisse `projects/shared/` pour les specs r\u00e9utilisables, pas les mod\u00e8les du projet."
+        }
+      ],
+      "notes": [
+        "\u00c9valuation manuelle : temps et tokens indisponibles, valeurs fix\u00e9es \u00e0 0."
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse couvre la structure multi-projet / bootstrap via ce skill.",
+          "passed": true,
+          "evidence": "Extrait : Ce skill couvre la structure multi-projet et le bootstrap du nouveau dossier."
+        },
+        {
+          "text": "La r\u00e9ponse renvoie les d\u00e9tails d'`include.paths`/`imageAliases` vers `configure-project-includes`.",
+          "passed": true,
+          "evidence": "Extrait : Pour le d\u00e9tail d'`include.paths` et des `imageAliases`, combine avec `configure-project-includes`."
+        },
+        {
+          "text": "La r\u00e9ponse rappelle qu\u2019un `likec4.config.json` appartient \u00e0 chaque projet.",
+          "passed": true,
+          "evidence": "Extrait : Chaque projet garde son `likec4.config.json` avec des chemins relatifs comme `../shared`."
+        },
+        {
+          "text": "La r\u00e9ponse maintient l\u2019usage de chemins relatifs vers `../shared`.",
+          "passed": true,
+          "evidence": "Extrait : Chaque projet garde son `likec4.config.json` avec des chemins relatifs comme `../shared`."
+        }
+      ],
+      "notes": [
+        "\u00c9valuation manuelle : temps et tokens indisponibles, valeurs fix\u00e9es \u00e0 0."
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse dit que `projects/shared/` ne doit contenir que des d\u00e9finitions r\u00e9utilisables, pas des mod\u00e8les projet-sp\u00e9cifiques.",
+          "passed": true,
+          "evidence": "Extrait : Non : `projects/shared/` sert aux d\u00e9finitions r\u00e9utilisables, pas des mod\u00e8les projet-sp\u00e9cifiques."
+        },
+        {
+          "text": "La r\u00e9ponse propose de garder `paymentsCore` / `backOfficeUser` dans le projet concern\u00e9, ou de mod\u00e9liser un vrai externe partag\u00e9 s\u00e9par\u00e9ment.",
+          "passed": true,
+          "evidence": "Extrait : Garde `paymentsCore` et `backOfficeUser` dans `projects/payments/`, sauf si tu cr\u00e9es un vrai externe partag\u00e9."
+        },
+        {
+          "text": "La r\u00e9ponse mentionne une strat\u00e9gie de r\u00e9f\u00e9rences crois\u00e9es explicites/minimales (syst\u00e8mes externes partag\u00e9s ou projet `externals`).",
+          "passed": true,
+          "evidence": "Extrait : Pour les liens inter-projets, fais des r\u00e9f\u00e9rences crois\u00e9es explicites et minimales, par exemple via un projet `externals`."
+        },
+        {
+          "text": "La r\u00e9ponse \u00e9vite les d\u00e9pendances circulaires entre projets.",
+          "passed": true,
+          "evidence": "Extrait : Et \u00e9vite les d\u00e9pendances circulaires."
+        }
+      ],
+      "notes": [
+        "\u00c9valuation manuelle : temps et tokens indisponibles, valeurs fix\u00e9es \u00e0 0."
+      ]
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse dit de partir de `projects/template/`.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : `projects/template/`."
+        },
+        {
+          "text": "La r\u00e9ponse cr\u00e9e un `likec4.config.json` par projet avec `include.paths: [\"../shared\"]`.",
+          "passed": true,
+          "evidence": "Extrait : Cr\u00e9e `projects/payments/` avec un `likec4.config.json`, un fichier mod\u00e8le et un fichier vues."
+        },
+        {
+          "text": "La r\u00e9ponse garde un split minimal type `system-model.c4` + `system-views.c4`.",
+          "passed": true,
+          "evidence": "Extrait : Tu peux partir sur `system-model.c4` et `system-views.c4`."
+        },
+        {
+          "text": "La r\u00e9ponse garde `projects/shared/` pour les specs r\u00e9utilisables, pas pour les mod\u00e8les du projet.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : `projects/shared/`, pas les mod\u00e8les du projet."
+        }
+      ],
+      "notes": [
+        "\u00c9valuation manuelle : temps et tokens indisponibles, valeurs fix\u00e9es \u00e0 0."
+      ]
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse couvre la structure multi-projet / bootstrap via ce skill.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : ce skill couvre la structure multi-projet."
+        },
+        {
+          "text": "La r\u00e9ponse renvoie les d\u00e9tails d'`include.paths`/`imageAliases` vers `configure-project-includes`.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : `configure-project-includes`."
+        },
+        {
+          "text": "La r\u00e9ponse rappelle qu\u2019un `likec4.config.json` appartient \u00e0 chaque projet.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : chaque projet garde son `likec4.config.json`."
+        },
+        {
+          "text": "La r\u00e9ponse maintient l\u2019usage de chemins relatifs vers `../shared`.",
+          "passed": true,
+          "evidence": "Extrait : Pour l'ajout du nouveau projet, cr\u00e9e le dossier et r\u00e9f\u00e9rence `../shared` dans le config."
+        }
+      ],
+      "notes": [
+        "\u00c9valuation manuelle : temps et tokens indisponibles, valeurs fix\u00e9es \u00e0 0."
+      ]
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 4,
+        "total": 4,
+        "time_seconds": 0.0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse dit que `projects/shared/` ne doit contenir que des d\u00e9finitions r\u00e9utilisables, pas des mod\u00e8les projet-sp\u00e9cifiques.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : pas des mod\u00e8les projet-sp\u00e9cifiques."
+        },
+        {
+          "text": "La r\u00e9ponse propose de garder `paymentsCore` / `backOfficeUser` dans le projet concern\u00e9, ou de mod\u00e9liser un vrai externe partag\u00e9 s\u00e9par\u00e9ment.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : `projects/payments/`, externe partag\u00e9."
+        },
+        {
+          "text": "La r\u00e9ponse mentionne une strat\u00e9gie de r\u00e9f\u00e9rences crois\u00e9es explicites/minimales (syst\u00e8mes externes partag\u00e9s ou projet `externals`).",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : r\u00e9f\u00e9rences crois\u00e9es explicites, `externals`."
+        },
+        {
+          "text": "La r\u00e9ponse \u00e9vite les d\u00e9pendances circulaires entre projets.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : \u00e9vite les d\u00e9pendances circulaires."
+        }
+      ],
+      "notes": [
+        "\u00c9valuation manuelle : temps et tokens indisponibles, valeurs fix\u00e9es \u00e0 0."
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.25,
+        "stddev": 0.25,
+        "min": 0.0,
+        "max": 0.5
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.75",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": [
+    "Configuration primaire : with_skill ; baseline : without_skill.",
+    "Le skill discrimine fortement la frontière entre `projects/shared/` et les modèles projet-spécifiques.",
+    "Chrono et tokens indisponibles : timing.json et benchmark forcés à 0."
+  ]
+}

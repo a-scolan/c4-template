@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse crée une vue dans `views 'Use Cases'` avec un `dynamic view`.",
+      "passed": true,
+      "evidence": "Le snippet ouvre `views 'Use Cases' {` puis `dynamic view async_processing_flow {`."
+    },
+    {
+      "text": "La séquence commence avec l'acteur initiateur `person_external`.",
+      "passed": true,
+      "evidence": "La première interaction est `person_external -> webapp 'Submits request'`."
+    },
+    {
+      "text": "Le passage `api -> queue -> processing_server` est montré en ordre temporel avec des labels d'action et sans kinds relationnels.",
+      "passed": true,
+      "evidence": "Les lignes `api -> queue 'Publish job'` puis `queue -> processing_server 'Deliver queued work'` racontent le handoff asynchrone avec des labels et sans `-[kind]->`."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

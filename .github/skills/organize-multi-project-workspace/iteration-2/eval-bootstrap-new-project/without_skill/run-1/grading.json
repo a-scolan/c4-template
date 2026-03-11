@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse dit de partir de `projects/template/`.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : `projects/template/`."
+    },
+    {
+      "text": "La réponse crée un `likec4.config.json` par projet avec `include.paths: [\"../shared\"]`.",
+      "passed": true,
+      "evidence": "Extrait : Crée `projects/payments/` avec un `likec4.config.json`, un fichier modèle et un fichier vues."
+    },
+    {
+      "text": "La réponse garde un split minimal type `system-model.c4` + `system-views.c4`.",
+      "passed": true,
+      "evidence": "Extrait : Tu peux partir sur `system-model.c4` et `system-views.c4`."
+    },
+    {
+      "text": "La réponse garde `projects/shared/` pour les specs réutilisables, pas pour les modèles du projet.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : `projects/shared/`, pas les modèles du projet."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Le baseline reste plausible mais ne réutilise pas le template explicitement."
+  }
+}

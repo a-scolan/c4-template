@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse place la vue dans `views 'C2'` plutôt qu'à la racine.",
+      "passed": true,
+      "evidence": "La réponse dit explicitement de compléter la vue dans `views 'C2'` et le snippet ouvre bien `views 'C2' {`."
+    },
+    {
+      "text": "La réponse inclut explicitement le parent `mySystem`, le focus `mySystem.*` et le contexte voisin.",
+      "passed": true,
+      "evidence": "Le snippet contient `include mySystem`, `include mySystem.*`, puis `include -> mySystem.*` et `include mySystem.* ->`, ce qui couvre parent, focus et voisins."
+    },
+    {
+      "text": "La réponse ajoute un `navigateTo` pertinent depuis `mySystem.webapp`.",
+      "passed": true,
+      "evidence": "Le bloc `include mySystem.webapp with { navigateTo c2_webapp_details }` rend le drill-down explicite."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

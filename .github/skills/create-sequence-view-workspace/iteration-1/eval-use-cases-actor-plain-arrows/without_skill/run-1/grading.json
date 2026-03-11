@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse place la séquence dans `views 'Use Cases'` avec un `dynamic view`.",
+      "passed": false,
+      "evidence": "La proposition ouvre `views 'C2'` avec un `view login_flow`, pas `views 'Use Cases'` avec un `dynamic view`."
+    },
+    {
+      "text": "La séquence démarre explicitement avec l'acteur `user`.",
+      "passed": true,
+      "evidence": "La première ligne est bien `user -[https]-> mySystem.webapp`, donc l'acteur `user` est présent en tête."
+    },
+    {
+      "text": "Les interactions utilisent uniquement des flèches `->` avec des labels d'action, sans `-[kind]->`.",
+      "passed": false,
+      "evidence": "Les flèches utilisent au contraire des kinds relationnels (`-[https]->`, `-[calls]->`, `-[sql]->`) et n'ont pas de labels d'action."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.33
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

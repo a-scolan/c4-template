@@ -1,0 +1,10 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-prod-hierarchy-instanceof",
+  "prompt": "Je dois documenter le déploiement de prod d'une plateforme documentaire avec un API gateway, un service d'upload, un worker de traitement et MongoDB. Donne-moi la structure LikeC4 à suivre pour les environnements, zones, VM et Node_App. Explique aussi comment relier les apps déployées au modèle logique et s'il faut recopier les relations de déploiement à la main.",
+  "assertions": [
+    "La réponse impose la hiérarchie `Environment → Zone → VM → Node_App`.",
+    "La réponse relie les `Node_App` aux containers du modèle via `instanceOf` et dit que les relations sont héritées plutôt que recopiées.",
+    "La réponse demande des descriptions riches pour VM/zones avec réseau et specs, en mettant `eth0` en premier dans la table VM."
+  ]
+}

@@ -1,0 +1,196 @@
+{
+  "metadata": {
+    "skill_name": "model-deployment-infrastructure",
+    "skill_path": "C:/Users/ascolan/Documents/Workspace/c4_template/.github/skills/model-deployment-infrastructure",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-03-10T17:32:51Z",
+    "evals_run": [
+      0,
+      1
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse impose la hi\u00e9rarchie `Environment \u2192 Zone \u2192 VM \u2192 Node_App`.",
+          "passed": true,
+          "evidence": "La premi\u00e8re phrase impose explicitement `Environment \u2192 Zone \u2192 VM \u2192 Node_App`, puis les quatre \u00e9tapes reprennent exactement cet ordre."
+        },
+        {
+          "text": "La r\u00e9ponse relie les `Node_App` aux containers du mod\u00e8le via `instanceOf` et dit que les relations sont h\u00e9rit\u00e9es plut\u00f4t que recopi\u00e9es.",
+          "passed": true,
+          "evidence": "La r\u00e9ponse dit `utilise donc instanceOf sur chaque Node_App` puis `Les relations applicatives sont h\u00e9rit\u00e9es automatiquement ... tu ne recopies pas les relations ... \u00e0 la main`."
+        },
+        {
+          "text": "La r\u00e9ponse demande des descriptions riches pour VM/zones avec r\u00e9seau et specs, en mettant `eth0` en premier dans la table VM.",
+          "passed": true,
+          "evidence": "La section descriptions dit `chaque VM a une table Markdown avec eth0 en premier, puis OS, CPU, RAM...` et `chaque zone documente VLAN, CIDR, gateway`."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse renvoie explicitement l'organisation par tiers et les r\u00e8gles firewall \u00e0 `structure-deployment-tiers`.",
+          "passed": true,
+          "evidence": "La premi\u00e8re phrase dit explicitement qu'il faut basculer vers `structure-deployment-tiers` pour le d\u00e9coupage par tiers et les r\u00e8gles firewall."
+        },
+        {
+          "text": "La r\u00e9ponse rappelle que la hi\u00e9rarchie de base reste `Environment \u2192 Zone \u2192 VM \u2192 Node_App`.",
+          "passed": true,
+          "evidence": "La r\u00e9ponse rappelle le socle `Environment \u2192 Zone \u2192 VM \u2192 Node_App` dans la deuxi\u00e8me phrase."
+        },
+        {
+          "text": "La r\u00e9ponse pr\u00e9sente ce skill comme cadre de mod\u00e9lisation de l'infrastructure, pas comme skill unique pour tout le design r\u00e9seau.",
+          "passed": true,
+          "evidence": "La conclusion dit `ce skill ne doit pas absorber tout le design r\u00e9seau \u00e0 lui seul` et le pr\u00e9sente comme un cadre avant handoff."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 3,
+        "total": 3,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse impose la hi\u00e9rarchie `Environment \u2192 Zone \u2192 VM \u2192 Node_App`.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse parle d'`un environnement de prod, puis quelques zones, puis les VM`, mais ne nomme pas explicitement `Node_App` ni la hi\u00e9rarchie compl\u00e8te attendue."
+        },
+        {
+          "text": "La r\u00e9ponse relie les `Node_App` aux containers du mod\u00e8le via `instanceOf` et dit que les relations sont h\u00e9rit\u00e9es plut\u00f4t que recopi\u00e9es.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse propose au contraire de `recr\u00e9er aussi les relations de d\u00e9ploiement importantes \u00e0 la main` et ne cite jamais `instanceOf`."
+        },
+        {
+          "text": "La r\u00e9ponse demande des descriptions riches pour VM/zones avec r\u00e9seau et specs, en mettant `eth0` en premier dans la table VM.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse se limite \u00e0 `note surtout l'IP principale, le port et un r\u00e9sum\u00e9 du r\u00f4le`, sans table d\u00e9taill\u00e9e ni mention de `eth0`."
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 3,
+        "total": 3,
+        "time_seconds": 0,
+        "tokens": 0,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La r\u00e9ponse renvoie explicitement l'organisation par tiers et les r\u00e8gles firewall \u00e0 `structure-deployment-tiers`.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse dit au contraire `tu peux d\u00e9tailler \u00e7a directement ici` et ne cite jamais `structure-deployment-tiers`."
+        },
+        {
+          "text": "La r\u00e9ponse rappelle que la hi\u00e9rarchie de base reste `Environment \u2192 Zone \u2192 VM \u2192 Node_App`.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse mentionne seulement des zones et des VM, sans rappeler explicitement la hi\u00e9rarchie compl\u00e8te `Environment \u2192 Zone \u2192 VM \u2192 Node_App`."
+        },
+        {
+          "text": "La r\u00e9ponse pr\u00e9sente ce skill comme cadre de mod\u00e9lisation de l'infrastructure, pas comme skill unique pour tout le design r\u00e9seau.",
+          "passed": false,
+          "evidence": "La r\u00e9ponse recommande de `tout garder dans le m\u00eame guide`, ce qui le pr\u00e9sente justement comme skill unique."
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "time_seconds": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "tokens": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0,
+        "max": 0
+      }
+    },
+    "delta": {
+      "pass_rate": "+1.00",
+      "time_seconds": "+0.0",
+      "tokens": "+0"
+    }
+  },
+  "notes": []
+}

@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse utilise des noms de palette partagée (`primary`, `muted`, etc.) plutôt que des hex codes.",
+      "passed": false,
+      "evidence": "La proposition s'appuie sur `#cccccc` et `#ff0000`, donc sur des hex codes hors palette partagée."
+    },
+    {
+      "text": "La réponse emploie des règles `style` ou des `with` blocks pour mettre en avant les éléments API et atténuer le reste.",
+      "passed": true,
+      "evidence": "Le snippet utilise bien deux règles `style` pour atténuer l'ensemble et mettre `api` en avant."
+    },
+    {
+      "text": "La réponse rappelle ou préserve le contexte structurel au lieu de le masquer totalement.",
+      "passed": false,
+      "evidence": "La réponse parle seulement de `seuls les éléments API` qui ressortent et n'explicite ni conservation du contexte ni atténuation prudente des frontières."
+    }
+  ],
+  "summary": {
+    "passed": 1,
+    "failed": 2,
+    "total": 3,
+    "pass_rate": 0.33
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

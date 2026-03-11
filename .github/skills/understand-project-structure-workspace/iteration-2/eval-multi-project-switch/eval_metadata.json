@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-multi-project-switch",
+  "prompt": "On a un workspace multi-projet. J'ai changé de projet et je veux modifier une vue C3. Montre comment éviter les erreurs de contexte et quelles vérifications MCP refaire avant d'éditer.",
+  "assertions": [
+    "La réponse impose de revalider le projet actif après switch.",
+    "La réponse inclut au minimum list-projects + read-project-summary dans la séquence.",
+    "La réponse mentionne la relecture des specs partagées avant édition C3.",
+    "La réponse explicite au moins deux risques évités (contexte obsolète, kind invalide, mauvais parent C3)."
+  ]
+}

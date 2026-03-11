@@ -1,0 +1,62 @@
+{
+  "skill_name": "c4-modeling-process",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Je pars d'une feuille blanche pour modéliser un nouveau produit SaaS. Donne-moi la démarche de conception LikeC4 à suivre, dans le bon ordre, et dis ce qui est optionnel.",
+      "expected_output": "Une démarche top-down C1→C2→C3, avec Deployment/Dynamic marqués comme optionnels.",
+      "files": [],
+      "expectations": [
+        "La réponse impose une progression top-down C1→C2→C3.",
+        "La réponse explicite que Deployment et Dynamic sont optionnels.",
+        "La réponse évite une approche bottom-up centrée sur le code."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "J'ai un petit container API très simple. Est-ce qu'il faut forcément faire une vue C3 détaillée ? Explique la règle de décision.",
+      "expected_output": "La réponse indique que C3 est sélectif et réservé aux containers complexes/critiques.",
+      "files": [],
+      "expectations": [
+        "La réponse dit explicitement que C3 n'est pas obligatoire pour chaque container.",
+        "La réponse réserve C3 aux containers complexes, critiques ou qui méritent du détail.",
+        "La réponse garde le raisonnement aligné sur C1→C2→C3."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Je veux montrer un parcours utilisateur en C1 avec des flèches temporelles entre le user, le webapp et l'API. Est-ce correct ? Si non, où doit aller ce diagramme et pourquoi ?",
+      "expected_output": "La réponse interdit les flows temporels en C1 et les redirige vers les vues 'Use Cases'/dynamic views.",
+      "files": [],
+      "expectations": [
+        "La réponse dit que les vues C1 doivent rester statiques.",
+        "La réponse redirige explicitement les flows temporels vers `views 'Use Cases'` / dynamic views.",
+        "La réponse explique pourquoi (C1 = boundary/context, pas temporal flow)."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Je reprends un workspace LikeC4 que je ne connais pas et je dois concevoir une nouvelle vue C2 proprement. Dans quel ordre j'aborde ça et quels skills complémentaires appeler ?",
+      "expected_output": "La réponse commence par recharger la structure/projet valide, puis déroule C1→C2, et délègue la création détaillée aux skills spécialisés.",
+      "files": [],
+      "expectations": [
+        "La réponse commence par établir ou vérifier la structure du projet avant d'éditer.",
+        "La réponse cite `understand-project-structure` comme prérequis ou étape de cadrage.",
+        "La réponse garde la progression C1→C2 plutôt qu'un saut direct au détail.",
+        "La réponse délègue la création détaillée à des skills spécialisés comme `create-element`, `create-relationship` ou `design-view`."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "J'ai déjà mon C2. Je veux maintenant documenter l'infra de prod et un scénario nominal utilisateur. Est-ce que ce skill doit tout détailler lui-même ou s'appuyer sur d'autres skills ?",
+      "expected_output": "La réponse présente c4-modeling-process comme cadre d'orchestration et renvoie le détail du déploiement et du flux aux bons skills.",
+      "files": [],
+      "expectations": [
+        "La réponse présente ce skill comme cadre de séquencement, pas comme skill unique qui absorbe tout.",
+        "La réponse renvoie le déploiement à `model-deployment-infrastructure`.",
+        "La réponse renvoie les flux temporels à `create-sequence-view`.",
+        "La réponse rappelle que Deployment et Dynamic viennent après le noyau C1/C2, de façon optionnelle ou ciblée."
+      ]
+    }
+  ]
+}

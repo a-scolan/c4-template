@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-shared-spec-styling",
+  "prompt": "Sur le showcase, je veux mettre en avant les éléments API et atténuer le reste dans une vue existante, mais sans inventer de palette locale. Quelle personnalisation LikeC4 proposerais-tu ?",
+  "assertions": [
+    "La réponse utilise des noms de palette partagée (`primary`, `muted`, etc.) plutôt que des hex codes.",
+    "La réponse emploie des règles `style` ou des `with` blocks pour mettre en avant les éléments API et atténuer le reste.",
+    "La réponse rappelle ou préserve le contexte structurel au lieu de le masquer totalement."
+  ]
+}

@@ -16,7 +16,7 @@ Based on https://c4model.com/diagrams/checklist
 
 ## Automated Validation
 
-###Run LikeC4 CLI Validator
+### Run LikeC4 CLI Validator
 
 ```bash
 npx likec4 validate
@@ -43,8 +43,7 @@ For each element:
 **Example:**
 
 ```likec4
-api = Container_API 'REST API' {
-  #backend #critical
+api = Container_Api 'REST API' {
   technology 'Node.js, Express'
   icon tech:nodejs
   
@@ -199,7 +198,8 @@ Source: https://c4model.com/diagrams/checklist
 - [ ] Environments defined (Prod, Staging, Dev)
 - [ ] Zones organized by tiers (DMZ, AppTier, DataTier)
 - [ ] VMs have infrastructure specs (IP, CPU, RAM, ports)
-- [ ] Zones have network details (VLANInstances use `instanceOf` to link to containers
+- [ ] Zones have network details (VLAN, network, gateway)
+- [ ] Instances use `instanceOf` to link to containers
 - [ ] Deployment relationships mirror system model with protocols
 - [ ] One deployment view per environment
 
@@ -217,7 +217,7 @@ Source: https://c4model.com/diagrams/checklist
 ### Naming Consistency
 
 - [ ] View IDs follow convention: `c1_name`, `c2_name`, `c3_name`
-- [ ] Element kinds use PascalCase: `Container_API`, `Node_Vm`
+- [ ] Element kinds use PascalCase: `Container_Api`, `Node_Vm`
 - [ ] Variables use camelCase: `apiGateway`, `prodVm`
 - [ ] Titles are descriptive: "Upload Service Internals"
 
@@ -288,7 +288,7 @@ Common syntax errors:
 
 **Fix:** Improve relationship documentation
 
-- Unlabeled → Add label: `api -> database 'Query data'`
+- Unlabeled → Add label: `api -[reads]-> database 'Queries data'`
 - Wrong direction → Reverse arrow
 - Missing technology → Add: `technology 'HTTPS'` in properties block
 

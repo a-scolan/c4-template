@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse place la séquence dans `views 'Use Cases'` avec un `dynamic view`.",
+      "passed": true,
+      "evidence": "Le snippet ouvre `views 'Use Cases' {` puis `dynamic view login_flow {`."
+    },
+    {
+      "text": "La séquence démarre explicitement avec l'acteur `user`.",
+      "passed": true,
+      "evidence": "La première interaction est `user -> mySystem.webapp 'Opens login form'`."
+    },
+    {
+      "text": "Les interactions utilisent uniquement des flèches `->` avec des labels d'action, sans `-[kind]->`.",
+      "passed": true,
+      "evidence": "Toutes les lignes utilisent `->` et chaque interaction porte un label d'action (`Opens login form`, `POST /login`, etc.) sans kind relationnel."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

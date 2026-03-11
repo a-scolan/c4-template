@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse impose la hiérarchie `Environment → Zone → VM → Node_App`.",
+      "passed": true,
+      "evidence": "La première phrase impose explicitement `Environment → Zone → VM → Node_App`, puis les quatre étapes reprennent exactement cet ordre."
+    },
+    {
+      "text": "La réponse relie les `Node_App` aux containers du modèle via `instanceOf` et dit que les relations sont héritées plutôt que recopiées.",
+      "passed": true,
+      "evidence": "La réponse dit `utilise donc instanceOf sur chaque Node_App` puis `Les relations applicatives sont héritées automatiquement ... tu ne recopies pas les relations ... à la main`."
+    },
+    {
+      "text": "La réponse demande des descriptions riches pour VM/zones avec réseau et specs, en mettant `eth0` en premier dans la table VM.",
+      "passed": true,
+      "evidence": "La section descriptions dit `chaque VM a une table Markdown avec eth0 en premier, puis OS, CPU, RAM...` et `chaque zone documente VLAN, CIDR, gateway`."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

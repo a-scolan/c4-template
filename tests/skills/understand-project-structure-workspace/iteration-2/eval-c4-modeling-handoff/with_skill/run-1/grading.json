@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse cadre d'abord le projet actif et les sources of truth avant de parler modélisation.",
+      "passed": true,
+      "evidence": "L’ouverture parle d’abord de `list-projects`, `read-project-summary`, du config et des specs partagées avant tout handoff."
+    },
+    {
+      "text": "La réponse cite explicitement `c4-modeling-process` comme skill de handoff.",
+      "passed": true,
+      "evidence": "La phrase `le skill qui doit prendre la main est c4-modeling-process` est explicite."
+    },
+    {
+      "text": "La réponse précise que le handoff vient après validation du projet, des kinds/relations/tags et des fichiers pertinents.",
+      "passed": true,
+      "evidence": "La liste `Ce que ... doit figer` cite projet, sources, kinds/relations/tags et fichiers à modifier avant handoff."
+    },
+    {
+      "text": "La réponse distingue le rôle de cadrage workspace de ce skill et le rôle d'orchestration C1→C2→C3 du skill suivant.",
+      "passed": true,
+      "evidence": "La section `Rôle de chaque skill` oppose explicitement cadrage workspace vs orchestration C1→C2→C3."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  }
+}

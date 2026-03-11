@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse utilise `-[reads]->` pour Redis et PostgreSQL.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : retrievalService -[reads]-> cache, retrievalService -[reads]-> database."
+    },
+    {
+      "text": "La réponse réserve `-[calls]->` aux appels service-à-service.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : service-à-service."
+    },
+    {
+      "text": "La réponse mentionne `-[writes]->` pour les mutations/persistences.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : -[writes]->."
+    },
+    {
+      "text": "La réponse fournit un exemple court cohérent.",
+      "passed": false,
+      "evidence": "Absence de mention explicite de : Exemple court."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 4,
+    "total": 4,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 166,
+    "transcript_chars": 166
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Harness statique : temps et tokens non collectés, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

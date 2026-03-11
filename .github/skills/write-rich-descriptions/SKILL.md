@@ -1,13 +1,22 @@
 ---
 name: write-rich-descriptions
-description: Use metadata for system models (business/technical context) and markdown tables for deployment models (infrastructure specs). Makes models queryable and self-documenting. Always put network interfaces (eth0, eth1) first in deployment tables. Use arrays for multiple values in metadata. Duplicate data in metadata blocks for automation.
+description: Use when adding structured descriptions to LikeC4 elements — metadata blocks for system models (queryable by automation), markdown tables for deployment infrastructure (VM specs, network interfaces, RTO). Decides format based on element type and whether fields will be queried.
 ---
 
 # Write Rich Descriptions
 
-Creates comprehensive element descriptions using the right format for each context.
+## Overview
 
-## Quick Decision Guide
+Selects the right description format for each element type: `metadata { }` blocks for system-level elements (structured and queryable by automation), markdown tables for deployment nodes (human-readable infrastructure specs). Only adds fields that are actually queried or useful to operators.
+
+## When to Use
+
+- When creating or documenting system-level elements (containers, services, components)
+- When documenting deployment nodes (VMs, zones) with network and hardware specs
+- When model needs to be queryable by owner, region, or infrastructure properties
+- When onboarding operators who need to understand network topology at a glance
+
+## Quick Reference
 
 | Context | Format | Why | File |
 |---------|--------|-----|------|

@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse utilise `-[calls]->` entre `mySystem.webapp` et `mySystem.api`.",
+      "passed": true,
+      "evidence": "Extrait : mySystem.webapp -[calls]-> mySystem.api 'Appelle l’API' {"
+    },
+    {
+      "text": "La réponse place le type de relation dans la flèche, pas dans le bloc.",
+      "passed": true,
+      "evidence": "Extrait : Utilise une relation typée avec le type de relation dans la flèche :"
+    },
+    {
+      "text": "La réponse garde le label inline et `technology 'HTTPS'` dans le bloc.",
+      "passed": true,
+      "evidence": "Extrait : mySystem.webapp -[calls]-> mySystem.api 'Appelle l’API' {"
+    },
+    {
+      "text": "La réponse évite la forme invalide `-> { calls ... }`.",
+      "passed": true,
+      "evidence": "Extrait : Garde le label inline. Et jamais une forme invalide comme `-> { calls ... }`."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 315,
+    "transcript_chars": 315
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Harness statique : temps et tokens non collectés, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

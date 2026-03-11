@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-no-custom-kind",
+  "prompt": "Je pense créer un kind `Container_UploadOrchestrator` juste pour un service d’upload. Est-ce une bonne idée dans ce repo ? Explique la règle et quoi faire avant d’ajouter un nouveau kind.",
+  "assertions": [
+    "La réponse demande de vérifier d'abord les kinds existants du shared spec ou via `read-project-summary`.",
+    "La réponse déconseille les kinds one-off si un kind existant couvre le besoin.",
+    "La réponse demande l'autorisation avant tout nouveau kind."
+  ]
+}

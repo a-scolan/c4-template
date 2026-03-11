@@ -5,9 +5,28 @@ description: Use when naming deployment nodes consistently ({Environment}{Servic
 
 # Name Deployment Nodes Consistently
 
-Use this skill to establish systematic naming for VMs, zones, and deployment elements.
+## Overview
+
+Establishes systematic, scannable naming conventions for all deployment infrastructure identifiers: VMs follow `{Environment}{ServiceName}Vm`, zones use `{Tier}Tier` or `{Function}Zone`, and environments are single-word PascalCase. Consistent naming makes infrastructure readable without explanations.
+
+## When to Use
+
+- Naming a new VM before creating it in a deployment file
+- Naming a new network zone or environment
+- Reviewing existing names for consistency before adding new ones
+- Onboarding a new project to the shared naming convention
 
 **REQUIRED BACKGROUND:** See `model-deployment-infrastructure` skill for complete hierarchy, descriptions, and infrastructure requirements.
+
+## Quick Reference
+
+| Element | Pattern | Examples |
+|---------|---------|----------|
+| VM | `{Env}{Service}Vm` | `ProdApigwVm`, `StagingApiVm` |
+| Zone (layer) | `{Tier}Tier` | `AppTier`, `DataTier`, `ProcTier` |
+| Zone (function) | `{Function}Zone` | `SecZone`, `InfraZone` |
+| Environment | `{Env}` (PascalCase) | `Prod`, `Staging`, `Dev`, `Test` |
+| External node | `{Provider}{Service}` | `VirusTotalService`, `AwsS3Bucket` |
 
 **Keywords:** naming, convention, VM, zone, environment, identifier, deployment, consistency
 

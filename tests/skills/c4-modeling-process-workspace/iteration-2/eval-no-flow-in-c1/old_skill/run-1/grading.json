@@ -1,0 +1,25 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse dit que les vues C1 doivent rester statiques.",
+      "passed": true,
+      "evidence": "La première phrase dit explicitement qu’un C1 doit rester statique."
+    },
+    {
+      "text": "La réponse redirige explicitement les flows temporels vers `views 'Use Cases'` / dynamic views.",
+      "passed": true,
+      "evidence": "La réponse renvoie explicitement le diagramme vers `views 'Use Cases'` et une `dynamic view`."
+    },
+    {
+      "text": "La réponse explique pourquoi (C1 = boundary/context, pas temporal flow).",
+      "passed": true,
+      "evidence": "La dernière phrase oppose contexte et déroulé temporel."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  }
+}

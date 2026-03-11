@@ -1,0 +1,44 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse ajoute un `autoLayout LeftRight` et conserve des `rank source` / `rank sink` cohérents avec la demande.",
+      "passed": true,
+      "evidence": "Le bloc contient `autoLayout LeftRight`, `rank source { user }` et `rank sink { mySystem.database, emailService }`."
+    },
+    {
+      "text": "La réponse préserve un `navigateTo c2_webapp_details` sur `mySystem.webapp`.",
+      "passed": true,
+      "evidence": "Le bloc `include mySystem.webapp with { navigateTo c2_webapp_details }` garde le drill-down existant."
+    },
+    {
+      "text": "La réponse reste dans le périmètre de la personnalisation et n'introduit ni couleur hexadécimale ni refonte structurelle inutile.",
+      "passed": true,
+      "evidence": "La proposition ne change ni les includes de structure ni les couleurs ; elle se limite à layout + navigation."
+    }
+  ],
+  "summary": {
+    "passed": 3,
+    "failed": 0,
+    "total": 3,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0,
+    "total_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  }
+}

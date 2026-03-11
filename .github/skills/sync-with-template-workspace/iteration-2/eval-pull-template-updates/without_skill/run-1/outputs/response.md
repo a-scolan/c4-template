@@ -1,0 +1,1 @@
+Fais un merge ou un rebase des changements du template dans ton dépôt, puis résous les conflits si besoin.

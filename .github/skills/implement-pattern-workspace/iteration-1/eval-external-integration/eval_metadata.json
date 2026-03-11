@@ -1,0 +1,10 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-external-integration",
+  "prompt": "Je dois modéliser dans LikeC4 un appel de `vault.api` vers un prestataire de paiement externe. Quels éléments et relations standard ajouter pour rester cohérent ?",
+  "assertions": [
+    "La réponse crée ou mentionne un système externe dédié (ex. `System_External`) et le tag externe partagé (`#External`).",
+    "La réponse utilise une relation typed `-[calls]->` depuis l’API interne vers l’externe.",
+    "La réponse insiste sur un libellé d’action explicite (ex. `Process payment`) plutôt qu’un label vague."
+  ]
+}

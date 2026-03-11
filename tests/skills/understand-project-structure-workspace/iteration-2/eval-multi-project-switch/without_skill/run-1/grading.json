@@ -1,0 +1,30 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse impose de revalider le projet actif après switch.",
+      "passed": true,
+      "evidence": "La réponse dit explicitement de recharger le contexte du projet ciblé avant édition."
+    },
+    {
+      "text": "La réponse inclut au minimum list-projects + read-project-summary dans la séquence.",
+      "passed": false,
+      "evidence": "Aucun passage n’impose la séquence `list-projects` puis `read-project-summary`."
+    },
+    {
+      "text": "La réponse mentionne la relecture des specs partagées avant édition C3.",
+      "passed": false,
+      "evidence": "La réponse parle du modèle et de la vue, mais jamais des specs partagées avant édition C3."
+    },
+    {
+      "text": "La réponse explicite au moins deux risques évités (contexte obsolète, kind invalide, mauvais parent C3).",
+      "passed": true,
+      "evidence": "La réponse cite l’ancien contexte et la possibilité de modifier la mauvaise vue ou le mauvais parent."
+    }
+  ],
+  "summary": {
+    "passed": 2,
+    "failed": 2,
+    "total": 4,
+    "pass_rate": 0.5
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse identifie `Container_Api` comme kind exact.",
+      "passed": true,
+      "evidence": "Extrait : Le kind exact pour ton backend est `Container_Api` ; pas `Container_API`, et pas le générique `Container` si tu veux rester précis."
+    },
+    {
+      "text": "La réponse cite les relations modèle valides utiles.",
+      "passed": true,
+      "evidence": "Extrait : Pour les relations modèle valides, reste sur `calls`, `reads`, `writes`, `async` et `uses`."
+    },
+    {
+      "text": "La réponse renvoie vers `read-project-summary` et/ou les specs partagées.",
+      "passed": true,
+      "evidence": "Extrait : Vérifie dans le dépôt actif avec `read-project-summary` ou les specs partagées."
+    },
+    {
+      "text": "La réponse n'invente pas de relation non déclarée.",
+      "passed": true,
+      "evidence": "Extrait : Et n'invente pas de relation non déclarée : pas `query`, pas `invokes`."
+    }
+  ],
+  "summary": {
+    "passed": 4,
+    "failed": 0,
+    "total": 4,
+    "pass_rate": 1.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 376,
+    "transcript_chars": 376
+  },
+  "timing": {
+    "executor_duration_seconds": 0.0,
+    "grader_duration_seconds": 0.0,
+    "total_duration_seconds": 0.0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Harness statique : temps et tokens non collectés, valeurs fixées à 0."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Jeu d'assertions exploitable pour cette itération."
+  }
+}

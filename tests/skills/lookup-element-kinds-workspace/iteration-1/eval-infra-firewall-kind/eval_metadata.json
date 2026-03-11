@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-infra-firewall-kind",
+  "prompt": "Pour un firewall dans l'infra de déploiement, le kind exact est `Infra_Firewall`, `Infra_Fw` ou autre ? Donne aussi deux kinds proches vraiment valides dans ce dépôt.",
+  "assertions": [
+    "La réponse identifie `Infra_Fw` comme kind exact.",
+    "La réponse donne au moins deux kinds proches réellement valides.",
+    "La réponse renvoie vers `spec-deployment.c4` et/ou `read-project-summary`.",
+    "La réponse évite de présenter un kind invalide comme valide."
+  ]
+}

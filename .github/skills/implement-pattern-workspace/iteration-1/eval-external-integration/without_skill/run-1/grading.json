@@ -1,0 +1,50 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse crée ou mentionne un système externe dédié (ex. `System_External`) et le tag externe partagé (`#External`).",
+      "passed": false,
+      "evidence": "La réponse parle d’un service externe, mais sans type `System_External` ni tag `#External`."
+    },
+    {
+      "text": "La réponse utilise une relation typed `-[calls]->` depuis l’API interne vers l’externe.",
+      "passed": false,
+      "evidence": "Aucune relation typed `-[calls]->` n’est proposée."
+    },
+    {
+      "text": "La réponse insiste sur un libellé d’action explicite (ex. `Process payment`) plutôt qu’un label vague.",
+      "passed": false,
+      "evidence": "Aucun exemple de libellé d’action précis n’apparaît."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 3,
+    "total": 3,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 0,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 0,
+    "transcript_chars": 0
+  },
+  "timing": {
+    "total_tokens": 0,
+    "duration_ms": 0,
+    "total_duration_seconds": 0,
+    "executor_duration_seconds": 0,
+    "grader_duration_seconds": 0
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Aucune suggestion majeure sur cet eval."
+  }
+}
