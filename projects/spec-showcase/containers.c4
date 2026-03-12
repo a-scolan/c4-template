@@ -139,34 +139,74 @@ model {
   // ========================================================================
   
   // Client to security
-  browser -> waf 'HTTPS'
-  mobile_app -> waf 'HTTPS'
-  spa -> waf 'HTTPS'
+  browser -[calls]-> waf 'Sends requests' {
+    technology 'HTTPS'
+  }
+  mobile_app -[calls]-> waf 'Sends requests' {
+    technology 'HTTPS'
+  }
+  spa -[calls]-> waf 'Sends requests' {
+    technology 'HTTPS'
+  }
   
   // Security chain
-  waf -> reverse_proxy 'Forwards traffic'
-  reverse_proxy -> loadbalancer 'Routes to backend'
+  waf -[calls]-> reverse_proxy 'Forwards traffic' {
+    technology 'HTTP'
+  }
+  reverse_proxy -[calls]-> loadbalancer 'Routes to backend' {
+    technology 'HTTP'
+  }
   
   // Application flows
-  api -> database 'Queries data'
-  api -> database 'Stores data'
-  webapp -> api 'Calls API'
-  geo_api -> geo_database 'Geographic queries'
+  api -[reads]-> database 'Queries data' {
+    technology 'SQL'
+  }
+  api -[writes]-> database 'Stores data' {
+    technology 'SQL'
+  }
+  webapp -[calls]-> api 'Calls API' {
+    technology 'HTTPS'
+  }
+  geo_api -[reads]-> geo_database 'Queries spatial data' {
+    technology 'PostGIS'
+  }
   
   // Processing and messaging
-  api -> queue 'Enqueues jobs'
-  queue -> processing_server 'Executes jobs'
-  processing_server -> storage 'Stores results'
-  processing_server -> fileserver 'Reads input files'
+  api -[async]-> queue 'Publishes jobs' {
+    technology 'AMQP'
+  }
+  queue -[async]-> processing_server 'Delivers jobs' {
+    technology 'AMQP'
+  }
+  processing_server -[writes]-> storage 'Stores results' {
+    technology 'S3'
+  }
+  processing_server -[reads]-> fileserver 'Reads input files' {
+    technology 'NFS'
+  }
   
   // Identity and communication
-  api -> iam_server 'Authenticates'
-  webapp -> iam_server 'Authenticates'
-  processing_server -> mailserver 'Sends notifications'
-  exchange_server -> mailserver 'Email sync'
+  api -[calls]-> iam_server 'Authenticates users' {
+    technology 'OIDC/SAML'
+  }
+  webapp -[calls]-> iam_server 'Authenticates users' {
+    technology 'OIDC/SAML'
+  }
+  processing_server -[calls]-> mailserver 'Sends notifications' {
+    technology 'SMTP'
+  }
+  exchange_server -[calls]-> mailserver 'Synchronizes email' {
+    technology 'SMTP'
+  }
   
   // Data access
-  webapp -> directory 'User lookup'
-  dataserver -> database 'Indexes data'
-  web_server -> app_server 'Routes requests'
+  webapp -[reads]-> directory 'Looks up users' {
+    technology 'LDAP'
+  }
+  dataserver -[reads]-> database 'Indexes data' {
+    technology 'SQL'
+  }
+  web_server -[calls]-> app_server 'Routes requests' {
+    technology 'HTTP'
+  }
 }

@@ -35,10 +35,10 @@ model {
     }
     
     // Component relationships
-    routing_component -> auth_component 'Verifies token'
-    routing_component -> validation_component 'Validates request'
-    routing_component -> persistence_component 'Accesses DB'
-    routing_component -> caching_component 'Cache lookup'
+    routing_component -[uses]-> auth_component 'Verifies token'
+    routing_component -[uses]-> validation_component 'Validates request'
+    routing_component -[uses]-> persistence_component 'Accesses DB'
+    routing_component -[uses]-> caching_component 'Cache lookup'
   }
   
   // Database for the persistence layer
@@ -48,5 +48,7 @@ model {
   }
   
   // Component to external connection
-  api_container.persistence_component -> component_database 'Queries data'
+  api_container.persistence_component -[reads]-> component_database 'Queries data' {
+    technology 'PostgreSQL'
+  }
 }

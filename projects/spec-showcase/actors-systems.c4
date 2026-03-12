@@ -49,10 +49,22 @@ model {
   // RELATIONSHIPS - Context Level
   // ========================================================================
   
-  person_external -> system_new 'Accesses'
-  person_staff -> system_existing 'Works with'
-  person_admin -> system_legacy 'Maintains'
-  system_existing -> system_external 'Integrates with'
-  system_new -> system_existing 'Depends on'
-  system_legacy -> system_new 'Legacy migration'
+  person_external -[uses]-> system_new 'Accesses' {
+    technology 'Manual'
+  }
+  person_staff -[uses]-> system_existing 'Works with' {
+    technology 'Manual'
+  }
+  person_admin -[uses]-> system_legacy 'Maintains' {
+    technology 'Manual'
+  }
+  system_existing -[calls]-> system_external 'Integrates with' {
+    technology 'HTTPS'
+  }
+  system_new -[calls]-> system_existing 'Depends on' {
+    technology 'HTTPS'
+  }
+  system_legacy -[uses]-> system_new 'Legacy migration' {
+    technology 'Manual'
+  }
 }

@@ -259,14 +259,29 @@ element System_Legacy {
 
 **Example:**
 ```likec4
-api -> database { reads 'Fetches metadata' }
-api -> queue { async 'Publishes job' }
+customer -[calls]-> portal 'Uses UI' {
+  technology 'Manual'
+}
+
+api -[reads]-> database 'Fetches metadata' {
+  technology 'PostgreSQL'
+}
+
+api -[async]-> queue 'Publishes job' {
+  technology 'AMQP'
+}
 ```
+
+**Common relationship technology values:** `Manual`, `HTTPS`, `HTTP/8080`, `AMQP`, `PostgreSQL`, `SQL`, `LDAP`, `SMTP`, `OIDC/SAML`, `NFS`
+
+**Rule:** Put interaction technology on the **system-model relationship**. Add a port only when it is non-default for the protocol.
 
 ---
 
 ### Deployment Relationships (Infrastructure)
 **File:** [`spec-deployment.c4`](../projects/shared/spec-deployment.c4)
+
+Use these deployment relationships only for **infrastructure-specific** connections. Normal application traffic should usually be modeled in the system model and inherited in deployment through `instanceOf`.
 
 #### Network Protocols
 | Type | Notation |
@@ -288,8 +303,8 @@ api -> queue { async 'Publishes job' }
 
 **Example:**
 ```likec4
-frontendVm -> apiVm { https 'Port 443' }
-apiVm -> dbVm { sql 'Port 5432' }
+frontendVm -[https]-> apiVm 'Ingress traffic'
+backupVm -[nfs]-> archiveVm 'Replicates backups'
 ```
 
 ---

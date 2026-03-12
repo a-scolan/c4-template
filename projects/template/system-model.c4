@@ -42,21 +42,27 @@ model {
   }
   
   // C1: Context-level relationships
-  user -[calls]-> mySystem 'Uses'
+  user -[calls]-> mySystem 'Uses' {
+    technology 'Manual'
+  }
   
   // C2: Container-level relationships
   user -[calls]-> mySystem.webapp 'Interacts with' {
-    description 'Uses web browser to access the application'
+    technology 'Manual'
   }
   
   mySystem.webapp -[calls]-> mySystem.api 'Makes API requests' {
-    description 'HTTPS REST calls'
+    technology 'HTTPS'
   }
   
-  mySystem.api -[reads]-> mySystem.database 'Queries data'
-  mySystem.api -[writes]-> mySystem.database 'Persists data'
+  mySystem.api -[reads]-> mySystem.database 'Queries data' {
+    technology 'PostgreSQL'
+  }
+  mySystem.api -[writes]-> mySystem.database 'Persists data' {
+    technology 'PostgreSQL'
+  }
   
   mySystem.api -[calls]-> emailService 'Sends notifications' {
-    description 'Via REST API'
+    technology 'HTTPS'
   }
 }
