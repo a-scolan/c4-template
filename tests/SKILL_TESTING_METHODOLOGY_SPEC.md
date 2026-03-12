@@ -38,7 +38,8 @@ The reason is methodological: `skill-creator` teaches how to run and evaluate sk
 
 Therefore, this specification distinguishes between:
 
-- **evaluation methodology inputs** (for the human or orchestrating agent), which may be inspired by or derived from `skill-creator`
+- **evaluation methodology inputs** (for the human or orchestrating agent), which may directly read vendored `skill-creator/agents/*.md` and `skill-creator/references/schemas.md` inside an isolated support workspace
+- **isolated support workspaces** used by grader/analyzer/comparator-style calls, which may contain a snapshot of `skill-creator` as methodological source of truth
 - **visible runtime skills inside a benchmark sandbox**, which must stay limited to the intended test configuration
 
 ## Goals
@@ -92,6 +93,18 @@ The primary skill file in a snapshot MUST be named `BASELINE_SKILL.md`.
 
 A temporary execution workspace created for one eval and one configuration. A sandbox is not a security boundary in the operating-system sense; it is a discovery boundary controlling which repository-local skills are visible to the run.
 
+### Support workspace
+
+An iteration-scoped helper workspace stored under:
+
+` tests/skills/<skill-name>-workspace/iteration-N/_support-skill-workspace/ `
+
+This workspace MAY contain a plain snapshot at `skill-creator/` so that grader/analyzer/comparator-style calls can read the upstream skill files as methodology source of truth.
+
+When present, grader/analyzer support calls SHOULD treat vendored `skill-creator/agents/*.md` instructions and `skill-creator/references/schemas.md` as the authoritative prompt and schema source, while still returning harness outputs in the expected local artefacts.
+
+It is not part of the measured executor sandbox and MUST NOT be counted as part of the skill-under-test environment.
+
 ## Repository Layout Requirements
 
 The repository MUST preserve this separation:
@@ -103,7 +116,9 @@ Evaluation workspaces MUST NOT remain under `.github/skills/`.
 
 The runner MUST reject any configured workspace root that resolves to `.github/skills/` or one of its descendants.
 
-A test workspace MUST NOT contain an active `SKILL.md` file in a location where the repository skill discovery mechanism could treat it as a live skill.
+A test workspace MUST NOT contain an active `SKILL.md` file for the skill under test in a location where the repository skill discovery mechanism could treat it as a live skill.
+
+The only allowed exception is a runner-managed support workspace under `iteration-N/_support-skill-workspace/`, which MAY contain a plain `skill-creator/` snapshot for grader/analyzer/comparator-style support calls as long as it is not laid out as an active repo-local skill root.
 
 If a snapshot of an older skill version is stored for later replay, the snapshot MUST use `BASELINE_SKILL.md`, not `SKILL.md`.
 
@@ -229,11 +244,29 @@ At minimum, each configuration run SHOULD persist:
 - `timing.json`
 - `skill_manifest.json`
 
+Each iteration MAY additionally persist a runner-managed support workspace snapshot for methodology support, including a machine-readable descriptor such as `iteration-N/_support-skill-workspace/support-skill.json`.
+
+If benchmark-level analyzer calls are enabled, each iteration SHOULD also persist analyzer artefacts (for example `analyzer.json`, `analyzer.notes.json`, and optional raw/stdout/stderr captures) so analysis provenance remains auditable.
+
+`timing.json` SHOULD preserve both the benchmark summary inputs and the raw measurement provenance, specifically:
+
+- executor wall-clock duration for the `gh copilot` subprocess
+- Copilot CLI `usage.totalApiDurationMs` and `usage.sessionDurationMs` when available
+- assistant output tokens reported in JSONL events
+- an explicit note that prompt/input token counts are not currently exposed by GitHub Copilot CLI JSONL
+
 Each iteration SHOULD persist:
 
 - `benchmark.json`
 - `benchmark.md`
 - `review.html`
+
+While a benchmark is actively running, the runner MAY also persist transient progress artefacts such as:
+
+- `progress.json`
+- `progress.log`
+
+These files are operational feedback only. They are not part of the measured benchmark evidence and may be overwritten during the run.
 
 Each workspace SHOULD additionally persist iteration-aware history reports derived from all `iteration-N/benchmark.json` files, and the shared `tests/skills/` root SHOULD persist a repo-wide multi-skill overview report.
 
@@ -282,11 +315,13 @@ A minimal future runner SHOULD:
 5. execute the prompt using the sandbox as the workspace root
 6. write run artefacts into `tests/skills/<skill-name>-workspace/iteration-N/`
 7. aggregate and grade after all runs finish
+8. optionally run benchmark analysis from the isolated support workspace and merge resulting notes into iteration-level benchmark artefacts
 
 This repository now ships an MVP implementation at `tests/run_skill_evals.py` that follows this shape with `gh copilot -- -p ...`, per-run temporary home directories, and optional MCP reinjection from `~/.vscode/mcp.json`.
 
 The runner also regenerates:
 
+- per-iteration `benchmark.md` files from persisted `benchmark.json`
 - per-workspace history reports at `tests/skills/<skill-name>-workspace/workspace-history.{json,md,html}`
 - a global overview at `tests/skills/skills-overview.{json,md,html}`
 

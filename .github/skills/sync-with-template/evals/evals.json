@@ -3,38 +3,50 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "J’ai modifié `.github/skills/create-relationship/SKILL.md`, `projects/shared/spec-context.c4`, `projects/payments/system-model.c4` et `README.md`. Qu’est-ce qui peut remonter vers le template, qu’est-ce qui doit rester local ?",
-      "expected_output": "La réponse sépare les artefacts génériques des fichiers projet-spécifiques et impose une revue de généralisation/confidentialité avant push.",
+      "prompt": "I modified `.github/skills/create-relationship/SKILL.md`, `projects/shared/spec-context.c4`, `projects/payments/system-model.c4`, and `README.md`. What can be pushed back to the template, and what must stay local?",
+      "expected_output": "The response separates generic artifacts from project-specific files and requires a generalization/confidentiality review before push.",
       "files": [],
       "expectations": [
-        "La réponse classe `.github/skills/create-relationship/SKILL.md` et `projects/shared/spec-context.c4` comme génériques/synchronisables.",
-        "La réponse garde `projects/payments/system-model.c4` et `README.md` hors du push template.",
-        "La réponse demande de généraliser et retirer les noms de projet avant push.",
-        "La réponse impose une revue confidentialité avant push."
+        "The response classifies `.github/skills/create-relationship/SKILL.md` and `projects/shared/spec-context.c4` as generic/syncable.",
+        "The response keeps `projects/payments/system-model.c4` and `README.md` out of template push.",
+        "The response asks to generalize and remove project names before push.",
+        "The response requires a confidentiality review before push."
       ]
     },
     {
       "id": 1,
-      "prompt": "J’ai amélioré `.github/skills/create-relationship/SKILL.md`. Donne-moi la séquence sûre pour pousser cette amélioration vers `c4-template` avec un branch `sync/*`, en gardant la revue confidentialité avant le push.",
-      "expected_output": "La réponse reprend le workflow sûr : branche depuis `c4-template/main`, cherry-pick du fichier générique, diff/revue confidentialité, push depuis `sync/*`.",
+      "prompt": "I improved `.github/skills/create-relationship/SKILL.md`. Give me the safe sequence to push this improvement to `c4-template` using a `sync/*` branch, while keeping confidentiality review before push.",
+      "expected_output": "The response follows the safe workflow: branch from `c4-template/main`, cherry-pick generic file, diff/confidentiality review, push from `sync/*`.",
       "files": [],
       "expectations": [
-        "La réponse fetch `c4-template/main` et crée un branch `sync/*` depuis cette base.",
-        "La réponse ne récupère que le fichier générique depuis `main`.",
-        "La réponse impose une revue de diff/confidentialité avant `git push`.",
-        "La réponse pousse depuis un branch `sync/*`, pas directement depuis `main`."
+        "The response fetches `c4-template/main` and creates a `sync/*` branch from that base.",
+        "The response only picks the generic file from `main`.",
+        "The response requires diff/confidentiality review before `git push`.",
+        "The response pushes from a `sync/*` branch, not directly from `main`."
       ]
     },
     {
       "id": 2,
-      "prompt": "Je veux rapatrier les améliorations du template pour `.github` et `projects/shared`. Quelle commande je lance, et pourquoi `--squash` ?",
-      "expected_output": "La réponse donne les commandes subtree ciblées et explique que `--squash` garde un historique compact.",
+      "prompt": "I want to pull improvements from the template for `.github` and `projects/shared`. Which command should I run, and why `--squash`?",
+      "expected_output": "The response gives targeted subtree commands and explains that `--squash` keeps history compact.",
       "files": [],
       "expectations": [
-        "La réponse donne `git fetch c4-template main`.",
-        "La réponse donne les deux `git subtree pull` ciblés sur `.github` et `projects/shared`.",
-        "La réponse explique que `--squash` garde un historique plus propre/compact.",
-        "La réponse évite de proposer un pull pour des fichiers projet-spécifiques."
+        "The response provides `git fetch c4-template main`.",
+        "The response provides both `git subtree pull` commands targeting `.github` and `projects/shared`.",
+        "The response explains that `--squash` keeps history cleaner/more compact.",
+        "The response avoids suggesting pulls for project-specific files."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I improved `projects/shared/spec-containers.c4` in this repo. Another project wants the same fix. How do I verify it is truly generic before pushing to `c4-template`?",
+      "expected_output": "The response requires a genericity/confidentiality audit, then a safe sync workflow from a dedicated branch.",
+      "files": [],
+      "expectations": [
+        "The response requires an explicit audit to distinguish generic fix from project-specific need.",
+        "The response requests diff/confidentiality review before any push.",
+        "The response creates or uses a `sync/*` branch from `c4-template/main`, not from `main`.",
+        "The response includes a simple rollback plan if the fix turns out too local or regressive."
       ]
     }
   ]

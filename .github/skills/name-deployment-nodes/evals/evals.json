@@ -3,24 +3,36 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je dois nommer l'environnement, les zones et les VM d'une prod avec API gateway, upload, worker, MongoDB et monitoring. Propose des noms cohérents et corrige aussi ces candidats : `ProdApiVM`, `prod_upload_vm`, `AppServers`, `MonitoringTier`.",
-      "expected_output": "Réponse qui applique strictement les patterns de nommage des VM/zones/environnements et corrige les contre-exemples donnés.",
+      "prompt": "I need to name the environment, zones, and VMs of a production setup with API gateway, upload, worker, MongoDB, and monitoring. Propose consistent names and also fix these candidates: `ProdApiVM`, `prod_upload_vm`, `AppServers`, `MonitoringTier`.",
+      "expected_output": "A response that strictly applies VM/zone/environment naming patterns and corrects the provided counter-examples.",
       "files": [],
       "expectations": [
-        "La réponse applique le pattern VM `{Environment}{Service}Vm` et corrige `ProdApiVM` / `prod_upload_vm` vers des noms du type `ProdApigwVm` / `ProdUploadVm`.",
-        "La réponse distingue les zones de couche (`AppTier`, `ProcTier`, `DataTier`) des zones fonctionnelles (`SecZone`, `InfraZone`) et corrige `AppServers` / `MonitoringTier`.",
-        "La réponse garde des identifiants en PascalCase avec suffixe `Vm`, pas `VM` ni snake_case."
+        "The response applies VM pattern `{Environment}{Service}Vm` and corrects `ProdApiVM` / `prod_upload_vm` to names like `ProdApigwVm` / `ProdUploadVm`.",
+        "The response distinguishes tier zones (`AppTier`, `ProcTier`, `DataTier`) from functional zones (`SecZone`, `InfraZone`) and corrects `AppServers` / `MonitoringTier`.",
+        "The response keeps PascalCase identifiers with `Vm` suffix, not `VM` and not snake_case."
       ]
     },
     {
       "id": 1,
-      "prompt": "Je ne veux pas seulement les noms : je veux aussi la hiérarchie complète Environment→Zone→VM→Node_App, les descriptions Markdown avec IP/CPU/RAM et les `instanceOf` vers les containers. Est-ce le bon skill ?",
-      "expected_output": "La réponse garde le scope sur le naming et renvoie la modélisation complète à `model-deployment-infrastructure`.",
+      "prompt": "I don’t only want names: I also want full Environment→Zone→VM→Node_App hierarchy, Markdown descriptions with IP/CPU/RAM, and `instanceOf` links to containers. Is this the right skill?",
+      "expected_output": "The response keeps scope on naming and delegates full modeling to `model-deployment-infrastructure`.",
       "files": [],
       "expectations": [
-        "La réponse dit que ce skill couvre surtout le naming et renvoie la modélisation complète à `model-deployment-infrastructure`.",
-        "La réponse conserve les patterns de nommage utiles en entrée (`{Env}{Service}Vm`, `{Tier}Tier` ou `{Function}Zone`).",
-        "La réponse n'essaie pas de détailler elle-même toute la hiérarchie, les descriptions et les `instanceOf`."
+        "The response says this skill mainly covers naming and delegates full modeling to `model-deployment-infrastructure`.",
+        "The response preserves useful naming patterns as guidance (`{Env}{Service}Vm`, `{Tier}Tier`, or `{Function}Zone`).",
+        "The response does not try to detail full hierarchy, descriptions, and `instanceOf` itself."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I have a multi-region EU/US production setup with API, worker, and database. For VMs and zones, should it be `ProdEuApiVm` or `EuProdApiVm`? And how do I keep one readable convention across all names?",
+      "expected_output": "The response chooses a consistent extension of the base pattern, applies it to VMs and zones, then rejects mixed variants.",
+      "files": [],
+      "expectations": [
+        "The response chooses a consistent extension of existing `{Environment}{Service}Vm`, for example `{Environment}{Region}{Service}Vm`.",
+        "The response applies the same naming logic to corresponding zones or tiers.",
+        "The response rejects inconsistent or mixed variants within the same estate.",
+        "The response keeps scan-friendly PascalCase identifiers with expected suffixes (`Vm`, `Tier`, `Zone`)."
       ]
     }
   ]

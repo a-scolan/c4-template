@@ -3,25 +3,37 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "On choisit PostgreSQL plutôt que MongoDB pour `mySystem.database` dans le projet template. Aide-moi à cadrer l’ADR à écrire.",
-      "expected_output": "Cadre ADR standard pour un choix technologique lié à un élément LikeC4.",
+      "prompt": "We’re choosing PostgreSQL instead of MongoDB for `mySystem.database` in the template project. Help me frame the ADR to write.",
+      "expected_output": "A standard ADR framework for a technology choice tied to a LikeC4 element.",
       "files": [],
       "expectations": [
-        "La réponse utilise la structure ADR standard `Status / Context / Decision / Consequences`.",
-        "La réponse traite les conséquences positives et négatives, pas seulement les avantages.",
-        "La réponse propose un chemin/fichier au format `ADR/NNNN-...` aligné sur le template.",
-        "La réponse relie la décision à l’élément LikeC4 concerné (`mySystem.database`)."
+        "The response uses the standard ADR structure `Status / Context / Decision / Consequences`.",
+        "The response covers both positive and negative consequences, not just benefits.",
+        "The response proposes a path/file in `ADR/NNNN-...` format aligned with the template.",
+        "The response links the decision to the relevant LikeC4 element (`mySystem.database`)."
       ]
     },
     {
       "id": 1,
-      "prompt": "Je viens de changer le workflow GitHub Actions du dépôt. Est-ce que je dois écrire un ADR avec ce skill ?",
-      "expected_output": "Refus motivé d'utiliser ce skill pour un changement CI/CD hors périmètre architectural.",
+      "prompt": "I just changed the repository’s GitHub Actions workflow. Should I write an ADR with this skill?",
+      "expected_output": "A reasoned refusal to use this skill for a CI/CD change outside architecture scope.",
       "files": [],
       "expectations": [
-        "La réponse dit explicitement que ce skill n’est pas pour le tooling repo / CI-CD.",
-        "La réponse évite de forcer un ADR hors périmètre.",
-        "La réponse propose au moins une alternative courte (README, doc d’exploitation, note de repo, etc.)."
+        "The response explicitly says this skill is not for repo tooling / CI-CD changes.",
+        "The response avoids forcing an out-of-scope ADR.",
+        "The response proposes at least one short alternative (README, ops doc, repo note, etc.)."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "We are replacing an internal `payments-service` with a direct SaaS integration to Stripe, keeping only a small `stripeAdapter`. This is a real architecture decision. Help me frame the ADR.",
+      "expected_output": "The response frames an ADR for architectural replacement with explicit trade-offs, consequences, and links to impacted model elements.",
+      "files": [],
+      "expectations": [
+        "The response uses the ADR structure `Status / Context / Decision / Consequences`.",
+        "The response makes both gains and costs/risks explicit (SaaS dependency, reduced control, etc.).",
+        "The response proposes an ADR file in `ADR/NNNN-...` format consistent with the template.",
+        "The response links the decision to impacted LikeC4 elements, for example `payments-service` and `stripeAdapter`."
       ]
     }
   ]

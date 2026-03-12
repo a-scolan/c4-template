@@ -3,24 +3,36 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je viens d'ajouter un container `mySystem.worker` et une vue C2 dédiée dans `projects/template/system-model.c4` et `system-views.c4`. Avant commit, donne-moi un plan de validation LikeC4 pour vérifier kinds, FQN, relations et rendu.",
-      "expected_output": "Plan de validation LikeC4 structuré pour les changements du projet template.",
+      "prompt": "I just added a `mySystem.worker` container and a dedicated C2 view in `projects/template/system-model.c4` and `system-views.c4`. Before commit, give me a LikeC4 validation plan to check kinds, FQNs, relationships, and rendering.",
+      "expected_output": "A structured LikeC4 validation plan for template-project changes.",
       "files": [],
       "expectations": [
-        "La réponse commence par vérifier la structure et les kinds via `read-project-summary`.",
-        "La réponse vérifie les références/FQN et les relations via `search-element` ou `find-relationships`.",
-        "La réponse inclut la validation du rendu des vues et du panneau Problems avant commit."
+        "The response starts by verifying structure and kinds via `read-project-summary`.",
+        "The response verifies references/FQNs and relationships via `search-element` or `find-relationships`.",
+        "The response includes view-rendering validation and Problems-panel checks before commit."
       ]
     },
     {
       "id": 1,
-      "prompt": "Dans `projects/template/system-views.c4`, ma vue `c2_webapp_details` montre `user`, `mySystem.webapp` et `mySystem.api`. Comment valider qu’elle garde bien le bon contexte parent et qu’aucun include n’est trop large ?",
-      "expected_output": "Conseils de validation d'une vue C2 avec contrôle du contexte parent et handoff vers design-view.",
+      "prompt": "In `projects/template/system-views.c4`, my `c2_webapp_details` view shows `user`, `mySystem.webapp`, and `mySystem.api`. How do I validate that it keeps the right parent context and that no include is too broad?",
+      "expected_output": "Validation guidance for a C2 view with parent-context checks and handoff to design-view.",
       "files": [],
       "expectations": [
-        "La réponse rappelle qu’une vue doit garder un contexte parent explicite.",
-        "La réponse renvoie explicitement les règles détaillées au skill `design-view`.",
-        "La réponse propose de contrôler le rendu réel de la vue et les include patterns."
+        "The response reminds that a view should keep explicit parent context.",
+        "The response explicitly delegates detailed design rules to `design-view`.",
+        "The response proposes checking actual rendering and include patterns."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I replaced a `calls` relationship with `async` between two containers. LikeC4 no longer complains, but the C2 view looks odd. How do I validate that the model is truly correct and not just syntactically acceptable?",
+      "expected_output": "The response combines semantic validation and impacted-view rendering checks, instead of stopping at syntax success.",
+      "files": [],
+      "expectations": [
+        "The response first revalidates elements/FQNs and relationships via project summary or relationship tools.",
+        "The response checks impact on affected views, not only lack of syntax errors.",
+        "The response includes visual rendering or Problems-panel checks before commit.",
+        "The response proposes before/after comparison for relationships and dependent views."
       ]
     }
   ]

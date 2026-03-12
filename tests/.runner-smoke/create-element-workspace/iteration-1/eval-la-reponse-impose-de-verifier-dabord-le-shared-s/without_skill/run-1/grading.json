@@ -1,0 +1,61 @@
+{
+  "expectations": [
+    {
+      "text": "La réponse demande d’abord de vérifier les kinds existants du shared spec ou via `read-project-summary`.",
+      "passed": false,
+      "evidence": "Automated grader did not supply evidence."
+    },
+    {
+      "text": "La réponse déconseille de créer un kind one-off si un kind existant couvre déjà le besoin.",
+      "passed": false,
+      "evidence": "Automated grader did not supply evidence."
+    },
+    {
+      "text": "La réponse dit de demander l’autorisation avant d’introduire un nouveau kind.",
+      "passed": false,
+      "evidence": "Automated grader did not supply evidence."
+    }
+  ],
+  "summary": {
+    "passed": 0,
+    "failed": 3,
+    "total": 3,
+    "pass_rate": 0.0
+  },
+  "execution_metrics": {
+    "tool_calls": {},
+    "total_tool_calls": 30,
+    "total_steps": 0,
+    "errors_encountered": 0,
+    "output_chars": 1527,
+    "transcript_chars": 637570
+  },
+  "timing": {
+    "executor_duration_seconds": 106.784,
+    "executor_api_duration_seconds": 94.718,
+    "executor_session_duration_seconds": 99.729,
+    "grader_duration_seconds": 131.109,
+    "grader_api_duration_seconds": 0.0,
+    "grader_session_duration_seconds": 0.0,
+    "total_duration_seconds": 237.893
+  },
+  "claims": [],
+  "user_notes_summary": {
+    "uncertainties": [
+      "Observed 54 non-JSON output line(s); preview: ● List directory _grader_inputs\\; └ 2 files found; ● List directory skill-creator\\ (+51 more)",
+      "Primary grader attempt did not return JSON; fallback JSON repair attempt also failed.",
+      "MCP reinjection disabled via --no-mcp.",
+      "Grader used isolated `skill-creator` support workspace: C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\tests\\.runner-smoke\\create-element-workspace\\iteration-1\\_support-skill-workspace",
+      "Grader response was not valid JSON; manual review recommended.",
+      "without_skill mode: removed only the target repository-local skill from the sandbox.",
+      "MCP reinjection disabled via --no-mcp.",
+      "Prepared isolated support workspace for `skill-creator` at C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\tests\\.runner-smoke\\create-element-workspace\\iteration-1\\_support-skill-workspace from C:\\Users\\ascolan\\.agents\\skills\\skill-creator."
+    ],
+    "needs_review": [],
+    "workarounds": []
+  },
+  "eval_feedback": {
+    "suggestions": [],
+    "overall": "Automated grader completed for this iteration."
+  }
+}

@@ -3,50 +3,62 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je dois ajouter un nouveau container API dans ce workspace LikeC4. Avant toute modification, fais un préflight complet: projet actif, kinds/relations/tags disponibles, fichiers source of truth, puis donne un plan C1→C2→C3.",
-      "expected_output": "Checklist préflight complète avec sources explicites (config + shared specs + résumé projet) et plan d'action ordonné.",
+      "prompt": "I need to add a new API container in this LikeC4 workspace. Before any change, run a full preflight: active project, available kinds/relationships/tags, source-of-truth files, then give a C1→C2→C3 plan.",
+      "expected_output": "A complete preflight checklist with explicit sources (config + shared specs + project summary) and an ordered action plan.",
       "files": [],
       "expectations": [
-        "La réponse identifie explicitement le projet actif ou la méthode fiable pour l'identifier.",
-        "La réponse cite les sources of truth (config, specs partagées, modèle/vues).",
-        "La réponse mentionne des kinds/relations/tags valides sans les inventer.",
-        "La réponse fournit un plan ordonné C1→C2→C3 avant modification."
+        "The response explicitly identifies the active project or a reliable method to identify it.",
+        "The response cites source-of-truth inputs (config, shared specs, model/views).",
+        "The response mentions valid kinds/relationships/tags without inventing them.",
+        "The response provides an ordered C1→C2→C3 plan before modification."
       ]
     },
     {
       "id": 1,
-      "prompt": "On a un workspace multi-projet. J'ai changé de projet et je veux modifier une vue C3. Montre comment éviter les erreurs de contexte et quelles vérifications MCP refaire avant d'éditer.",
-      "expected_output": "Séquence de vérifications pour changement de projet + validations MCP à relancer + risques évités.",
+      "prompt": "We have a multi-project workspace. I switched projects and want to edit a C3 view. Show how to avoid context errors and which MCP checks to re-run before editing.",
+      "expected_output": "A verification sequence for project switch + MCP validations to rerun + risks avoided.",
       "files": [],
       "expectations": [
-        "La réponse impose de revalider le projet actif après switch.",
-        "La réponse inclut au minimum list-projects + read-project-summary dans la séquence.",
-        "La réponse mentionne la relecture des specs partagées avant édition C3.",
-        "La réponse explicite au moins deux risques évités (contexte obsolète, kind invalide, mauvais parent C3)."
+        "The response requires revalidating the active project after switching.",
+        "The response includes at least list-projects + read-project-summary in the sequence.",
+        "The response mentions rereading shared specs before C3 edits.",
+        "The response makes at least two avoided risks explicit (stale context, invalid kind, wrong C3 parent)."
       ]
     },
     {
       "id": 2,
-      "prompt": "J'obtiens une erreur de kind/relationship non reconnu. Fais un diagnostic structuré: où vérifier d'abord, quoi comparer, et comment confirmer la bonne taxonomie avant de corriger.",
-      "expected_output": "Diagnostic racine centré sur shared specs et résumé projet avec étapes concrètes de confirmation.",
+      "prompt": "I get an unknown kind/relationship error. Provide a structured diagnosis: where to check first, what to compare, and how to confirm the correct taxonomy before fixing.",
+      "expected_output": "A root-cause diagnosis centered on shared specs and project summary with concrete confirmation steps.",
       "files": [],
       "expectations": [
-        "Le diagnostic commence par la source of truth (specs partagées + résumé projet), pas par du guessing.",
-        "La réponse compare explicitement kind/relationship demandé avec la taxonomie valide.",
-        "La réponse décrit une séquence de confirmation avant correction.",
-        "La réponse propose un fallback si le résumé projet paraît incohérent."
+        "Diagnosis starts from source of truth (shared specs + project summary), not guessing.",
+        "The response explicitly compares requested kind/relationship against valid taxonomy.",
+        "The response describes a confirmation sequence before correction.",
+        "The response proposes a fallback if project summary appears inconsistent."
       ]
     },
     {
       "id": 3,
-      "prompt": "Je commence un nouveau modèle LikeC4 dans ce dépôt. Une fois le projet cadré, quel skill doit prendre la main pour ordonner la modélisation, et qu'est-ce que ce premier skill doit figer avant le handoff ?",
-      "expected_output": "La réponse cadre d'abord le projet et les specs, puis passe explicitement à c4-modeling-process pour séquencer C1→C2→C3.",
+      "prompt": "I’m starting a new LikeC4 model in this repository. Once project context is established, which skill should take over to sequence modeling, and what must this first skill lock in before handoff?",
+      "expected_output": "The response frames project and specs first, then explicitly hands off to c4-modeling-process to sequence C1→C2→C3.",
       "files": [],
       "expectations": [
-        "La réponse cadre d'abord le projet actif et les sources of truth avant de parler modélisation.",
-        "La réponse cite explicitement `c4-modeling-process` comme skill de handoff.",
-        "La réponse précise que le handoff vient après validation du projet, des kinds/relations/tags et des fichiers pertinents.",
-        "La réponse distingue le rôle de cadrage workspace de ce skill et le rôle d'orchestration C1→C2→C3 du skill suivant."
+        "The response frames active project and source of truth before discussing modeling.",
+        "The response explicitly cites `c4-modeling-process` as handoff skill.",
+        "The response specifies handoff comes after validating project, kinds/relationships/tags, and relevant files.",
+        "The response distinguishes this skill’s workspace-framing role from the next skill’s C1→C2→C3 orchestration role."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I’m coming from UML/ArchiMate and need to contribute to THIS LikeC4 repository without breaking the model. Which local conventions should I understand first, where are the real sources of truth, and which skill should I hand off to next?",
+      "expected_output": "The response gives repository-oriented onboarding, cites local sources of truth, and organizes a clear handoff after preflight.",
+      "files": [],
+      "expectations": [
+        "The response cites relevant local structures (`projects/shared/`, `projects/template/`, `projects/spec-showcase/`, `.github/skills/`).",
+        "The response points to local sources of truth such as `SPEC_CHEATSHEET.md`, shared specs, and project summary.",
+        "The response gives examples of taxonomy actually used here, such as `Container_Api` and valid model relationships.",
+        "The response provides explicit handoff to `c4-modeling-process` or another suitable editing skill once framing is complete."
       ]
     }
   ]

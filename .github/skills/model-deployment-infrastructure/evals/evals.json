@@ -3,24 +3,36 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je dois documenter le déploiement de prod d'une plateforme documentaire avec un API gateway, un service d'upload, un worker de traitement et MongoDB. Donne-moi la structure LikeC4 à suivre pour les environnements, zones, VM et Node_App. Explique aussi comment relier les apps déployées au modèle logique et s'il faut recopier les relations de déploiement à la main.",
-      "expected_output": "Réponse structurée autour de Environment → Zone → VM → Node_App, `instanceOf`, relations héritées, et descriptions riches des VM/zones.",
+      "prompt": "I need to document production deployment for a document platform with an API gateway, an upload service, a processing worker, and MongoDB. Give me the LikeC4 structure to follow for environments, zones, VMs, and Node_App. Also explain how to link deployed apps to the logical model and whether deployment relationships must be copied manually.",
+      "expected_output": "A response structured around Environment → Zone → VM → Node_App, `instanceOf`, inherited relationships, and rich VM/zone descriptions.",
       "files": [],
       "expectations": [
-        "La réponse impose la hiérarchie `Environment → Zone → VM → Node_App`.",
-        "La réponse relie les `Node_App` aux containers du modèle via `instanceOf` et dit que les relations sont héritées plutôt que recopiées.",
-        "La réponse demande des descriptions riches pour VM/zones avec réseau et specs, en mettant `eth0` en premier dans la table VM."
+        "The response enforces the `Environment → Zone → VM → Node_App` hierarchy.",
+        "The response links `Node_App` to model containers via `instanceOf` and says relationships are inherited rather than duplicated.",
+        "The response requests rich VM/zone descriptions with network and specs, putting `eth0` first in the VM table."
       ]
     },
     {
       "id": 1,
-      "prompt": "Je veux surtout découper la prod en `Dmz`, `AppTier`, `ProcTier` et `DataTier`, avec des règles firewall entre zones. Est-ce que ce skill doit détailler ça lui-même ou faut-il passer à un autre skill ?",
-      "expected_output": "La réponse garde le cadre de déploiement mais renvoie l'organisation par tiers et les règles firewall à `structure-deployment-tiers`.",
+      "prompt": "I mainly want to split production into `Dmz`, `AppTier`, `ProcTier`, and `DataTier`, with firewall rules between zones. Should this skill detail that itself, or should I switch to another skill?",
+      "expected_output": "The response keeps deployment framing but routes tier organization and firewall rules to `structure-deployment-tiers`.",
       "files": [],
       "expectations": [
-        "La réponse renvoie explicitement l'organisation par tiers et les règles firewall à `structure-deployment-tiers`.",
-        "La réponse rappelle que la hiérarchie de base reste `Environment → Zone → VM → Node_App`.",
-        "La réponse présente ce skill comme cadre de modélisation de l'infrastructure, pas comme skill unique pour tout le design réseau."
+        "The response explicitly routes tier organization and firewall rules to `structure-deployment-tiers`.",
+        "The response reminds that the base hierarchy remains `Environment → Zone → VM → Node_App`.",
+        "The response presents this skill as infrastructure modeling framework, not a one-stop skill for full network design."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I’m deploying on managed Kubernetes in production and I don’t have access to underlying VM details. How do I keep an honest deployment hierarchy in LikeC4 without inventing physical hosts? And how do I wire `instanceOf`?",
+      "expected_output": "The response keeps an explicit deployment hierarchy, acknowledges managed-infra abstraction, and cleanly links applications to the logical model.",
+      "files": [],
+      "expectations": [
+        "The response acknowledges that physical VMs should not be invented when managed infrastructure hides them.",
+        "The response still keeps an explicit deployment hierarchy with coherent logical nodes.",
+        "The response links `Node_App` to the logical model via `instanceOf`.",
+        "The response routes tier/security-zone organization to `structure-deployment-tiers` if discussion drifts into network design."
       ]
     }
   ]

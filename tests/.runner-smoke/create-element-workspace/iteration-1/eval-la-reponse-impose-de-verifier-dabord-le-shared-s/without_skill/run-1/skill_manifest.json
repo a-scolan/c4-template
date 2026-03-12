@@ -1,0 +1,12 @@
+{
+  "skill_name": "create-element",
+  "configuration": "without_skill",
+  "sandbox_root": "C:\\Users\\ascolan\\AppData\\Local\\Temp\\skill-sandbox-create-element-without_skill-or3zmvcc\\repo",
+  "visible_skill_files": [],
+  "notes": [
+    "without_skill mode: removed only the target repository-local skill from the sandbox.",
+    "MCP reinjection disabled via --no-mcp."
+  ],
+  "target_skill_visible": false,
+  "absence_statement": "No target repository-local skill was visible in this sandbox."
+}

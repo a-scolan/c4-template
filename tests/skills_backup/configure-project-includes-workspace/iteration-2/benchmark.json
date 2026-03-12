@@ -1,0 +1,411 @@
+{
+  "metadata": {
+    "skill_name": "configure-project-includes",
+    "skill_path": "C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\.github\\skills\\configure-project-includes",
+    "executor_model": "GPT-5.4",
+    "analyzer_model": "GPT-5.4",
+    "timestamp": "2026-03-10T17:33:01Z",
+    "evals_run": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.25,
+        "passed": 1,
+        "failed": 3,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse conserve les champs de base du config (`$schema`, `name`, `title`, `include`, `imageAliases`).",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : `$schema`."
+        },
+        {
+          "text": "La réponse utilise des chemins relatifs depuis le dossier du projet, pas depuis la racine du workspace.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : depuis `projects/payments/`."
+        },
+        {
+          "text": "La réponse cite `../shared` pour les includes et `@`: `../shared/images/` pour les images.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : `../shared/images/`."
+        },
+        {
+          "text": "La réponse déconseille les chemins absolus.",
+          "passed": true,
+          "evidence": "Extrait : Évite les chemins absolus."
+        }
+      ],
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-config-relative-paths"
+    },
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse conserve les champs de base du config (`$schema`, `name`, `title`, `include`, `imageAliases`).",
+          "passed": true,
+          "evidence": "Extrait : Pars du template et garde les champs de base : `$schema`, `name`, `title`, `include.paths` et `imageAliases`."
+        },
+        {
+          "text": "La réponse utilise des chemins relatifs depuis le dossier du projet, pas depuis la racine du workspace.",
+          "passed": true,
+          "evidence": "Extrait : Depuis `projects/payments/`, garde des chemins relatifs :"
+        },
+        {
+          "text": "La réponse cite `../shared` pour les includes et `@`: `../shared/images/` pour les images.",
+          "passed": true,
+          "evidence": "Extrait : - specs partagées : `../shared`"
+        },
+        {
+          "text": "La réponse déconseille les chemins absolus.",
+          "passed": true,
+          "evidence": "Extrait : Fais une modif ciblée du config et évite les chemins absolus."
+        }
+      ],
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-config-relative-paths"
+    },
+    {
+      "eval_id": 3,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit que ce skill couvre la configuration `likec4.config.json` et les includes/aliases.",
+          "passed": true,
+          "evidence": "Extrait : Ce skill couvre `likec4.config.json` et les includes/aliases du nouveau projet."
+        },
+        {
+          "text": "La réponse évite de présenter ce skill comme solution unique pour toute l'organisation multi-projet.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : ne suffit pas seul."
+        },
+        {
+          "text": "La réponse renvoie la structuration globale vers `organize-multi-project`.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : `organize-multi-project`."
+        },
+        {
+          "text": "La réponse maintient les règles de chemins relatifs vers les specs partagées.",
+          "passed": true,
+          "evidence": "Extrait : Tu peux garder `../shared` dans le config et continuer avec ce seul skill."
+        }
+      ],
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-multi-project-handoff"
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit que ce skill couvre la configuration `likec4.config.json` et les includes/aliases.",
+          "passed": true,
+          "evidence": "Extrait : Ce skill couvre `likec4.config.json` et les includes/aliases à l'intérieur d'un projet."
+        },
+        {
+          "text": "La réponse évite de présenter ce skill comme solution unique pour toute l'organisation multi-projet.",
+          "passed": true,
+          "evidence": "Extrait : Pour un deuxième projet, il ne suffit pas seul : utilise `organize-multi-project` pour la structure globale."
+        },
+        {
+          "text": "La réponse renvoie la structuration globale vers `organize-multi-project`.",
+          "passed": true,
+          "evidence": "Extrait : Pour un deuxième projet, il ne suffit pas seul : utilise `organize-multi-project` pour la structure globale."
+        },
+        {
+          "text": "La réponse maintient les règles de chemins relatifs vers les specs partagées.",
+          "passed": true,
+          "evidence": "Extrait : Ensuite, garde des chemins relatifs comme `../shared` dans chaque config projet."
+        }
+      ],
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-multi-project-handoff"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit d'ajouter le nouveau chemin sans remplacer les chemins existants.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : sans remplacer."
+        },
+        {
+          "text": "La réponse rappelle de conserver l'alias d'images existant au lieu de le supprimer.",
+          "passed": true,
+          "evidence": "Extrait : Conserve l'alias `@` pour les images."
+        },
+        {
+          "text": "La réponse garde les chemins relatifs et déconseille les chemins absolus.",
+          "passed": true,
+          "evidence": "Extrait : Garde des chemins relatifs et évite les chemins absolus."
+        },
+        {
+          "text": "La réponse traite le changement comme une modification ciblée du config, pas comme une réorganisation complète du modèle.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : modification ciblée du `likec4.config.json`."
+        }
+      ],
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-preserve-includes-and-aliases"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit d'ajouter le nouveau chemin sans remplacer les chemins existants.",
+          "passed": true,
+          "evidence": "Extrait : Garde `../shared` et `../platform-shared`, puis ajoute le nouveau chemin sans remplacer l'existant."
+        },
+        {
+          "text": "La réponse rappelle de conserver l'alias d'images existant au lieu de le supprimer.",
+          "passed": true,
+          "evidence": "Extrait : Conserve l'alias `@` pour les images."
+        },
+        {
+          "text": "La réponse garde les chemins relatifs et déconseille les chemins absolus.",
+          "passed": true,
+          "evidence": "Extrait : Reste en chemins relatifs et évite les chemins absolus."
+        },
+        {
+          "text": "La réponse traite le changement comme une modification ciblée du config, pas comme une réorganisation complète du modèle.",
+          "passed": true,
+          "evidence": "Extrait : Fais une modification ciblée du `likec4.config.json`."
+        }
+      ],
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-preserve-includes-and-aliases"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.5,
+        "passed": 2,
+        "failed": 2,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse commence par un split minimal cohérent avec le template (au moins `system-model.c4` et `system-views.c4`).",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : split minimal."
+        },
+        {
+          "text": "La réponse place les vues C1/C2/C3 dans `system-views.c4`.",
+          "passed": true,
+          "evidence": "Extrait : Mets `C1`, `C2` et `C3` dans `system-views.c4`."
+        },
+        {
+          "text": "La réponse place les Use Cases dans un fichier dédié comme `system-sequences.c4` quand les flux justifient l'extraction, au lieu de les mélanger aveuglément partout.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : si les flux le justifient."
+        },
+        {
+          "text": "La réponse sépare les définitions et vues de déploiement/opérations dans des fichiers dédiés (`deployment*.c4`, `operations*.c4`) quand ces sujets existent.",
+          "passed": true,
+          "evidence": "Extrait : Pour un gros modèle, passe directement à plusieurs fichiers : `system-model.c4`, `system-views.c4`, `system-sequences.c4`, `deployment.c4`, `deployment-views.c4`, `operations.c4` et `operations-views.c4`."
+        }
+      ],
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-progressive-file-split"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse commence par un split minimal cohérent avec le template (au moins `system-model.c4` et `system-views.c4`).",
+          "passed": true,
+          "evidence": "Extrait : Commence par un split minimal : `system-model.c4` pour la structure et `system-views.c4` pour les vues."
+        },
+        {
+          "text": "La réponse place les vues C1/C2/C3 dans `system-views.c4`.",
+          "passed": true,
+          "evidence": "Extrait : Place `C1`, `C2` et `C3` dans `system-views.c4`."
+        },
+        {
+          "text": "La réponse place les Use Cases dans un fichier dédié comme `system-sequences.c4` quand les flux justifient l'extraction, au lieu de les mélanger aveuglément partout.",
+          "passed": true,
+          "evidence": "Extrait : Mets les `Use Cases` dans `system-sequences.c4` si les flux le justifient."
+        },
+        {
+          "text": "La réponse sépare les définitions et vues de déploiement/opérations dans des fichiers dédiés (`deployment*.c4`, `operations*.c4`) quand ces sujets existent.",
+          "passed": true,
+          "evidence": "Extrait : Ajoute `deployment.c4` + `deployment-views.c4` seulement si le déploiement mérite son propre fichier."
+        }
+      ],
+      "notes": [
+        "Évaluation manuelle : temps et tokens indisponibles, valeurs fixées à 0.",
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-progressive-file-split"
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "old_skill": {
+      "pass_rate": {
+        "mean": 0.4375,
+        "stddev": 0.1083,
+        "min": 0.25,
+        "max": 0.5
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.56",
+      "time_seconds": null,
+      "tokens": null
+    }
+  },
+  "notes": [
+    "Primary configuration: with_skill; baseline: old_skill.",
+    "Time metrics use executor wall-clock duration around each gh copilot subprocess; timing.json also preserves Copilot CLI totalApiDurationMs and sessionDurationMs when available.",
+    "Token metrics use assistant output tokens from executor runs only; GitHub Copilot CLI JSONL does not expose prompt/input token counts.",
+    "Repository-local skill leakage is reduced by isolated HOME/USERPROFILE/COPILOT_HOME per run.",
+    "Automated grading uses an isolated `skill-creator` support workspace snapshot as methodology source of truth; that meta-skill is not exposed inside measured executor sandboxes.",
+    "Legacy run artifacts did not persist measured time for 8 run(s) and tokens for 8 run(s); reports now show `-` instead of misleading `0` values when those metrics were unavailable.",
+    "Chrono et tokens indisponibles : timing.json et benchmark forcés à 0.",
+    "Ordre des configurations et delta normalisés après agrégation."
+  ]
+}

@@ -1,0 +1,295 @@
+{
+  "metadata": {
+    "skill_name": "customize-view",
+    "skill_path": "C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\.github\\skills\\customize-view",
+    "executor_model": "gpt-5.4",
+    "analyzer_model": "gpt-5.4",
+    "timestamp": "2026-03-10T17:53:05Z",
+    "evals_run": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse ajoute un `autoLayout LeftRight` et conserve des `rank source` / `rank sink` cohérents avec la demande.",
+          "passed": true,
+          "evidence": "Le bloc contient `autoLayout LeftRight`, `rank source { user }` et `rank sink { mySystem.database, emailService }`."
+        },
+        {
+          "text": "La réponse préserve un `navigateTo c2_webapp_details` sur `mySystem.webapp`.",
+          "passed": true,
+          "evidence": "Le bloc `include mySystem.webapp with { navigateTo c2_webapp_details }` garde le drill-down existant."
+        },
+        {
+          "text": "La réponse reste dans le périmètre de la personnalisation et n'introduit ni couleur hexadécimale ni refonte structurelle inutile.",
+          "passed": true,
+          "evidence": "La proposition ne change ni les includes de structure ni les couleurs ; elle se limite à layout + navigation."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-layout-and-drilldown"
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 3,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse ajoute un `autoLayout LeftRight` et conserve des `rank source` / `rank sink` cohérents avec la demande.",
+          "passed": false,
+          "evidence": "La proposition garde `rank source { user }` mais n'ajoute ni `autoLayout LeftRight` ni `rank sink` pour `mySystem.database` et `emailService`."
+        },
+        {
+          "text": "La réponse préserve un `navigateTo c2_webapp_details` sur `mySystem.webapp`.",
+          "passed": false,
+          "evidence": "Le bloc `include mySystem.webapp with { color #ff6600 }` n'inclut aucun `navigateTo`."
+        },
+        {
+          "text": "La réponse reste dans le périmètre de la personnalisation et n'introduit ni couleur hexadécimale ni refonte structurelle inutile.",
+          "passed": false,
+          "evidence": "La réponse introduit la couleur hexadécimale `#ff6600`, explicitement déconseillée par le skill."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable.",
+        "without_skill mode: target skill hidden or absent in this sandbox."
+      ],
+      "eval_name": "eval-layout-and-drilldown"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse ajoute un `link https://... '...'` explicite.",
+          "passed": true,
+          "evidence": "Le snippet contient `link https://docs.internal/spec 'Internal Specification'`."
+        },
+        {
+          "text": "La réponse garde ou ajoute `navigateTo c2_webapp_details` sur `mySystem.webapp`.",
+          "passed": true,
+          "evidence": "Le bloc `include mySystem.webapp with { navigateTo c2_webapp_details }` est explicite."
+        },
+        {
+          "text": "La réponse cible un view ID existant et reste dans un scope de personnalisation sans reconstruire la vue entière.",
+          "passed": true,
+          "evidence": "La réponse cible `c2_webapp_details`, déjà présent dans `projects/template/system-views.c4`, et se limite à un bloc ciblé sur `view c2_containers`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-links-and-stable-navigation"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 3,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse ajoute un `link https://... '...'` explicite.",
+          "passed": false,
+          "evidence": "L'URL apparaît seulement dans `description 'Voir https://docs.internal/spec'` ; aucun `link https://... '...'` n'est ajouté."
+        },
+        {
+          "text": "La réponse garde ou ajoute `navigateTo c2_webapp_details` sur `mySystem.webapp`.",
+          "passed": false,
+          "evidence": "La cible proposée est `webapp_deep_dive`, pas `c2_webapp_details`."
+        },
+        {
+          "text": "La réponse cible un view ID existant et reste dans un scope de personnalisation sans reconstruire la vue entière.",
+          "passed": false,
+          "evidence": "`webapp_deep_dive` n'existe pas dans le template actuel et la proposition ajoute aussi `include mySystem.api`, ce qui élargit inutilement le scope."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable.",
+        "without_skill mode: target skill hidden or absent in this sandbox."
+      ],
+      "eval_name": "eval-links-and-stable-navigation"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse utilise des noms de palette partagée (`primary`, `muted`, etc.) plutôt que des hex codes.",
+          "passed": true,
+          "evidence": "Les styles utilisent `muted` et `primary`, sans aucune couleur hexadécimale."
+        },
+        {
+          "text": "La réponse emploie des règles `style` ou des `with` blocks pour mettre en avant les éléments API et atténuer le reste.",
+          "passed": true,
+          "evidence": "Le bloc applique `style * { color muted; opacity 20% }` puis `style api, geo_api, api_container { color primary; opacity 100% }`."
+        },
+        {
+          "text": "La réponse rappelle ou préserve le contexte structurel au lieu de le masquer totalement.",
+          "passed": true,
+          "evidence": "Le texte dit explicitement de partir d'une `vue structurelle existante` et d'atténuer le bruit `au lieu de masquer complètement le contexte parent`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-shared-spec-styling"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.33,
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse utilise des noms de palette partagée (`primary`, `muted`, etc.) plutôt que des hex codes.",
+          "passed": false,
+          "evidence": "La proposition s'appuie sur `#cccccc` et `#ff0000`, donc sur des hex codes hors palette partagée."
+        },
+        {
+          "text": "La réponse emploie des règles `style` ou des `with` blocks pour mettre en avant les éléments API et atténuer le reste.",
+          "passed": true,
+          "evidence": "Le snippet utilise bien deux règles `style` pour atténuer l'ensemble et mettre `api` en avant."
+        },
+        {
+          "text": "La réponse rappelle ou préserve le contexte structurel au lieu de le masquer totalement.",
+          "passed": false,
+          "evidence": "La réponse parle seulement de `seuls les éléments API` qui ressortent et n'explicite ni conservation du contexte ni atténuation prudente des frontières."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable.",
+        "without_skill mode: target skill hidden or absent in this sandbox."
+      ],
+      "eval_name": "eval-shared-spec-styling"
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.11,
+        "stddev": 0.1556,
+        "min": 0.0,
+        "max": 0.33
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.89",
+      "time_seconds": null,
+      "tokens": null
+    }
+  },
+  "notes": [
+    "Primary configuration: with_skill; baseline: without_skill.",
+    "Time metrics use executor wall-clock duration around each gh copilot subprocess; timing.json also preserves Copilot CLI totalApiDurationMs and sessionDurationMs when available.",
+    "Token metrics use assistant output tokens from executor runs only; GitHub Copilot CLI JSONL does not expose prompt/input token counts.",
+    "Repository-local skill leakage is reduced by isolated HOME/USERPROFILE/COPILOT_HOME per run.",
+    "Automated grading uses an isolated `skill-creator` support workspace snapshot as methodology source of truth; that meta-skill is not exposed inside measured executor sandboxes.",
+    "Legacy run artifacts did not persist measured time for 6 run(s) and tokens for 6 run(s); reports now show `-` instead of misleading `0` values when those metrics were unavailable.",
+    "Les baselines dérivent immédiatement vers des hex colors locaux ou des cibles `navigateTo` instables, alors que le skill maintient systématiquement palette partagée et IDs de vues existants.",
+    "L'eval palette partagée montre une baseline partiellement utile (présence de règles `style`) mais encore insuffisante : elle échoue sur la gouvernance de palette et sur la préservation explicite du contexte.",
+    "Le score très faible de la baseline vient surtout de deux écarts récurrents : personnalisation hors périmètre (ajouts structurels) et absence de lien/navigation stables.",
+    "La télémétrie temps/tokens n'était pas disponible pour ces runs inline ; les métriques de temps et de tokens restent donc des placeholders à 0."
+  ]
+}

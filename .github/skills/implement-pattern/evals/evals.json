@@ -3,35 +3,47 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je dois modéliser dans LikeC4 un appel de `vault.api` vers un prestataire de paiement externe. Quels éléments et relations standard ajouter pour rester cohérent ?",
-      "expected_output": "Pattern d’intégration externe avec système externe tagué et relation typed `calls`.",
+      "prompt": "I need to model in LikeC4 a call from `vault.api` to an external payment provider. Which standard elements and relationships should I add to stay consistent?",
+      "expected_output": "An external-integration pattern with a tagged external system and a typed `calls` relationship.",
       "files": [],
       "expectations": [
-        "La réponse crée ou mentionne un système externe dédié (ex. `System_External`) et le tag externe partagé (`#External`).",
-        "La réponse utilise une relation typed `-[calls]->` depuis l’API interne vers l’externe.",
-        "La réponse insiste sur un libellé d’action explicite (ex. `Process payment`) plutôt qu’un label vague."
+        "The response creates or references a dedicated external system (e.g., `System_External`) and the shared external tag (`#External`).",
+        "The response uses a typed `-[calls]->` relationship from the internal API to the external system.",
+        "The response emphasizes an explicit action label (e.g., `Process payment`) rather than a vague one."
       ]
     },
     {
       "id": 1,
-      "prompt": "Je veux représenter un traitement asynchrone: `vault.api` publie un job, un worker le consomme depuis RabbitMQ. Quel pattern LikeC4 appliquer et quelle erreur éviter ?",
-      "expected_output": "Pattern queue + worker avec relations `async` et garde-fou contre le faux retour synchrone.",
+      "prompt": "I want to represent async processing: `vault.api` publishes a job, and a worker consumes it from RabbitMQ. Which LikeC4 pattern should I apply, and which mistake should I avoid?",
+      "expected_output": "A queue + worker pattern with `async` relationships and a guardrail against fake synchronous return flow.",
       "files": [],
       "expectations": [
-        "La réponse introduit une queue dédiée (ex. `Container_Queue`) avec technologie RabbitMQ.",
-        "La réponse modélise l’asynchrone avec `api -[async]-> queue` et `worker -[async]-> queue`.",
-        "La réponse interdit une relation de retour synchrone `worker -> api` et explique que le flux async est à sens unique."
+        "The response introduces a dedicated queue (e.g., `Container_Queue`) with RabbitMQ technology.",
+        "The response models async flow with `api -[async]-> queue` and `worker -[async]-> queue`.",
+        "The response forbids a synchronous return relationship `worker -> api` and explains the async flow is one-way."
       ]
     },
     {
       "id": 2,
-      "prompt": "Je veux ajouter Redis devant Postgres pour accélérer les lectures de `vault.api`. Comment modéliser ce cache sans faire croire qu’il remplace la base ?",
-      "expected_output": "Pattern cache Redis avec `reads`/`writes`, lecture sur cache miss et base gardée comme source de vérité.",
+      "prompt": "I want to add Redis in front of Postgres to speed up `vault.api` reads. How should I model this cache without implying it replaces the database?",
+      "expected_output": "A Redis cache pattern with `reads`/`writes`, cache-miss reads from DB, and the database kept as source of truth.",
       "files": [],
       "expectations": [
-        "La réponse introduit un cache explicite (ex. `Container_Cache`) avec Redis.",
-        "La réponse utilise `reads`/`writes` pour le cache et garde la base en lecture sur cache miss.",
-        "La réponse rappelle que la base reste la source de vérité et que le cache n’est pas la source primaire."
+        "The response introduces an explicit cache (e.g., `Container_Cache`) with Redis.",
+        "The response uses `reads`/`writes` for the cache and keeps database reads on cache miss.",
+        "The response reminds that the database remains the source of truth and the cache is not primary."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need to integrate Stripe: `vault.api` creates a payment, then Stripe sends a confirmation webhook to an internal endpoint. How do I model this pattern without implying a synchronous return?",
+      "expected_output": "The response clearly separates outbound call and inbound webhook as two explicit interactions in the integration pattern.",
+      "files": [],
+      "expectations": [
+        "The response models the provider as a dedicated external system with the shared external tag.",
+        "The response keeps the initial call as an explicit typed relationship from `vault.api` to the external system.",
+        "The response models the webhook as a second explicit interaction, not as an implicit return of the first relationship.",
+        "The response explains that `create-sequence-view` can complement this if detailed temporal order must be shown."
       ]
     }
   ]

@@ -3,35 +3,47 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Dans `projects/template/system-views.c4`, je veux documenter le parcours de connexion entre `user`, `mySystem.webapp`, `mySystem.api`, `mySystem.database` et `emailService`. Donne-moi un squelette LikeC4 pour une vue dynamique.",
-      "expected_output": "Une vue dynamique dans `views 'Use Cases'`, démarrant par l'acteur initiateur et n'utilisant que des flèches `->` avec des labels d'action.",
+      "prompt": "In `projects/template/system-views.c4`, I want to document the login journey between `user`, `mySystem.webapp`, `mySystem.api`, `mySystem.database`, and `emailService`. Give me a LikeC4 skeleton for a dynamic view.",
+      "expected_output": "A dynamic view in `views 'Use Cases'`, starting from the initiating actor and using only `->` arrows with action labels.",
       "files": [],
       "expectations": [
-        "La réponse place la séquence dans `views 'Use Cases'` avec un `dynamic view`.",
-        "La séquence démarre explicitement avec l'acteur `user`.",
-        "Les interactions utilisent uniquement des flèches `->` avec des labels d'action, sans `-[kind]->`."
+        "The response places the sequence in `views 'Use Cases'` with a `dynamic view`.",
+        "The sequence explicitly starts with the `user` actor.",
+        "Interactions use only `->` arrows with action labels, without `-[kind]->`."
       ]
     },
     {
       "id": 1,
-      "prompt": "Je pensais écrire `api_container -> api_container.auth_component` dans une vue dynamique pour montrer l'authentification. Corrige-moi l'approche sur `projects/spec-showcase/component-views.c4`.",
-      "expected_output": "Une réponse qui explique la restriction parent→child en dynamique, puis propose une vue corrigée où l'acteur cible directement le composant avec des flèches simples.",
+      "prompt": "I was planning to write `api_container -> api_container.auth_component` in a dynamic view to show authentication. Correct this approach for `projects/spec-showcase/component-views.c4`.",
+      "expected_output": "A response that explains the parent→child restriction in dynamic views, then proposes a corrected view where the actor directly targets the component using simple arrows.",
       "files": [],
       "expectations": [
-        "La réponse explique explicitement qu'une vue dynamique ne doit pas montrer `parent -> own-child`.",
-        "La version corrigée fait cibler directement le composant par l'acteur, au lieu de garder `api_container -> api_container.auth_component`.",
-        "La proposition corrigée reste dans `views 'Use Cases'` avec un `dynamic view` et des flèches `->` simples."
+        "The response explicitly explains that a dynamic view should not show `parent -> own-child`.",
+        "The corrected version has the actor target the component directly, instead of keeping `api_container -> api_container.auth_component`.",
+        "The corrected proposal stays in `views 'Use Cases'` with a `dynamic view` and simple `->` arrows."
       ]
     },
     {
       "id": 2,
-      "prompt": "Je veux illustrer le flux asynchrone `person_external` -> `webapp` -> `api` -> `queue` -> `processing_server` -> `database` dans le showcase. Propose la vue LikeC4.",
-      "expected_output": "Une vue dynamique de type use case, initiée par `person_external`, montrant le passage par la queue en ordre temporel avec des labels d'action.",
+      "prompt": "I want to illustrate the async flow `person_external` -> `webapp` -> `api` -> `queue` -> `processing_server` -> `database` in the showcase. Propose the LikeC4 view.",
+      "expected_output": "A use-case-style dynamic view initiated by `person_external`, showing queue traversal in temporal order with action labels.",
       "files": [],
       "expectations": [
-        "La réponse crée une vue dans `views 'Use Cases'` avec un `dynamic view`.",
-        "La séquence commence avec l'acteur initiateur `person_external`.",
-        "Le passage `api -> queue -> processing_server` est montré en ordre temporel avec des labels d'action et sans kinds relationnels."
+        "The response creates a view in `views 'Use Cases'` with a `dynamic view`.",
+        "The sequence starts with the initiating actor `person_external`.",
+        "The `api -> queue -> processing_server` segment is shown in temporal order with action labels and without relationship kinds."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "In an async upload, the user immediately gets a tracking URL, then validation runs in the background with retries on failure. How do I show both immediate success and retry behavior without breaking the dynamic view?",
+      "expected_output": "The response cleanly separates happy path and retry flow, keeps an explicit initiating actor, and does not introduce model-relationship syntax.",
+      "files": [],
+      "expectations": [
+        "The response explicitly starts the sequence with the initiating actor.",
+        "The response keeps only `->` arrows with action labels.",
+        "The response separates immediate success and async retry into one or more dynamic views, instead of mixing everything implicitly.",
+        "The response explains that a dynamic view should not become a pseudo `if/else` overloaded with full logic."
       ]
     }
   ]

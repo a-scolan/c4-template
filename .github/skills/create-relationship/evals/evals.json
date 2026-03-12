@@ -3,38 +3,50 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je dois relier `mySystem.webapp` à `mySystem.api` dans `projects/template/system-model.c4`. Montre-moi la syntaxe LikeC4 correcte et dis-moi où va le type de relation.",
-      "expected_output": "La réponse met le kind dans la flèche, garde le label inline et la technologie dans le bloc de propriétés.",
+      "prompt": "I need to connect `mySystem.webapp` to `mySystem.api` in `projects/template/system-model.c4`. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
+      "expected_output": "The response puts the kind in the arrow, keeps the label inline, and puts technology in the properties block.",
       "files": [],
       "expectations": [
-        "La réponse utilise une flèche typée `-[calls]->` entre `mySystem.webapp` et `mySystem.api`.",
-        "La réponse place le type de relation dans la flèche, pas dans le bloc de propriétés.",
-        "La réponse garde le label inline et `technology 'HTTPS'` dans le bloc.",
-        "La réponse évite une syntaxe invalide du type `-> { calls ... }`."
+        "The response uses a typed arrow `-[calls]->` between `mySystem.webapp` and `mySystem.api`.",
+        "The response places the relationship type in the arrow, not in the properties block.",
+        "The response keeps the label inline and `technology 'HTTPS'` in the block.",
+        "The response avoids invalid syntax like `-> { calls ... }`."
       ]
     },
     {
       "id": 1,
-      "prompt": "Je modélise un flux d'upload asynchrone : `uploadService` publie dans `jobQueue`, puis `worker` consomme et écrit en base. Est-ce que je dois aussi dessiner un retour du worker vers l'upload service ?",
-      "expected_output": "La réponse utilise `async` pour la file, garde un flux à sens unique et emploie `writes` pour la persistance.",
+      "prompt": "I’m modeling an async upload flow: `uploadService` publishes to `jobQueue`, then `worker` consumes and writes to the database. Should I also draw a return relationship from worker back to upload service?",
+      "expected_output": "The response uses `async` for queue interactions, keeps a one-way flow, and uses `writes` for persistence.",
       "files": [],
       "expectations": [
-        "La réponse utilise `-[async]->` entre le producteur et la queue, puis entre la queue et le worker.",
-        "La réponse indique explicitement qu'il ne faut pas de relation de retour du worker vers le producteur.",
-        "La réponse utilise `-[writes]->` pour l'écriture en base plutôt qu'un `calls` générique.",
-        "La réponse maintient le pattern asynchrone one-way sans ACK modélisé comme appel retour."
+        "The response uses `-[async]->` between producer and queue, then between queue and worker.",
+        "The response explicitly says there should be no return relationship from worker back to producer.",
+        "The response uses `-[writes]->` for database writes rather than generic `calls`.",
+        "The response preserves a one-way async pattern without modeling ACK as a callback relationship."
       ]
     },
     {
       "id": 2,
-      "prompt": "Mon `retrievalService` lit Redis puis PostgreSQL. Je mets `calls`, `reads` ou autre ? Donne-moi la règle et un exemple court.",
-      "expected_output": "La réponse réserve `calls` aux appels de service et emploie `reads`/`writes` pour les accès de données.",
+      "prompt": "My `retrievalService` reads Redis and then PostgreSQL. Should I use `calls`, `reads`, or something else? Give me the rule and a short example.",
+      "expected_output": "The response reserves `calls` for service-to-service interactions and uses `reads`/`writes` for data access.",
       "files": [],
       "expectations": [
-        "La réponse utilise `-[reads]->` pour les lectures sur cache et base de données.",
-        "La réponse réserve `-[calls]->` aux interactions service-à-service.",
-        "La réponse mentionne `-[writes]->` pour la persistance ou la mutation des données.",
-        "La réponse fournit un exemple court cohérent avec cette règle."
+        "The response uses `-[reads]->` for reads from cache and database.",
+        "The response reserves `-[calls]->` for service-to-service interactions.",
+        "The response mentions `-[writes]->` for persistence or data mutation.",
+        "The response provides a short example consistent with this rule."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "My `vault.api` reads Redis as cache, then PostgreSQL as fallback on cache miss. Should I model this with one “smart” relationship, two `reads`, or something else?",
+      "expected_output": "The response rejects composite kinds, creates explicit relationships, and keeps fallback logic outside the relationship type.",
+      "files": [],
+      "expectations": [
+        "The response creates two explicit read relationships rather than a composite or polymorphic one.",
+        "The response uses `-[reads]->` for Redis and PostgreSQL instead of inventing a type like `reads_with_fallback`.",
+        "The response proposes explicit action labels if it wants to document fallback behavior.",
+        "The response keeps fallback timing details outside model relationships, or delegates them to `create-sequence-view`."
       ]
     }
   ]

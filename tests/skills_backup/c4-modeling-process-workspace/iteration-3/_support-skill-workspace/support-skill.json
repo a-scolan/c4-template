@@ -1,0 +1,79 @@
+{
+  "skill_name": "skill-creator",
+  "source_path": "C:\\Users\\ascolan\\.agents\\skills\\skill-creator",
+  "snapshotted_at": "2026-03-12T08:55:35Z",
+  "visible_skill_files": [
+    {
+      "path": "skill-creator/agents/analyzer.md",
+      "sha256": "8ccce0d9755f7684277870e791ffb643b026d5dd4508e5c1bdc8dfec9e8532b5"
+    },
+    {
+      "path": "skill-creator/agents/comparator.md",
+      "sha256": "ee90af43eb0dbe2fdadbb96d01f9776f387ed5c529ce083c22b8bec4e3ae10d3"
+    },
+    {
+      "path": "skill-creator/agents/grader.md",
+      "sha256": "6ec1c6950fcafa3e00d5e845b2498c5ea3e8f7f012bd9c6abad25425f3ee619c"
+    },
+    {
+      "path": "skill-creator/assets/eval_review.html",
+      "sha256": "2cc6071b35ac897b17cf0388ce240fd959396f35f95a1f7d3e74a248dd060d0f"
+    },
+    {
+      "path": "skill-creator/eval-viewer/generate_review.py",
+      "sha256": "44d97a35be977331b13b04932927b3beb285862a173f0f15dd052d4f31de5c76"
+    },
+    {
+      "path": "skill-creator/eval-viewer/viewer.html",
+      "sha256": "46abd4e19e482b4aeebea24b135c2d88fb122a63346dbeab7fcecd83828a826d"
+    },
+    {
+      "path": "skill-creator/LICENSE.txt",
+      "sha256": "49bbe9114e49214df2ccc324cb3ac8d1d1aa1c3a0947f94c286765e86647b32e"
+    },
+    {
+      "path": "skill-creator/references/schemas.md",
+      "sha256": "5ef5fd3c1ac7baae965b5bda6b4f2cf6a191a2d712c7fef2a12dde84573b4833"
+    },
+    {
+      "path": "skill-creator/scripts/__pycache__/aggregate_benchmark.cpython-315.pyc",
+      "sha256": "8fe656387c49d456a2f0b5897afdc178fd27489bde1ec4963075dec56b6fa375"
+    },
+    {
+      "path": "skill-creator/scripts/aggregate_benchmark.py",
+      "sha256": "16c5a53e4cbf55a679a42c244cba39cee463d99ce507ecc9fafc4cb4e0a133e0"
+    },
+    {
+      "path": "skill-creator/scripts/generate_report.py",
+      "sha256": "d90ec4cfc2dd539564edd332880fb7561309a1f0097d082de88e3101d6c8031e"
+    },
+    {
+      "path": "skill-creator/scripts/improve_description.py",
+      "sha256": "09425704c5717656fffd346ba075a390bb55d494dd1082bccd4fe2423117fa05"
+    },
+    {
+      "path": "skill-creator/scripts/package_skill.py",
+      "sha256": "2cd9a9891844516fd30466eae30e4a9b9a199802522de3fb12f59a063fba58ab"
+    },
+    {
+      "path": "skill-creator/scripts/quick_validate.py",
+      "sha256": "99f76b23da5882ccc9301890e4c31837e4a9262bd1a9a75dc729df0b12459d52"
+    },
+    {
+      "path": "skill-creator/scripts/run_eval.py",
+      "sha256": "252ac58feedf233673d6a605661158db20806f724c7d1dd32c92ae316b24ef67"
+    },
+    {
+      "path": "skill-creator/scripts/run_loop.py",
+      "sha256": "85b36782ec856e066257cf8e917606945e6df098428005e17f8d60a5b6789c29"
+    },
+    {
+      "path": "skill-creator/scripts/utils.py",
+      "sha256": "b396f920bfbb422822427d800656ab125876e1e42ae242ed3c9380338f9d0833"
+    },
+    {
+      "path": "skill-creator/SKILL.md",
+      "sha256": "e030e7685e26283b4a76f5202aa3ae8516fb41dde799be5ae8ea6393ec009fe9"
+    }
+  ]
+}

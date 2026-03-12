@@ -1,0 +1,10 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-la-reponse-impose-de-verifier-dabord-le-shared-s",
+  "prompt": "Je pense créer un kind `Container_UploadOrchestrator` juste pour un service d’upload. Est-ce une bonne idée dans ce repo ? Explique la règle et quoi faire avant d’ajouter un nouveau kind.",
+  "assertions": [
+    "La réponse demande d’abord de vérifier les kinds existants du shared spec ou via `read-project-summary`.",
+    "La réponse déconseille de créer un kind one-off si un kind existant couvre déjà le besoin.",
+    "La réponse dit de demander l’autorisation avant d’introduire un nouveau kind."
+  ]
+}

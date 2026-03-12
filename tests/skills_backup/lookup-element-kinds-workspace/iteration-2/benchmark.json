@@ -1,0 +1,323 @@
+{
+  "metadata": {
+    "skill_name": "lookup-element-kinds",
+    "skill_path": "C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\.github\\skills\\lookup-element-kinds",
+    "executor_model": "GPT-5.4",
+    "analyzer_model": "GPT-5.4",
+    "timestamp": "2026-03-11T07:31:49Z",
+    "evals_run": [
+      0,
+      1,
+      2
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse distingue relations de déploiement et de modèle logique.",
+          "passed": true,
+          "evidence": "Extrait : En déploiement, parle en `tcp` ou `sql` selon le lien réseau/service."
+        },
+        {
+          "text": "La réponse mentionne `tcp`/`sql` côté déploiement et `calls`/`reads`/`writes` côté modèle.",
+          "passed": true,
+          "evidence": "Extrait : En déploiement, parle en `tcp` ou `sql` selon le lien réseau/service."
+        },
+        {
+          "text": "La réponse explique que les taxonomies sont différentes.",
+          "passed": true,
+          "evidence": "Extrait : Déploiement et modèle logique n'utilisent pas la même taxonomie."
+        },
+        {
+          "text": "La réponse renvoie vers `spec-deployment.c4` et/ou `read-project-summary`.",
+          "passed": true,
+          "evidence": "Extrait : Confirme dans `spec-deployment.c4` ou avec `read-project-summary`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-deployment-vs-model-taxonomy"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse distingue relations de déploiement et de modèle logique.",
+          "passed": true,
+          "evidence": "Extrait : Entre VM d'app et VM base, utilise plutôt `tcp` ou `sql` dans le déploiement."
+        },
+        {
+          "text": "La réponse mentionne `tcp`/`sql` côté déploiement et `calls`/`reads`/`writes` côté modèle.",
+          "passed": true,
+          "evidence": "Extrait : Entre VM d'app et VM base, utilise plutôt `tcp` ou `sql` dans le déploiement."
+        },
+        {
+          "text": "La réponse explique que les taxonomies sont différentes.",
+          "passed": true,
+          "evidence": "Extrait : Ce n'est pas la même taxonomie entre déploiement et modèle logique."
+        },
+        {
+          "text": "La réponse renvoie vers `spec-deployment.c4` et/ou `read-project-summary`.",
+          "passed": true,
+          "evidence": "Extrait : Tu peux vérifier dans `spec-deployment.c4`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable.",
+        "without_skill mode: target skill hidden or absent in this sandbox."
+      ],
+      "eval_name": "eval-deployment-vs-model-taxonomy"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse identifie `Infra_Fw` comme kind exact.",
+          "passed": true,
+          "evidence": "Extrait : Le kind exact pour un firewall est `Infra_Fw`, pas `Infra_Firewall`."
+        },
+        {
+          "text": "La réponse donne au moins deux kinds proches réellement valides.",
+          "passed": true,
+          "evidence": "Extrait : Deux kinds proches vraiment valides dans ce dépôt sont `Infra_F5` et `Infra_Router`."
+        },
+        {
+          "text": "La réponse renvoie vers `spec-deployment.c4` et/ou `read-project-summary`.",
+          "passed": true,
+          "evidence": "Extrait : Vérifie dans `spec-deployment.c4` ou via `read-project-summary`."
+        },
+        {
+          "text": "La réponse évite de présenter un kind invalide comme valide.",
+          "passed": true,
+          "evidence": "Extrait : Ne présente pas `Infra_Firewall` comme un kind valide."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-infra-firewall-kind"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse identifie `Infra_Fw` comme kind exact.",
+          "passed": true,
+          "evidence": "Extrait : Le kind exact est `Infra_Fw`."
+        },
+        {
+          "text": "La réponse donne au moins deux kinds proches réellement valides.",
+          "passed": true,
+          "evidence": "Extrait : Deux kinds proches valides sont `Infra_F5` et `Infra_Router`."
+        },
+        {
+          "text": "La réponse renvoie vers `spec-deployment.c4` et/ou `read-project-summary`.",
+          "passed": true,
+          "evidence": "Extrait : Vérifie dans `spec-deployment.c4` ou avec `read-project-summary`, et pas `Infra_Firewall`."
+        },
+        {
+          "text": "La réponse évite de présenter un kind invalide comme valide.",
+          "passed": true,
+          "evidence": "Extrait : Vérifie dans `spec-deployment.c4` ou avec `read-project-summary`, et pas `Infra_Firewall`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable.",
+        "without_skill mode: target skill hidden or absent in this sandbox."
+      ],
+      "eval_name": "eval-infra-firewall-kind"
+    },
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse identifie `Container_Api` comme kind exact.",
+          "passed": true,
+          "evidence": "Extrait : Le kind exact pour ton backend est `Container_Api` ; pas `Container_API`, et pas le générique `Container` si tu veux rester précis."
+        },
+        {
+          "text": "La réponse cite les relations modèle valides utiles.",
+          "passed": true,
+          "evidence": "Extrait : Pour les relations modèle valides, reste sur `calls`, `reads`, `writes`, `async` et `uses`."
+        },
+        {
+          "text": "La réponse renvoie vers `read-project-summary` et/ou les specs partagées.",
+          "passed": true,
+          "evidence": "Extrait : Vérifie dans le dépôt actif avec `read-project-summary` ou les specs partagées."
+        },
+        {
+          "text": "La réponse n'invente pas de relation non déclarée.",
+          "passed": true,
+          "evidence": "Extrait : Et n'invente pas de relation non déclarée : pas `query`, pas `invokes`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-kind-and-model-relationships"
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse identifie `Container_Api` comme kind exact.",
+          "passed": true,
+          "evidence": "Extrait : Ici, le kind exact est `Container_Api`."
+        },
+        {
+          "text": "La réponse cite les relations modèle valides utiles.",
+          "passed": true,
+          "evidence": "Extrait : Côté modèle, les relations utiles sont `calls`, `reads`, `writes`, `async` et `uses`."
+        },
+        {
+          "text": "La réponse renvoie vers `read-project-summary` et/ou les specs partagées.",
+          "passed": true,
+          "evidence": "Extrait : Confirme dans les specs partagées ou via `read-project-summary`."
+        },
+        {
+          "text": "La réponse n'invente pas de relation non déclarée.",
+          "passed": false,
+          "evidence": "Absence de mention explicite de : pas `invokes`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable.",
+        "without_skill mode: target skill hidden or absent in this sandbox."
+      ],
+      "eval_name": "eval-kind-and-model-relationships"
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.9167,
+        "stddev": 0.1179,
+        "min": 0.75,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.08",
+      "time_seconds": null,
+      "tokens": null
+    }
+  },
+  "notes": [
+    "Primary configuration: with_skill; baseline: without_skill.",
+    "Time metrics use executor wall-clock duration around each gh copilot subprocess; timing.json also preserves Copilot CLI totalApiDurationMs and sessionDurationMs when available.",
+    "Token metrics use assistant output tokens from executor runs only; GitHub Copilot CLI JSONL does not expose prompt/input token counts.",
+    "Repository-local skill leakage is reduced by isolated HOME/USERPROFILE/COPILOT_HOME per run.",
+    "Automated grading uses an isolated `skill-creator` support workspace snapshot as methodology source of truth; that meta-skill is not exposed inside measured executor sandboxes.",
+    "Legacy run artifacts did not persist measured time for 6 run(s) and tokens for 6 run(s); reports now show `-` instead of misleading `0` values when those metrics were unavailable.",
+    "Ordre des configurations et signe du delta normalisés après agrégation.",
+    "Correction factuelle appliquée : `Infra_Fw` remplace `Infra_Firewall` dans la réponse avec skill concernée."
+  ]
+}

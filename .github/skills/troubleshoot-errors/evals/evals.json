@@ -3,24 +3,36 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Après édition de `projects/template/system-model.c4`, LikeC4 me remonte `Unknown kind Container_WebUi` et `Element not found: api`. Comment diagnostiquer ça proprement ?",
-      "expected_output": "Diagnostic propre d'un kind invalide et d'une référence FQN incorrecte.",
+      "prompt": "After editing `projects/template/system-model.c4`, LikeC4 reports `Unknown kind Container_WebUi` and `Element not found: api`. How do I diagnose this properly?",
+      "expected_output": "A clean diagnosis of an invalid kind and an incorrect FQN reference.",
       "files": [],
       "expectations": [
-        "La réponse identifie `Container_WebUi` comme kind invalide à vérifier dans les specs partagées.",
-        "La réponse explique que `api` doit probablement être référencé en FQN (`mySystem.api`).",
-        "La réponse part des causes racines et suggère `read-project-summary` avant de renommer au hasard."
+        "The response identifies `Container_WebUi` as an invalid kind to verify in shared specs.",
+        "The response explains that `api` likely needs full FQN reference (`mySystem.api`).",
+        "The response starts from root causes and suggests `read-project-summary` before random renaming."
       ]
     },
     {
       "id": 1,
-      "prompt": "Dans une dynamic view, j’ai mis `mySystem -> mySystem.api` puis `rank same user, mySystem.api` et ça casse. Quelle est la vraie cause et quoi corriger ?",
-      "expected_output": "Explication des erreurs conceptuelles de dynamic view et de contrainte de rang.",
+      "prompt": "In a dynamic view, I wrote `mySystem -> mySystem.api` and then `rank same user, mySystem.api`, and it breaks. What is the real cause and what should I fix?",
+      "expected_output": "Explanation of dynamic-view conceptual errors and rank-constraint misuse.",
       "files": [],
       "expectations": [
-        "La réponse explique qu’un parent ne doit pas appeler son propre child dans une dynamic view.",
-        "La réponse explique que `rank same` ne groupe que des éléments partageant le même parent.",
-        "La réponse propose une correction ciblée plutôt qu’un contournement vague."
+        "The response explains that a parent must not call its own child in a dynamic view.",
+        "The response explains that `rank same` only groups elements sharing the same parent.",
+        "The response proposes a targeted correction rather than a vague workaround."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "LikeC4 reports `Unknown relationship type: sends` and `Element not found: dataLayer.cache`. I don’t know whether this is a wrong relationship name, a broken FQN, or both. How do you diagnose this properly?",
+      "expected_output": "The response isolates relationship taxonomy and FQN validity, then proposes a root-cause-based correction.",
+      "files": [],
+      "expectations": [
+        "The response first checks actual relationship taxonomy via shared specs or project summary.",
+        "The response identifies `sends` as a relationship that must be verified/corrected rather than accepted as-is.",
+        "The response separately verifies whether `dataLayer.cache` truly exists as a valid FQN.",
+        "The response proposes a targeted root-cause correction, not random renaming."
       ]
     }
   ]

@@ -1,0 +1,221 @@
+{
+  "metadata": {
+    "skill_name": "test-model",
+    "skill_path": "C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\.github\\skills\\test-model",
+    "executor_model": "GPT-5.4",
+    "analyzer_model": "GPT-5.4",
+    "timestamp": "2026-03-10T18:10:00Z",
+    "evals_run": [
+      0,
+      1
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse commence par vérifier la structure et les kinds via `read-project-summary`.",
+          "passed": true,
+          "evidence": "La première étape ouvre explicitement par `read-project-summary` pour valider kinds, tags et specs partagées."
+        },
+        {
+          "text": "La réponse vérifie les références/FQN et les relations via `search-element` ou `find-relationships`.",
+          "passed": true,
+          "evidence": "Les étapes 2 et 3 citent `search-element` pour le FQN et `find-relationships` pour les relations."
+        },
+        {
+          "text": "La réponse inclut la validation du rendu des vues et du panneau Problems avant commit.",
+          "passed": true,
+          "evidence": "Les étapes 4 et 5 demandent de prévisualiser les vues touchées puis de vérifier le panneau Problems avant commit."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-validation-plan-template-project"
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.333,
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse commence par vérifier la structure et les kinds via `read-project-summary`.",
+          "passed": false,
+          "evidence": "La réponse reste générique et ne mentionne ni `read-project-summary`, ni les specs partagées."
+        },
+        {
+          "text": "La réponse vérifie les références/FQN et les relations via `search-element` ou `find-relationships`.",
+          "passed": true,
+          "evidence": "Elle demande de vérifier que le container est nommé pareil partout et que ses relations ont du sens, ce qui couvre partiellement FQN/références et relations."
+        },
+        {
+          "text": "La réponse inclut la validation du rendu des vues et du panneau Problems avant commit.",
+          "passed": false,
+          "evidence": "Elle propose d’ouvrir la vue, mais ne demande pas de vérifier le panneau Problems ni la compilation LikeC4."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable.",
+        "without_skill mode: target skill hidden or absent in this sandbox."
+      ],
+      "eval_name": "eval-validation-plan-template-project"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse rappelle qu’une vue doit garder un contexte parent explicite.",
+          "passed": true,
+          "evidence": "La première étape dit explicitement que le parent du contexte doit rester visible autour des éléments de la vue."
+        },
+        {
+          "text": "La réponse renvoie explicitement les règles détaillées au skill `design-view`.",
+          "passed": true,
+          "evidence": "La quatrième étape renvoie explicitement au skill `design-view`."
+        },
+        {
+          "text": "La réponse propose de contrôler le rendu réel de la vue et les include patterns.",
+          "passed": true,
+          "evidence": "Les étapes 2 et 3 demandent de contrôler les `include` et d’ouvrir le rendu réel de la vue."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-view-context-handoff"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.333,
+        "passed": 1,
+        "failed": 2,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse rappelle qu’une vue doit garder un contexte parent explicite.",
+          "passed": false,
+          "evidence": "La réponse parle seulement de propreté de rendu et d’include trop larges, sans rappeler le contexte parent explicite."
+        },
+        {
+          "text": "La réponse renvoie explicitement les règles détaillées au skill `design-view`.",
+          "passed": false,
+          "evidence": "Aucun handoff vers `design-view` n’apparaît."
+        },
+        {
+          "text": "La réponse propose de contrôler le rendu réel de la vue et les include patterns.",
+          "passed": true,
+          "evidence": "Elle demande de vérifier les includes et le rendu une fois la vue ouverte."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable.",
+        "without_skill mode: target skill hidden or absent in this sandbox."
+      ],
+      "eval_name": "eval-view-context-handoff"
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.333,
+        "stddev": 0.0,
+        "min": 0.333,
+        "max": 0.333
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.67",
+      "time_seconds": null,
+      "tokens": null
+    }
+  },
+  "notes": [
+    "Primary configuration: with_skill; baseline: without_skill.",
+    "Time metrics use executor wall-clock duration around each gh copilot subprocess; timing.json also preserves Copilot CLI totalApiDurationMs and sessionDurationMs when available.",
+    "Token metrics use assistant output tokens from executor runs only; GitHub Copilot CLI JSONL does not expose prompt/input token counts.",
+    "Repository-local skill leakage is reduced by isolated HOME/USERPROFILE/COPILOT_HOME per run.",
+    "Automated grading uses an isolated `skill-creator` support workspace snapshot as methodology source of truth; that meta-skill is not exposed inside measured executor sandboxes.",
+    "Legacy run artifacts did not persist measured time for 4 run(s) and tokens for 4 run(s); reports now show `-` instead of misleading `0` values when those metrics were unavailable.",
+    "Le skill impose une séquence de validation complète (structure -> références -> relations -> rendu -> Problems) que le baseline ne reconstruit pas spontanément.",
+    "L’eval de contexte de vue discrimine bien la valeur du skill : le baseline parle d’includes et de rendu, mais oublie le contexte parent et le handoff vers `design-view`.",
+    "Les métriques temps/tokens restent à 0 dans cette itération car aucun exécuteur séparé n’a exposé de télémétrie récupérable.",
+    "Une seule exécution par configuration suffit pour une comparaison directionnelle, mais pas pour mesurer la variance."
+  ]
+}

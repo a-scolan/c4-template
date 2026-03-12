@@ -1,0 +1,104 @@
+{
+  "skill_name": "create-element",
+  "workspace_dirname": "create-element-workspace",
+  "generated_at": "2026-03-12T10:55:57Z",
+  "workspace_path": "C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\tests\\.runner-smoke\\create-element-workspace",
+  "iteration_count": 1,
+  "latest_iteration": 1,
+  "latest_timestamp": "2026-03-12T10:55:17Z",
+  "latest_primary_pass_rate": 0.0,
+  "latest_baseline_pass_rate": 0.0,
+  "latest_delta": {
+    "pass_rate": "+0.00",
+    "time_seconds": "-5.02",
+    "tokens": "-274.00"
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "timestamp": "2026-03-12T10:55:17Z",
+      "evals_run": [
+        1
+      ],
+      "runs_per_configuration": 1,
+      "primary_config": "with_skill",
+      "baseline_config": "without_skill",
+      "primary_pass_rate": 0.0,
+      "baseline_pass_rate": 0.0,
+      "primary_time_seconds": 101.763,
+      "baseline_time_seconds": 106.784,
+      "primary_tokens": 3772.0,
+      "baseline_tokens": 4046.0,
+      "delta": {
+        "pass_rate": "+0.00",
+        "time_seconds": "-5.02",
+        "tokens": "-274.00"
+      },
+      "run_summary": {
+        "with_skill": {
+          "pass_rate": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "time_seconds": {
+            "mean": 101.763,
+            "stddev": 0.0,
+            "min": 101.763,
+            "max": 101.763
+          },
+          "tokens": {
+            "mean": 3772.0,
+            "stddev": 0.0,
+            "min": 3772.0,
+            "max": 3772.0
+          }
+        },
+        "without_skill": {
+          "pass_rate": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "time_seconds": {
+            "mean": 106.784,
+            "stddev": 0.0,
+            "min": 106.784,
+            "max": 106.784
+          },
+          "tokens": {
+            "mean": 4046.0,
+            "stddev": 0.0,
+            "min": 4046.0,
+            "max": 4046.0
+          }
+        },
+        "delta": {
+          "pass_rate": "+0.00",
+          "time_seconds": "-5.02",
+          "tokens": "-274.00"
+        }
+      },
+      "notes": [
+        "Primary configuration: with_skill; baseline: without_skill.",
+        "Time metrics use executor wall-clock duration around each gh copilot subprocess; timing.json also preserves Copilot CLI totalApiDurationMs and sessionDurationMs when available.",
+        "Token metrics use assistant output tokens from executor runs only; GitHub Copilot CLI JSONL does not expose prompt/input token counts.",
+        "Repository-local skill leakage is reduced by isolated HOME/USERPROFILE/COPILOT_HOME per run.",
+        "Automated grading and benchmark analysis use an isolated `skill-creator` support workspace snapshot and read vendored agent prompts directly; that meta-skill is not exposed inside measured executor sandboxes.",
+        "Observed 28 non-JSON output line(s); preview: ● List directory skill-creator\\; └ 7 files found; ● List directory _analyzer_inputs\\ (+25 more)",
+        "MCP reinjection disabled via --no-mcp.",
+        "The skill showed no measurable quality benefit on this benchmark: `with_skill` and `without_skill` both scored `0/3` expectations passed (`0.0` pass rate), so the run_summary delta is `+0.00` pass rate.",
+        "All three expectations in eval `eval-la-reponse-impose-de-verifier-dabord-le-shared-s` failed in both configurations, which suggests this eval did not show any differentiating advantage from the skill in this run.",
+        "The `with_skill` run was slightly cheaper and faster despite identical pass rate: `101.763s` vs `106.784s`, `3772` vs `4046` output tokens, and `31` vs `30` tool calls.",
+        "The `with_skill` grading evidence points to a specific failure pattern: the answer introduced repo-specific guidance about shared specs, kinds, and permission workflow, but the grader found those claims were not grounded in the allowed local evidence.",
+        "Benchmark reliability looks limited for this eval because grading had parsing issues in both configurations: both runs report that the primary grader did not return valid JSON, and the `with_skill` run additionally logged 11 malformed JSONL lines.",
+        "The `without_skill` run is less diagnostic than the `with_skill` run because its failed expectations mostly say `Automated grader did not supply evidence`, whereas the `with_skill` run includes concrete evidence about unsupported claims."
+      ],
+      "benchmark_json_path": "iteration-1/benchmark.json",
+      "benchmark_markdown_path": "iteration-1/benchmark.md",
+      "review_path": "iteration-1/review.html"
+    }
+  ]
+}

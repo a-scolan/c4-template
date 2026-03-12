@@ -3,50 +3,62 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je crée `projects/payments/likec4.config.json` à partir du template. Quels champs dois-je garder et comment référencer les specs/images partagées sans casser les imports ?",
-      "expected_output": "La réponse conserve la structure minimale du config et utilise des chemins relatifs vers `../shared` et `../shared/images/`.",
+      "prompt": "I’m creating `projects/payments/likec4.config.json` from the template. Which fields should I keep, and how should I reference shared specs/images without breaking imports?",
+      "expected_output": "The response keeps the minimal config structure and uses relative paths to `../shared` and `../shared/images/`.",
       "files": [],
       "expectations": [
-        "La réponse conserve les champs de base du config (`$schema`, `name`, `title`, `include`, `imageAliases`).",
-        "La réponse utilise des chemins relatifs depuis le dossier du projet, pas depuis la racine du workspace.",
-        "La réponse cite `../shared` pour les includes et `@`: `../shared/images/` pour les images.",
-        "La réponse déconseille les chemins absolus."
+        "The response preserves core config fields (`$schema`, `name`, `title`, `include`, `imageAliases`).",
+        "The response uses relative paths from the project folder, not from the workspace root.",
+        "The response references `../shared` for includes and `@`: `../shared/images/` for images.",
+        "The response discourages absolute paths."
       ]
     },
     {
       "id": 1,
-      "prompt": "J'ai un seul `system.c4` de 1200 lignes. Comment le découper progressivement dans ce template, et dans quels fichiers mettre les vues C1/C2/C3, les Use Cases, le deployment et les ops ?",
-      "expected_output": "La réponse propose un découpage progressif cohérent avec le template et sépare structure, vues, séquences, déploiement et opérations sans imposer tout d'un coup si ce n'est pas nécessaire.",
+      "prompt": "I have a single 1200-line `system.c4`. How should I split it progressively in this template, and which files should hold C1/C2/C3 views, Use Cases, deployment, and operations?",
+      "expected_output": "The response proposes a progressive split aligned with the template, separating structure, views, sequences, deployment, and operations without forcing a big-bang refactor.",
       "files": [],
       "expectations": [
-        "La réponse commence par un split minimal cohérent avec le template (au moins `system-model.c4` et `system-views.c4`).",
-        "La réponse place les vues C1/C2/C3 dans `system-views.c4`.",
-        "La réponse place les Use Cases dans un fichier dédié comme `system-sequences.c4` quand les flux justifient l'extraction, au lieu de les mélanger aveuglément partout.",
-        "La réponse sépare les définitions et vues de déploiement/opérations dans des fichiers dédiés (`deployment*.c4`, `operations*.c4`) quand ces sujets existent."
+        "The response starts with a minimal split aligned with the template (at least `system-model.c4` and `system-views.c4`).",
+        "The response places C1/C2/C3 views in `system-views.c4`.",
+        "The response places Use Cases in a dedicated file such as `system-sequences.c4` when flows justify extraction, instead of mixing them everywhere.",
+        "The response separates deployment/operations definitions and views into dedicated files (`deployment*.c4`, `operations*.c4`) when those concerns exist."
       ]
     },
     {
       "id": 2,
-      "prompt": "Mon projet a déjà `include.paths: ['../shared', '../platform-shared']`. Je dois ajouter une nouvelle source commune et garder les icônes. Quelles règles de modif je suis pour éviter de casser l'existant ?",
-      "expected_output": "La réponse préserve les chemins existants, ajoute sans écraser, et rappelle de conserver l'alias d'images partagé.",
+      "prompt": "My project already has `include.paths: ['../shared', '../platform-shared']`. I need to add a new shared source and keep icons working. Which edit rules should I follow to avoid breaking existing behavior?",
+      "expected_output": "The response preserves existing paths, adds without overwriting, and reminds to keep the shared image alias.",
       "files": [],
       "expectations": [
-        "La réponse dit d'ajouter le nouveau chemin sans remplacer les chemins existants.",
-        "La réponse rappelle de conserver l'alias d'images existant au lieu de le supprimer.",
-        "La réponse garde les chemins relatifs et déconseille les chemins absolus.",
-        "La réponse traite le changement comme une modification ciblée du config, pas comme une réorganisation complète du modèle."
+        "The response says to add the new path without replacing existing paths.",
+        "The response reminds to keep the existing image alias instead of removing it.",
+        "The response keeps relative paths and discourages absolute paths.",
+        "The response treats this as a targeted config change, not a full model reorganization."
       ]
     },
     {
       "id": 3,
-      "prompt": "Je veux ajouter un deuxième projet LikeC4 dans ce workspace avec des specs partagées. Est-ce que ce skill suffit, ou faut-il le combiner avec un autre skill ?",
-      "expected_output": "La réponse explique que ce skill couvre `likec4.config.json` mais renvoie la structuration d'ensemble vers le skill multi-projet.",
+      "prompt": "I want to add a second LikeC4 project in this workspace with shared specs. Is this skill enough, or should it be combined with another skill?",
+      "expected_output": "The response explains that this skill covers `likec4.config.json` but delegates overall structure to the multi-project skill.",
       "files": [],
       "expectations": [
-        "La réponse dit que ce skill couvre la configuration `likec4.config.json` et les includes/aliases.",
-        "La réponse évite de présenter ce skill comme solution unique pour toute l'organisation multi-projet.",
-        "La réponse renvoie la structuration globale vers `organize-multi-project`.",
-        "La réponse maintient les règles de chemins relatifs vers les specs partagées."
+        "The response says this skill covers `likec4.config.json` configuration and includes/aliases.",
+        "The response avoids presenting this skill as the only solution for full multi-project organization.",
+        "The response delegates global structuring to `organize-multi-project`.",
+        "The response preserves relative-path rules to shared specs."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "In `projects/payments/likec4.config.json`, I already have `../shared` and need to add `../platform-shared`, but this source redefines some existing image aliases. How should I adjust `include.paths` and `imageAliases` without breaking current resolution?",
+      "expected_output": "The response defines an explicit resolution order, keeps relative paths, and proposes a clear strategy to prevent alias collisions.",
+      "files": [],
+      "expectations": [
+        "The response adds the new source without replacing existing paths.",
+        "The response explicitly explains that order in `include.paths` affects resolution.",
+        "The response keeps relative paths and preserves shared image alias behavior.",
+        "The response proposes an explicit alias-collision strategy (prefixing, renaming, or clarification) instead of blind merging."
       ]
     }
   ]

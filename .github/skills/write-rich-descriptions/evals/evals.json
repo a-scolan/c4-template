@@ -3,26 +3,38 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je n’ai pas encore créé mon service de traitement ni le VM de prod, mais je veux déjà documenter leurs descriptions. Quel skill je dois utiliser d’abord, puis quel format de description choisir ensuite ?",
-      "expected_output": "Handoff de prérequis vers les skills de création, puis choix du bon format de description.",
+      "prompt": "I haven’t created my processing service or production VM yet, but I already want to document their descriptions. Which skill should I use first, then which description format should I choose?",
+      "expected_output": "Prerequisite handoff to creation skills, then selection of the right description format.",
       "files": [],
       "expectations": [
-        "La réponse dit qu’il faut d’abord créer l’élément avant de travailler sa description.",
-        "La réponse renvoie la création d’un élément système vers `create-element`.",
-        "La réponse renvoie l’infrastructure de déploiement vers le vrai skill `model-deployment-infrastructure`.",
-        "La réponse distingue ensuite `metadata {}` pour le système et tableau Markdown pour le déploiement."
+        "The response says the element must be created before writing its description.",
+        "The response routes system-element creation to `create-element`.",
+        "The response routes deployment infrastructure to the proper `model-deployment-infrastructure` skill.",
+        "The response then distinguishes `metadata {}` for system model vs Markdown table for deployment."
       ]
     },
     {
       "id": 1,
-      "prompt": "Pour un futur `ProdApiVm`, je veux une description utile aux ops. Quelles infos je mets, dans quel ordre, et qu’est-ce qu’il ne faut pas dupliquer ?",
-      "expected_output": "Règles concrètes pour documenter un VM de déploiement avec un tableau utile aux ops.",
+      "prompt": "For a future `ProdApiVm`, I want an ops-useful description. Which information should I include, in what order, and what should not be duplicated?",
+      "expected_output": "Concrete rules to document a deployment VM with an ops-useful table.",
       "files": [],
       "expectations": [
-        "La réponse demande un tableau Markdown pour le VM.",
-        "La réponse met les interfaces réseau (`eth0`, `eth1`) en premier.",
-        "La réponse dit que le gateway appartient plutôt à la zone qu’au VM standard.",
-        "La réponse garde la metadata optionnelle, seulement si l’automatisation la requiert."
+        "The response requests a Markdown table for the VM.",
+        "The response puts network interfaces (`eth0`, `eth1`) first.",
+        "The response says gateway info belongs more to the zone than to a standard VM.",
+        "The response keeps metadata optional, only when automation requires it."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "For `ProdApiVm`, I have `eth0`, `eth1` monitoring, CPU/RAM/GPU specs, and many operational details. How do I write a rich ops-useful description without turning the block into an encyclopedia?",
+      "expected_output": "The response proposes a structured VM description, prioritizes operable information, and externalizes overly fine detail when needed.",
+      "files": [],
+      "expectations": [
+        "The response structures the VM description as an ops-useful Markdown table.",
+        "The response places network interfaces first (`eth0`, then `eth1`).",
+        "The response keeps critical information in the description and suggests externalizing overly detailed data when needed.",
+        "The response avoids duplicating in the VM block information that belongs to the zone or separate operations documentation."
       ]
     }
   ]

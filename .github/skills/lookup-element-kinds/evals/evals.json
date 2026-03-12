@@ -3,38 +3,50 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je ne sais plus si c'est `Container_Api`, `Container_API` ou juste `Container` pour mon backend, et quelles relations modèle sont valides vers une base. Donne-moi la taxonomie exacte et comment la vérifier dans ce dépôt.",
-      "expected_output": "La réponse donne le kind exact, les relations modèle valides, et la méthode de vérification via specs/MCP.",
+      "prompt": "I’m not sure whether my backend should use `Container_Api`, `Container_API`, or just `Container`, and which model relationships are valid toward a database. Give me the exact taxonomy and how to verify it in this repository.",
+      "expected_output": "The response gives the exact kind, valid model relationships, and a verification method via specs/MCP.",
       "files": [],
       "expectations": [
-        "La réponse identifie `Container_Api` comme kind exact et rejette `Container_API`.",
-        "La réponse cite les relations modèle valides utiles (`calls`, `reads`, `writes`, `async`, `uses`).",
-        "La réponse renvoie vers `read-project-summary` et/ou les specs partagées pour vérifier dans le dépôt actif.",
-        "La réponse n'invente pas de relation générique non déclarée comme `query` ou `invokes`."
+        "The response identifies `Container_Api` as the exact kind and rejects `Container_API`.",
+        "The response cites useful valid model relationships (`calls`, `reads`, `writes`, `async`, `uses`).",
+        "The response points to `read-project-summary` and/or shared specs for verification in the active repository.",
+        "The response does not invent undeclared generic relationships such as `query` or `invokes`."
       ]
     },
     {
       "id": 1,
-      "prompt": "Entre une VM d'app et une VM base de données en déploiement, dois-je écrire `calls`, `tcp` ou `sql` ? Et dans le modèle logique applicatif, qu'est-ce qui reste valable ?",
-      "expected_output": "La réponse distingue clairement la taxonomie des relations de déploiement et celle du modèle logique.",
+      "prompt": "Between an app VM and a database VM in deployment, should I use `calls`, `tcp`, or `sql`? And in the logical application model, what remains valid?",
+      "expected_output": "The response clearly distinguishes deployment relationship taxonomy from logical model taxonomy.",
       "files": [],
       "expectations": [
-        "La réponse distingue les relations de déploiement des relations du modèle logique.",
-        "La réponse mentionne `tcp` et/ou `sql` côté déploiement, et `calls`/`reads`/`writes` côté modèle logique.",
-        "La réponse explique que le modèle logique et le déploiement n'utilisent pas la même taxonomie.",
-        "La réponse renvoie vers `projects/shared/spec-deployment.c4` et/ou `read-project-summary` pour confirmer."
+        "The response distinguishes deployment relationships from logical-model relationships.",
+        "The response mentions `tcp` and/or `sql` on deployment side, and `calls`/`reads`/`writes` on logical-model side.",
+        "The response explains that logical model and deployment do not use the same taxonomy.",
+        "The response points to `projects/shared/spec-deployment.c4` and/or `read-project-summary` for confirmation."
       ]
     },
     {
       "id": 2,
-      "prompt": "Pour un firewall dans l'infra de déploiement, le kind exact est `Infra_Firewall`, `Infra_Fw` ou autre ? Donne aussi deux kinds proches vraiment valides dans ce dépôt.",
-      "expected_output": "La réponse retrouve le kind exact du dépôt, cite des kinds voisins valides, et s'appuie sur la spec de déploiement.",
+      "prompt": "For a firewall in deployment infrastructure, is the exact kind `Infra_Firewall`, `Infra_Fw`, or something else? Also give two nearby kinds that are truly valid in this repository.",
+      "expected_output": "The response finds the repository’s exact kind, cites valid neighboring kinds, and relies on deployment spec.",
       "files": [],
       "expectations": [
-        "La réponse identifie `Infra_Fw` comme kind exact et rejette `Infra_Firewall`.",
-        "La réponse donne au moins deux kinds proches réellement valides dans le dépôt.",
-        "La réponse renvoie vers `projects/shared/spec-deployment.c4` et/ou `read-project-summary` pour confirmation.",
-        "La réponse évite de présenter un kind invalide comme s'il était valide."
+        "The response identifies `Infra_Fw` as the exact kind and rejects `Infra_Firewall`.",
+        "The response provides at least two nearby kinds that are actually valid in the repository.",
+        "The response points to `projects/shared/spec-deployment.c4` and/or `read-project-summary` for confirmation.",
+        "The response avoids presenting an invalid kind as if it were valid."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I’m looking for exact kinds for an HTTP API, an async worker, and a message queue, but I don’t want to guess. How do you find them in THIS repository, and how do you resolve it when two names look similar?",
+      "expected_output": "The response starts from the repository’s real taxonomy, shows how to verify each name, and explicitly rejects guessing.",
+      "files": [],
+      "expectations": [
+        "The response starts from source of truth (`read-project-summary` and/or `projects/shared/spec-containers.c4`).",
+        "The response cites at least one exact confirmed repository kind, such as `Container_Api`, then explains how to verify others instead of inventing them.",
+        "The response explains how to resolve close spellings by comparing against the repository’s actual taxonomy.",
+        "The response avoids inventing undeclared kinds or relationships."
       ]
     }
   ]

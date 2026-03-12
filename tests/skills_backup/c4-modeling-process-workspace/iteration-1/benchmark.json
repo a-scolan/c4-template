@@ -1,0 +1,458 @@
+{
+  "metadata": {
+    "skill_name": "c4-modeling-process",
+    "skill_path": "C:\\Users\\ascolan\\Documents\\Workspace\\c4_template\\.github\\skills\\c4-modeling-process",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-03-10T17:06:08Z",
+    "evals_run": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.67,
+        "passed": 2,
+        "failed": 1,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit explicitement que C3 n'est pas obligatoire pour chaque container.",
+          "passed": true,
+          "evidence": "La première phrase dit : `la vue C3 est sélective, pas obligatoire pour chaque container`."
+        },
+        {
+          "text": "La réponse réserve C3 aux containers complexes, critiques ou qui méritent du détail.",
+          "passed": true,
+          "evidence": "La réponse réserve C3 au cas où le container est `complexe ou critique` et où sa structure interne apporte de la valeur."
+        },
+        {
+          "text": "La réponse garde le raisonnement aligné sur C1→C2→C3.",
+          "passed": false,
+          "evidence": "La réponse compare surtout `C2` et `C3`, mais ne rappelle pas explicitement la progression complète `C1 → C2 → C3`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-c3-selective"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit explicitement que C3 n'est pas obligatoire pour chaque container.",
+          "passed": true,
+          "evidence": "La réponse dit explicitement : `Une vue C3 n’est pas obligatoire pour chaque container`."
+        },
+        {
+          "text": "La réponse réserve C3 aux containers complexes, critiques ou qui méritent du détail.",
+          "passed": true,
+          "evidence": "La réponse réserve C3 aux containers `centraux`, `risqués` ou `assez complexes en interne`."
+        },
+        {
+          "text": "La réponse garde le raisonnement aligné sur C1→C2→C3.",
+          "passed": true,
+          "evidence": "La réponse rappelle explicitement : `on modélise d’abord C1, puis C2`, puis seulement un C3 sélectif."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-c3-selective"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit que les vues C1 doivent rester statiques.",
+          "passed": true,
+          "evidence": "La réponse dit explicitement : `Un C1 doit rester statique`."
+        },
+        {
+          "text": "La réponse redirige explicitement les flows temporels vers `views 'Use Cases'` / dynamic views.",
+          "passed": true,
+          "evidence": "La réponse dit : `Ce diagramme doit aller dans views 'Use Cases' sous forme de vue dynamique`."
+        },
+        {
+          "text": "La réponse explique pourquoi (C1 = boundary/context, pas temporal flow).",
+          "passed": true,
+          "evidence": "La justification oppose `C1` qui répond à `qui interagit avec le système ?` et la vue dynamique qui répond à `comment le scénario se déroule dans le temps ?`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-no-flow-in-c1"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse dit que les vues C1 doivent rester statiques.",
+          "passed": true,
+          "evidence": "La réponse dit explicitement : `Un C1 doit rester statique`."
+        },
+        {
+          "text": "La réponse redirige explicitement les flows temporels vers `views 'Use Cases'` / dynamic views.",
+          "passed": true,
+          "evidence": "La réponse renvoie le scénario vers `views 'Use Cases'` sous forme de `dynamic view`."
+        },
+        {
+          "text": "La réponse explique pourquoi (C1 = boundary/context, pas temporal flow).",
+          "passed": true,
+          "evidence": "Elle distingue clairement `C1 = qui entoure le système` et `Use Cases / dynamic view = ordre temporel des interactions`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-no-flow-in-c1"
+    },
+    {
+      "eval_id": 3,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse commence par établir ou vérifier la structure du projet avant d'éditer.",
+          "passed": true,
+          "evidence": "L’étape 1 dit `Recadrer le workspace avant tout` et détaille projet actif, specs, kinds et relations."
+        },
+        {
+          "text": "La réponse cite `understand-project-structure` comme prérequis ou étape de cadrage.",
+          "passed": true,
+          "evidence": "La réponse demande explicitement d’appeler `understand-project-structure`."
+        },
+        {
+          "text": "La réponse garde la progression C1→C2 plutôt qu'un saut direct au détail.",
+          "passed": true,
+          "evidence": "Après le cadrage workspace, la réponse dit `Repartir du C1, même rapidement`, puis seulement définir les containers et la vue C2."
+        },
+        {
+          "text": "La réponse délègue la création détaillée à des skills spécialisés comme `create-element`, `create-relationship` ou `design-view`.",
+          "passed": true,
+          "evidence": "La réponse délègue successivement à `create-element`, `create-relationship`, `design-view` puis `test-model`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-project-structure-handoff"
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse commence par établir ou vérifier la structure du projet avant d'éditer.",
+          "passed": true,
+          "evidence": "L’étape 1 commence par `understand-project-structure d’abord` et recentre sur projet actif, config et specs."
+        },
+        {
+          "text": "La réponse cite `understand-project-structure` comme prérequis ou étape de cadrage.",
+          "passed": true,
+          "evidence": "La réponse cite explicitement `understand-project-structure`."
+        },
+        {
+          "text": "La réponse garde la progression C1→C2 plutôt qu'un saut direct au détail.",
+          "passed": true,
+          "evidence": "Elle demande d’abord de vérifier que le `C1 est clair`, puis seulement de modéliser les containers et la vue C2."
+        },
+        {
+          "text": "La réponse délègue la création détaillée à des skills spécialisés comme `create-element`, `create-relationship` ou `design-view`.",
+          "passed": true,
+          "evidence": "La réponse délègue explicitement à `create-element`, `create-relationship`, `design-view` et `test-model`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-project-structure-handoff"
+    },
+    {
+      "eval_id": 4,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.75,
+        "passed": 3,
+        "failed": 1,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse présente ce skill comme cadre de séquencement, pas comme skill unique qui absorbe tout.",
+          "passed": true,
+          "evidence": "La réponse dit que `c4-modeling-process` sert surtout de `guide d’orientation` et d’`orchestrateur`."
+        },
+        {
+          "text": "La réponse renvoie le déploiement à `model-deployment-infrastructure`.",
+          "passed": false,
+          "evidence": "La réponse renvoie d’abord vers `model-deployment` puis ajoute seulement `aujourd’hui plutôt model-deployment-infrastructure`, ce qui laisse subsister l’ancien nom au lieu d’un handoff net vers le skill correct."
+        },
+        {
+          "text": "La réponse renvoie les flux temporels à `create-sequence-view`.",
+          "passed": true,
+          "evidence": "La réponse renvoie explicitement le scénario nominal utilisateur vers `create-sequence-view`."
+        },
+        {
+          "text": "La réponse rappelle que Deployment et Dynamic viennent après le noyau C1/C2, de façon optionnelle ou ciblée.",
+          "passed": true,
+          "evidence": "La réponse commence par `Avec un C2 déjà prêt` et parle du moment où `passer au déploiement et au dynamique`, ce qui les place après le socle structurel."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-specialized-skill-handoff"
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 4,
+        "failed": 0,
+        "total": 4,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse présente ce skill comme cadre de séquencement, pas comme skill unique qui absorbe tout.",
+          "passed": true,
+          "evidence": "La réponse parle explicitement d’un `skill d’orchestration` plutôt que d’un skill qui détaillerait tout."
+        },
+        {
+          "text": "La réponse renvoie le déploiement à `model-deployment-infrastructure`.",
+          "passed": true,
+          "evidence": "La réponse renvoie explicitement l’infra de prod à `model-deployment-infrastructure`."
+        },
+        {
+          "text": "La réponse renvoie les flux temporels à `create-sequence-view`.",
+          "passed": true,
+          "evidence": "La réponse renvoie explicitement le scénario nominal utilisateur à `create-sequence-view`."
+        },
+        {
+          "text": "La réponse rappelle que Deployment et Dynamic viennent après le noyau C1/C2, de façon optionnelle ou ciblée.",
+          "passed": true,
+          "evidence": "La réponse commence par `confirmer que le C2 est assez stable` avant d’orienter vers les étapes suivantes."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-specialized-skill-handoff"
+    },
+    {
+      "eval_id": 0,
+      "configuration": "old_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse impose une progression top-down C1→C2→C3.",
+          "passed": true,
+          "evidence": "La réponse est structurée en étapes `C1 — Contexte`, `C2 — Conteneurs`, puis `C3 — Composants`, dans cet ordre."
+        },
+        {
+          "text": "La réponse explicite que Deployment et Dynamic sont optionnels.",
+          "passed": true,
+          "evidence": "Les sections `Déploiement` et `Dynamique / Use Cases` sont toutes deux marquées `👉 Optionnel` et le résumé final répète `Déploiement : optionnel` et `Dynamique / Use Cases : optionnel`."
+        },
+        {
+          "text": "La réponse évite une approche bottom-up centrée sur le code.",
+          "passed": true,
+          "evidence": "La conclusion dit explicitement : `on conçoit de haut en bas, jamais l’inverse`."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-top-down-saas"
+    },
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 3,
+        "failed": 0,
+        "total": 3,
+        "time_seconds": null,
+        "tokens": null,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "La réponse impose une progression top-down C1→C2→C3.",
+          "passed": true,
+          "evidence": "L’ordre proposé est `C1 — Contexte`, `C2 — Conteneurs`, `C3 — Composants`, puis seulement les vues dynamiques et de déploiement."
+        },
+        {
+          "text": "La réponse explicite que Deployment et Dynamic sont optionnels.",
+          "passed": true,
+          "evidence": "La réponse marque explicitement `Vues dynamiques / Use Cases (optionnel)` et `Vues de déploiement (optionnel)`."
+        },
+        {
+          "text": "La réponse évite une approche bottom-up centrée sur le code.",
+          "passed": true,
+          "evidence": "La règle d’or dit : `Ne pars ni des classes, ni des frameworks, ni de l’infra` puis recentre sur périmètre système et containers runtime."
+        }
+      ],
+      "notes": [
+        "Legacy run artifact: timing and token metrics were not captured by the original harness and are shown as unavailable."
+      ],
+      "eval_name": "eval-top-down-saas"
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "old_skill": {
+      "pass_rate": {
+        "mean": 0.884,
+        "stddev": 0.1443,
+        "min": 0.67,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      },
+      "tokens": {
+        "mean": null,
+        "stddev": null,
+        "min": null,
+        "max": null
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.12",
+      "time_seconds": null,
+      "tokens": null
+    }
+  },
+  "notes": [
+    "Primary configuration: with_skill; baseline: old_skill.",
+    "Time metrics use executor wall-clock duration around each gh copilot subprocess; timing.json also preserves Copilot CLI totalApiDurationMs and sessionDurationMs when available.",
+    "Token metrics use assistant output tokens from executor runs only; GitHub Copilot CLI JSONL does not expose prompt/input token counts.",
+    "Repository-local skill leakage is reduced by isolated HOME/USERPROFILE/COPILOT_HOME per run.",
+    "Automated grading uses an isolated `skill-creator` support workspace snapshot as methodology source of truth; that meta-skill is not exposed inside measured executor sandboxes.",
+    "Legacy run artifacts did not persist measured time for 10 run(s) and tokens for 10 run(s); reports now show `-` instead of misleading `0` values when those metrics were unavailable.",
+    "Evals 0, 2 and 3 pass in both configurations; they confirm baseline competence but do not discriminate the rewrite strongly.",
+    "The rewrite adds most of its measurable value on eval 1 (explicit C1→C2→C3 reasoning before deciding on C3) and eval 4 (clean handoff to `model-deployment-infrastructure`).",
+    "Timing and token metrics are zero because executor metadata was not available from subagent runs in this session; compare pass rates rather than runtime costs.",
+    "This benchmark uses 1 run per configuration, so the pass-rate delta is directional but still low-confidence until additional runs are added."
+  ]
+}

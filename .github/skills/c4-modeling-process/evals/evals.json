@@ -3,59 +3,71 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "Je pars d'une feuille blanche pour modéliser un nouveau produit SaaS. Donne-moi la démarche de conception LikeC4 à suivre, dans le bon ordre, et dis ce qui est optionnel.",
-      "expected_output": "Une démarche top-down C1→C2→C3, avec Deployment/Dynamic marqués comme optionnels.",
+      "prompt": "I’m starting from a blank page to model a new SaaS product. Give me the LikeC4 design approach to follow, in the right order, and tell me what is optional.",
+      "expected_output": "A top-down C1→C2→C3 approach, with Deployment/Dynamic marked as optional.",
       "files": [],
       "expectations": [
-        "La réponse impose une progression top-down C1→C2→C3.",
-        "La réponse explicite que Deployment et Dynamic sont optionnels.",
-        "La réponse évite une approche bottom-up centrée sur le code."
+        "The response enforces a top-down C1→C2→C3 progression.",
+        "The response explicitly states that Deployment and Dynamic are optional.",
+        "The response avoids a bottom-up, code-first approach."
       ]
     },
     {
       "id": 1,
-      "prompt": "J'ai un petit container API très simple. Est-ce qu'il faut forcément faire une vue C3 détaillée ? Explique la règle de décision.",
-      "expected_output": "La réponse indique que C3 est sélectif et réservé aux containers complexes/critiques.",
+      "prompt": "I have a very simple API container. Do I really need to create a detailed C3 view? Explain the decision rule.",
+      "expected_output": "The response states that C3 is selective and reserved for complex/critical containers.",
       "files": [],
       "expectations": [
-        "La réponse dit explicitement que C3 n'est pas obligatoire pour chaque container.",
-        "La réponse réserve C3 aux containers complexes, critiques ou qui méritent du détail.",
-        "La réponse garde le raisonnement aligné sur C1→C2→C3."
+        "The response explicitly says that C3 is not mandatory for every container.",
+        "The response reserves C3 for containers that are complex, critical, or need deeper detail.",
+        "The response keeps the reasoning aligned with C1→C2→C3."
       ]
     },
     {
       "id": 2,
-      "prompt": "Je veux montrer un parcours utilisateur en C1 avec des flèches temporelles entre le user, le webapp et l'API. Est-ce correct ? Si non, où doit aller ce diagramme et pourquoi ?",
-      "expected_output": "La réponse interdit les flows temporels en C1 et les redirige vers les vues 'Use Cases'/dynamic views.",
+      "prompt": "I want to show a user journey in C1 with temporal arrows between the user, the webapp, and the API. Is that correct? If not, where should this diagram go and why?",
+      "expected_output": "The response forbids temporal flows in C1 and redirects them to 'Use Cases' / dynamic views.",
       "files": [],
       "expectations": [
-        "La réponse dit que les vues C1 doivent rester statiques.",
-        "La réponse redirige explicitement les flows temporels vers `views 'Use Cases'` / dynamic views.",
-        "La réponse explique pourquoi (C1 = boundary/context, pas temporal flow)."
+        "The response says C1 views must remain static.",
+        "The response explicitly redirects temporal flows to `views 'Use Cases'` / dynamic views.",
+        "The response explains why (C1 = boundary/context, not temporal flow)."
       ]
     },
     {
       "id": 3,
-      "prompt": "Je reprends un workspace LikeC4 que je ne connais pas et je dois concevoir une nouvelle vue C2 proprement. Dans quel ordre j'aborde ça et quels skills complémentaires appeler ?",
-      "expected_output": "La réponse commence par recharger la structure/projet valide, puis déroule C1→C2, et délègue la création détaillée aux skills spécialisés.",
+      "prompt": "I’m taking over a LikeC4 workspace I don’t know, and I need to design a new C2 view properly. In what order should I approach this, and which complementary skills should I call?",
+      "expected_output": "The response starts by reloading the valid project structure/context, then follows C1→C2, and delegates detailed creation to specialized skills.",
       "files": [],
       "expectations": [
-        "La réponse commence par établir ou vérifier la structure du projet avant d'éditer.",
-        "La réponse cite `understand-project-structure` comme prérequis ou étape de cadrage.",
-        "La réponse garde la progression C1→C2 plutôt qu'un saut direct au détail.",
-        "La réponse délègue la création détaillée à des skills spécialisés comme `create-element`, `create-relationship` ou `design-view`."
+        "The response starts by establishing or verifying the project structure before editing.",
+        "The response references `understand-project-structure` as a prerequisite or framing step.",
+        "The response keeps a C1→C2 progression instead of jumping straight into details.",
+        "The response delegates detailed creation to specialized skills such as `create-element`, `create-relationship`, or `design-view`."
       ]
     },
     {
       "id": 4,
-      "prompt": "J'ai déjà mon C2. Je veux maintenant documenter l'infra de prod et un scénario nominal utilisateur. Est-ce que ce skill doit tout détailler lui-même ou s'appuyer sur d'autres skills ?",
-      "expected_output": "La réponse présente c4-modeling-process comme cadre d'orchestration et renvoie le détail du déploiement et du flux aux bons skills.",
+      "prompt": "I already have my C2. I now want to document production infrastructure and a nominal user scenario. Should this skill detail everything itself, or rely on other skills?",
+      "expected_output": "The response presents c4-modeling-process as an orchestration framework and routes deployment and flow details to the right skills.",
       "files": [],
       "expectations": [
-        "La réponse présente ce skill comme cadre de séquencement, pas comme skill unique qui absorbe tout.",
-        "La réponse renvoie le déploiement à `model-deployment-infrastructure`.",
-        "La réponse renvoie les flux temporels à `create-sequence-view`.",
-        "La réponse rappelle que Deployment et Dynamic viennent après le noyau C1/C2, de façon optionnelle ou ciblée."
+        "The response presents this skill as a sequencing framework, not a one-skill-does-everything solution.",
+        "The response routes deployment work to `model-deployment-infrastructure`.",
+        "The response routes temporal flows to `create-sequence-view`.",
+        "The response reminds that Deployment and Dynamic come after the C1/C2 core, in an optional or targeted way."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I’m resuming this multi-project workspace after changes to shared specs. I need to add a sensitive C3 view in `projects/template`, then document a nominal user scenario. Without skipping steps, what order should I follow, and which skills should take over?",
+      "expected_output": "The response first revalidates project context, keeps the C1→C2→C3 progression, then explicitly delegates user-scenario and validation work to specialized skills.",
+      "files": [],
+      "expectations": [
+        "The response starts by revalidating the active project and shared specs before discussing C3.",
+        "The response keeps the C1→C2→C3 progression instead of jumping straight to the detailed view.",
+        "The response explicitly routes the user scenario to `create-sequence-view`.",
+        "The response routes final model verification to `test-model` once structure changes are complete."
       ]
     }
   ]
