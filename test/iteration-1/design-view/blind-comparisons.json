@@ -1,0 +1,89 @@
+{
+  "skill_name": "design-view",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "B is the better fit for this repository because it stays tightly scoped to the requested C2 skeleton inside the existing view folder and reuses the current drill-down pattern. A is strong on parent, focus, and neighbor coverage, but it adds an extra C3 view and a new target name that feel less aligned with the template's current conventions.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.4
+        },
+        "B": {
+          "overall_score": 9.1
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "B is stronger because it mirrors the repository's deployment naming and hierarchy conventions more closely while still keeping the view explicit, parent-aware, and limited to the VM level. A is correct in structure, but its naming is more generic and slightly less anchored to the examples already present in the template.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.6
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "B is clearly better because it makes the required handoffs explicit: temporal flow goes to create-sequence-view, styling goes to customize-view, and design-view is limited to a companion structural view. A has the right high-level separation, but it stays generic and does not name the required follow-on skills explicitly.",
+      "rubric": {
+        "A": {
+          "overall_score": 6.2
+        },
+        "B": {
+          "overall_score": 9.6
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.33
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "B",
+      "reasoning": "B gives the clean repository-aligned answer: deployment view first, C2 only if a distinct logical concern appears, delegation to structure-deployment-tiers for zone organization, and a separate handoff to customize-view for styling. A gets the deployment-first recommendation right, but it misses the repository-specific delegation and leaves the styling handoff too implicit.",
+      "rubric": {
+        "A": {
+          "overall_score": 7.1
+        },
+        "B": {
+          "overall_score": 9.7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.5
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

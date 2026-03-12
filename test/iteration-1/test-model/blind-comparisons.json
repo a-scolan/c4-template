@@ -1,0 +1,68 @@
+{
+  "skill_name": "test-model",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "B is better because it follows the repository-aligned validation flow expected here: it starts with structure and kind checks, then verifies `mySystem.worker` references and relationships with explicit project-level checks, and finishes with rendering and Problems-panel validation. A provides a sensible manual checklist and uses the right repository concepts, but it stays more generic and does not include the expected explicit project-summary / relationship-validation workflow.",
+      "rubric": {
+        "A": {
+          "overall_score": 7.1
+        },
+        "B": {
+          "overall_score": 9.2
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.3333333333
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "A is better because it directly treats `c2_webapp_details` as a parent-context and include-scope problem, keeps the `mySystem` boundary explicit, warns against broad include patterns, and makes the expected handoff to `design-view` for the deeper view-design rules. B is practical and repository-aware, but it omits that handoff, which is part of the target guidance for this eval.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.0
+        },
+        "B": {
+          "overall_score": 8.1
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.6666666667
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "A is better because it does not stop at syntax success: it revalidates the relationship semantically with explicit project and relationship checks, inspects affected views such as `c2_containers` and `c2_webapp_details`, and asks for before/after comparison of both the changed edge and the rendered views. B raises a strong semantic caution about whether `async` truly matches the architecture, but its validation flow is less concrete for repository-style relationship re-checking.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.3
+        },
+        "B": {
+          "overall_score": 8.0
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.75
+        }
+      }
+    }
+  ]
+}

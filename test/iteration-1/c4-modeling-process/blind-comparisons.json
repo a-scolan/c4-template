@@ -1,0 +1,131 @@
+{
+  "skill_name": "c4-modeling-process",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "B is slightly stronger because it keeps the top-down C1→C2→C3 sequence, clearly marks Dynamic and Deployment as optional follow-ups, and aligns more closely with repository terminology by pointing dynamic work to `views 'Use Cases'`. A is still correct, but B is a bit more specific and better scaffolded for this workspace.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.0
+        },
+        "B": {
+          "overall_score": 9.4
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "Both responses are correct, but B gives a sharper decision rule for when C3 is warranted and adds concrete signals of complexity without drifting away from the C1→C2→C3 logic. A is sound, yet B is more actionable for deciding whether a simple API should stop at C2.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.8
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "A is better aligned with the repository because it explicitly keeps C1 static and redirects the temporal journey to `views 'Use Cases'` as a dynamic view. B is still correct in substance, but it is less specific about the repository’s view organization.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.5
+        },
+        "B": {
+          "overall_score": 8.9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "A clearly does the full orchestration job: it starts with `understand-project-structure`, preserves the C1→C2 progression, and names the specialized skills for detailed authoring. B has the right general order, but it stays generic and does not faithfully answer the request for complementary skills to call.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.6
+        },
+        "B": {
+          "overall_score": 6.8
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.5
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "A",
+      "reasoning": "A is much stronger because it presents the skill as a sequencing layer and routes the follow-up work to the correct specialized skills: `model-deployment-infrastructure` for production topology and `create-sequence-view` for the nominal scenario. B captures the high-level idea, but it stops short of the explicit handoff the prompt asks for.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.7
+        },
+        "B": {
+          "overall_score": 6.7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.5
+        }
+      }
+    },
+    {
+      "eval_id": 5,
+      "winner": "A",
+      "reasoning": "A is the more complete and repository-aligned answer because it revalidates the project and shared specs first, keeps the C1→C2→C3 progression intact, and explicitly hands the dynamic scenario and final verification to `create-sequence-view` and `test-model`. B has the right broad sequence, but its handoffs stay too vague for this eval.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.7
+        },
+        "B": {
+          "overall_score": 6.9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.5
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "skill_name": "create-element",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 30,
+    "elapsed_seconds_per_eval": 7.5,
+    "response_words_total": 289,
+    "response_words_per_eval": 72.25,
+    "files_read_count": 5,
+    "files_written_count": 5
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/with_skill/response.md",
+      "response_words": 25
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/with_skill/response.md",
+      "response_words": 103
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/with_skill/response.md",
+      "response_words": 58
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/with_skill/response.md",
+      "response_words": 103
+    }
+  ]
+}

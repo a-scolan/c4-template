@@ -1,0 +1,36 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 135,
+    "elapsed_seconds_per_eval": 33.75,
+    "response_words_total": 1059,
+    "response_words_per_eval": 264.75,
+    "files_read_count": 4,
+    "files_written_count": 5
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/with_skill/response.md",
+      "response_words": 398
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/with_skill/response.md",
+      "response_words": 129
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/with_skill/response.md",
+      "response_words": 306
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/with_skill/response.md",
+      "response_words": 226
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "skill_name": "configure-project-includes",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 108,
+    "elapsed_seconds_per_eval": 21.6,
+    "response_words_total": 720,
+    "response_words_per_eval": 144.0,
+    "files_read_count": 3,
+    "files_written_count": 6
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/with_skill/response.md",
+      "response_words": 99
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/with_skill/response.md",
+      "response_words": 196
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/with_skill/response.md",
+      "response_words": 121
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/with_skill/response.md",
+      "response_words": 118
+    },
+    {
+      "id": 4,
+      "response_path": "eval-4/with_skill/response.md",
+      "response_words": 186
+    }
+  ]
+}

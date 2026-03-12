@@ -1,1 +1,0 @@
-Une note de repo peut suffire, mais tu peux aussi en faire un ADR si le changement GitHub Actions a un impact durable.

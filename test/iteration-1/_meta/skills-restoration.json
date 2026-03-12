@@ -1,0 +1,99 @@
+{
+  "generated_at": "2026-03-12T14:13:22Z",
+  "operation": "restore-workspace-skills",
+  "skills_root": ".github/skills",
+  "disabled_root": "test/iteration-1/_disabled-skills",
+  "restored_count": 18,
+  "restored": [
+    {
+      "skill": "configure-project-includes",
+      "from": "test/iteration-1/_disabled-skills/configure-project-includes",
+      "to": ".github/skills/configure-project-includes"
+    },
+    {
+      "skill": "create-element",
+      "from": "test/iteration-1/_disabled-skills/create-element",
+      "to": ".github/skills/create-element"
+    },
+    {
+      "skill": "create-relationship",
+      "from": "test/iteration-1/_disabled-skills/create-relationship",
+      "to": ".github/skills/create-relationship"
+    },
+    {
+      "skill": "create-sequence-view",
+      "from": "test/iteration-1/_disabled-skills/create-sequence-view",
+      "to": ".github/skills/create-sequence-view"
+    },
+    {
+      "skill": "customize-view",
+      "from": "test/iteration-1/_disabled-skills/customize-view",
+      "to": ".github/skills/customize-view"
+    },
+    {
+      "skill": "design-view",
+      "from": "test/iteration-1/_disabled-skills/design-view",
+      "to": ".github/skills/design-view"
+    },
+    {
+      "skill": "document-decision",
+      "from": "test/iteration-1/_disabled-skills/document-decision",
+      "to": ".github/skills/document-decision"
+    },
+    {
+      "skill": "implement-pattern",
+      "from": "test/iteration-1/_disabled-skills/implement-pattern",
+      "to": ".github/skills/implement-pattern"
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "from": "test/iteration-1/_disabled-skills/lookup-element-kinds",
+      "to": ".github/skills/lookup-element-kinds"
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "from": "test/iteration-1/_disabled-skills/model-deployment-infrastructure",
+      "to": ".github/skills/model-deployment-infrastructure"
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "from": "test/iteration-1/_disabled-skills/name-deployment-nodes",
+      "to": ".github/skills/name-deployment-nodes"
+    },
+    {
+      "skill": "organize-multi-project",
+      "from": "test/iteration-1/_disabled-skills/organize-multi-project",
+      "to": ".github/skills/organize-multi-project"
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "from": "test/iteration-1/_disabled-skills/structure-deployment-tiers",
+      "to": ".github/skills/structure-deployment-tiers"
+    },
+    {
+      "skill": "sync-with-template",
+      "from": "test/iteration-1/_disabled-skills/sync-with-template",
+      "to": ".github/skills/sync-with-template"
+    },
+    {
+      "skill": "test-model",
+      "from": "test/iteration-1/_disabled-skills/test-model",
+      "to": ".github/skills/test-model"
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "from": "test/iteration-1/_disabled-skills/troubleshoot-errors",
+      "to": ".github/skills/troubleshoot-errors"
+    },
+    {
+      "skill": "understand-project-structure",
+      "from": "test/iteration-1/_disabled-skills/understand-project-structure",
+      "to": ".github/skills/understand-project-structure"
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "from": "test/iteration-1/_disabled-skills/write-rich-descriptions",
+      "to": ".github/skills/write-rich-descriptions"
+    }
+  ]
+}

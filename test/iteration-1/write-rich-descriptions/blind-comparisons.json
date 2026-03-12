@@ -1,0 +1,68 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "B is clearly better because it gives the required handoff before description work, names the correct creation skill for the system element and the correct deployment-modeling skill for the VM, and then cleanly selects sparse metadata for system-model elements versus a Markdown table for deployment infrastructure. A has the right create-first principle and format split, but it misses the repository-specific skill routing.",
+      "rubric": {
+        "A": {
+          "overall_score": 6.4
+        },
+        "B": {
+          "overall_score": 9.4
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.5
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "Both responses satisfy the stated expectations, but B aligns more closely with the repository’s canonical VM description pattern: Markdown table, interfaces first, then OS, hardware, runtime, and operational data, plus clear guidance on what not to duplicate. A is solid and practical, yet its ordering and headings are a bit more generic and less template-specific.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.8
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "Both responses are good, but B is the better fit for this repository because it keeps the answer tightly anchored to the standard deployment-table structure, places network interfaces first, explicitly scopes GPU and deep detail to operational relevance, and gives crisp externalization guidance without drifting into extra taxonomy. A is thoughtful and useful, but it is slightly less aligned with the repository’s preferred field order and table shape.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.0
+        },
+        "B": {
+          "overall_score": 9.4
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

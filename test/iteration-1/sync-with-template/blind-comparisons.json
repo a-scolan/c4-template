@@ -1,0 +1,89 @@
+{
+  "skill_name": "sync-with-template",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "Both responses correctly separate reusable template content from local project files and require generalization plus confidentiality checks. B is slightly better because it adds a clearer 'only if still generic' guard and recommends pushing generic files from a dedicated sync/* branch, which matches this repository's safer sync workflow.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.2
+        },
+        "B": {
+          "overall_score": 9.5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "Both responses follow the correct template-based sync flow. A is stronger because it stages the file, reviews the exact staged diff, and gives a more explicit confidentiality checklist before push, making the handoff safer and closer to the repository workflow.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.6
+        },
+        "B": {
+          "overall_score": 9.0
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "Both responses provide the correct subtree pull commands and explain --squash well. A is better scoped because it stays tightly focused on the requested pull operations and rationale, while B adds an extra push step that was not asked for.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.7
+        },
+        "B": {
+          "overall_score": 9.1
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "B",
+      "reasoning": "Both responses require a genericity audit, a template-based sync branch, and a rollback path. B is slightly better because its audit questions and rollback options are more explicit and operational, especially around staged diff review and abandoning the sync branch when the change is not truly generic.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.3
+        },
+        "B": {
+          "overall_score": 9.5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

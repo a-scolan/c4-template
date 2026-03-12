@@ -1,0 +1,46 @@
+{
+  "skill_name": "c4-modeling-process",
+  "configuration": "without_skill",
+  "language": "en",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 93,
+    "elapsed_seconds_per_eval": 15.5,
+    "response_words_total": 820,
+    "response_words_per_eval": 136.6667,
+    "files_read_count": 1,
+    "files_written_count": 7
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/without_skill/response.md",
+      "response_words": 122
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "response_words": 117
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/without_skill/response.md",
+      "response_words": 121
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/without_skill/response.md",
+      "response_words": 143
+    },
+    {
+      "id": 4,
+      "response_path": "eval-4/without_skill/response.md",
+      "response_words": 122
+    },
+    {
+      "id": 5,
+      "response_path": "eval-5/without_skill/response.md",
+      "response_words": 195
+    }
+  ]
+}

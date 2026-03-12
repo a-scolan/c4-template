@@ -1,0 +1,41 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 238,
+    "elapsed_seconds_per_eval": 47.6,
+    "response_words_total": 2002,
+    "response_words_per_eval": 400.4,
+    "files_read_count": 14,
+    "files_written_count": 6
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/with_skill/response.md",
+      "response_words": 493
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/with_skill/response.md",
+      "response_words": 353
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/with_skill/response.md",
+      "response_words": 429
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/with_skill/response.md",
+      "response_words": 313
+    },
+    {
+      "id": 4,
+      "response_path": "eval-4/with_skill/response.md",
+      "response_words": 414
+    }
+  ]
+}

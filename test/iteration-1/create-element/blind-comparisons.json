@@ -1,0 +1,89 @@
+{
+  "skill_name": "create-element",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "A is slightly better because it explicitly tells the user to add the declaration under `mySystem` while staying minimal and correct. Both answers reuse `Container_Api` and include technology and description, but B omits the placement cue and is therefore a bit less aligned with the repository-specific prompt.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.1
+        },
+        "B": {
+          "overall_score": 8.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.75
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "B is better because it gives the repository rule more explicitly: check shared specs first, mentions the normal workflow reference to `read-project-summary`, discourages one-off kinds, and clearly asks for approval before adding anything new. A is correct, but B is more actionable and better aligned with the repo's guidance model.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.7
+        },
+        "B": {
+          "overall_score": 9.4
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "A is clearly better because it names the exact skills required for each part: `create-element` for declarations, `create-relationship` for arrows, and `design-view` for the C2 view. B gets the separation of concerns mostly right, but it stops at generic 'relationship' and 'view-design' steps instead of explicitly routing to the repository's named skills.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.8
+        },
+        "B": {
+          "overall_score": 6.9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.5
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "A is better because it cleanly follows the expected repository split: two elements rather than two kinds, reuse of the same existing kind, tags or view context for mock-vs-prod distinction, and explicit routing of environment differences to `model-deployment-infrastructure` and presentation differences to `design-view`. B is thoughtful, but it weakens alignment by suggesting a mixed-kind option for real vs mock instead of keeping the kind choice consistently shared across both elements.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.7
+        },
+        "B": {
+          "overall_score": 7.6
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.75
+        }
+      }
+    }
+  ]
+}

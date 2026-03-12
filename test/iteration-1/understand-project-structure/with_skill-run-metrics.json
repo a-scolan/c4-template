@@ -1,0 +1,11 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "started_at": "2026-03-12T14:01:27Z",
+  "finished_at": "2026-03-12T14:05:25Z",
+  "elapsed_seconds_total": 238,
+  "files_read_count": 14,
+  "files_written_count": 6
+}

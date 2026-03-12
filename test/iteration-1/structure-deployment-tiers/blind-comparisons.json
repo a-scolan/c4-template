@@ -1,0 +1,68 @@
+{
+  "skill_name": "structure-deployment-tiers",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "Both responses satisfy the required tier split, placements, and firewall guidance. B is stronger for this repository because it keeps observability and security as clearer optional complements (`InfraZone` vs `SecZone`) instead of blending monitoring into the security zone, while still staying concise and deployment-tier focused.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.8
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "B is the better handoff. It keeps the current skill scoped to tier boundaries and traffic rules, explicitly delegates VM names, hierarchy, Markdown tables, and `instanceOf` work to `model-deployment-infrastructure`, and usefully mentions `name-deployment-nodes` for naming. A gets the scope boundary right but leaves the handoff generic, which is less aligned with this repository.",
+      "rubric": {
+        "A": {
+          "overall_score": 7.1
+        },
+        "B": {
+          "overall_score": 9.6
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.5
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "Both responses preserve readability, keep the security/audit zone explicit, and separate the DR site well. A is better aligned with the repository because it also makes the final handoff explicit by naming `model-deployment-infrastructure`, which the expectation list calls for. B is strong structurally but leaves that handoff more implicit.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.2
+        },
+        "B": {
+          "overall_score": 8.7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.75
+        }
+      }
+    }
+  ]
+}

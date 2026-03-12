@@ -1,0 +1,36 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 69,
+    "elapsed_seconds_per_eval": 17.25,
+    "response_words_total": 755,
+    "response_words_per_eval": 188.75,
+    "files_read_count": 7,
+    "files_written_count": 5
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/with_skill/response.md",
+      "response_words": 176
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/with_skill/response.md",
+      "response_words": 167
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/with_skill/response.md",
+      "response_words": 224
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/with_skill/response.md",
+      "response_words": 188
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "skill_name": "document-decision",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 123,
+    "elapsed_seconds_per_eval": 41.0,
+    "response_words_total": 894,
+    "response_words_per_eval": 298.0,
+    "files_read_count": 2,
+    "files_written_count": 4
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/without_skill/response.md",
+      "response_words": 322
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "response_words": 136
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/without_skill/response.md",
+      "response_words": 436
+    }
+  ]
+}

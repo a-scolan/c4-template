@@ -1,0 +1,110 @@
+{
+  "skill_name": "lookup-element-kinds",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "B is slightly better because it gives the same correct taxonomy as A but provides a cleaner verification workflow tied to the repository sources of truth. A is correct, but B answers the verification part of the prompt more directly.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.0
+        },
+        "B": {
+          "overall_score": 9.4
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "B edges out A by explaining the deployment-versus-logical split more clearly and grounding it with repository examples. Both are correct, but B makes the taxonomy boundary easier to apply.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.1
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "B wins narrowly because it is just as correct as A and adds a clearer verification path for checking declared deployment kinds in this repository. A is concise and correct, but a bit less helpful.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.8
+        },
+        "B": {
+          "overall_score": 9.1
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "B",
+      "reasoning": "B is better because it not only rejects guessed names but also maps the async worker question to a real repository example using `Container_ProcessingServer` with `Container_Queue`. A is careful and mostly correct, but B gives a stronger repository-grounded resolution.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.9
+        },
+        "B": {
+          "overall_score": 9.6
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "B",
+      "reasoning": "B is better because it ties the answer directly to the repository template example, clearly separating relationship kind (`calls`) from technology (`HTTPS`) and deployment-only `https`. A is correct, but B is more concrete and verifiable.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.2
+        },
+        "B": {
+          "overall_score": 9.7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

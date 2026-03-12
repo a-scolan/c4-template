@@ -1,0 +1,68 @@
+{
+  "skill_name": "document-decision",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "B is more repository-aligned: it keeps the ADR structure, explicitly ties the decision to `mySystem.database`, and adds concrete links back to the template ADR and model files. A is correct and concise, but it is more generic and gives less guidance for this specific repository.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.9
+        },
+        "B": {
+          "overall_score": 9.5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "A draws the boundary a bit more clearly, refuses the out-of-scope ADR cleanly, and gives a better handoff by offering several practical alternatives plus a sensible exception case. B is also correct, but it is slightly narrower and less helpful.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.4
+        },
+        "B": {
+          "overall_score": 9.0
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "B gives the stronger ADR framing for this repository: it names the impacted model elements more explicitly, captures the architectural boundary change more fully, and identifies concrete follow-up concerns such as webhooks, idempotency, and LikeC4 relationship updates. A is strong, but B is more complete without drifting off task.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.1
+        },
+        "B": {
+          "overall_score": 9.7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

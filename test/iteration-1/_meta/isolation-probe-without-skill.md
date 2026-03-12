@@ -1,0 +1,1 @@
+Split it by concern: declare the elements first, using `System_External` for `virusTotal` and `Container_Api` under `mySystem` for `scanApi`; add the arrows separately as relationships; then create the C2 container view separately. Keep the element step focused only on the two declarations, not the relationships or the view.

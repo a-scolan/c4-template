@@ -1,0 +1,31 @@
+{
+  "skill_name": "test-model",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 168,
+    "elapsed_seconds_per_eval": 56.0,
+    "response_words_total": 772,
+    "response_words_per_eval": 257.3333,
+    "files_read_count": 4,
+    "files_written_count": 4
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/with_skill/response.md",
+      "response_words": 275
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/with_skill/response.md",
+      "response_words": 224
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/with_skill/response.md",
+      "response_words": 273
+    }
+  ]
+}

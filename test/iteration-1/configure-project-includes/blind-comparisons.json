@@ -1,0 +1,110 @@
+{
+  "skill_name": "configure-project-includes",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "A is slightly better because it preserves the exact template shape, gives a concrete JSON example, and clearly warns against workspace-root and absolute paths. B is also correct, but it is a bit less explicit about the final config object.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.6
+        },
+        "B": {
+          "overall_score": 9.2
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "Both answers meet the progressive-split expectations, but B fits this repository a bit better by reinforcing the template view-folder convention and the root index view while still keeping C1/C2/C3 in `system-views.c4` and extracting use cases, deployment, and operations only when warranted.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.0
+        },
+        "B": {
+          "overall_score": 9.5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "Both responses are correct and properly scoped, but B is slightly better because it preserves existing behavior while also giving the safer icon rule: keep the current alias and add a separate alias if the new shared source needs its own images.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.1
+        },
+        "B": {
+          "overall_score": 9.4
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "A clearly sets the boundary of the skill, keeps the relative-path guidance, and explicitly hands off workspace-wide structure to `organize-multi-project`. B gets the scope split mostly right, but it never names the repository’s dedicated multi-project skill, so the handoff is weaker.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.7
+        },
+        "B": {
+          "overall_score": 7.4
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.75
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "B",
+      "reasoning": "B is better because it states unambiguously that `include.paths` order drives resolution, preserves the current `@` alias, and offers a concrete non-breaking collision strategy with a second prefixed alias. A is strong, but its order guidance is more hedged and therefore less decisive for this repository.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.8
+        },
+        "B": {
+          "overall_score": 9.6
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.75
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}
