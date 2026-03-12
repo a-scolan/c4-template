@@ -1,6 +1,6 @@
 ---
 name: create-sequence-view
-description: Use when documenting use case interactions, temporal flows, or async patterns as dynamic views. Place dynamic views in the "Use Cases" folder and use plain arrows.
+description: Use when documenting a LikeC4 use case, temporal flow, or async behavior as a dynamic view, especially when order matters more than structure.
 ---
 
 # Create Dynamic Sequence View
@@ -72,12 +72,12 @@ views 'Use Cases' {
 
 ```likec4
 // ❌ INVALID: Container calling its own component
-developer -> mySystem.webapp
-mySystem.webapp -> mySystem.webapp.authModule   // ❌ COMPILATION ERROR!
+user -> webApp
+webApp -> webApp.authComponent   // ❌ COMPILATION ERROR!
 
 // ✅ CORRECT: Actor directly accesses component
-developer -> mySystem.webapp.authModule 'Initiates login'
-mySystem.webapp.authModule -> ldapServer 'Validates credentials'
+user -> authComponent 'Initiates login'
+authComponent -> directoryService 'Validates credentials'
 ```
 
 **Why this restriction exists:**
@@ -92,12 +92,12 @@ views 'Use Cases' {
   dynamic view sequence_upload {
     title 'Document Upload Flow'
     
-    user -> mySystem.webapp 'Opens upload form'
-    mySystem.webapp -> mySystem.api 'POST /upload'
-    mySystem.api -> mySystem.storage 'Store file'
-    mySystem.api -> mySystem.queue 'Queue processing job'
-    mySystem.queue -> mySystem.worker 'Execute job'
-    mySystem.worker -> mySystem.database 'Update metadata'
+    user -> webApp 'Opens upload form'
+    webApp -> api 'POST /upload'
+    api -> objectStorage 'Store file'
+    api -> jobQueue 'Queue processing job'
+    jobQueue -> worker 'Execute job'
+    worker -> primaryDatabase 'Update metadata'
   }
 }
 ```

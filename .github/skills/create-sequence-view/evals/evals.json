@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "In `projects/template/system-views.c4`, I want to document the login journey between `user`, `mySystem.webapp`, `mySystem.api`, `mySystem.database`, and `emailService`. Give me a LikeC4 skeleton for a dynamic view.",
+      "prompt": "I want to document the login journey between a user, a web application, an API, a primary database, and an external notification service. Give me a LikeC4 skeleton for a dynamic view.",
       "expected_output": "A dynamic view in `views 'Use Cases'`, starting from the initiating actor and using only `->` arrows with action labels.",
       "files": [],
       "expectations": [
@@ -14,7 +14,7 @@
     },
     {
       "id": 1,
-      "prompt": "I was planning to write `api_container -> api_container.auth_component` in a dynamic view to show authentication. Correct this approach for `projects/spec-showcase/component-views.c4`.",
+      "prompt": "I was planning to write `api_container -> api_container.auth_component` in a dynamic view to show authentication. Correct this approach.",
       "expected_output": "A response that explains the parent→child restriction in dynamic views, then proposes a corrected view where the actor directly targets the component using simple arrows.",
       "files": [],
       "expectations": [
@@ -25,13 +25,13 @@
     },
     {
       "id": 2,
-      "prompt": "I want to illustrate the async flow `person_external` -> `webapp` -> `api` -> `queue` -> `processing_server` -> `database` in the showcase. Propose the LikeC4 view.",
-      "expected_output": "A use-case-style dynamic view initiated by `person_external`, showing queue traversal in temporal order with action labels.",
+      "prompt": "I want to illustrate the async flow `externalUser` -> `webApp` -> `api` -> `jobQueue` -> `processingWorker` -> `database`. Propose the LikeC4 view.",
+      "expected_output": "A use-case-style dynamic view initiated by `externalUser`, showing queue traversal in temporal order with action labels.",
       "files": [],
       "expectations": [
         "The response creates a view in `views 'Use Cases'` with a `dynamic view`.",
-        "The sequence starts with the initiating actor `person_external`.",
-        "The `api -> queue -> processing_server` segment is shown in temporal order with action labels and without relationship kinds."
+        "The sequence starts with the initiating actor `externalUser`.",
+        "The `api -> jobQueue -> processingWorker` segment is shown in temporal order with action labels and without relationship kinds."
       ]
     },
     {

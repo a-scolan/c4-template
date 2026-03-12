@@ -3,14 +3,14 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "We’re choosing PostgreSQL instead of MongoDB for `mySystem.database` in the template project. Help me frame the ADR to write.",
-      "expected_output": "A standard ADR framework for a technology choice tied to a LikeC4 element.",
+      "prompt": "We’re choosing PostgreSQL instead of MongoDB for the main database container in our system. Help me frame the ADR to write.",
+      "expected_output": "A standard ADR framework for a technology choice tied to impacted LikeC4 elements, with explicit trade-offs and follow-up consequences.",
       "files": [],
       "expectations": [
         "The response uses the standard ADR structure `Status / Context / Decision / Consequences`.",
         "The response covers both positive and negative consequences, not just benefits.",
-        "The response proposes a path/file in `ADR/NNNN-...` format aligned with the template.",
-        "The response links the decision to the relevant LikeC4 element (`mySystem.database`)."
+        "The response proposes a path/file in `ADR/NNNN-...` format.",
+        "The response links the decision to the impacted database element and at least one other affected scope such as the calling service, relevant views, or operational follow-up."
       ]
     },
     {
@@ -26,14 +26,15 @@
     },
     {
       "id": 2,
-      "prompt": "We are replacing an internal `payments-service` with a direct SaaS integration to Stripe, keeping only a small `stripeAdapter`. This is a real architecture decision. Help me frame the ADR.",
-      "expected_output": "The response frames an ADR for architectural replacement with explicit trade-offs, consequences, and links to impacted model elements.",
+      "prompt": "We are replacing an internal payment orchestration service with a direct SaaS integration to Stripe, keeping only a small internal adapter boundary. This is a real architecture decision. Help me frame the ADR.",
+      "expected_output": "The response frames an ADR for architectural replacement with explicit trade-offs, impacted elements, and concrete follow-up consequences.",
       "files": [],
       "expectations": [
         "The response uses the ADR structure `Status / Context / Decision / Consequences`.",
         "The response makes both gains and costs/risks explicit (SaaS dependency, reduced control, etc.).",
-        "The response proposes an ADR file in `ADR/NNNN-...` format consistent with the template.",
-        "The response links the decision to impacted LikeC4 elements, for example `payments-service` and `stripeAdapter`."
+        "The response proposes an ADR file in `ADR/NNNN-...` format.",
+        "The response links the decision to impacted LikeC4 elements such as the removed internal service, the retained internal adapter, and the external provider boundary.",
+        "The response identifies at least one follow-up implication such as migration scope, webhook handling, validation changes, or operational ownership."
       ]
     }
   ]

@@ -47,7 +47,7 @@ Use LikeC4 MCP `find-relationships` to check:
 Use LikeC4 MCP `open-view` to preview:
 - Views render correctly without errors
 - Include patterns show expected elements
-- Layout hints (rank source/sink) work as intended
+- If rank hints exist, they are sparse, justified, and do not make the view brittle
 - No unexpected elements appear due to over-broad wildcards
 
 ### 5. Syntax Validation (RECOMMENDED)
@@ -80,7 +80,7 @@ Use Context7 MCP `query-docs` to verify:
 ### Over-broad View Includes
 ```likec4
 ❌ include **                      // Too broad
-✅ include mySystem.*              // Scoped
+✅ include system.*                // Scoped
 ```
 
 ## Quick Reference
@@ -103,7 +103,7 @@ For detailed context requirements, see the `design-view` skill.
 
 - [ ] **C1 Context view:** System boundary clearly shown? External systems included?
 - [ ] **C2 Container view:** System boundary shown? Containers appear WITHIN system?
-- [ ] **C2 Container view:** Neighboring containers shown? (include -> vault.* and vault.* ->)
+- [ ] **C2 Container view:** Neighboring containers shown? (include -> system.* and system.* ->)
 - [ ] **C3 Component view:** Parent container boundary shown? Components appear WITHIN container?
 - [ ] **C3 Component view:** Neighboring containers shown? (include -> service and service ->)
 - [ ] **Deployment Zone view:** Zone container shown? VMs appear WITHIN zone? Parent environment included?

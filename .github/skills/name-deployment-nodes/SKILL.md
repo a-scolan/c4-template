@@ -167,7 +167,7 @@ ProdUploadVm = Node_Vm "prod-upload-vm" {
   """
   
   uploadApp = Node_App "Upload Service" {
-    instanceOf vault.uploadService
+    instanceOf corePlatform.uploadService
   }
 }
 ```
@@ -231,7 +231,7 @@ deployment {
         """
         
         apiApp = Node_App "API Gateway" {
-          instanceOf vault.api
+          instanceOf corePlatform.api
         }
       }
     }
@@ -254,7 +254,7 @@ deployment {
           | Port | 3001 |
         """
         uploadApp = Node_App "Upload Service" {
-          instanceOf vault.uploadService
+          instanceOf corePlatform.uploadService
         }
       }
       
@@ -264,7 +264,7 @@ deployment {
           | Port | 3002 |
         """
         retrievalApp = Node_App "Retrieval Service" {
-          instanceOf vault.retrievalService
+          instanceOf corePlatform.retrievalService
         }
       }
     }
@@ -274,14 +274,14 @@ deployment {
       ProdQueueVm = Node_Vm "prod-queue-vm" {
         description "| IP | 10.2.0.14/24 | | Port | 5672 |"
         queueApp = Node_App "Message Broker" {
-          instanceOf vault.jobs
+          instanceOf corePlatform.jobQueue
         }
       }
       
       ProdWorkerVm = Node_Vm "prod-worker-vm" {
         description "| IP | 10.2.0.15/24 |"
         workerApp = Node_App "Processing Worker" {
-          instanceOf vault.worker
+          instanceOf corePlatform.worker
         }
       }
     }
@@ -291,14 +291,14 @@ deployment {
       ProdDatabaseVm = Node_Vm "prod-database-vm" {
         description "| IP | 10.3.0.16/24 | | Port | 27017 |"
         dbApp = Node_App "Database" {
-          instanceOf vault.docDB
+          instanceOf corePlatform.documentDb
         }
       }
       
       ProdStorageVm = Node_Vm "prod-storage-vm" {
         description "| IP | 10.3.0.17/24 | | Port | 9000 |"
         storageApp = Node_App "Object Storage" {
-          instanceOf vault.minio
+          instanceOf corePlatform.objectStorage
         }
       }
     }

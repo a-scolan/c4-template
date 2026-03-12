@@ -1,63 +1,76 @@
 ---
 name: sync-with-template
-description: Use when pushing improvements to upstream template or pulling enhancements from other projects. Ensures generic content is separated from project-specific context.
+description: Use when deciding whether shared skills, shared specs, workspace instructions, or other reusable assets should be pulled from or pushed to an upstream reference repository, especially when you need to separate generic changes from project-local content.
 ---
 
-# Sync with Template Upstream
+# Sync Generic Workspace Assets with Upstream
 
 ## Overview
 
-Manages bidirectional improvement flows between a derived project and its upstream template (c4-template) using git subtree. Generic content (skills, shared specs, copilot instructions) flows to the template; project-specific content stays local.
+This skill manages synchronization between the **current repository** and an **upstream reference repository** for reusable workspace assets such as `.github/` and `projects/shared/`.
+
+It is **not** about the example model under `projects/template/`. It is about deciding what parts of the current repo are generic enough to travel upstream or safe enough to pull back down.
+
+## When to Use
+
+- Reviewing a mixed diff to decide what is syncable upstream vs local-only
+- Pushing generic improvements in skills, shared specs, or shared instructions
+- Pulling upstream updates for `.github` or `projects/shared`
+- Running a genericity/confidentiality review before push
+
+**Do not use** for editing project models, ADR content, or deciding how the example project itself should be modeled.
 
 ## Core Concept
 
-A derived project contains two types of content:
+Separate the repo into two buckets:
 
-| Content | Examples | Sync? | Why |
-|---------|----------|-------|-----|
-| **Generic** | `.github/skills/`, `projects/shared/spec-*.c4`, `.github/copilot-instructions.md` | ✅ YES | Reusable by all projects |
-| **Project-Specific** | Project models, README.md, ADRs, documentation, configuration | ❌ NO | Unique to your project |
+| Content | Examples | Sync upstream? | Why |
+|---------|----------|----------------|-----|
+| **Reusable workspace assets** | `.github/skills/`, `.github/copilot-instructions.md`, `projects/shared/spec-*.c4`, `projects/shared/images/` | ✅ Yes | Helpful across multiple derived repositories |
+| **Project-local content** | `projects/<project>/`, `README.md`, `ADR/`, `docs/`, project `likec4.config.json` | ❌ No | Tied to one repository, one domain, or one team |
 
-**Golden Rule:** Before pushing to template, remove ALL project-specific references and generalize.
-
----
+**Golden Rule:** Before pushing upstream, remove project-local context and verify the change is reusable outside the current repository.
 
 ## Quick Reference
 
-### Always Push to Template ✅
+### Usually Sync Upstream ✅
 
 ```
-.github/skills/**/*.md          # Skill improvements
-.github/copilot-instructions.md # Workspace guidance
-projects/shared/spec-*.c4       # Reusable specifications
-projects/shared/images/         # Shared assets
+.github/skills/**/*.md
+.github/copilot-instructions.md
+projects/shared/spec-*.c4
+projects/shared/images/
 ```
 
-### Never Push to Template ❌
+### Usually Keep Local ❌
 
 ```
-projects/<your-project>/        # Project-specific models
-README.md                        # Project introduction
-ADR/                             # Project decisions
-docs/                            # Project documentation
-likec4.config.json              # Project configuration
+projects/<your-project>/
+README.md
+ADR/
+docs/
+likec4.config.json
 ```
 
----
+### Upstream Remote
 
-## Workflow Summary
+Use your workspace's upstream remote and default branch.
+In this repository, that upstream is often `c4-template/main`.
 
-### Push Generic Improvements to Template
+## Push Workflow
 
-1. **Verify purity** - No project names or internal context
-2. **Branch from template** - Create sync branch from c4-template/main
-3. **Cherry-pick files** - Pull generic content from local main
-4. **🔐 Confidentiality review** - Verify no secrets, internal architecture, or employee names
-5. **Commit & push** - Clear message about improvements
+1. **Audit genericity** — confirm the change benefits multiple repositories.
+2. **Audit confidentiality** — remove secrets, internal architecture, employee names, and private context.
+3. **Branch from upstream** — create a dedicated `sync/*` branch from the upstream default branch.
+4. **Bring over only generic files** — cherry-pick or checkout just the reusable assets.
+5. **Review the diff** — verify the branch contains only intended upstream content.
+6. **Push and open a PR** — never push straight from `main`.
 
-**⚠️ CRITICAL:** If uncertain whether content is confidential (API details, internal architecture, security configs, employee names), **ask your team before pushing to public repository**. Leaked confidential info cannot be easily removed.
+If the audit fails, keep the change local. If you already started the sync branch, drop the file from the branch or reset the branch before pushing.
 
-### Pull Improvements from Template
+## Pull Workflow
+
+Pull only the reusable workspace assets you actually consume.
 
 ```bash
 git fetch c4-template main
@@ -66,163 +79,82 @@ git subtree pull --prefix=projects/shared c4-template main --squash
 git push origin main
 ```
 
----
+If your upstream remote or branch name differs, substitute it consistently.
 
-## Complete Command Reference
+## Decision Test
 
-See [WORKFLOW.md](WORKFLOW.md) for detailed step-by-step commands, troubleshooting, and real-world examples.
+Ask these questions in order:
 
-## Decision Tree: Is This Ready to Push?
+1. **Would another derived repository use this without knowing our local domain?**
+2. **Does it mention project names, internal systems, customer details, or private architecture?**
+3. **Is it workspace-level (`.github`, `projects/shared`) rather than project-local (`projects/<project>`, ADRs, docs)?**
+4. **Can I explain the change as a reusable improvement rather than a one-off workaround?**
 
-```
-Does it make sense for ANY project using c4-template?
-  ├─ YES: Would another project need to adapt it? 
-  │   ├─ NO → ✅ Can push (generic)
-  │   └─ YES → ❌ Keep local (too specific)
-  └─ NO: ❌ Keep local (project-specific)
+If any answer points to local context, keep the change in the current repo.
 
-Does it contain or mention:
-  ├─ Project names → ❌ Remove before pushing
-  ├─ Internal architecture → ❌ Generalize before pushing
-  ├─ Credentials/security details → ❌ STOP and ask team
-  ├─ Employee/team names → ❌ STOP and ask team
-  └─ None of these → ✅ Safe to push
-```
+## Example: Push One Generic Skill Fix Upstream
 
----
+```bash
+# 1. Commit the local fix on main
+git add .github/skills/create-relationship/SKILL.md
+git commit -m "fix: clarify relationship examples"
 
-## 🔄 Complete Improvement Cycle
+# 2. Branch from the upstream reference repository
+git fetch c4-template main
+git checkout -b sync/skills-template c4-template/main
 
-The template sync creates a continuous improvement loop:
+# 3. Bring only the generic file onto the sync branch
+git checkout main -- .github/skills/create-relationship/SKILL.md
 
-```
-1. Derived project improves a skill
-   ↓
-2. Abstract content (remove project-specific references)
-   ↓
-3. Create sync/... branch from c4-template/main
-   ↓
-4. Cherry-pick generic files
-   ↓
-5. Push to c4-template and create PR
-   ↓
-6. Reviewer approves PR on c4-template
-   ↓
-7. Merge into c4-template/main
-   ↓
-8. Other projects pull via subtree pull
-   ↓
-9. Derived project also pulls changes (+ improvements from other projects)
-   ↓
-10. Cycle continues...
+# 4. Review before pushing
+git diff --cached
+
+# 5. Push the sync branch
+git push c4-template sync/skills-template --set-upstream
 ```
 
----
+Before step 5, verify the file does **not** contain:
+- project-specific paths
+- internal API details
+- confidential architecture notes
+- security credentials
+- employee or team names
 
 ## Best Practices
 
 ### ✅ Do
 
-- ✅ Remove ALL project names before pushing to template
-- ✅ Test generic files locally before pushing
-- ✅ Write descriptive PRs explaining why the change matters
-- ✅ Wait for approval before merging (if you have permissions)
-- ✅ Use `--squash` for subtree pulls (clean history)
-- ✅ Push from `sync/*` branches (never push main directly to template)
-- ✅ Group changes logically (skills vs specs vs instructions)
-- ✅ Verify purity before committing (Step 5 validation in WORKFLOW.md)
+- ✅ Treat `.github` and `projects/shared` as the main upstream sync surfaces
+- ✅ Use `sync/*` branches for upstream pushes
+- ✅ Review diffs before every push
+- ✅ Use `--squash` for subtree pulls to keep history compact
+- ✅ Keep generic and project-local changes in separate commits when possible
+- ✅ Ask for review if the genericity of a change is debatable
 
-### ❌ Don't
+### ❌ Don’t
 
-- ❌ Mention the derived project in template skills
-- ❌ Push project-specific files (ADRs, docs, README)
-- ❌ Push confidential information (internal paths, API keys, security details)
-- ❌ Force-push without reason (except rare emergencies)
-- ❌ Leave `sync/*` branches long-lived (clean up after merge)
-- ❌ Modify subtree files locally then pull (conflicts)
-- ❌ Commit template changes mixed with project-specific changes
-- ❌ Push to remote WITHOUT reviewing diffs first (risk of leaking secrets)
-
----
-
-## Real-World Example: Improve and Push a Skill
-
-**Scenario:** You fix a bug in `create-relationship/SKILL.md` and want to push it to template.
-
-```bash
-# 1. On main, make the fix
-vim .github/skills/create-relationship/SKILL.md
-git add .
-git commit -m "fix: improve relationship syntax examples"
-
-# 2. Verify no local context
-grep -r "<foobar-project>\|your-project\|internal\|confidential" .github/skills/create-relationship/SKILL.md
-# Should be empty
-
-# 3. Create branch from template (use consistent naming)
-git fetch c4-template main
-git checkout -b sync/skills-template c4-template/main
-
-# 4. Cherry-pick the change
-git checkout main -- .github/skills/create-relationship/SKILL.md
-
-# 5. Commit cleanly
-git add .github/skills/create-relationship/SKILL.md
-git commit -m "sync: improve relationship syntax examples
-
-- Add clarity on calls vs async patterns
-- Clarify when to use each kind
-- Include real-world examples"
-
-# 6. ⚠️ REVIEW BEFORE PUSHING
-echo "Review changes:"
-git diff --cached
-echo ""
-echo "🔐 CONFIDENTIALITY CHECK - Does this contain ANY:"
-echo "  - Project-specific paths?"
-echo "  - Internal API details?"
-echo "  - Confidential architecture?"
-echo "  - Security credentials?"
-echo "  - Employee or team names?"
-echo ""
-echo "If UNCERTAIN or ANY yes: run 'git reset HEAD', clean up, and ask your team"
-echo "If all no: proceed:"
-
-# 7. Push and create PR
-git push c4-template sync/skills-template --set-upstream
-# Then create PR via GitHub UI
-```
-
----
+- ❌ Confuse upstream sync with the contents of `projects/template/`
+- ❌ Push project models, ADRs, README content, or local docs upstream
+- ❌ Skip the confidentiality review
+- ❌ Push directly from `main`
+- ❌ Mix upstream-bound changes and local-only changes in the same sync branch
+- ❌ Leave `sync/*` branches long-lived after merge
 
 ## Common Mistakes
 
-- ❌ Pushing project-specific models, ADRs, or README content to the template
-- ❌ Pushing directly from `main` — always use a `sync/*` branch
-- ❌ Skipping the confidentiality review before pushing
-- ❌ Committing project-specific and generic template changes in the same commit
-- ❌ Omitting `--squash` on subtree pulls, polluting project commit history
-- ❌ Leaving `sync/*` branches long-lived after the PR is merged
+❌ **Treating the example project as the sync target** — this skill is about workspace asset sync, not about changing `projects/template/`
 
----
+❌ **Assuming every change under `projects/shared` is automatically generic** — some fixes still encode local assumptions and must be reviewed
 
-## Future: CI/CD Automated Sync
+❌ **Skipping rollback thinking** — if a sync branch starts to include local context, remove the file from the branch or reset the branch before pushing
 
-Future improvements could include GitHub Actions for:
-
-1. **Quarterly Updates**: Auto-pull from c4-template and create PR
-2. **Context Detection**: Scan files to push for local context leaks
-3. **Validation**: Verify generic files load correctly in other projects
-
-For now: execute manually following this skill's workflow.
-
----
+❌ **Pulling project-local files with subtree** — only pull shared workspace assets from upstream
 
 ## When in Doubt
 
-**STOP and ask your team or manager:**
-- Does this contain confidential information?
-- Is this truly generic for all projects?
-- Would another team benefit from this?
+Pause and ask:
+- Is this reusable outside the current repository?
+- Would I be comfortable showing this diff to another team?
+- Does this belong in `.github` or `projects/shared`, or is it really project-local?
 
-**Better safe than sorry** — confidential information in public repositories cannot be easily removed.
+Better to keep a change local than to publish local context upstream by mistake.

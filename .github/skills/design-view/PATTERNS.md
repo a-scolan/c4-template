@@ -2,6 +2,10 @@
 
 Complete examples and advanced filtering patterns for LikeC4 views.
 
+These examples intentionally keep `rank` usage very light: start with `autoLayout` and add only a small number of obvious anchors if the preview still needs help.
+
+`autoLayout LeftRight` is also optional here. Use it mainly when the user prefers left-to-right reading or when a view is obviously easier to scan as a pipeline.
+
 ## Complete Project Examples
 
 ### C1 Context View
@@ -10,17 +14,14 @@ Shows system boundary and external actors/systems.
 ```likec4
 views 'C1' {
   view c1_context {
-    title 'Secure Vault System'
-    description 'Complete system context showing actors, vault system, and external integrations'
+    title 'Core Platform'
+    description 'Complete system context showing actors, the core platform, and external integrations'
     
     include customer
     include browser
-    include vault                        // Your system
+    include corePlatform                 // Your system
     include scanner                      // External virus scanner
     include externalPaymentGateway       // External payment API
-    
-    rank source { customer }
-    rank sink { scanner, externalPaymentGateway }
   }
 }
 
@@ -44,8 +45,8 @@ Shows major components and their complete interaction context.
 ```likec4
 views 'C2' {
   view c2_containers {
-    title 'Vault System Internals'
-    description 'All containers within vault system with external dependencies'
+    title 'Core Platform Internals'
+    description 'All containers within the core platform with external dependencies'
     
     // Actors and external systems
     include customer
@@ -54,23 +55,20 @@ views 'C2' {
     include externalPaymentGateway
     
     // System and all containers
-    include vault                        // System (parent)
-    include vault.*                      // All containers
+    include corePlatform                 // System (parent)
+    include corePlatform.*               // All containers
     
     // Complete interaction context
-    include -> vault.*                   // What calls our containers?
-    include vault.* ->                   // What do our containers call?
-    
-    rank source { customer }
-    rank sink { scanner, externalPaymentGateway }
+    include -> corePlatform.*            // What calls our containers?
+    include corePlatform.* ->            // What do our containers call?
   }
 }
 ```
 
 **Why include neighbors?**
 - Shows complete interaction context
-- Reveals incoming dependencies (`-> vault.*`)
-- Reveals outgoing dependencies (`vault.* ->`)
+- Reveals incoming dependencies (`-> corePlatform.*`)
+- Reveals outgoing dependencies (`corePlatform.* ->`)
 - Answers "how does this fit in the larger system?"
 
 ### C2 Focused Workflow View
@@ -80,21 +78,18 @@ Shows specific subset of containers for a focused workflow.
 views 'C2' {
   view c2_deploymentFlow {
     title 'Deployment Processing'
-    description 'How deployment packages flow through vault containers'
+    description 'How deployment packages flow through core platform containers'
     
     // Focus: specific containers involved in deployment
     include orchestrator.deployer        // External orchestration
-    include vault.api                    // Entry point
-    include vault.processor              // Processing logic
-    include vault.storage                // Final storage
+    include corePlatform.api             // Entry point
+    include corePlatform.processingService // Processing logic
+    include corePlatform.objectStorage   // Final storage
     
     // Show the relationships
-    include orchestrator.deployer -> vault.api
-    include vault.api -> vault.processor
-    include vault.processor -> vault.storage
-    
-    rank source { orchestrator.deployer }
-    rank sink { vault.storage }
+    include orchestrator.deployer -> corePlatform.api
+    include corePlatform.api -> corePlatform.processingService
+    include corePlatform.processingService -> corePlatform.objectStorage
   }
 }
 ```
@@ -115,21 +110,18 @@ views 'C3' {
     description 'Internal modules handling file uploads'
     
     // Parent container for context
-    include vault.uploadService
+    include corePlatform.uploadService
     
     // All components inside
-    include vault.uploadService.*
+    include corePlatform.uploadService.*
     
     // External actors and systems
     include customer
     include browser
     
     // Complete interaction context
-    include -> vault.uploadService       // What calls this service?
-    include vault.uploadService ->       // What does this service call?
-    
-    rank source { customer }
-    rank sink { vault.storage }
+    include -> corePlatform.uploadService // What calls this service?
+    include corePlatform.uploadService -> // What does this service call?
   }
   
   // Retrieval service internals
@@ -137,17 +129,14 @@ views 'C3' {
     title 'Retrieval Service'
     description 'Internal modules handling file retrieval and decryption'
     
-    include vault.retrievalService
-    include vault.retrievalService.*
+    include corePlatform.retrievalService
+    include corePlatform.retrievalService.*
     
     include customer
     include browser
     
-    include -> vault.retrievalService
-    include vault.retrievalService ->
-    
-    rank source { customer }
-    rank sink { vault.storage }
+    include -> corePlatform.retrievalService
+    include corePlatform.retrievalService ->
   }
   
   // Processing worker internals
@@ -155,14 +144,11 @@ views 'C3' {
     title 'Processing Worker'
     description 'Background worker modules for async processing'
     
-    include vault.worker
-    include vault.worker.*
+    include corePlatform.worker
+    include corePlatform.worker.*
     
-    include -> vault.worker
-    include vault.worker ->
-    
-    rank source { vault.messageQueue }
-    rank sink { vault.storage }
+    include -> corePlatform.worker
+    include corePlatform.worker ->
   }
 }
 ```
@@ -182,34 +168,34 @@ views 'Use Cases' {
     
     // User interaction
     customer -> browser 'Upload file'
-    browser -> vault.webServer 'Load SPA (if needed)'
-    vault.webServer -> browser 'Serve React SPA'
-    browser -> vault.frontend 'SPA loaded in browser'
+    browser -> corePlatform.webServer 'Load SPA (if needed)'
+    corePlatform.webServer -> browser 'Serve React SPA'
+    browser -> corePlatform.frontend 'SPA loaded in browser'
     
     // API entry point
-    vault.frontend -> vault.api.router 'POST /api/upload'
-    vault.api.router -> vault.api.auth 'Authenticate user'
-    vault.api.router -> vault.uploadService.uploadModule 'Route to upload'
+    corePlatform.frontend -> corePlatform.api.router 'POST /api/upload'
+    corePlatform.api.router -> corePlatform.api.auth 'Authenticate user'
+    corePlatform.api.router -> corePlatform.uploadService.uploadModule 'Route to upload'
     
     // Validation
-    vault.uploadService.uploadModule -> vault.uploadService.uploadModule 'Validate file (fail-fast)'
+    corePlatform.uploadService.uploadModule -> corePlatform.uploadService.uploadModule 'Validate file (fail-fast)'
     
     // Async processing
-    vault.uploadService.uploadModule -> vault.jobs 'Publish FileValidated event'
-    vault.worker.consumerModule -> vault.jobs 'Consume message'
+    corePlatform.uploadService.uploadModule -> corePlatform.jobQueue 'Publish FileValidated event'
+    corePlatform.worker.consumerModule -> corePlatform.jobQueue 'Consume message'
     
     // Virus scan
-    vault.worker.orchestratorModule -> vault.worker.scannerModule 'Scan for viruses'
-    vault.worker.scannerModule -> scanner 'Check file'
-    scanner -> vault.worker.scannerModule 'Clean result'
+    corePlatform.worker.orchestratorModule -> corePlatform.worker.scannerModule 'Scan for viruses'
+    corePlatform.worker.scannerModule -> scanner 'Check file'
+    scanner -> corePlatform.worker.scannerModule 'Clean result'
     
     // Encryption and storage
-    vault.worker.encryptorModule -> vault.docDB 'Store encryption key'
-    vault.worker.minioModule -> vault.storage 'Put encrypted object'
-    vault.storage -> vault.worker.minioModule 'Stored confirmation'
+    corePlatform.worker.encryptorModule -> corePlatform.documentDb 'Store encryption key'
+    corePlatform.worker.storageModule -> corePlatform.objectStorage 'Put encrypted object'
+    corePlatform.objectStorage -> corePlatform.worker.storageModule 'Stored confirmation'
     
     // Finalization
-    vault.worker.metadataModule -> vault.docDB 'Set status READY'
+    corePlatform.worker.metadataModule -> corePlatform.documentDb 'Set status READY'
   }
 }
 ```
@@ -385,7 +371,7 @@ include production.** where tag is #Monitoring
 include * where tag is #External
 
 // Only services (not infrastructure)
-include vault.** where tag is #Service
+include corePlatform.** where tag is #Service
 ```
 
 **Combine multiple tag filters:**
@@ -401,8 +387,8 @@ deployment view productionVms {
 
 **Recursive vs. direct children:**
 ```likec4
-include vault.*                    // Direct children only
-include vault.**                   // All descendants (recursive)
+include corePlatform.*             // Direct children only
+include corePlatform.**            // All descendants (recursive)
 ```
 
 **Pattern breakdown:**
@@ -416,12 +402,12 @@ include system.**                  // System + containers + components (all desc
 **Directed includes with wildcards:**
 ```likec4
 // Incoming relationships
-include -> vault.uploadService     // To specific element
-include -> vault.*                 // To any child of vault
+include -> corePlatform.uploadService // To specific element
+include -> corePlatform.*          // To any child of the platform
 
 // Outgoing relationships
-include vault.uploadService ->     // From specific element
-include vault.* ->                 // From any child of vault
+include corePlatform.uploadService -> // From specific element
+include corePlatform.* ->          // From any child of the platform
 ```
 
 ### Complex Multi-Pattern Views
@@ -447,10 +433,10 @@ view c2_externalDependencies {
   title 'External System Dependencies'
   
   include
-    vault,                                    // Your system
-    vault.*,                                  // Your containers
+    corePlatform,                             // Your system
+    corePlatform.*,                           // Your containers
     * where tag is #External,                 // All external systems
-    vault.* -> * where tag is #External       // Only outgoing to external
+    corePlatform.* -> * where tag is #External // Only outgoing to external
 }
 ```
 
@@ -526,10 +512,10 @@ views 'Deployment' {
 
 | Pattern | Syntax | Use Case |
 |---------|--------|----------|
-| **Direct children** | `include vault.*` | Show immediate children |
-| **All descendants** | `include vault.**` | Show complete hierarchy |
-| **Incoming relationships** | `include -> vault.*` | What calls this? |
-| **Outgoing relationships** | `include vault.* ->` | What does this call? |
+| **Direct children** | `include corePlatform.*` | Show immediate children |
+| **All descendants** | `include corePlatform.**` | Show complete hierarchy |
+| **Incoming relationships** | `include -> corePlatform.*` | What calls this? |
+| **Outgoing relationships** | `include corePlatform.* ->` | What does this call? |
 | **Tag filtering** | `include ** where tag is #Vm` | Show only VMs |
 | **Multiple tags** | `include ** where tag is #Vm, ** where tag is #Prod` | Combine filters |
 | **Directed tier includes** | `include tier1._ ->, -> tier2._` | Tier-to-tier flows |

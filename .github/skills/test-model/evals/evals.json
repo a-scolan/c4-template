@@ -3,8 +3,8 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "I just added a `mySystem.worker` container and a dedicated C2 view in `projects/template/system-model.c4` and `system-views.c4`. Before commit, give me a LikeC4 validation plan to check kinds, FQNs, relationships, and rendering.",
-      "expected_output": "A structured LikeC4 validation plan for template-project changes.",
+      "prompt": "I just added a worker container and a dedicated C2 view in my main model and views files. Before commit, give me a LikeC4 validation plan to check kinds, FQNs, relationships, and rendering.",
+      "expected_output": "A structured LikeC4 validation plan for structural model changes.",
       "files": [],
       "expectations": [
         "The response starts by verifying structure and kinds via `read-project-summary`.",
@@ -14,7 +14,7 @@
     },
     {
       "id": 1,
-      "prompt": "In `projects/template/system-views.c4`, my `c2_webapp_details` view shows `user`, `mySystem.webapp`, and `mySystem.api`. How do I validate that it keeps the right parent context and that no include is too broad?",
+      "prompt": "In my C2 detail view, I show the user, the web application, and the API. How do I validate that it keeps the right parent context and that no include is too broad?",
       "expected_output": "Validation guidance for a C2 view with parent-context checks and handoff to design-view.",
       "files": [],
       "expectations": [

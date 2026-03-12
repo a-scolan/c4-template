@@ -60,7 +60,7 @@
     },
     {
       "id": 5,
-      "prompt": "I’m resuming this multi-project workspace after changes to shared specs. I need to add a sensitive C3 view in `projects/template`, then document a nominal user scenario. Without skipping steps, what order should I follow, and which skills should take over?",
+      "prompt": "I’m resuming this multi-project workspace after changes to shared specs. I need to add a sensitive C3 view, then document a nominal user scenario. Without skipping steps, what order should I follow, and which skills should take over?",
       "expected_output": "The response first revalidates project context, keeps the C1→C2→C3 progression, then explicitly delegates user-scenario and validation work to specialized skills.",
       "files": [],
       "expectations": [

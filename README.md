@@ -2,11 +2,11 @@
 
 For projects using this template, pull updates quarterly or when specifications change.
 
-**Three things to always update from the template:**
+**Core things to keep in sync from the upstream template:**
 
 1. **Copilot instructions and skills** (`.github/`)
 2. **Shared specifications** (`projects/shared/`)
-3. **Example project** (`projects/spec-showcase/`)
+3. **Example project** (`projects/spec-showcase/`) when you want refreshed human-facing examples
 
 #### Recommended: Direct Checkout Method (Simpler)
 
@@ -52,9 +52,9 @@ git push
 | `.github/skills/` | 14 skill files | Architecture helpers for Copilot |
 | `projects/shared/spec-*.c4` | 6 specification files | Reusable element kinds, tags, relationships |
 | `projects/shared/images/` | 28+ SVG icons | Shared architecture diagrams |
-| `projects/spec-showcase/` | Example C4 diagrams | Reference examples |
+| `projects/spec-showcase/` | Example C4 diagrams | Pedagogical examples for humans |
 
-**Important:** Always update all three directories together so your project stays in sync with the template's specification standards.
+**Important:** `.github/` and `projects/shared/` are the main automation-facing sync surfaces. Example projects such as `projects/spec-showcase/` and `projects/template/` are useful pedagogical assets, but they should not be treated as sources of truth for skills or eval behavior.
 
 **Note:** The `--squash` flag (git subtree only) consolidates all c4-template changes into one commit per sync. Updates are manual—they do not happen automatically.
 

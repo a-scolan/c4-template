@@ -51,11 +51,11 @@
     },
     {
       "id": 4,
-      "prompt": "I’m coming from UML/ArchiMate and need to contribute to THIS LikeC4 repository without breaking the model. Which local conventions should I understand first, where are the real sources of truth, and which skill should I hand off to next?",
-      "expected_output": "The response gives repository-oriented onboarding, cites local sources of truth, and organizes a clear handoff after preflight.",
+      "prompt": "I’m coming from UML/ArchiMate and need to contribute to this LikeC4 workspace without breaking the model. Which local conventions should I understand first, where are the real sources of truth, and which skill should I hand off to next?",
+      "expected_output": "The response gives workspace-oriented onboarding, cites local sources of truth, and organizes a clear handoff after preflight.",
       "files": [],
       "expectations": [
-        "The response cites relevant local structures (`projects/shared/`, `projects/template/`, `projects/spec-showcase/`, `.github/skills/`).",
+        "The response cites relevant local structures such as the shared spec area, project folders, and `.github/skills/`.",
         "The response points to local sources of truth such as `SPEC_CHEATSHEET.md`, shared specs, and project summary.",
         "The response gives examples of taxonomy actually used here, such as `Container_Api` and valid model relationships.",
         "The response provides explicit handoff to `c4-modeling-process` or another suitable editing skill once framing is complete."

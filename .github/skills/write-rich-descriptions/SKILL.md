@@ -330,7 +330,7 @@ ProdUploadVm = Node_Vm "prod-upload-vm" {
   }
   
   uploadApp = Node_App "Upload Service" {
-    instanceOf vault.uploadService
+    instanceOf corePlatform.uploadService
   }
 }
 ```

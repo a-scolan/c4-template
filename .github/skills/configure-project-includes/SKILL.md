@@ -1,6 +1,6 @@
 ---
 name: configure-project-includes
-description: Use when configuring or updating likec4.config.json includes, image aliases, or multi-file project organization (system-model, system-views, deployment, operations).
+description: Use when editing `likec4.config.json`, include paths, image aliases, or splitting one project into a small set of focused LikeC4 files without redesigning the whole workspace.
 ---
 
 # Manage LikeC4 Project Includes
@@ -65,7 +65,7 @@ project/
   operations-views.c4    # Optional: operations views
 ```
 
-**Default template baseline in this repo:**
+**Common minimal baseline:**
 
 ```
 project/
@@ -106,7 +106,7 @@ No other views should be placed in the root `views { }` block.
 
 ## Config Shape to Preserve
 
-The template config in this repo looks like this:
+A common project config looks like this:
 
 ```json
 {
@@ -168,7 +168,7 @@ When a project already has working includes, modify it surgically:
 - keep the shared image alias
 - avoid unrelated reformatting or reorganization
 
-## Example: New Project from Template
+## Example: Minimal Project Config
 
 ```json
 {

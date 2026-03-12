@@ -132,7 +132,7 @@ ProdUploadVm = Node_Vm "prod-upload-vm" {
   """
   
   uploadApp = Node_App "Upload Service" {
-    instanceOf vault.uploadService
+    instanceOf corePlatform.uploadService
   }
 }
 ```
@@ -172,15 +172,15 @@ uploadService -[async]-> jobQueue 'Queue jobs' {
 
 // deployment.c4 (relationships inherited automatically via instanceOf)
 Prod.Dmz.ProdApigwVm.apiApp {  // When you do:
-  instanceOf vault.api          // This Node_App inherits all relationships from vault.api
+  instanceOf corePlatform.api   // This Node_App inherits all relationships from corePlatform.api
 }
 
 Prod.AppTier.ProdUploadVm.uploadApp {
-  instanceOf vault.uploadService  // Automatically inherits: api -> uploadService
+  instanceOf corePlatform.uploadService  // Automatically inherits: api -> uploadService
 }
 
 Prod.ProcTier.ProdQueueVm.queueApp {
-  instanceOf vault.jobQueue       // Automatically inherits: uploadService -> jobQueue
+  instanceOf corePlatform.jobQueue // Automatically inherits: uploadService -> jobQueue
 }
 ```
 

@@ -76,21 +76,21 @@ Start by modeling the system in its environment.
 
 ```likec4
 model {
-  user = Actor_Person 'User' {
+  endUser = Actor_Person 'End User' {
     description 'End user of the system'
   }
 
-  mySystem = System_Existing 'My System' {
+  corePlatform = System_Existing 'Core Platform' {
     description 'The main system being documented'
   }
 
-  emailService = System_External 'Email Service' {
+  notificationService = System_External 'Notification Service' {
     technology 'SendGrid'
-    description 'Third-party email delivery service'
+    description 'Third-party notification delivery service'
   }
 
-  user -[calls]-> mySystem 'Uses'
-  mySystem -[calls]-> emailService 'Sends notifications'
+  endUser -[calls]-> corePlatform 'Uses'
+  corePlatform -[calls]-> notificationService 'Sends notifications'
 }
 ```
 
@@ -100,9 +100,9 @@ model {
 views 'C1' {
   view c1_context {
     title 'System Context'
-    include user
-    include mySystem
-    include emailService
+    include endUser
+    include corePlatform
+    include notificationService
   }
 }
 ```
@@ -115,8 +115,8 @@ Once the system boundary is clear, break the system into **runtime units**.
 
 ```likec4
 model {
-  mySystem = System_Existing 'My System' {
-    webapp = Container_Webapp 'Web Application' {
+  corePlatform = System_Existing 'Core Platform' {
+    webApp = Container_Webapp 'Web Application' {
       technology 'React, TypeScript'
       description 'Single-page application providing the user interface'
     }
@@ -126,16 +126,16 @@ model {
       description 'RESTful API handling business logic'
     }
 
-    database = Container_Database 'Database' {
+    primaryDatabase = Container_Database 'Database' {
       technology 'PostgreSQL 15'
       description 'Stores application data and user information'
     }
   }
 
-  user -[calls]-> mySystem.webapp 'Interacts with'
-  mySystem.webapp -[calls]-> mySystem.api 'Makes API requests'
-  mySystem.api -[reads]-> mySystem.database 'Queries data'
-  mySystem.api -[writes]-> mySystem.database 'Persists data'
+  endUser -[calls]-> corePlatform.webApp 'Interacts with'
+  corePlatform.webApp -[calls]-> corePlatform.api 'Makes API requests'
+  corePlatform.api -[reads]-> corePlatform.primaryDatabase 'Queries data'
+  corePlatform.api -[writes]-> corePlatform.primaryDatabase 'Persists data'
 }
 ```
 
@@ -153,7 +153,7 @@ Do **not** create a C3 view for every container. Create C3 only for containers t
 
 ```likec4
 model {
-  mySystem = System_Existing 'My System' {
+  corePlatform = System_Existing 'Core Platform' {
     api = Container_Api 'API Server' {
       technology 'Node.js, Express'
       description 'RESTful API handling business logic'
@@ -175,8 +175,8 @@ model {
     }
   }
 
-  mySystem.api.routing -[uses]-> mySystem.api.auth 'Validates access'
-  mySystem.api.routing -[uses]-> mySystem.api.application 'Delegates work'
+  corePlatform.api.routing -[uses]-> corePlatform.api.auth 'Validates access'
+  corePlatform.api.routing -[uses]-> corePlatform.api.application 'Delegates work'
 }
 ```
 
@@ -198,9 +198,9 @@ views 'Use Cases' {
   dynamic view request_flow {
     title 'User Request Flow'
 
-    user -> mySystem.webapp 'Opens page'
-    mySystem.webapp -> mySystem.api 'Requests data'
-    mySystem.api -> emailService 'Sends notification'
+    endUser -> webApp 'Opens page'
+    webApp -> api 'Requests data'
+    api -> notificationService 'Sends notification'
   }
 }
 ```
@@ -220,7 +220,7 @@ deployment {
         description 'Hosts the API runtime'
 
         apiApp = Node_App 'API App' {
-          instanceOf mySystem.api
+          instanceOf corePlatform.api
         }
       }
     }

@@ -100,7 +100,7 @@ For each view:
 - [ ] **Category folder** - In correct subfolder (C1, C2, C3, Use Cases, Deployment)
 - [ ] **Parent context shown** - Views show surrounding/containing elements
 - [ ] **Scope appropriate** - Not too broad (`include **`) or too narrow
-- [ ] **Layout hints** - Rank source/sink where helpful (optional)
+- [ ] **Layout hints** - Prefer `autoLayout`; add rank only for one obvious anchor if preview still needs it (optional)
 - [ ] **Links present** - To related documentation (optional)
 
 **Example:**
@@ -108,22 +108,19 @@ For each view:
 ```likec4
 views 'C2' {
   view c2_containers {
-    title 'Vault System Containers'
+    title 'Core Platform Containers'
     
     description """
       Shows major containers and their interactions
       
       **Audience:** Architects and developers
-      **Scope:** All containers within Vault system
+      **Scope:** All containers within the platform
     """
     
-    include vault
-    include vault.*
+    include corePlatform
+    include corePlatform.*
     
-    link https://wiki.company.com/vault 'Vault Wiki'
-    
-    rank source { vault.api }
-    rank sink { vault.database }
+    link https://wiki.company.com/platform 'Platform Wiki'
     
     autoLayout TopBottom
   }
@@ -273,7 +270,7 @@ Source: https://c4model.com/diagrams/checklist
 **Fix:** Run `npx likec4 validate` to identify issues
 
 Common syntax errors:
-- Element reference not found → Use FQN: `mySystem.api`
+- Element reference not found → Use FQN: `corePlatform.api`
 - Unknown element kind → Check shared spec: `spec-containers.c4`
 - Invalid relationship kind → Use valid kinds: `calls`, `async`, `reads`, `writes`
 - Relationship type in block → Move to arrow: `-[calls]->`
@@ -342,10 +339,10 @@ Use LikeC4 MCP for validation:
 
 ```javascript
 // Check element exists
-mcp_likec4_read_element({ id: 'mySystem.api', project: 'default' })
+mcp_likec4_read_element({ id: 'corePlatform.api', project: 'default' })
 
 // Verify relationships
-mcp_likec4_find_relationships({ element1: 'mySystem.api', element2: 'mySystem.database' })
+mcp_likec4_find_relationships({ element1: 'corePlatform.api', element2: 'corePlatform.primaryDatabase' })
 
 // Validate view
 mcp_likec4_read_view({ viewId: 'c2_containers', project: 'default' })

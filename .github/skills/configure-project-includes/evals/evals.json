@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "I’m creating `projects/payments/likec4.config.json` from the template. Which fields should I keep, and how should I reference shared specs/images without breaking imports?",
+      "prompt": "I’m creating `projects/payments/likec4.config.json` for a new project based on the workspace baseline. Which fields should I keep, and how should I reference shared specs/images without breaking imports?",
       "expected_output": "The response keeps the minimal config structure and uses relative paths to `../shared` and `../shared/images/`.",
       "files": [],
       "expectations": [
@@ -15,11 +15,11 @@
     },
     {
       "id": 1,
-      "prompt": "I have a single 1200-line `system.c4`. How should I split it progressively in this template, and which files should hold C1/C2/C3 views, Use Cases, deployment, and operations?",
-      "expected_output": "The response proposes a progressive split aligned with the template, separating structure, views, sequences, deployment, and operations without forcing a big-bang refactor.",
+      "prompt": "I have a single 1200-line `system.c4`. How should I split it progressively into a clean project baseline, and which files should hold C1/C2/C3 views, Use Cases, deployment, and operations?",
+      "expected_output": "The response proposes a progressive split aligned with a minimal project baseline, separating structure, views, sequences, deployment, and operations without forcing a big-bang refactor.",
       "files": [],
       "expectations": [
-        "The response starts with a minimal split aligned with the template (at least `system-model.c4` and `system-views.c4`).",
+        "The response starts with a minimal split baseline (at least `system-model.c4` and `system-views.c4`).",
         "The response places C1/C2/C3 views in `system-views.c4`.",
         "The response places Use Cases in a dedicated file such as `system-sequences.c4` when flows justify extraction, instead of mixing them everywhere.",
         "The response separates deployment/operations definitions and views into dedicated files (`deployment*.c4`, `operations*.c4`) when those concerns exist."

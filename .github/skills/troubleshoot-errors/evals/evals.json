@@ -3,18 +3,18 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "After editing `projects/template/system-model.c4`, LikeC4 reports `Unknown kind Container_WebUi` and `Element not found: api`. How do I diagnose this properly?",
+      "prompt": "After editing my system model, LikeC4 reports `Unknown kind Container_WebUi` and `Element not found: api`. How do I diagnose this properly?",
       "expected_output": "A clean diagnosis of an invalid kind and an incorrect FQN reference.",
       "files": [],
       "expectations": [
         "The response identifies `Container_WebUi` as an invalid kind to verify in shared specs.",
-        "The response explains that `api` likely needs full FQN reference (`mySystem.api`).",
+        "The response explains that `api` likely needs a full FQN reference such as `system.api` or equivalent.",
         "The response starts from root causes and suggests `read-project-summary` before random renaming."
       ]
     },
     {
       "id": 1,
-      "prompt": "In a dynamic view, I wrote `mySystem -> mySystem.api` and then `rank same user, mySystem.api`, and it breaks. What is the real cause and what should I fix?",
+      "prompt": "In a dynamic view, I wrote `system -> system.api` and then `rank same user, system.api`, and it breaks. What is the real cause and what should I fix?",
       "expected_output": "Explanation of dynamic-view conceptual errors and rank-constraint misuse.",
       "files": [],
       "expectations": [

@@ -21,8 +21,8 @@ Detailed explanations, examples, and clarifications for C4 modeling process.
 ```likec4
 model {
   // Your system
-  vault = System_Existing 'Secure Vault' {
-    description 'Document management with encryption'
+  corePlatform = System_Existing 'Core Platform' {
+    description 'Shared digital platform with secure document workflows'
   }
   
   // Users
@@ -36,8 +36,8 @@ model {
   }
   
   // Relationships
-  customer -[calls]-> vault 'Uploads and retrieves files'
-  vault -[calls]-> scanner 'Scans uploaded files'
+  customer -[calls]-> corePlatform 'Uploads and retrieves files'
+  corePlatform -[calls]-> scanner 'Scans uploaded files'
 }
 ```
 
@@ -77,7 +77,7 @@ A container is a **runtime boundary** - something that must be running for the s
 
 ```likec4
 model {
-  vault = System_Existing 'Secure Vault' {
+  corePlatform = System_Existing 'Core Platform' {
     // Frontend container
     webApp = Container_Spa 'Web App' {
       technology 'React'
@@ -320,7 +320,7 @@ deployment {
         """
         
         apiApp = Node_App 'API' {
-          instanceOf vault.api
+          instanceOf corePlatform.api
         }
       }
     }
@@ -350,13 +350,13 @@ views 'Use Cases' {
   dynamic view upload_flow {
     title 'Document Upload'
     
-    customer -> vault.webApp 'Upload file'
-    vault.webApp -> vault.api 'POST /upload'
-    vault.api -> vault.uploadService 'Route to upload service'
-    vault.uploadService -> vault.queue 'Queue processing job'
-    vault.queue -> vault.worker 'Deliver job'
-    vault.worker -> vault.storage 'Store encrypted file'
-    vault.worker -> vault.database 'Update metadata'
+    customer -> corePlatform.webApp 'Upload file'
+    corePlatform.webApp -> corePlatform.api 'POST /upload'
+    corePlatform.api -> corePlatform.uploadService 'Route to upload service'
+    corePlatform.uploadService -> corePlatform.queue 'Queue processing job'
+    corePlatform.queue -> corePlatform.worker 'Deliver job'
+    corePlatform.worker -> corePlatform.storage 'Store encrypted file'
+    corePlatform.worker -> corePlatform.database 'Update metadata'
   }
 }
 ```
@@ -419,16 +419,16 @@ views 'C3' {
     title 'Upload Service Internals'
     
     // Parent context
-    include vault              // System boundary
-    include vault.*             // Neighboring containers
+    include corePlatform        // System boundary
+    include corePlatform.*      // Neighboring containers
     
     // Focus area
-    include vault.uploadService           // Container boundary
-    include vault.uploadService.*          // Internal components
+    include corePlatform.uploadService     // Container boundary
+    include corePlatform.uploadService.*   // Internal components
     
     // Related elements
-    include -> vault.uploadService.*      // What calls in
-    include vault.uploadService.* ->      // What calls out
+    include -> corePlatform.uploadService.* // What calls in
+    include corePlatform.uploadService.* -> // What calls out
   }
 }
 ```

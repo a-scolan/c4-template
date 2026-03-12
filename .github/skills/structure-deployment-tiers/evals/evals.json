@@ -3,7 +3,7 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "I’m designing production for a document vault with API gateway, business services, RabbitMQ, async worker, MongoDB, MinIO, and monitoring. Split this into coherent LikeC4 tiers and specify key responsibilities/network rules.",
+      "prompt": "I’m designing production for a document platform with API gateway, business services, RabbitMQ, async worker, MongoDB, MinIO, and monitoring. Split this into coherent LikeC4 tiers and specify key responsibilities/network rules.",
       "expected_output": "A response organized into DMZ/AppTier/ProcTier/DataTier (with optional SecZone/InfraZone), with correct role placement and essential network rules.",
       "files": [],
       "expectations": [

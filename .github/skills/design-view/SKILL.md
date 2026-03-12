@@ -14,7 +14,7 @@ Creates architecture visualization views with correct element inclusion patterns
 - Creating a new C1/C2/C3, Use Cases, Deployment, or Operations view
 - Deciding which elements (parent + focus + neighbors) to include
 - Organizing views into the correct category folders
-- Adding basic rank hints without advanced styling
+- Suggesting optional layout tweaks only when the preview really needs them
 
 **Do not use** for sequence/dynamic flows — use `create-sequence-view`. For styling, layout control, or navigateTo links — use `customize-view`.
 
@@ -51,14 +51,14 @@ Creates architecture visualization views with correct element inclusion patterns
 ```likec4
 view c3_uploadService {
   // 1. PARENT: Shows "what is this IN?"
-  include vault.uploadService           // Parent container
+  include corePlatform.uploadService    // Parent container
   
   // 2. FOCUS: Shows "what are we analyzing?"
-  include vault.uploadService.*         // All child components
+  include corePlatform.uploadService.*  // All child components
   
   // 3. NEIGHBORS: Shows "what interacts with this?"
-  include -> vault.uploadService        // Incoming relationships
-  include vault.uploadService ->        // Outgoing relationships
+  include -> corePlatform.uploadService // Incoming relationships
+  include corePlatform.uploadService -> // Outgoing relationships
 }
 ```
 
@@ -73,20 +73,28 @@ view c3_uploadService {
 | Deployment Zone | Parent environment |
 | Dynamic Sequence | Initiating actor |
 
-### 3. Add Basic Layout (Optional)
+### 3. Add Basic Layout (Optional and Minimal)
+
+Start with no `rank` hints.
 
 **Only when autoLayout produces poor results:**
 ```likec4
 view c2_containers {
   // ... include statements ...
-  
-  rank source { user }        // Top of diagram
-  rank sink { database }      // Bottom of diagram
-  rank same { api, cache }    // Horizontal alignment
+
+  // Optional: choose a direction only if the preview clearly benefits from it
+  autoLayout TopBottom
+
+  // Optional: anchor the initiating actor if preview still drifts
+  rank source { user }
 }
 ```
 
 **Default:** Let LikeC4's automatic layout handle positioning.
+
+**Rule of thumb:** one obvious anchor is usually enough. If you feel you need several `rank` directives, the include set or view scope probably needs adjustment instead.
+
+`autoLayout LeftRight` is also optional, not a default recommendation. Use it when the user explicitly prefers left-to-right reading or when the view is clearly easier to scan that way.
 
 ### 4. Wire Navigation (If Creating Detailed View)
 
@@ -95,8 +103,8 @@ view c2_containers {
 // Parent overview (system-views.c4)
 views 'C2' {
   view c2_containers {
-    include vault.*
-    include vault.api with {
+    include corePlatform.*
+    include corePlatform.api with {
       navigateTo c3_api       // ← Add this
     }
   }
@@ -106,10 +114,10 @@ views 'C2' {
 views 'C3' {
   view c3_api {
     title 'API Service'
-    include vault.api
-    include vault.api.*
-    include -> vault.api
-    include vault.api ->
+    include corePlatform.api
+    include corePlatform.api.*
+    include -> corePlatform.api
+    include corePlatform.api ->
   }
 }
 ```
@@ -166,7 +174,7 @@ views 'C1' {
   view c1_context {
     title 'System Context'
     include customer                    // Actor
-    include vault                       // Your system
+    include corePlatform                // Your system
     include externalPaymentGateway      // External system
   }
 }
@@ -183,12 +191,12 @@ views {
 
 ```likec4
 views 'C2' {
-  view c2_vaultContainers {
-    title 'Vault Containers'
-    include vault                       // System (parent)
-    include vault.*                     // All containers
-    include -> vault.*                  // What calls our containers?
-    include vault.* ->                  // What do we depend on?
+  view c2_platformContainers {
+    title 'Core Platform Containers'
+    include corePlatform                // System (parent)
+    include corePlatform.*              // All containers
+    include -> corePlatform.*           // What calls our containers?
+    include corePlatform.* ->           // What do we depend on?
   }
 }
 ```
@@ -202,10 +210,10 @@ views 'C2' {
 views 'C3' {
   view c3_uploadService {
     title 'Upload Service'
-    include vault.uploadService         // Container (parent)
-    include vault.uploadService.*       // Components inside
-    include -> vault.uploadService      // Incoming calls
-    include vault.uploadService ->      // Outgoing calls
+    include corePlatform.uploadService  // Container (parent)
+    include corePlatform.uploadService.* // Components inside
+    include -> corePlatform.uploadService // Incoming calls
+    include corePlatform.uploadService -> // Outgoing calls
   }
 }
 ```
@@ -220,9 +228,9 @@ views 'Use Cases' {
   dynamic view uploadFlow {
     title 'Upload Workflow'
     customer -> browser 'Upload file'
-    browser -> vault.api 'POST /upload'
-    vault.api -> vault.processor 'Process async'
-    vault.processor -> vault.storage 'Store file'
+    browser -> corePlatform.api 'POST /upload'
+    corePlatform.api -> corePlatform.processingService 'Process async'
+    corePlatform.processingService -> corePlatform.objectStorage 'Store file'
   }
 }
 ```
@@ -349,16 +357,16 @@ views 'Operations' {
 ```likec4
 view c2_apiService {
   // Focus element
-  include vault.api
+  include corePlatform.api
   
   // What calls this? (incoming)
-  include -> vault.api
+  include -> corePlatform.api
   
   // What does this call? (outgoing)
-  include vault.api ->
+  include corePlatform.api ->
   
   // Parent for context
-  include vault
+  include corePlatform
 }
 ```
 
@@ -385,12 +393,12 @@ include prod.** where tag is #Vm,
 ### Wildcard Patterns
 
 ```likec4
-include vault.*                  // Direct children
-include vault.**                 // All descendants (recursive)
-include -> vault.api             // Incoming to specific element
-include vault.api ->             // Outgoing from specific element
-include -> vault.*               // Incoming to any child
-include vault.* ->               // Outgoing from any child
+include corePlatform.*           // Direct children
+include corePlatform.**          // All descendants (recursive)
+include -> corePlatform.api      // Incoming to specific element
+include corePlatform.api ->      // Outgoing from specific element
+include -> corePlatform.*        // Incoming to any child
+include corePlatform.* ->        // Outgoing from any child
 ```
 
 ### Directed Includes (Multi-Tier)
@@ -447,12 +455,9 @@ views 'C1' {
   view c1_context {
     title 'System Context'
     include customer
-    include vault                      // Your system
+    include corePlatform               // Your system
     include externalPaymentGateway
     include scanner
-    
-    rank source { customer }
-    rank sink { scanner }
   }
 }
 ```
@@ -463,14 +468,11 @@ views 'C2' {
   view c2_containers {
     title 'System Containers'
     include customer                   // Actor
-    include vault                      // System (parent)
-    include vault.*                    // All containers
+    include corePlatform               // System (parent)
+    include corePlatform.*             // All containers
     include scanner                    // External system
-    include -> vault.*                 // Incoming relationships
-    include vault.* ->                 // Outgoing relationships
-    
-    rank source { customer }
-    rank sink { scanner }
+    include -> corePlatform.*          // Incoming relationships
+    include corePlatform.* ->          // Outgoing relationships
   }
 }
 ```
@@ -480,13 +482,11 @@ views 'C2' {
 views 'C3' {
   view c3_uploadService {
     title 'Upload Service'
-    include vault.uploadService        // Container (parent)
-    include vault.uploadService.*      // Components
+    include corePlatform.uploadService // Container (parent)
+    include corePlatform.uploadService.* // Components
     include customer                   // Actor
-    include -> vault.uploadService     // Incoming
-    include vault.uploadService ->     // Outgoing
-    
-    rank source { customer }
+    include -> corePlatform.uploadService // Incoming
+    include corePlatform.uploadService -> // Outgoing
   }
 }
 ```
@@ -498,14 +498,14 @@ views 'Use Cases' {
     title 'Upload Workflow'
     
     customer -> browser 'Select file'
-    browser -> vault.webServer 'Load SPA'
-    vault.webServer -> browser 'Serve React app'
-    browser -> vault.api 'POST /upload'
-    vault.api -> vault.processor 'Validate file'
-    vault.processor -> vault.storage 'Store encrypted'
-    vault.storage -> vault.processor 'Confirmation'
-    vault.processor -> vault.api 'Success'
-    vault.api -> browser 'Upload complete'
+    browser -> corePlatform.webServer 'Load SPA'
+    corePlatform.webServer -> browser 'Serve React app'
+    browser -> corePlatform.api 'POST /upload'
+    corePlatform.api -> corePlatform.processingService 'Validate file'
+    corePlatform.processingService -> corePlatform.objectStorage 'Store encrypted'
+    corePlatform.objectStorage -> corePlatform.processingService 'Confirmation'
+    corePlatform.processingService -> corePlatform.api 'Success'
+    corePlatform.api -> browser 'Upload complete'
   }
 }
 ```
@@ -558,7 +558,7 @@ views 'Deployment' {
 7. ✅ **Tag filtering:** Use `where tag is #Tag` for dynamic filtering
 8. ✅ **Wire navigation:** Add `navigateTo` when creating detail views
 9. ✅ **Organize by category:** Nest views in proper folders
-10. ⚠️ **Layout hints last resort:** Only add `rank` when autoLayout fails
+10. ⚠️ **Layout hints last resort:** Only add a tiny number of `rank` hints when `autoLayout` still reads badly; obvious anchors such as users are the usual exception
 11. ❌ **Avoid over-broad:** Never use `include **` (shows too much)
 
 ## Common Patterns Reference

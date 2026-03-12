@@ -311,7 +311,7 @@ ProdApiVm = Node_Vm "prod-api-vm" {
   }
   
   apiApp = Node_App "API Gateway" {
-    instanceOf vault.apiService
+    instanceOf corePlatform.apiService
   }
 }
 ```
@@ -356,7 +356,7 @@ ProdDbVm = Node_Vm "prod-db-vm" {
   }
   
   dbApp = Node_App "Primary Database" {
-    instanceOf vault.database
+    instanceOf corePlatform.database
   }
 }
 ```
@@ -393,7 +393,7 @@ ProdWorkerVm = Node_Vm "prod-worker-vm" {
   }
   
   workerApp = Node_App "Background Worker" {
-    instanceOf vault.workerService
+    instanceOf corePlatform.workerService
   }
 }
 ```

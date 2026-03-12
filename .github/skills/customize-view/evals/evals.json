@@ -3,18 +3,20 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "In `projects/template/system-views.c4`, I want to improve `c2_containers` to make flow left-to-right, keep `user` as input, keep `mySystem.database` and `emailService` as outputs, and preserve drill-down on `mySystem.webapp`. Give me only the LikeC4 block.",
-      "expected_output": "A customization block that adds consistent autoLayout, keeps source/sink rank hints, and preserves existing `navigateTo` without tinkering with structure.",
+      "prompt": "I want to improve an existing C2 container view to make flow left-to-right, keep the user as input, keep the database and an external mail service as outputs, and preserve drill-down on the web application. Give me only the LikeC4 block.",
+      "expected_output": "A customization block that adds consistent autoLayout, preserves the existing drill-down, and uses at most a minimal rank hint for an obvious anchor such as the user.",
       "files": [],
       "expectations": [
-        "The response adds `autoLayout LeftRight` and keeps `rank source` / `rank sink` aligned with the request.",
-        "The response preserves `navigateTo c2_webapp_details` on `mySystem.webapp`.",
+        "Because the user explicitly asked for left-to-right reading, the response may add `autoLayout LeftRight`.",
+        "If the response uses `rank`, it keeps it sparse and focuses on an obvious anchor such as the user rather than ranking most elements.",
+        "The response avoids gratuitous `rank same` or a pile of source/sink directives that would make the view brittle.",
+        "The response preserves or adds a stable `navigateTo` on the web application element without inventing a new structural design.",
         "The response stays within customization scope and introduces neither hex color codes nor unnecessary structural rework."
       ]
     },
     {
       "id": 1,
-      "prompt": "In the showcase, I want to highlight API elements and de-emphasize everything else in an existing view, but without inventing a local palette. Which LikeC4 customization would you propose?",
+      "prompt": "In an existing view, I want to highlight API elements and de-emphasize everything else, but without inventing a local palette. Which LikeC4 customization would you propose?",
       "expected_output": "A `style`-based customization using shared palette names (`primary`, `muted`, etc.) that highlights API elements while keeping context visible.",
       "files": [],
       "expectations": [
@@ -25,25 +27,38 @@
     },
     {
       "id": 2,
-      "prompt": "I want to enrich a template C2 view with an external link to internal spec docs and a stable drill-down to `c2_webapp_details`. Propose the customization block.",
-      "expected_output": "A customization block with `link https://... '...'`, a stable `navigateTo` to an existing view ID, and no scope drift beyond this skill.",
+      "prompt": "I want to enrich an existing C2 view with an external link to internal spec docs and keep a stable drill-down from the web application to its existing detail view. Propose the customization block.",
+      "expected_output": "A customization block with `link https://... '...'`, a stable `navigateTo` to the existing detail view, and no scope drift beyond this skill.",
       "files": [],
       "expectations": [
         "The response adds an explicit `link https://... '...'`.",
-        "The response keeps or adds `navigateTo c2_webapp_details` on `mySystem.webapp`.",
-        "The response targets an existing view ID and stays in customization scope without rebuilding the whole view."
+        "The response keeps or adds a stable `navigateTo` on the web application element.",
+        "The response targets an existing detail view and stays in customization scope without rebuilding the whole view."
       ]
     },
     {
       "id": 3,
-      "prompt": "On `c2_containers`, I want to highlight API elements, keep a stable drill-down to `c2_webapp_details`, and add an external link to internal docs. Which LikeC4 customization block should I use, and where does this skill stop?",
+      "prompt": "On an existing C2 container view, I want to highlight API elements, keep a stable drill-down to the web application detail view, and add an external link to internal docs. Which LikeC4 customization block should I use, and where does this skill stop?",
       "expected_output": "The response combines style, `navigateTo`, and `link` within one customization scope, then delegates structural changes to the right skill.",
       "files": [],
       "expectations": [
         "The response uses view customization (`style`, `navigateTo`, `link`) and the shared palette, without rebuilding the entire view.",
-        "The response keeps or adds a stable `navigateTo c2_webapp_details`.",
+        "The response keeps or adds a stable `navigateTo` for the web application detail view.",
         "The response adds an explicit `link https://... '...'` compatible with the rest of the block.",
         "The response delegates creation of a new structural or C3 view to `design-view`, not this skill."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "My C2 view already looks mostly fine. I just want the user to stay clearly on the left, but I do not want a pile of `rank` directives that make the diagram brittle. What customization would you suggest?",
+      "expected_output": "A light-touch customization centered on `autoLayout` and, at most, one obvious `rank source`, with explicit restraint about adding more rank hints.",
+      "files": [],
+      "expectations": [
+        "The response prefers `autoLayout` as the primary layout control.",
+        "The response does not force `autoLayout LeftRight` when the user did not ask for that reading direction.",
+        "If the response adds `rank`, it limits it to one obvious anchor such as the user as `rank source`.",
+        "The response explicitly avoids or warns against stacking multiple `rank same`/`rank source`/`rank sink` directives.",
+        "The response stays within customization scope and does not redesign the view structure."
       ]
     }
   ]

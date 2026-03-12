@@ -1,13 +1,15 @@
 ---
 name: organize-multi-project
-description: Use when structuring a LikeC4 workspace with multiple projects sharing specifications, or when creating a new project derived from the template.
+description: Use when structuring a LikeC4 workspace with multiple project folders that share specs, assets, or conventions, or when bootstrapping a new project from a minimal baseline.
 ---
 
 # Organize Multi-Project Workspace
 
 ## Overview
 
-Defines folder structure, configuration, and shared-spec patterns for LikeC4 workspaces containing multiple projects. Each project has its own `likec4.config.json` and includes the shared specification directory. New projects are created from the `projects/template/` starting point.
+Defines folder structure, shared-spec patterns, and project boundaries for LikeC4 workspaces containing multiple projects. Each project owns its own `likec4.config.json` plus local model/view files, while shared definitions stay in a shared area.
+
+Start new projects from a **minimal baseline** (`likec4.config.json` + model file + views file), not by treating an example project as the canonical source of truth. If a starter project exists locally, use it only as a scaffold and remove its example-specific content immediately.
 
 ## When to Use
 
@@ -25,7 +27,7 @@ Defines folder structure, configuration, and shared-spec patterns for LikeC4 wor
 | Shared kinds/tags | Keep in `projects/shared/spec-*.c4` |
 | Project boundaries | One domain/team/layer per project folder |
 | Config ownership | Each project owns its `likec4.config.json` |
-| New project bootstrap | Copy/adapt from `projects/template/` |
+| New project bootstrap | Start from a minimal baseline: config + model + views |
 | Cross-project dependencies | Keep explicit, minimal, and documented |
 
 ## Multi-Project Structure
@@ -189,19 +191,20 @@ projects/
 
 ## Creating New Projects
 
-### Use Template Project
+### Start from a Baseline, Not an Oracle
 
-When creating a new project, use `projects/template/` as starting point:
+When creating a new project:
 
-1. **Check for template:** Read `projects/template/likec4.config.json` and `system-*.c4` files
-2. **Copy structure:** Replicate file structure and shared includes
-3. **Update config:** Change project `name` and `title` in likec4.config.json
-4. **Preserve includes:** Keep `"paths": ["../shared"]` for shared specs
+1. **Identify the shared surface** — where shared specs and shared images live
+2. **Create local config** — one `likec4.config.json` for the new project
+3. **Create the minimum useful files** — usually `system-model.c4` and `system-views.c4`
+4. **Wire shared includes** — keep relative paths to the shared specification directory
+5. **Expand only when needed** — add sequence, deployment, or operations files when the project actually grows into them
 
-**If template not available locally:** Use GitHub MCP `get_file_contents` to retrieve from c4_template repository temporarily:
-- `projects/template/likec4.config.json`
-- `projects/template/system-model.c4`
-- `projects/template/system-views.c4`
+If your workspace already has a starter project, use it only as a scaffold:
+- keep the reusable config concepts
+- remove example-specific names and model content
+- do not treat the example project as the definition of what every project must look like
 
 ### Project Organization
 
@@ -221,7 +224,7 @@ Let users define their own structure based on needs:
 
 ❌ **Missing or inconsistent image aliases** — all projects should use the same `"@": "../shared/images"` alias to keep icon references consistent
 
-❌ **Not using the template project** — always copy `projects/template/` as a starting point to preserve the correct config and file structure
+❌ **Copying an example project verbatim** — examples can seed a baseline, but they should not leak example names, systems, or views into new projects
 
 ## Validation Checklist
 

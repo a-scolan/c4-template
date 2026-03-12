@@ -3,11 +3,11 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "I need to connect `mySystem.webapp` to `mySystem.api` in `projects/template/system-model.c4`. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
+      "prompt": "I need to connect a web application container to an API container in my system model. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
       "expected_output": "The response puts the kind in the arrow, keeps the label inline, and puts technology in the properties block.",
       "files": [],
       "expectations": [
-        "The response uses a typed arrow `-[calls]->` between `mySystem.webapp` and `mySystem.api`.",
+        "The response uses a typed arrow `-[calls]->` between the web application and API containers.",
         "The response places the relationship type in the arrow, not in the properties block.",
         "The response keeps the label inline and `technology 'HTTPS'` in the block.",
         "The response avoids invalid syntax like `-> { calls ... }`."
@@ -39,7 +39,7 @@
     },
     {
       "id": 3,
-      "prompt": "My `vault.api` reads Redis as cache, then PostgreSQL as fallback on cache miss. Should I model this with one “smart” relationship, two `reads`, or something else?",
+      "prompt": "My API reads Redis as cache, then PostgreSQL as fallback on cache miss. Should I model this with one “smart” relationship, two `reads`, or something else?",
       "expected_output": "The response rejects composite kinds, creates explicit relationships, and keeps fallback logic outside the relationship type.",
       "files": [],
       "expectations": [

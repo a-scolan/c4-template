@@ -22,21 +22,21 @@ Diagnoses and resolves common LikeC4 compilation and rendering errors by mapping
 
 | Symptom | Root Cause | Fix |
 |---------|-----------|-----|
-| "Element not found" | Short name instead of FQN | Use `mySystem.api` not `api` |
+| "Element not found" | Short name instead of FQN | Use a full FQN such as `system.api`, not `api` |
 | "Unknown kind" | Invalid element kind | Check `projects/shared/spec-*.c4` |
 | "Invalid relationship kind" | Undefined relationship type | Use `calls`, `async`, `reads`, `writes` |
 | `Unknown relationship type: https` in `model {}` | Deployment kind used in system model | Use a model kind plus `technology 'HTTPS'` |
 | Syntax error in relationship block | Kind in property block | Move type to arrow: `-[calls]->` |
 | Parent-child in dynamic view | Conceptual violation | Have actor access component directly |
-| Unexpected elements in diagram | Over-broad wildcard include | Scope: `include mySystem.*` |
-| "instanceOf target not found" | Wrong element type or FQN | Target must be a Container, use FQN |
+| Unexpected elements in diagram | Over-broad wildcard include | Scope: `include system.*` |
+| "instanceOf target not found" | Wrong element type or FQN | Target must be a Container, use a full FQN |
 | Deployment diagram shows duplicate app edges | Relationship restated in deployment | Remove duplicate edge and rely on inherited model relationship |
 
 ## Common Issues
 
 ### "Element not found"
 - **Cause:** Using short name instead of FQN
-- **Solution:** Use `mySystem.api` not `api` for nested elements
+- **Solution:** Use a full FQN like `system.api`, not `api`, for nested elements
 
 ### "Unknown element kind"
 - **Cause:** Invalid or generic element kind
@@ -103,13 +103,18 @@ Diagnoses and resolves common LikeC4 compilation and rendering errors by mapping
   rank same devforge.api, devforge.database
   ```
 
+### View became brittle after adding many rank hints
+- **Symptom:** Layout looks worse or starts breaking after adding several `rank source`, `rank sink`, or `rank same` directives
+- **Cause:** The view is over-constrained; rank hints are being used to force structure that should come from `autoLayout` and better includes
+- **Solution:** Remove most rank hints, keep `autoLayout`, then reintroduce at most one or two obvious anchors if still needed (often just the initiating user as `rank source`)
+
 ### Diagram shows unexpected elements
 - **Cause:** Over-broad wildcard includes like `include **`
-- **Solution:** Use scoped wildcards: `include mySystem.*` or `include mySystem.* ->`
+- **Solution:** Use scoped wildcards: `include system.*` or `include system.* ->`
 
 ### "instanceOf target not found"
 - **Cause:** Referencing non-existent or wrong element type
-- **Solution:** Ensure target is a Container from model, use FQN: `instanceOf mySystem.api`
+- **Solution:** Ensure target is a Container from model and use a full FQN such as `instanceOf system.api`
 
 ### Deployment view is cluttered with duplicate relationships
 - **Cause:** Application traffic was restated in deployment nodes/views instead of being inherited from the system model.

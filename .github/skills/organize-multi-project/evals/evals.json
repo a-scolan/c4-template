@@ -3,23 +3,23 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "In this repo with `projects/shared/`, `projects/template/`, and `projects/spec-showcase/`, I need to add `projects/payments/`. How do I bootstrap it cleanly, and which minimum files/config should I create?",
-      "expected_output": "The response starts from the template, creates a self-contained project with local config, and keeps reusable specs in shared.",
+      "prompt": "In a multi-project LikeC4 workspace with shared specs and two existing projects, I need to add a new payments project. How do I bootstrap it cleanly, and which minimum files/config should I create?",
+      "expected_output": "The response starts from a minimal project baseline, creates a self-contained project with local config, and keeps reusable specs in the shared area.",
       "files": [],
       "expectations": [
-        "The response says to start from `projects/template/`.",
+        "The response starts from a minimal baseline rather than treating an example project as the canonical source.",
         "The response creates one `likec4.config.json` per project with `include.paths: [\"../shared\"]`.",
         "The response keeps a minimal split like `system-model.c4` + `system-views.c4`.",
-        "The response keeps `projects/shared/` for reusable specs, not project-specific models."
+        "The response keeps the shared area for reusable specs, not project-specific models."
       ]
     },
     {
       "id": 1,
-      "prompt": "I want to put a `paymentsCore` system and a `backOfficeUser` actor in `projects/shared/` so they are visible everywhere. Good idea or not? And how should cross-project references be handled?",
-      "expected_output": "The response rejects putting project-specific models in shared and proposes explicit, minimal, non-circular cross-references.",
+      "prompt": "I want to put a `paymentsCore` system and a `backOfficeUser` actor in the shared specifications area so they are visible everywhere. Good idea or not? And how should cross-project references be handled?",
+      "expected_output": "The response rejects putting project-specific models in the shared area and proposes explicit, minimal, non-circular cross-references.",
       "files": [],
       "expectations": [
-        "The response says `projects/shared/` should contain only reusable definitions, not project-specific models.",
+        "The response says the shared area should contain only reusable definitions, not project-specific models.",
         "The response proposes keeping `paymentsCore` / `backOfficeUser` in the owning project, or modeling a truly shared external separately.",
         "The response mentions an explicit/minimal cross-reference strategy (shared external systems or an `externals` project).",
         "The response avoids circular dependencies between projects."
@@ -39,12 +39,12 @@
     },
     {
       "id": 3,
-      "prompt": "I want to share technical conventions AND some reusable business models. Should everything go in `projects/shared/`, or should specs and domains be separated without turning the repo into a maze?",
+      "prompt": "I want to share technical conventions AND some reusable business models. Should everything go in the shared area, or should specs and domains be separated without turning the repo into a maze?",
       "expected_output": "The response clearly separates shared specs from reusable business models, with a simple structure and no circular dependencies.",
       "files": [],
       "expectations": [
-        "The response keeps `projects/shared/` for truly reusable specs, conventions, and assets.",
-        "The response avoids placing project-specific business models in `projects/shared/`.",
+        "The response keeps the shared area for truly reusable specs, conventions, and assets.",
+        "The response avoids placing project-specific business models in the shared area.",
         "The response proposes a simple structure for reusable domain models, without circular dependencies between projects.",
         "The response delegates include/config details to `configure-project-includes` when needed."
       ]

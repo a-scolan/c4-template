@@ -1,90 +1,100 @@
 ---
 name: lookup-element-kinds
-description: Use when creating elements or relationships and you need to validate kind names, discover available types, or check specification consistency.
+description: Use when you are unsure of the exact kind or relationship name in the active workspace, especially when similar spellings exist or you need to distinguish logical-model taxonomy from deployment taxonomy.
 ---
 
-# LikeC4 Element Kinds and Relationship Types Reference
+# Verify LikeC4 Element Kinds and Relationship Types
 
 ## Overview
 
-Quick reference listing the element kinds and relationship kinds currently declared in this template's shared specifications (`projects/shared/spec-*.c4`). Use it as a fast lookup when creating elements or validating relationship types.
+Use this skill to **confirm exact names from the active workspace**, not to guess from memory or English labels. The source of truth is the current LikeC4 project summary plus the shared specification files.
+
+The goal is not merely to list kinds — it is to answer three questions safely:
+1. **What is the exact spelling?**
+2. **Is it a logical-model kind or a deployment kind?**
+3. **How do I verify it before writing model code?**
 
 ## When to Use
 
-- Verifying an element kind name before creating an element (e.g., `Container_Api` vs `Container_API`)
-- Discovering available kinds when the shared spec isn’t open in the editor
-- Validating a relationship kind (e.g., confirming `async` exists for model relationships)
-- Checking if a deployment relationship kind (`https`, `tcp`, `amqp`) is valid
+- Choosing between similar spellings such as `Container_Api` vs `Container_API`
+- Verifying whether a relationship kind belongs to the logical model or deployment
+- Looking up nearby valid kinds for a node, zone, infrastructure element, or container
+- Checking the active workspace before creating or editing elements/relationships
 
-**Always confirm with MCP:** Use `read-project-summary` to validate the current shared spec in the active workspace. This list is a quick reference and may evolve.
+## Verification Workflow
+
+1. **Read the active project summary** — use `read-project-summary` to see the current element kinds and relationship kinds.
+2. **Check the relevant shared spec** — container/system kinds in `projects/shared/spec-context.c4` or `spec-containers.c4`; deployment kinds in `spec-deployment.c4`.
+3. **Resolve close spellings by exact match** — trust the declared identifier, not the most readable English expansion.
+4. **Classify the interaction** — logical model vs deployment. This decides which relationship taxonomy is even legal.
+5. **Only then write the model code** — if still uncertain, stop and verify again instead of inventing a kind.
 
 ## Quick Reference
 
-**Keywords:** Actor, System, Container, Component, Zone, Node, Infrastructure, relationship kinds, type validation, specification
+| Question | Source of truth | Typical resolution |
+|----------|-----------------|--------------------|
+| Exact container kind? | `read-project-summary`, `spec-containers.c4` | Prefer the declared subtype such as `Container_Api` |
+| Exact infrastructure kind? | `read-project-summary`, `spec-deployment.c4` | Trust the repository spelling, e.g. `Infra_Fw` |
+| Logical vs deployment relationship? | project summary + modeling context | Logical model uses `calls/reads/writes/async/uses`; deployment uses `https/tcp/sql/...` |
+| Two names look similar? | exact declared identifier | Reject the lookalike and cite the real one |
 
-## Actors (C1)
+## Common Exact Checks in This Workspace
 
-`Actor`, `Actor_Person`, `Actor_Staff`, `Actor_Admin`
+These examples are useful because they are easy to get wrong:
 
-## Systems (C1)
+| Intent | Exact declared name | Lookalike to reject |
+|--------|---------------------|---------------------|
+| API container | `Container_Api` | `Container_API` |
+| Firewall infrastructure | `Infra_Fw` | `Infra_Firewall` |
+| VM deployment node | `Node_Vm` | `Node_VM` |
+| Database container | `Container_Database` | ad-hoc names like `Container_DB` |
 
-`System_Existing`, `System_New`, `System_Legacy`, `System_External`
+## Logical Model vs Deployment Taxonomy
 
-## Containers (C2)
+### Logical model relationships
 
-`Container`, `Container_ReverseProxy`, `Container_Waf`, `Container_Browser`, `Container_MobileApp`, `Container_Spa`, `Container_Webapp`, `Container_Api`, `Container_Api_Geo`, `Container_Queue`, `Container_Database`, `Container_DatabaseGeo`, `Container_ObjectStorage`, `Container_Directory`, `Container_Mailserver`, `Container_Loadbalancer`, `Container_DataServer`, `Container_FileServer`, `Container_ProcessingServer`, `Container_ExchangeServer`, `Container_IamServer`, `Container_WebServer`, `Container_ApplicationServer`
-
-## Components (C3)
-
-`Component`
-
-## Deployment Zones
-
-`Zone`, `Zone_Internet`, `Zone_Vlan`, `Zone_Lan`, `Zone_Office`, `Zone_Subnet`
-
-## Deployment Nodes
-
-`Node_Environment`, `Node_Datacenter`, `Node_Cicd`, `Node_Cluster`, `Node_Vm`, `Node_Server`, `Node_App`, `Node_AppBrowser`, `Node_AppMobile`, `Node_AppRich`, `Node_External`, `Node_SaaS`, `Node_Container`
-
-## Infrastructure
-
-`Infra_F5`, `Infra_Fw`, `Infra_Router`
-
-## Relationship Kinds (Model)
+Use these for normal application behavior:
 
 `calls`, `async`, `reads`, `writes`, `uses`
 
-## Relationship Kinds (Deployment)
+### Deployment relationships
+
+Use these only for deployment-side infrastructure edges:
 
 `http`, `https`, `tcp`, `nfs`, `amqp`, `sql`, `redis`, `smtp`, `ldap`, `oidc_saml`
 
-These deployment relationship kinds are valid, but they are for **infrastructure-specific deployment edges**. Normal application interactions should usually stay in the system model with model kinds such as `calls`, `reads`, `writes`, or `async`, plus a `technology` value like `HTTPS`, `HTTP/8080`, `Manual`, `LDAP`, or `AMQP`.
+If the interaction belongs in the logical model, keep the logical kind and put the protocol in `technology`, for example `technology 'HTTPS'` or `technology 'HTTP/8080'`.
 
-## Usage Example
+## Example Verification Pattern
 
 ```likec4
-// Element kinds: PascalCase, underscore-separated category_subtype
+// 1. Confirm the exact kind from the active workspace
 api = Container_Api 'REST API' {
   technology 'Node.js'
-  description 'Public API surface'
 }
 
-// Relationship kinds: in arrow, never in property block
-api -[calls]-> external 'Authenticate'
-api -[reads]-> database 'Fetch records'
-api -[async]-> queue 'Publish job'
-
-user -[calls]-> portal 'Uses UI' {
-  technology 'Manual'
+// 2. Use logical-model relationship kinds for app behavior
+api -[calls]-> externalProvider 'Authenticates user' {
+  technology 'HTTPS'
 }
+
+// 3. Use data-access relationships for stores
+api -[reads]-> primaryDatabase 'Fetches records'
+api -[writes]-> primaryDatabase 'Stores records'
 ```
 
 ## Common Mistakes
 
-❌ **Guessing names from English labels** — `Container_API`, `Infra_Firewall`, `Node_VM` are invalid in this repository.
+❌ **Guessing from English labels** — `Container_API`, `Infra_Firewall`, and `Node_VM` may feel natural but are not the declared identifiers here
 
-❌ **Defaulting to a generic base kind** — `Container` exists, but for common application elements prefer a specific declared subtype like `Container_Api` or `Container_Database`.
+❌ **Using a generic base kind too early** — `Container` exists, but if a more specific declared subtype fits, use it
 
-❌ **Inventing relationship kinds** — only use the declared relationship kinds; `invokes`, `triggers` are invalid
+❌ **Inventing relationship kinds** — `query`, `invokes`, `triggers`, and other ad-hoc kinds are invalid unless declared in the spec
 
-❌ **Confusing model and deployment kinds** — `http`/`https`/`tcp` are deployment relationship kinds; `calls`/`async` are model kinds. If the relationship belongs in the logical system model, keep `calls`/`reads`/`writes`/`async` and put `HTTPS`, `HTTP/8080`, `Manual`, etc. in the relationship `technology` field.
+❌ **Mixing model and deployment taxonomies** — `https` is not a logical-model relationship kind for normal application traffic; `calls` is not a deployment edge kind
+
+## Handoffs
+
+- Need to create the element once the kind is known? Use `create-element`
+- Need to choose the relationship after confirming taxonomy? Use `create-relationship`
+- Need to re-check workspace context first? Use `understand-project-structure`

@@ -3,19 +3,19 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "I’m working in `projects/template/system-model.c4`. Add a new API container under `mySystem` for file ingestion. I want a correct and minimal LikeC4 declaration, without inventing a custom kind.",
-      "expected_output": "An element declaration that reuses `Container_Api` under `mySystem`, with technology and description.",
+      "prompt": "I’m working in my system model. Add a new API container under an existing system for file ingestion. I want a correct and minimal LikeC4 declaration, without inventing a custom kind.",
+      "expected_output": "An element declaration that reuses `Container_Api` under the parent system, with technology and description.",
       "files": [],
       "expectations": [
         "The response reuses an existing kind from shared specs (`Container_Api`) instead of inventing a custom kind.",
-        "The response places the new element under `mySystem` with a camelCase variable name.",
+        "The response places the new element under the parent system with a camelCase variable name.",
         "The response includes `technology` and `description` in the declaration.",
         "The response stays focused on the element declaration, without drifting into relationships or views."
       ]
     },
     {
       "id": 1,
-      "prompt": "I’m thinking about creating a `Container_UploadOrchestrator` kind just for one upload service. Is that a good idea in this repo? Explain the rule and what to do before adding a new kind.",
+      "prompt": "I’m thinking about creating a `Container_UploadOrchestrator` kind just for one upload service. Is that a good idea in this workspace? Explain the rule and what to do before adding a new kind.",
       "expected_output": "The response requires checking shared specs first, discourages one-off kinds, and asks for approval before creating any new kind.",
       "files": [],
       "expectations": [
@@ -26,7 +26,7 @@
     },
     {
       "id": 2,
-      "prompt": "I need to add an external `virusTotal` and an internal `scanApi`, then draw their arrows and a C2 view. Which skill should I use for each part?",
+      "prompt": "I need to add an external `virusScanProvider` and an internal `scanApi`, then draw their arrows and a C2 view. Which skill should I use for each part?",
       "expected_output": "The response keeps create-element focused on element declarations and delegates arrows/views to the right skills.",
       "files": [],
       "expectations": [
@@ -42,7 +42,7 @@
       "expected_output": "The response reuses an existing kind for both elements, rejects a special mock kind, and clearly separates modeling, views/tags, and deployment concerns.",
       "files": [],
       "expectations": [
-        "The response reuses an existing repository kind for both elements instead of inventing a `Container_MockApi` kind.",
+        "The response reuses an existing workspace kind for both elements instead of inventing a `Container_MockApi` kind.",
         "The response creates or suggests two distinct elements when responsibilities differ, not two kinds.",
         "The response suggests a tag or view context to distinguish mock vs prod when needed, not a dedicated kind.",
         "The response routes deployment/environment differences to `model-deployment-infrastructure` or dedicated view design."

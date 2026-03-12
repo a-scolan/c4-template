@@ -3,11 +3,11 @@
   "evals": [
     {
       "id": 0,
-      "prompt": "I modified `.github/skills/create-relationship/SKILL.md`, `projects/shared/spec-context.c4`, `projects/payments/system-model.c4`, and `README.md`. What can be pushed back to the template, and what must stay local?",
-      "expected_output": "The response separates generic artifacts from project-specific files and requires a generalization/confidentiality review before push.",
+      "prompt": "I modified `.github/skills/create-relationship/SKILL.md`, `projects/shared/spec-context.c4`, `projects/payments/system-model.c4`, and `README.md`. What can be pushed to the upstream reference repo, and what must stay local?",
+      "expected_output": "The response separates reusable workspace assets from project-local files and requires a genericity/confidentiality review before push.",
       "files": [],
       "expectations": [
-        "The response classifies `.github/skills/create-relationship/SKILL.md` and `projects/shared/spec-context.c4` as generic/syncable.",
+        "The response classifies `.github/skills/create-relationship/SKILL.md` and `projects/shared/spec-context.c4` as generic/syncable upstream assets.",
         "The response keeps `projects/payments/system-model.c4` and `README.md` out of template push.",
         "The response asks to generalize and remove project names before push.",
         "The response requires a confidentiality review before push."
@@ -15,8 +15,8 @@
     },
     {
       "id": 1,
-      "prompt": "I improved `.github/skills/create-relationship/SKILL.md`. Give me the safe sequence to push this improvement to `c4-template` using a `sync/*` branch, while keeping confidentiality review before push.",
-      "expected_output": "The response follows the safe workflow: branch from `c4-template/main`, cherry-pick generic file, diff/confidentiality review, push from `sync/*`.",
+      "prompt": "I improved `.github/skills/create-relationship/SKILL.md`. Give me the safe sequence to push this improvement to the upstream reference repo (remote `c4-template`) using a `sync/*` branch, while keeping confidentiality review before push.",
+      "expected_output": "The response follows the safe workflow: branch from `c4-template/main`, bring only the generic file, diff/confidentiality review, and push from `sync/*`.",
       "files": [],
       "expectations": [
         "The response fetches `c4-template/main` and creates a `sync/*` branch from that base.",
@@ -27,8 +27,8 @@
     },
     {
       "id": 2,
-      "prompt": "I want to pull improvements from the template for `.github` and `projects/shared`. Which command should I run, and why `--squash`?",
-      "expected_output": "The response gives targeted subtree commands and explains that `--squash` keeps history compact.",
+      "prompt": "I want to pull upstream improvements for `.github` and `projects/shared`. Which commands should I run, and why `--squash`?",
+      "expected_output": "The response gives targeted subtree commands for shared workspace assets and explains that `--squash` keeps history compact.",
       "files": [],
       "expectations": [
         "The response provides `git fetch c4-template main`.",
@@ -39,7 +39,7 @@
     },
     {
       "id": 3,
-      "prompt": "I improved `projects/shared/spec-containers.c4` in this repo. Another project wants the same fix. How do I verify it is truly generic before pushing to `c4-template`?",
+      "prompt": "I improved `projects/shared/spec-containers.c4` in this repo. Another derived repository wants the same fix. How do I verify it is truly generic before pushing it upstream via `c4-template`?",
       "expected_output": "The response requires a genericity/confidentiality audit, then a safe sync workflow from a dedicated branch.",
       "files": [],
       "expectations": [

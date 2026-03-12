@@ -1,29 +1,43 @@
 ---
 name: customize-view
-description: Use when applying advanced styling (colors, shapes, style predicates), layout control (autoLayout, rank hints), or navigation (navigateTo, links) to LikeC4 views.
+description: Use when adjusting an existing LikeC4 view with styling, layout hints, drill-down navigation, or external links, without changing the structural contents of the view.
 ---
 
 # Customize View
 
 ## Overview
 
-Provides advanced view features beyond basic element inclusion: visual styling via shared-spec colors and style predicates, layout control with autoLayout and rank hints, and navigation links between views. Always start with `design-view` for structure before applying customizations.
+Use this skill **after the structure of a view is already correct**. It adds polish and usability — styling, layout control, drill-down navigation, and external links — without rebuilding which elements belong in the view.
+
+If the task requires changing includes, parent context, neighbors, or creating a new view, hand off to `design-view` first.
 
 ## When to Use
 
 - Applying colors, shapes, or opacity to elements in a view (use shared-spec palette only)
-- Controlling diagram layout direction or element ordering with `autoLayout` and rank hints
+- Adjusting layout only when helpful: keep `autoLayout` direction optional, and add only a few rank hints for obvious anchors when needed
 - Adding `navigateTo` links to enable drill-down navigation between views
 - Attaching external documentation links to a view
 
 **Do not use** for base view structure (includes/excludes, parent context, neighbors) — use `design-view` first.
+
+## Scope Boundary
+
+| If the user needs... | Use this skill? | Use instead |
+|----------------------|-----------------|-------------|
+| `style`, `autoLayout`, limited `rank`, `navigateTo`, `link` | ✅ Yes | — |
+| Better emphasis/de-emphasis while keeping the same structure | ✅ Yes | — |
+| A new C2/C3/deployment view | ❌ No | `design-view` |
+| Different included elements or parent context | ❌ No | `design-view` |
+| Sequence timing, retries, or temporal order | ❌ No | `create-sequence-view` |
+
+**Rule of thumb:** customize the existing view; do not redesign it.
 
 ## Quick Reference
 
 | Need | Primary Feature | Constraint |
 |------|------------------|-----------|
 | Highlight element type | `style` / kind style predicates | Prefer shared-spec colors and shapes |
-| Improve readability | `autoLayout` + rank hints | Keep parent context visible |
+| Improve readability | Keep direction optional; use `autoLayout` only when it helps, then minimal `rank` if still needed | Keep parent context visible |
 | Enable drill-down | `navigateTo` | Link only to stable, existing view IDs |
 | Add external docs | `link` | Use trusted and maintained URLs |
 | De-emphasize noise | Opacity/style predicates | Never hide critical context boundaries |
@@ -52,6 +66,16 @@ When customizing views, always preserve the parent/surrounding element context:
 - Never exclude the outer context when styling inner elements
 - Use styling to emphasize, not to isolate elements from their context
 - Apply opacity changes carefully to avoid losing context
+
+### 3. Prefer AutoLayout Before Rank
+
+Start with `autoLayout` alone.
+
+- `autoLayout` direction is itself optional; do not force `LeftRight` unless the user asked for it or the preview clearly benefits from left-to-right reading.
+- Add `rank` only if the preview is still hard to read after the structure is already correct.
+- Favor one obvious anchor at a time, such as an initiating user as `rank source`.
+- Avoid piling up `rank source`, `rank sink`, and `rank same` across many elements; over-constraining the layout often produces brittle or broken views.
+- If a view seems to need several rank directives to become readable, revisit the structure with `design-view` instead of forcing the layout here.
 
 ## View Organization (Mandatory)
 
@@ -172,28 +196,36 @@ Icons: tech:*, aws:*, gcp:*, azure:*
 
 ## Layout Control
 
+Treat `rank` as a scalpel, not wallpaper: `autoLayout` first, a tiny number of hints only when the preview clearly needs them.
+
 ### Auto-Layout Direction
 
 ```likec4
 view layered {
   include *
-  autoLayout TopBottom  // or LeftRight
+  autoLayout TopBottom  // Example only; omit or change direction if the user prefers otherwise
 }
 ```
+
+Do not recommend `autoLayout LeftRight` by default. Use it mainly when the user explicitly wants left-to-right reading or when a pipeline-like flow is clearly easier to read that way.
 
 ### Rank Hints
 
 ```likec4
 view requestFlow {
   include *
-  
-  include client with { rank source }           // Entry point
-  include service1, service2 with { rank same } // Parallel
-  include database with { rank sink }           // Endpoint
-  
+
   autoLayout TopBottom
+
+  // Optional: keep the most obvious entry point stable
+  include client with { rank source }
 }
 ```
+
+- Prefer a single obvious hint such as `rank source` for a user, browser, or other initiating element.
+- Add `rank sink` only when an endpoint keeps drifting into a confusing position after `autoLayout` is already correct.
+- Use `rank same` sparingly; it easily over-constrains the view and only works for siblings.
+- If you feel tempted to add several rank directives, simplify the view or hand off structural changes to `design-view`.
 
 ### Directed Includes
 
@@ -203,7 +235,8 @@ view dataFlow {
   include frontend -> backend ->  // Direction hints
   include -> database
   
-  autoLayout LeftRight
+  // Optional: choose a direction only if it improves readability
+  autoLayout TopBottom
 }
 ```
 
@@ -213,19 +246,16 @@ view dataFlow {
 ```likec4
 view layered {
   include *
-  include presentation.* with { rank source }
-  include data.* with { rank sink }
   autoLayout TopBottom
 }
 ```
 
-**Request Flow (LeftRight):**
+**Request Flow (Direction optional):**
 ```likec4
 view flow {
   include *
+  // Optional only if the initiating actor keeps drifting
   include client with { rank source }
-  include external.* with { rank sink }
-  autoLayout LeftRight
 }
 ```
 
@@ -233,22 +263,21 @@ view flow {
 ```likec4
 view balanced {
   include *
-  include loadBalancer with { rank source }
-  include backend1, backend2, backend3 with { rank same }
-  include database with { rank sink }
   autoLayout TopBottom
 }
 ```
 
 ### Layout Troubleshooting
 
-- **Overlapping elements:** Add rank hints to separate layers
-- **Wrong flow direction:** Use directed includes or change autoLayout
-- **Elements spread out:** Group related elements with `rank same`
+- **Overlapping elements:** First simplify includes or change `autoLayout`; add one targeted rank only if the preview is still unclear
+- **Wrong flow direction:** Use directed includes or change `autoLayout` before reaching for more rank hints
+- **Elements spread out:** Avoid reflexively adding `rank same`; reduce noise first, then add one local hint only if sibling alignment is genuinely needed
 
 ## Navigation
 
 **Rule:** When creating a new view, add a `navigateTo` link in the parent overview view so users can drill down from the higher level.
+
+When the user asks for a customization block only, keep existing `navigateTo` targets stable instead of inventing a new view structure.
 
 ### View-to-View Navigation
 
@@ -307,6 +336,30 @@ view epic12 {
 }
 ```
 
+### Combined Customization Example
+
+```likec4
+view containers_overview {
+  include *
+
+  style * { color muted; opacity 20% }
+  style api, gateway { color primary; opacity 100% }
+
+  include user with { rank source }
+
+  include webApp with {
+    navigateTo webApp_details
+  }
+
+  link https://docs.example.internal/spec 'System specification'
+}
+```
+
+What this example does **not** do:
+- it does not change which elements belong in the view
+- it does not invent a new detail view
+- it does not rebuild the whole view structure from scratch
+
 ### View Metadata
 
 ```likec4
@@ -330,8 +383,9 @@ view myView {
 ## Validation
 
 - [ ] Style predicates use `element.tag = #name` syntax
-- [ ] AutoLayout direction matches flow (TopBottom for layers, LeftRight for sequences)
-- [ ] Source rank = entry points, Sink rank = endpoints
+- [ ] If an `autoLayout` direction is specified, it matches the user's reading preference or an obvious flow
+- [ ] Any rank hints are sparse, justified, and easy to remove if the layout engine improves
+- [ ] If a source/sink hint exists, it matches an obvious entry/exit point
 - [ ] No conflicting rank hints (can't be both source and sink)
 - [ ] Navigation targets reference valid view IDs
 - [ ] External links use HTTPS with descriptive text
@@ -347,11 +401,17 @@ view myView {
 
 ❌ **Custom shape definitions** — shapes come from element kinds; do not override with custom shape values
 
+❌ **Rebuilding the whole view inside a customization answer** — keep the existing structure and adjust only styling, layout, navigation, or links
+
 ❌ **Hiding parent context with styling** — never exclude or fully opacity-hide the parent container/system boundary
 
 ❌ **Duplicate title prefix** — if a view is inside `views 'C1'`, don't prefix the title with "C1 /"; use folder name OR title prefix, not both
 
 ❌ **navigateTo target doesn't exist** — always verify the target view ID exists before adding a `navigateTo` link
+
+❌ **Letting customization drift into structure design** — if the right answer requires changing included elements or making a new view, say so and hand off to `design-view`
+
+❌ **Over-constraining the layout with rank hints** — start with `autoLayout`, then add at most a few obvious anchors; stacking `rank same`/`rank source`/`rank sink` often breaks views
 
 ❌ **Conflicting rank hints** — an element cannot be both `rank source` and `rank sink`; also, `rank same` only works for siblings
 

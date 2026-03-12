@@ -1,84 +1,118 @@
 ---
 name: document-decision
-description: Use when recording WHY architectural choices were made (technology selection, pattern decisions, infrastructure design). Captures context, trade-offs, and consequences using standard ADR format.
+description: Use when choosing or revisiting an architectural technology, integration boundary, deployment strategy, or cross-cutting pattern and you need to record the rationale, trade-offs, impacted LikeC4 elements, and consequences in an ADR.
 ---
 
 # Document Architecture Decision
 
 ## Overview
 
-Creates Architecture Decision Records (ADRs) to capture WHY architectural choices were made in a LikeC4-modeled system. Uses standard ADR format: Status, Context, Decision, Consequences. Stored in `ADR/NNNN-decision-title.md`.
+Capture **why** an architectural choice was made, what alternatives were rejected, which modeled elements it affects, and what follow-up work it creates. An ADR should stay useful months later when the original discussion is gone.
+
+Use the standard ADR backbone:
+- **Status**
+- **Context**
+- **Decision**
+- **Consequences**
+
+Store ADRs as `ADR/NNNN-short-title.md`.
 
 ## When to Use
 
-- Selecting a technology for a container or system (Kong vs HAProxy, MongoDB vs PostgreSQL)
-- Choosing an architectural pattern (async processing, microservices, CQRS)
-- Making a deployment infrastructure decision (VM sizing, replication strategy, zone topology)
-- Any decision whose rationale would be unclear six months from now
+- Selecting a technology for a system, container, or component
+- Choosing a boundary or interaction pattern (adapter, queue, webhook, SaaS replacement, CQRS)
+- Making a deployment or resilience decision with long-term trade-offs
+- Recording a decision whose rationale would otherwise be unclear later
 
-**Do not use** for repository tooling, CI/CD setup, or LikeC4 modeling process decisions.
+**Do not use** for repository tooling, CI/CD setup, lint rules, or LikeC4 modeling workflow mechanics.
 
 ## Quick Reference
 
-| Field | Content |
-|-------|---------|
-| **Filename** | `ADR/NNNN-decision-title.md` (manually increment NNNN) |
-| **Template** | `ADR/0000-template.md` |
-| **Status** | Proposed / Accepted / Deprecated / Superseded |
-| **Sections** | Context → Decision → Consequences (Positive / Negative / Neutral) |
+| Field | Guidance |
+|-------|----------|
+| **Filename** | `ADR/NNNN-short-title.md` with manually incremented leading zeros |
+| **Core sections** | `Status / Context / Decision / Consequences` |
+| **Recommended extras** | `Impacted Elements`, `Alternatives Considered`, `Follow-up` |
+| **Starter template** | Use a local ADR starter if the workspace provides one, but adapt the content to the current decision |
+| **Decision quality check** | Include both gains and costs, not just the preferred outcome |
 
 ## Scope
 
-- ✅ System design decisions (why Kong API Gateway vs HAProxy, why MongoDB vs PostgreSQL)
-- ✅ Container-level technology choices (why RabbitMQ for queuing, why MinIO for storage)
-- ✅ Component architecture patterns (why async processing, why microservices)
-- ✅ Deployment infrastructure choices (why 3-node replication, why specific VM sizing)
-- ❌ NOT repository structure, tooling, CI/CD setup, or LikeC4 modeling decisions
+- ✅ Technology selection (`PostgreSQL` vs `MongoDB`, `Kong` vs `HAProxy`)
+- ✅ Structural decisions (internal service vs SaaS, queue vs sync call, adapter boundaries)
+- ✅ Infrastructure choices (replication, topology, managed vs self-hosted)
+- ✅ Security/integration choices with lasting consequences
+- ❌ Repository structure, CI/CD, editor tooling, or diagram-authoring mechanics
+
+## Core Pattern
+
+1. **Name the decision clearly** — one line that states the architectural choice.
+2. **Capture the forces** — constraints, risks, scale, ownership, compliance, latency, migration pressure.
+3. **State the decision** — what is chosen, where it applies, and what is explicitly out of scope.
+4. **List impacted elements** — affected LikeC4 elements and, if useful, impacted views or deployment areas.
+5. **Record consequences** — at least positive and negative, optionally neutral/operational consequences.
+6. **Add follow-up** — migrations, model updates, validation, runbooks, or open questions.
 
 ## Example
 
 ```markdown
-# ADR-0001: API Gateway Selection - Kong vs HAProxy
+# ADR-0007: Choose PostgreSQL for the primary transactional store
 
 ## Status
 Accepted
 
 ## Context
-Legacy system used HAProxy as a simple load balancer. Microservices architecture requires:
-- API-aware routing based on paths, headers, JWT claims
-- Built-in authentication (JWT validation, OAuth2)
-- Rate limiting and circuit breakers
-- Plugin ecosystem for extensibility
+`{YourSystem}` needs strong transactional guarantees, relational querying, and predictable backup tooling.
+The team considered MongoDB and PostgreSQL for the primary business data store.
 
 ## Decision
-Upgrade from HAProxy to Kong API Gateway
+Use PostgreSQL for `{YourSystem}.primaryDatabase`.
+
+## Impacted Elements
+- `{YourSystem}.api`
+- `{YourSystem}.primaryDatabase`
+- Any view or deployment slice that documents persistence, backup, or failover
 
 ## Consequences
 
 ### Positive
-- Routes to multiple backend services with path-based rules
-- JWT validation out-of-the-box, reducing custom auth code
-- Production-grade rate limiting without custom implementation
-- Extensible via Lua plugins
+- Strong ACID guarantees for transactional workflows
+- Mature replication, backup, and observability ecosystem
+- Clear fit for relational reporting and joins
 
 ### Negative
-- More complex configuration than HAProxy
-- Requires learning Kong admin API and declarative config
-- Higher resource footprint (but acceptable for use case)
+- Requires schema migration discipline
+- Less flexible for rapidly changing document-shaped payloads
+- Operational tuning may be needed as write volume grows
+
+### Neutral
+- Some JSON-heavy payloads may still remain in application-layer adapters
+
+## Follow-up
+- Update the database container technology to `PostgreSQL`
+- Review replication and backup assumptions
+- Validate affected views and deployment documentation
 ```
-
-## Common Mistakes
-
-❌ **Documenting HOW the model was built** — ADRs capture WHY a design choice was made, not how to use LikeC4
-
-❌ **Missing Context section** — without context the decision is meaningless in the future; always explain what constraints drove it
-
-❌ **Only Positive consequences** — every real decision has trade-offs; omitting negatives makes the ADR incomplete and less trustworthy
-
-❌ **Wrong filename format** — use `ADR/NNNN-title.md` with leading zeros (0001, 0002, ...), not arbitrary filenames
 
 ## Integration with LikeC4
 
-- Reference elements from diagrams: "The decision affects `mySystem.apiGateway` (Container_ReverseProxy)"
-- Link to views: "See deployment view: `deployment_api_tier`"
-- Tag related decisions: Use frontmatter or Notes section to link ADRs
+- Reference impacted elements by **real element ID or stable descriptive name**
+- Mention affected views only when they are known and relevant; do not invent view IDs
+- If the decision changes the model itself, follow up with the appropriate modeling skill and then validate with `test-model`
+
+Useful follow-ups:
+- element or boundary changes → `create-element`, `create-relationship`
+- deployment consequences → `model-deployment-infrastructure`
+- validation after changes → `test-model`
+
+## Common Mistakes
+
+❌ **Documenting how the diagram was edited** — ADRs capture design rationale, not modeling mechanics
+
+❌ **Missing costs or risks** — a decision without trade-offs reads like advocacy, not architecture
+
+❌ **No impacted elements** — if readers cannot tell what parts of the model are affected, the ADR is too abstract
+
+❌ **Confusing the ADR with an implementation checklist** — the ADR states the choice and its consequences; detailed execution can be follow-up work
+
+❌ **Treating a local ADR starter as an oracle** — reuse the structure, not the example wording or domain content

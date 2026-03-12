@@ -102,14 +102,14 @@ Zone Dmz "Network DMZ (VLAN 100: 10.0.0.0/24)" {
   ProdApigwVm = Node_Vm "prod-apigw-vm" {
     technology "Kong / API Gateway"
     apiApp = Node_App "API Gateway" {
-      instanceOf vault.api
+      instanceOf corePlatform.api
     }
   }
   
   ProdWebServerVm = Node_Vm "prod-webserver-vm" {
     technology "Nginx"
     webApp = Node_App "Web Server" {
-      instanceOf vault.webServer
+      instanceOf corePlatform.webServer
     }
   }
 }
@@ -153,13 +153,13 @@ AppTier = Zone "Application Tier (VLAN 101: 10.1.0.0/24)" {
   
   ProdUploadVm = Node_Vm "prod-upload-vm" {
     uploadApp = Node_App "Upload Service" {
-      instanceOf vault.uploadService
+      instanceOf corePlatform.uploadService
     }
   }
   
   ProdRetrievalVm = Node_Vm "prod-retrieval-vm" {
     retrievalApp = Node_App "Retrieval Service" {
-      instanceOf vault.retrievalService
+      instanceOf corePlatform.retrievalService
     }
   }
 }
@@ -205,14 +205,14 @@ ProcTier = Zone "Processing Tier (VLAN 102: 10.2.0.0/24)" {
   ProdQueueVm = Node_Vm "prod-queue-vm" {
     technology "RabbitMQ"
     queueApp = Node_App "Message Queue" {
-      instanceOf vault.jobs
+      instanceOf corePlatform.jobQueue
     }
   }
   
   ProdWorkerVm = Node_Vm "prod-worker-vm" {
     technology "GoLang"
     workerApp = Node_App "Processing Worker" {
-      instanceOf vault.worker
+      instanceOf corePlatform.worker
     }
   }
 }
@@ -258,14 +258,14 @@ DataTier = Zone "Data Tier (VLAN 103: 10.3.0.0/24)" {
   ProdDatabaseVm = Node_Vm "prod-database-vm" {
     technology "MongoDB"
     dbApp = Node_App "Database" {
-      instanceOf vault.docDB
+      instanceOf corePlatform.documentDb
     }
   }
   
   ProdStorageVm = Node_Vm "prod-storage-vm" {
     technology "MinIO S3-compatible"
     storageApp = Node_App "Object Storage" {
-      instanceOf vault.minio
+      instanceOf corePlatform.objectStorage
     }
   }
 }
