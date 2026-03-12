@@ -58,6 +58,8 @@ Quick reference listing the element kinds and relationship kinds currently decla
 
 `http`, `https`, `tcp`, `nfs`, `amqp`, `sql`, `redis`, `smtp`, `ldap`, `oidc_saml`
 
+These deployment relationship kinds are valid, but they are for **infrastructure-specific deployment edges**. Normal application interactions should usually stay in the system model with model kinds such as `calls`, `reads`, `writes`, or `async`, plus a `technology` value like `HTTPS`, `HTTP/8080`, `Manual`, `LDAP`, or `AMQP`.
+
 ## Usage Example
 
 ```likec4
@@ -71,6 +73,10 @@ api = Container_Api 'REST API' {
 api -[calls]-> external 'Authenticate'
 api -[reads]-> database 'Fetch records'
 api -[async]-> queue 'Publish job'
+
+user -[calls]-> portal 'Uses UI' {
+  technology 'Manual'
+}
 ```
 
 ## Common Mistakes
@@ -81,4 +87,4 @@ api -[async]-> queue 'Publish job'
 
 ❌ **Inventing relationship kinds** — only use the declared relationship kinds; `invokes`, `triggers` are invalid
 
-❌ **Confusing model and deployment kinds** — `http`/`https`/`tcp` are deployment relationship kinds; `calls`/`async` are model kinds
+❌ **Confusing model and deployment kinds** — `http`/`https`/`tcp` are deployment relationship kinds; `calls`/`async` are model kinds. If the relationship belongs in the logical system model, keep `calls`/`reads`/`writes`/`async` and put `HTTPS`, `HTTP/8080`, `Manual`, etc. in the relationship `technology` field.

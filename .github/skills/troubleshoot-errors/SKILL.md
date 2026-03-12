@@ -25,10 +25,12 @@ Diagnoses and resolves common LikeC4 compilation and rendering errors by mapping
 | "Element not found" | Short name instead of FQN | Use `mySystem.api` not `api` |
 | "Unknown kind" | Invalid element kind | Check `projects/shared/spec-*.c4` |
 | "Invalid relationship kind" | Undefined relationship type | Use `calls`, `async`, `reads`, `writes` |
+| `Unknown relationship type: https` in `model {}` | Deployment kind used in system model | Use a model kind plus `technology 'HTTPS'` |
 | Syntax error in relationship block | Kind in property block | Move type to arrow: `-[calls]->` |
 | Parent-child in dynamic view | Conceptual violation | Have actor access component directly |
 | Unexpected elements in diagram | Over-broad wildcard include | Scope: `include mySystem.*` |
 | "instanceOf target not found" | Wrong element type or FQN | Target must be a Container, use FQN |
+| Deployment diagram shows duplicate app edges | Relationship restated in deployment | Remove duplicate edge and rely on inherited model relationship |
 
 ## Common Issues
 
@@ -43,6 +45,20 @@ Diagnoses and resolves common LikeC4 compilation and rendering errors by mapping
 ### "Invalid relationship kind"
 - **Cause:** Undefined relationship type
 - **Solution:** Use defined kinds: `calls`, `async`, `reads`, `writes`, `uses` (model) or `http`, `https`, `tcp` (deployment)
+
+### `Unknown relationship type: https` (or `ldap`, `amqp`, etc.) inside `model {}`
+- **Cause:** A deployment relationship kind was used in the logical system model.
+- **Solution:** Keep a model relationship kind in the arrow and move the protocol to the relationship technology.
+- **Example fix:**
+  ```likec4
+  // ❌ WRONG
+  webapp -[https]-> api 'Makes API requests'
+
+  // ✅ CORRECT
+  webapp -[calls]-> api 'Makes API requests' {
+    technology 'HTTPS'
+  }
+  ```
 
 ### Relationship syntax error (calls/uses/reads/writes in block)
 - **Error:** `calls 'Action description'` inside relationship block
@@ -95,10 +111,16 @@ Diagnoses and resolves common LikeC4 compilation and rendering errors by mapping
 - **Cause:** Referencing non-existent or wrong element type
 - **Solution:** Ensure target is a Container from model, use FQN: `instanceOf mySystem.api`
 
+### Deployment view is cluttered with duplicate relationships
+- **Cause:** Application traffic was restated in deployment nodes/views instead of being inherited from the system model.
+- **Solution:** Delete the duplicate deployment relationships, add or fix the logical relationship in `model {}`, and put protocol/port details on that relationship’s `technology` field.
+
 ## Common Mistakes
 
 - ❌ Fixing the symptom (renaming) without finding the root cause (wrong FQN or kind)
 - ❌ Using generic kinds (`Container`) instead of spec-defined kinds (`Container_Api`)
 - ❌ Retrying the same syntax without checking Context7 MCP for current DSL docs
 - ❌ Editing view includes to work around a model error instead of fixing the model
+- ❌ Using deployment relationship kinds in `model {}` instead of `technology 'HTTPS'` / `technology 'AMQP'` / `technology 'Manual'`
+- ❌ Recreating inherited app-level relationships in deployment just to show technical details
 - ❌ Skipping `read-project-summary` — always verify valid kinds before manual edits

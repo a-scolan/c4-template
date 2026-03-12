@@ -48,6 +48,18 @@
         "The response proposes explicit action labels if it wants to document fallback behavior.",
         "The response keeps fallback timing details outside model relationships, or delegates them to `create-sequence-view`."
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "I added `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment because I wanted the diagram to show browser traffic. Should I keep that there, and where should `Manual`, `HTTPS`, and `HTTP/8080` actually live?",
+      "expected_output": "The response moves normal application traffic back to the system model, uses relationship technology values there, and keeps deployment relationships as rare infra-only exceptions.",
+      "files": [],
+      "expectations": [
+        "The response says normal application traffic should be modeled in the system model rather than duplicated in deployment.",
+        "The response uses or recommends `technology 'Manual'` for human interaction.",
+        "The response uses or recommends `technology 'HTTPS'` for browser or service traffic and `technology 'HTTP/8080'` only when the port is non-default.",
+        "The response says deployment instances should inherit these relationships via `instanceOf`, reserving deployment relationships for infrastructure-specific exceptions."
+      ]
     }
   ]
 }

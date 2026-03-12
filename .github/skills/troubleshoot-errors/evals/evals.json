@@ -34,6 +34,18 @@
         "The response separately verifies whether `dataLayer.cache` truly exists as a valid FQN.",
         "The response proposes a targeted root-cause correction, not random renaming."
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "I wrote `webapp -[https]-> api` inside `model {}` and then copied the same traffic again between deployed apps in deployment because I wanted protocols on the diagram. Now the model is confusing. What is the root cause and the clean fix?",
+      "expected_output": "The response identifies both the wrong taxonomy in the system model and the duplicated deployment relationship, then moves protocol details to the logical relationship technology field.",
+      "files": [],
+      "expectations": [
+        "The response identifies `https` in `model {}` as a deployment-side relationship kind misused in the system model.",
+        "The response corrects the system-model edge to a model kind such as `-[calls]->` with `technology 'HTTPS'`.",
+        "The response says the duplicate deployment relationship should be removed in favor of inherited relationships via `instanceOf`.",
+        "The response explains the fix in terms of root cause, not just syntax swapping."
+      ]
     }
   ]
 }

@@ -7,7 +7,7 @@ description: Use when modeling deployment infrastructure (environments, zones, V
 
 ## Overview
 
-Defines how to model physical deployment infrastructure in `deployment.c4` and `operations.c4` files: Environment → Zone → VM → Node_App hierarchy, naming conventions, rich Markdown table descriptions with network specs, and `instanceOf` links to system model containers. Relationships are inherited automatically from the model.
+Defines how to model physical deployment infrastructure in `deployment.c4` and `operations.c4` files: Environment → Zone → VM → Node_App hierarchy, naming conventions, rich Markdown table descriptions with network specs, and `instanceOf` links to system model containers. Relationships are inherited automatically from the system model, so deployment relationships should stay rare and infrastructure-specific.
 
 ## When to Use
 
@@ -15,6 +15,8 @@ Defines how to model physical deployment infrastructure in `deployment.c4` and `
 - Adding VMs, zones, or deployment nodes to an existing environment
 - Linking deployed app instances to system model containers via `instanceOf`
 - Documenting infrastructure specs (IPs, OS, CPU, RAM, RTO) in VM descriptions
+
+**Default stance:** do not add application relationships or protocol details in deployment models/views. Put those on system-model relationships and let LikeC4 propagate them through `instanceOf`.
 
 **Do not use** for system model elements (containers, components) — use `create-element`. For zone layering and firewall rules, use `structure-deployment-tiers`.
 
@@ -30,6 +32,7 @@ Defines how to model physical deployment infrastructure in `deployment.c4` and `
 | Name a zone | `{Function}Zone` or `{Tier}Tier` |
 | Build hierarchy | Environment → Zone → VM → Node_App |
 | Link runtime to model | `instanceOf` with container FQN |
+| Handle relationships | Inherit from system model by default |
 | Document VM specs | Markdown table with `eth0` first |
 | Add metadata | Only if queried by automation/compliance |
 
@@ -155,12 +158,17 @@ AppTier = Zone "Application Tier (VLAN 101: 10.1.0.0/24)" {
 
 ## Relationship Inheritance via instanceOf
 
-**Critical:** You do NOT need to create deployment relationships explicitly. They are inherited automatically from the system model:
+**Critical:** You do NOT need to create deployment relationships explicitly. They are inherited automatically from the system model, including the logical relationship label and its technology value:
 
 ```likec4
 // system-model.c4
-api -[calls]-> uploadService 'Route uploads'
-uploadService -[async]-> jobQueue 'Queue jobs'
+api -[calls]-> uploadService 'Route uploads' {
+  technology 'HTTP/8080'
+}
+
+uploadService -[async]-> jobQueue 'Queue jobs' {
+  technology 'AMQP'
+}
 
 // deployment.c4 (relationships inherited automatically via instanceOf)
 Prod.Dmz.ProdApigwVm.apiApp {  // When you do:
@@ -176,9 +184,9 @@ Prod.ProcTier.ProdQueueVm.queueApp {
 }
 ```
 
-**Result:** Deployment views automatically show inherited relationships between instances, with no duplication needed.
+**Result:** Deployment views automatically show inherited relationships between instances, with no duplication needed. If you want to show `HTTP/8080`, `HTTPS`, `AMQP`, `LDAP`, or `Manual`, put that value on the system-model relationship instead of repeating it on deployment edges.
 
-**When to add deployment relationships:** Only for infrastructure-specific connections NOT in the system model (e.g., monitoring systems, backup agents, log collectors).
+**When to add deployment relationships:** Only for infrastructure-specific connections NOT in the system model (for example monitoring systems, backup agents, bastion access, log collectors, replication links, or an explicit network hop that matters operationally). Keep them sparse and do not duplicate normal application traffic.
 
 ## Optional: Metadata Fields
 
@@ -230,7 +238,7 @@ For comprehensive multi-environment setups with all tiers, zone descriptions, VM
 
 ❌ **Missing `instanceOf` link** — every `Node_App` must reference a Container from the system model via `instanceOf FQN`
 
-❌ **Creating deployment relationships manually** — relationships between deployed apps are inherited automatically from the system model via `instanceOf`; don’t duplicate them
+❌ **Creating deployment relationships manually** — relationships between deployed apps are inherited automatically from the system model via `instanceOf`; don’t duplicate them just to show `HTTPS`, `HTTP/8080`, database ports, or other technical details already captured in the logical model
 
 ❌ **Omitting network interface in description** — eth0 (and eth1 if dual-homed) must be the first rows in every VM description table
 
@@ -245,4 +253,4 @@ For comprehensive multi-environment setups with all tiers, zone descriptions, VM
 - [ ] Each VM has Markdown table with eth0, OS, CPU, RAM, Port, RTO
 - [ ] Each zone has VLAN/CIDR network info
 - [ ] Node_App references model Container via `instanceOf` (relationships are inherited automatically)
-- [ ] Only add deployment relationships for infrastructure-specific connections (monitoring, backups, etc.)
+- [ ] Only add deployment relationships for infrastructure-specific connections (monitoring, backups, bastion access, replication, etc.)

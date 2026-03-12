@@ -232,7 +232,7 @@ views 'Use Cases' {
 - **List ALL elements explicitly** from environment down to each VM
 - **NEVER use wildcards** (e.g., `production.*` or `dmz.**`) in deployment views
 - **Include hierarchy:** Environment → Zones → Clusters (optional) → VMs
-- **Stop at VM level** (don't drill into app instances unless showing deployment relationships)
+- **Stop at VM level by default**; if you include app instances, use them to show placement or an infra-specific exception, not to redraw inherited application relationships
 
 **Mandatory inclusion pattern:**
 ```likec4
@@ -539,6 +539,8 @@ views 'Deployment' {
 
 ❌ **Wildcards in deployment views** — always list every VM explicitly; `include production.*` skips important details
 
+❌ **Redrawing app traffic in deployment views** — keep `HTTPS`, `HTTP/8080`, `AMQP`, `LDAP`, etc. on system-model relationships and let deployment views inherit them via `instanceOf`
+
 ❌ **View outside category folder** — every view except `view index` must be inside a `views 'FolderName'` block
 
 ❌ **Dynamic view in C1 folder** — sequence/temporal flows belong in `views 'Use Cases'`, not in structural folders
@@ -552,11 +554,12 @@ views 'Deployment' {
 3. ✅ **Include neighbors:** Show related elements via `->` and `<-` includes
 4. ✅ **Use shared spec:** Reference `shared/spec-*.c4` for kinds/colors/shapes
 5. ✅ **Explicit deployment includes:** List all elements, never wildcards
-6. ✅ **Tag filtering:** Use `where tag is #Tag` for dynamic filtering
-7. ✅ **Wire navigation:** Add `navigateTo` when creating detail views
-8. ✅ **Organize by category:** Nest views in proper folders
-9. ⚠️ **Layout hints last resort:** Only add `rank` when autoLayout fails
-10. ❌ **Avoid over-broad:** Never use `include **` (shows too much)
+6. ✅ **Keep deployment edges rare:** prefer inherited logical relationships over manual deployment edges
+7. ✅ **Tag filtering:** Use `where tag is #Tag` for dynamic filtering
+8. ✅ **Wire navigation:** Add `navigateTo` when creating detail views
+9. ✅ **Organize by category:** Nest views in proper folders
+10. ⚠️ **Layout hints last resort:** Only add `rank` when autoLayout fails
+11. ❌ **Avoid over-broad:** Never use `include **` (shows too much)
 
 ## Common Patterns Reference
 

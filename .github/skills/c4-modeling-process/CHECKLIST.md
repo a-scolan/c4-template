@@ -200,7 +200,9 @@ Source: https://c4model.com/diagrams/checklist
 - [ ] VMs have infrastructure specs (IP, CPU, RAM, ports)
 - [ ] Zones have network details (VLAN, network, gateway)
 - [ ] Instances use `instanceOf` to link to containers
-- [ ] Deployment relationships mirror system model with protocols
+- [ ] Logical relationships and technologies live in the system model
+- [ ] Deployment views rely on inherited relationships by default
+- [ ] Deployment relationships are added only for infra-specific exceptions
 - [ ] One deployment view per environment
 
 ### Dynamic (Optional)

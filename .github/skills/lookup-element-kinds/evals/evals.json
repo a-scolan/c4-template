@@ -48,6 +48,18 @@
         "The response explains how to resolve close spellings by comparing against the repository’s actual taxonomy.",
         "The response avoids inventing undeclared kinds or relationships."
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "For `mySystem.webapp` talking to `mySystem.api`, should the model relationship kind be `https` or `calls`? And when does `https` become valid in this repository?",
+      "expected_output": "The response distinguishes model kind from relationship technology, and explains when deployment `https` is valid.",
+      "files": [],
+      "expectations": [
+        "The response says the logical model should use a model kind such as `calls`, not `https`, for this interaction.",
+        "The response puts `HTTPS` in the relationship `technology` field for the system model.",
+        "The response explains that deployment `https` is valid only for deployment-side infrastructure relationships.",
+        "The response points to shared specs and/or project summary for confirmation."
+      ]
     }
   ]
 }

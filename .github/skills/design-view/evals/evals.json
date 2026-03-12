@@ -20,7 +20,8 @@
       "expectations": [
         "The response uses `views 'Deployment'` with a `deployment view`.",
         "The response explicitly lists environment, zones, and VMs without `*` or `**` wildcards.",
-        "The response keeps parent hierarchy and stops at VM level."
+        "The response keeps parent hierarchy and stops at VM level.",
+        "The response does not require explicit deployment relationships for ordinary application traffic, or it explicitly prefers inherited relationships from the system model."
       ]
     },
     {

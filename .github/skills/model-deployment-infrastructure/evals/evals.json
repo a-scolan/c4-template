@@ -34,6 +34,18 @@
         "The response links `Node_App` to the logical model via `instanceOf`.",
         "The response routes tier/security-zone organization to `structure-deployment-tiers` if discussion drifts into network design."
       ]
+    },
+    {
+      "id": 3,
+      "prompt": "In `deployment.c4`, I was about to add `Prod.Web.webApp -[https]-> Prod.App.apiApp` and `Prod.App.apiApp -[tcp]-> Prod.Data.dbApp` so the diagram shows protocols and ports. Is that the right place, or should those technologies live somewhere else?",
+      "expected_output": "The response rejects duplicated deployment relationships for normal app traffic, moves protocol details to the system model, and keeps deployment edges only for infra-specific exceptions.",
+      "files": [],
+      "expectations": [
+        "The response says those deployment relationships should generally not be added for normal application traffic.",
+        "The response says protocol and port details belong on system-model relationships, for example `technology 'HTTPS'` or `technology 'HTTP/8080'`.",
+        "The response explains that deployment instances inherit logical relationships via `instanceOf`.",
+        "The response allows deployment relationships only for infrastructure-specific cases such as monitoring, replication, bastion access, or explicit network hops."
+      ]
     }
   ]
 }
