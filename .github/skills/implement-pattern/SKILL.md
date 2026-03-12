@@ -5,59 +5,64 @@ description: Use when adding a common architecture pattern such as an external i
 
 # Apply LikeC4 Common Patterns
 
-## Overview
+## Goal
 
-Provides starter patterns for recurring architectural structures: external integrations, async queue/worker workflows, caching layers, multi-tier request paths, and outbound/inbound notification flows.
+Give a safe starter structure quickly, then tell the user what to substitute with the exact kinds and names from the active workspace.
 
-These patterns are **starting structures**, not copy-paste truth. Always use kinds and relationship types that are actually declared in the active workspace.
+These are **starter scaffolds**, not copy-paste truth.
 
 ## When to Use
 
-- Adding an integration with an external third-party API
-- Modelling async background processing (queue + worker)
-- Adding a caching layer in front of a database
-- Defining a standard web + API + database stack
-- Modelling event-driven notifications (email, webhooks)
+- external third-party integration
+- async queue/worker processing
+- cache in front of a source-of-truth store
+- standard web/API/data stack
+- notification or webhook patterns
 
-**Prerequisites:**
-- Use `lookup-element-kinds` if you are unsure which exact kinds exist in the active workspace
-- Use `create-element` for element creation
-- Use `create-relationship` for typed relationships
+## Preconditions
 
-## Quick Reference
+- if exact kinds are unclear, use `lookup-element-kinds`
+- create or adjust the elements with `create-element`
+- create typed arrows with `create-relationship`
 
-| Pattern | Key relationships |
-|---------|------------------|
-| External Integration | `api -[calls]-> externalService` |
-| Async Queue/Worker | `api -[async]-> queue` + `worker -[async]-> queue` |
-| Caching Layer | `api -[reads]-> cache` + `api -[reads]-> database` (miss) |
-| Multi-Tier | `webapp -[calls]-> api -[reads/writes]-> database` |
-| Event Notification | `api -[async]-> queue` + `worker -[calls]-> externalProvider` |
+## Default response shape
 
-## Pattern: External System Integration
+1. name the pattern
+2. give one minimal scaffold
+3. list the substitutions to make (`parent`, `exact kinds`, `names`, `tech`) 
+4. hand off only if the user is moving to timing/views/deployment
+
+## Quick pattern map
+
+| Pattern | Minimal relationship shape |
+|---|---|
+| External integration | `api -[calls]-> externalService` |
+| Async queue/worker | `api -[async]-> queue` + `worker -[async]-> queue` |
+| Cache + source of truth | `api -[reads]-> cache` + `api -[reads]-> database` |
+| Web/API/data stack | `webapp -[calls]-> api` + `api -[reads/writes]-> database` |
+| Notification flow | `api -[async]-> queue` + `worker -[calls]-> provider` |
+
+## Compact scaffolds
+
+### External integration
 
 ```likec4
 externalService = System_External 'Third-Party API' {
-  technology 'REST API'
-  description 'External payment processor'
-  #External
+  technology 'HTTPS API'
+  description 'External service used by the platform.'
 }
 
-api -[calls]-> externalService 'Process payment' {
+api -[calls]-> externalService 'Processes request' {
   technology 'HTTPS'
 }
 ```
 
-**Notes:**
-- Tag externals with `#External` (or the shared spec external tag).
-- Keep the relationship label action-focused (e.g., “Process payment”).
-
-## Pattern: Async Processing (Queue + Worker)
+### Async queue/worker
 
 ```likec4
 queue = Container_Queue 'Job Queue' {
   technology 'RabbitMQ'
-  description 'Async job processing'
+  description 'Buffers asynchronous work.'
 }
 
 api -[async]-> queue 'Publishes job' {
@@ -69,101 +74,91 @@ worker -[async]-> queue 'Consumes job' {
 }
 ```
 
-**Notes:**
-- Async flows are one-way; do not add return calls from workers.
-- Use `-[writes]->` for persistence and `-[reads]->` for queries.
-
-## Pattern: Caching Layer
+### Cache + source of truth
 
 ```likec4
 cache = Container 'Redis Cache' {
   technology 'Redis'
-  description 'Low-latency cache for hot data'
+  description 'Hot-data cache.'
 }
 
-api -[reads]-> cache 'Read-through cache'
-api -[writes]-> cache 'Cache updates'
-api -[reads]-> database 'Fetch on cache miss'
-api -[writes]-> database 'Persist source-of-truth changes'
+api -[reads]-> cache 'Checks cache'
+api -[reads]-> database 'Fetches on cache miss'
+api -[writes]-> cache 'Refreshes cache'
+api -[writes]-> database 'Persists source-of-truth changes'
 ```
 
-**Notes:**
-- Use a declared cache-specific kind if the active workspace has one. Otherwise, use a valid declared generic/container kind and make the cache role clear in title + technology.
-- Use cache for hot reads; keep the database as source of truth.
-- Use `reads`/`writes` for data access.
+Use a more specific declared cache/container kind if the workspace provides one.
 
-## Pattern: Multi-Tier Architecture
+### Web/API/data stack
 
 ```likec4
 webapp = Container_Webapp 'Web App' {
   technology 'React'
-  description 'User interface'
+  description 'User interface.'
 }
 
 api = Container_Api 'API' {
   technology 'Node.js'
-  description 'Business logic'
+  description 'Business logic.'
 }
 
 database = Container_Database 'Database' {
   technology 'PostgreSQL'
-  description 'Data persistence'
+  description 'Canonical data store.'
 }
 
-webapp -[calls]-> api 'API requests'
-api -[reads]-> database 'Queries'
-api -[writes]-> database 'Updates'
+webapp -[calls]-> api 'Sends API requests'
+api -[reads]-> database 'Queries data'
+api -[writes]-> database 'Persists changes'
 ```
 
-## Pattern: Event Notification
+### Notification flow
 
 ```likec4
 notificationQueue = Container_Queue 'Notification Queue' {
   technology 'RabbitMQ'
+  description 'Queues outbound notifications.'
 }
 
 notificationWorker = Container 'Notification Worker' {
   technology 'Worker runtime'
-  description 'Consumes notification jobs'
+  description 'Delivers queued notifications.'
 }
 
-externalProvider = System_External 'Notification Provider' {
-  technology 'Email API'
-  #External
+provider = System_External 'Notification Provider' {
+  technology 'HTTPS API'
+  description 'External delivery provider.'
 }
 
-api -[async]-> notificationQueue 'Publish notification job' {
+api -[async]-> notificationQueue 'Publishes notification job' {
   technology 'AMQP'
 }
 
-notificationWorker -[async]-> notificationQueue 'Consume notification job' {
+notificationWorker -[async]-> notificationQueue 'Consumes notification job' {
   technology 'AMQP'
 }
 
-notificationWorker -[calls]-> externalProvider 'Deliver notification' {
+notificationWorker -[calls]-> provider 'Delivers notification' {
   technology 'HTTPS'
 }
 ```
 
-**Notes:**
-- Model the outbound delivery as an explicit second interaction, not as a return path from the first call.
-- Use `create-sequence-view` if webhook or callback order matters.
+## Pattern rules that must survive every scaffold
 
-## Common Mistakes
+- async flows are one-way; do not add return calls from workers
+- reads/writes are for data access; databases are not generic service calls
+- keep the database as source of truth when cache is present
+- do not invent undeclared kinds or relationship types
+- if callback/webhook order matters, move the temporal story to `create-sequence-view`
 
-❌ **Return relationship from worker** — async flows are one-way; never add `worker -[calls]-> api` or any return path
+## If MCP is unavailable
 
-❌ **Using `-[calls]->` for database access** — use `-[reads]->` for queries and `-[writes]->` for mutations; database access is not a “call”
-
-❌ **Missing `#External` tag** — all third-party systems must be tagged so they visually distinguish from internal elements
-
-❌ **Inventing undeclared kinds or relationship types** — if the workspace has no `Container_Cache` or `sends`, do not invent them; choose a valid declared kind and model the interaction explicitly
-
-❌ **Cache as only source of truth** — always keep the database as authoritative source; cache is a read-through layer, not primary storage
+Use the local shared specs and model files to choose the nearest declared kinds, then provide the scaffold immediately. List the exact substitutions to verify later when tooling is back.
 
 ## Handoffs
 
-- Need the exact kinds available in this workspace? Use `lookup-element-kinds`
-- Need to create the elements cleanly? Use `create-element`
-- Need exact relationship syntax or technology placement? Use `create-relationship`
-- Need temporal ordering for webhooks, retries, or callbacks? Use `create-sequence-view`
+- exact kinds unclear → `lookup-element-kinds`
+- element declarations need cleanup → `create-element`
+- relationship details need tuning → `create-relationship`
+- callbacks, retries, or webhook timing matter → `create-sequence-view`

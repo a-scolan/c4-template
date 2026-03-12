@@ -1,0 +1,41 @@
+{
+  "skill_name": "customize-view",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 121.1744,
+    "elapsed_seconds_per_eval": 24.2349,
+    "response_words_total": 142,
+    "response_words_per_eval": 28.4,
+    "files_read_count": 6,
+    "files_written_count": 6
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/without_skill/response.md",
+      "response_words": 26
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "response_words": 20
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/without_skill/response.md",
+      "response_words": 18
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/without_skill/response.md",
+      "response_words": 53
+    },
+    {
+      "id": 4,
+      "response_path": "eval-4/without_skill/response.md",
+      "response_words": 25
+    }
+  ]
+}

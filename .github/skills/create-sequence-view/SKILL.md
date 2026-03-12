@@ -5,111 +5,75 @@ description: Use when documenting a LikeC4 use case, temporal flow, or async beh
 
 # Create Dynamic Sequence View
 
-## Overview
+## Goal
 
-Dynamic (sequence) views show HOW the system behaves during important operations: who initiates, what happens, in what order. They use plain `->` arrows (no relationship kinds), always start with the triggering actor, and are grouped in the `'Use Cases'` view folder.
+Show **who starts the flow**, **what happens next**, and **in what order**.
+
+Default answer shape:
+1. confirm this belongs in `views 'Use Cases'`
+2. provide one short dynamic-view scaffold
+3. call out one critical anti-pattern if relevant
 
 ## When to Use
 
-- Documenting a user workflow (upload, login, checkout)
-- Showing async patterns (queue publish → consume → persist)
-- Clarifying error flows, validation paths, or recovery procedures
-- Any scenario where temporal order and causality need to be explicit
+- user workflows
+- async publish/consume flows
+- validation or error paths
+- webhook/callback ordering
+- any case where temporal order matters more than static structure
 
-**Do not use** for structural diagrams (C1/C2/C3 static views) — use `design-view` for those. Dynamic views cannot show parent → own-child relationships.
+**Do not use** for static C1/C2/C3/deployment views — use `design-view` for those.
 
-## Quick Reference
+## Hard rules
 
-- Start with the initiating actor.
-- Use plain arrows (`->`), no relationship kinds.
-- Keep labels action-focused and time-ordered.
-- Place all dynamic views in `views 'Use Cases'`.
-- Avoid parent → child calls inside the same container.
+- start with the initiating actor or external trigger
+- use plain `->` arrows only
+- keep labels short and action-focused
+- place dynamic views in `views 'Use Cases'`
+- do not show parent → own-child interactions
 
-## Core Requirement: Always Include Initiating Actors
-
-**Dynamic views MUST explicitly show the actor(s) that initiate the flow for context:**
-- Start every sequence with the external actor (user, external system, scheduler)
-- Show which user action triggers which internal flows
-- Make causality explicit: "Who does what? When? Why?"
-- This answers: "What triggers this behavior? Who is involved?"
-
-## Organization & Purpose
-
-Place sequence/dynamic views in the `'Use Cases'` subfolder to show **temporal flows** - how the system behaves during important operations.
-
-**Types of use cases to document:**
-- **User workflows:** Upload → validation → processing → storage (happy path)
-- **Validation & error flows:** Input validation, exception handling, retries
-- **Async patterns:** Message queues, background jobs, notifications
-- **Data flows:** Data movement through system (retrieval, transformation, storage)
-- **Disaster recovery:** Failover, replication, recovery procedures
-- **Integration patterns:** External system interactions, polling, webhooks
+## Minimal scaffold
 
 ```likec4
 views 'Use Cases' {
-  dynamic view upload_flow { ... }
-  dynamic view retrieval_flow { ... }
-  dynamic view backup_replication { ... }
-  dynamic view error_handling { ... }
-}
-```
-
-## Requirements
-
-1. **Use `dynamic view`** with descriptive ID
-2. **Include initiating actor** - ALWAYS start with external actor (user, system, scheduler)
-3. **No relationship kinds:** Use plain `->` not `-[kind]->`
-4. **Step labels:** Add descriptive text for each interaction explaining WHAT happens
-5. **Temporal order:** Steps execute top-to-bottom showing sequence
-6. **Folder organization:** Group all use cases in `views 'Use Cases'` subfolder
-7. **Title format:** "[WorkflowName]" (e.g., "Upload") — the folder already provides the category
-8. **CRITICAL: No parent-child relationships** - Cannot show `container -> container.component`
-
-## Parent-Child Restriction
-
-**Dynamic views CANNOT show a parent element calling its own child:**
-
-```likec4
-// ❌ INVALID: Container calling its own component
-user -> webApp
-webApp -> webApp.authComponent   // ❌ COMPILATION ERROR!
-
-// ✅ CORRECT: Actor directly accesses component
-user -> authComponent 'Initiates login'
-authComponent -> directoryService 'Validates credentials'
-```
-
-**Why this restriction exists:**
-- Dynamic views show interactions BETWEEN independent parts
-- Parent-child is a containment relationship, not an interaction
-- In real systems, actors interact with specific components, not abstract containers
-
-## Example
-
-```likec4
-views 'Use Cases' {
-  dynamic view sequence_upload {
-    title 'Document Upload Flow'
-    
+  dynamic view uploadFlow {
+    title 'Upload Flow'
     user -> webApp 'Opens upload form'
     webApp -> api 'POST /upload'
-    api -> objectStorage 'Store file'
-    api -> jobQueue 'Queue processing job'
-    jobQueue -> worker 'Execute job'
-    worker -> primaryDatabase 'Update metadata'
+    api -> objectStorage 'Stores file'
+    api -> jobQueue 'Queues processing'
+    jobQueue -> worker 'Delivers job'
+    worker -> primaryDatabase 'Updates metadata'
   }
 }
 ```
 
-## Common Mistakes
+## One anti-pattern to check first
 
-❌ **Omitting the initiating actor** — every sequence MUST start with the external actor (user, system, scheduler)
+```likec4
+// ❌ Wrong in a dynamic view
+user -> webApp
+webApp -> webApp.authComponent
+```
 
-❌ **Using `-[calls]->`** — dynamic views MUST use plain `->` only; relationship kinds cause compilation errors
+```likec4
+// ✅ Better
+user -> webApp.authComponent 'Starts login'
+webApp.authComponent -> directoryService 'Validates credentials'
+```
 
-❌ **Placing views outside `'Use Cases'`** — all dynamic views belong in the `views 'Use Cases'` folder
+## If MCP is unavailable
 
-❌ **Parent calling its own child** (`container -> container.component`) — dynamic views cannot show containment; have the actor address the component directly
+You can still help:
 
-❌ **Steps out of temporal order** — each arrow must represent the next real action in time; avoid circular or back-and-forth patterns
+1. infer the relevant actor, boundary, and step order from local model files
+2. provide the shortest valid dynamic-view snippet
+3. flag any element references that still need later confirmation
+
+## Common mistakes
+
+- ❌ missing initiating actor
+- ❌ using `-[calls]->` instead of plain `->`
+- ❌ placing the view outside `views 'Use Cases'`
+- ❌ showing parent → own-child calls
+- ❌ mixing static structure explanation into the sequence instead of showing temporal steps

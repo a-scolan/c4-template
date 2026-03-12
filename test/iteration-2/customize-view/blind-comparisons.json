@@ -1,0 +1,110 @@
+{
+  "skill_name": "customize-view",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "A matches the left-to-right ask, preserves drill-down, and keeps broader output context including the mail service; B is cleaner but drops key output elements from the prompt.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "Both stay in style-only customization with shared palette names, but A more clearly de-emphasizes non-API elements while keeping the API emphasis explicit.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 8
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "A is more clearly anchored to an existing view and existing detail target while adding the required external link; B is close but feels less tied to the explicitly existing drill-down.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.67
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "B",
+      "reasoning": "Both combine style, link, and drill-down, but B explicitly states that new structural or C3 work belongs to design-view, which the expectations ask for.",
+      "rubric": {
+        "A": {
+          "overall_score": 8
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.75
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "TIE",
+      "reasoning": "Both keep the change light-touch with autoLayout plus a single user anchor and both explicitly discourage piling on extra rank directives.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

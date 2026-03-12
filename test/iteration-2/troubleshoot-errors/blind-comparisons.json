@@ -1,0 +1,89 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "TIE",
+      "reasoning": "Both isolate the invalid kind and broken FQN, recommend checking taxonomy/project structure before renaming, and give concrete corrections.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "Both catch the parent-to-child dynamic-view error and invalid rank constraint; B gives slightly clearer peer-level rewrite options.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "TIE",
+      "reasoning": "Both first validate relationship taxonomy, reject `sends`, separately verify the FQN for `dataLayer.cache`, and propose targeted fixes.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "Both explain taxonomy leakage and duplicate deployment traffic; A is slightly stronger on inherited `instanceOf` relationships and infrastructure-only deployment links.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

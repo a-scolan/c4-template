@@ -1,0 +1,68 @@
+{
+  "skill_name": "document-decision",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "Both satisfy all four expectations, but A ties the PostgreSQL choice more concretely to LikeC4 elements, affected services/views, and follow-up work.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.4
+        },
+        "B": {
+          "overall_score": 9.0
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "B explicitly states the skill is out of scope for repo tooling/CI-CD and still offers concise alternatives; A is reasonable but less explicit on skill scope.",
+      "rubric": {
+        "A": {
+          "overall_score": 7.4
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.67
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "Both meet the full rubric, but A is more complete on impacted elements and concrete follow-ups, including webhook, migration, and decommissioning implications.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.6
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

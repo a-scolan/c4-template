@@ -1,0 +1,41 @@
+{
+  "skill_name": "lookup-element-kinds",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 85.7186,
+    "elapsed_seconds_per_eval": 17.1437,
+    "response_words_total": 537,
+    "response_words_per_eval": 107.4,
+    "files_read_count": 9,
+    "files_written_count": 6
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/without_skill/response.md",
+      "response_words": 105
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "response_words": 123
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/without_skill/response.md",
+      "response_words": 61
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/without_skill/response.md",
+      "response_words": 137
+    },
+    {
+      "id": 4,
+      "response_path": "eval-4/without_skill/response.md",
+      "response_words": 111
+    }
+  ]
+}

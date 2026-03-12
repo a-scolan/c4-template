@@ -5,74 +5,129 @@ description: Use when starting any LikeC4 modeling task, switching projects, or 
 
 # Understand Project Structure
 
-## Overview
+## Goal
 
-Load project context before editing any model or view. This skill prevents invalid kinds, wrong relationships, and out-of-scope edits by validating project structure against shared specifications and current project summary.
+Establish the workspace context **before** editing so you do not guess kinds, relationships, tags, or the active project.
+
+This skill has two modes:
+
+| Mode | What it optimizes for |
+|---|---|
+| **Preflight for editing** | Safe setup before changing elements, relationships, views, or deployment |
+| **Onboarding for contributors** | Fast understanding of local conventions, sources of truth, and handoffs |
 
 ## When to Use
 
-- Start of any LikeC4 task (new conversation or new branch)
-- Before creating/modifying elements, relationships, views, or deployment nodes
+- Start of any LikeC4 task
 - After switching project in a multi-project workspace
-- When errors mention unknown kinds/relationships or missing references
+- Before C1/C2/C3/view/deployment edits
+- When errors mention unknown kinds, relationships, or missing references
+- When a contributor is new to this repository or to LikeC4
 
-## C4 Framework Foundation
+## Source-of-truth order
 
-**REQUIRED BACKGROUND:** Read `c4-modeling-process` skill to understand the C4 methodology and design hierarchy (C1 Context → C2 Container → C3 Component).
+Always establish context in this order:
 
-## Workspace Structure
+1. **Active project** — `list-projects`, then `read-project-summary` for the intended project
+2. **Semantic taxonomy** — `projects/shared/SPEC_CHEATSHEET.md` and `projects/shared/spec-*.c4`
+3. **Project wiring** — the project `likec4.config.json`, model files, and view files
+4. **Workflow guidance** — `.github/skills/` tells you how to work, not what the taxonomy is
 
-- **Shared specifications:** `projects/shared/spec-*.c4` - Source of truth for element kinds, relationship types, and tags
-- **LikeC4 MCP (REQUIRED):** Required for project discovery and structure validation
-- **Context7 MCP (AS NEEDED):** Use only when syntax/feature behavior is unclear
-- **ADR documentation:** `ADR/` directory - System architecture decisions using standard ADR format
+Important distinction:
+- `projects/shared/spec-*.c4` = semantic source of truth
+- `.github/skills/` = workflow guidance
+- example projects such as `template` or `spec-showcase` = references only, **not** authoritative taxonomy
 
-## Steps
+## Local conventions worth locking in early
 
-1. **C4 Context (REQUIRED):** Read `c4-modeling-process` skill to understand design hierarchy
-2. **Use LikeC4 MCP (REQUIRED):** Run `list-projects`, then `read-project-summary` for the active project
-3. Read `likec4.config.json` to understand includes and image aliases
-4. Check `projects/shared/spec-*.c4` for available element kinds, relationship types, and tags
-5. Review existing model files to understand current C1/C2/C3 architecture
-6. Resolve uncertainties with `read-element` / `search-element` before proposing changes
-7. **Use Context7 MCP (optional):** Query LikeC4 documentation only for unresolved syntax/feature questions
+Examples actually used here include:
+- kinds such as `Container_Api`, `Container_Queue`, `Container_Database`, `System_External`, `Node_Vm`, `Node_App`
+- model relationships such as `uses`, `calls`, `async`, `reads`, `writes`
+- deployment relationship kinds such as `http`, `https`, `tcp`, `amqp`, `ldap`, `sql`, `redis`, `smtp`
 
-## Quick Reference
+Do not infer taxonomy from memory or from a nice-looking example file alone.
 
-| MCP Tool | When to use |
-|----------|------------|
-| `list-projects` | Find available projects in workspace |
-| `read-project-summary` | Get all elements, kinds, tags for a project |
-| `read-element` | Get details of a specific element |
-| `search-element` | Find element by name, kind, or tag |
+## Preflight for editing
 
-**Key files to read:**
+Use this sequence before proposing changes:
 
-```
-likec4.config.json              # Includes and image aliases
-projects/shared/spec-*.c4       # Element kinds, relationship types, tags
-projects/<project>/system-model.c4  # Existing C1/C2/C3 model
-```
+1. confirm the active project
+2. read the project summary
+3. read shared specs and `SPEC_CHEATSHEET.md`
+4. inspect the target project `likec4.config.json`
+5. inspect the nearest model/view files that will actually be edited
+6. only then hand off to the next editing skill
 
-## If Project Summary Looks Wrong
+### MCP checks to re-run after switching projects
 
-1. Re-run `list-projects` and confirm the intended project ID.
-2. Re-run `read-project-summary` with the explicit project.
-3. Verify `likec4.config.json` includes point to expected model files.
-4. Verify shared specs are reachable and match expected kinds/relations.
-5. If still inconsistent, stop edits and report the context as blocked/incomplete.
+- `list-projects`
+- `read-project-summary`
+- `search-element` or `read-element` for the target boundary when needed
 
-## Common Mistakes
+Re-run them after a project switch because stale context causes the exact failures this skill is meant to prevent: wrong project, wrong kind, wrong parent, wrong FQN.
 
-- ❌ Skipping this skill and guessing element kind names
-- ❌ Using `read-project-summary` only once — re-read after major model changes
-- ❌ Ignoring `spec-*.c4` files in favor of guessing from other elements in the model
-- ❌ Starting work without knowing which project is active in a multi-project workspace
-- ❌ Treating Context7 as mandatory for every task (it is on-demand, not first step)
+## Onboarding for contributors
+
+When the user is new to the repo, explain the workspace in this order:
+
+1. where the shared taxonomy lives
+2. where project-specific models and views live
+3. which files are semantic truth vs workflow guidance
+4. which next skill should take over once preflight is done
+
+Good onboarding answers explicitly say that:
+- `.github/skills/` helps with workflow, but does **not** override shared specs
+- `projects/shared/spec-*.c4` and the project summary define valid kinds/relationships/tags
+- example projects are there to learn patterns, not to redefine semantics
+
+## Handoff after preflight
+
+Once context is locked in, hand off deliberately:
+
+- overall C1 → C2 → C3 sequencing → `c4-modeling-process`
+- new element or property → `create-element`
+- new relationship → `create-relationship`
+- static/deployment view → `design-view`
+- dynamic/use-case flow → `create-sequence-view`
+- deployment structure → `model-deployment-infrastructure`
+
+### Short handoff template
+
+> Active project and shared taxonomy are validated. The next step is `<skill>` because the remaining task is `<modeling activity>`.
+
+## If the project summary looks wrong
+
+1. re-run `list-projects` and verify the intended project ID
+2. re-run `read-project-summary` with the explicit project
+3. verify the project `likec4.config.json` include paths
+4. verify shared specs are reachable and match the expected kinds/relationships
+5. if still inconsistent, stop and report the context as blocked instead of guessing
+
+## If MCP is unavailable
+
+Use an offline preflight instead of stalling:
+
+1. read `projects/shared/SPEC_CHEATSHEET.md`
+2. read `projects/shared/spec-*.c4`
+3. read the target project `likec4.config.json`
+4. read the nearby model/view files that will be edited
+5. state what still needs MCP confirmation later (project summary, specific element lookup, relationship graph)
+
+You should still be able to explain local conventions and safe next steps without MCP.
+
+## Common mistakes
+
+- ❌ guessing kinds from memory instead of revalidating the active project
+- ❌ treating `.github/skills/` as the semantic source of truth
+- ❌ using example projects as authoritative taxonomy
+- ❌ editing C3 without checking the real parent container/system first
+- ❌ assuming one `read-project-summary` run stays valid after switching projects or after major edits
 
 ## Output
 
-- Understanding of C4 framework and top-to-bottom design approach
-- Complete understanding of project structure and architecture
-- Available element kinds, relationship types, and tags
-- Current C1/C2/C3 architecture organization
+Return a short preflight or onboarding guide that clearly states:
+- active project or how to confirm it
+- source-of-truth files
+- valid local taxonomy examples
+- risks avoided by the preflight
+- the correct next skill to use

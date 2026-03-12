@@ -1,0 +1,89 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "A matches the full Environment→Zone→VM→Node_App skeleton, explains `instanceOf` inheritance, and gives richer zone/VM guidance including `eth0`-first tables; B also passes but is slightly less concrete on zone descriptions.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "TIE",
+      "reasoning": "Both explicitly route tier/firewall design to `structure-deployment-tiers`, preserve the base Environment→Zone→VM→Node_App hierarchy, and present this skill as deployment scaffolding rather than full network design.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "A more directly answers the managed-Kubernetes constraint by refusing invented VMs, keeping an honest Environment→Zone→Cluster→Node_App hierarchy, wiring `instanceOf`, and routing network-design drift to `structure-deployment-tiers`; B also passes but is a bit less structurally consistent.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "A most clearly rejects duplicating normal deployment edges, places protocol/port details on system-model relationships with concrete examples, explains `instanceOf` inheritance, and limits deployment edges to infra-only exceptions; B also passes but is slightly less exact.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

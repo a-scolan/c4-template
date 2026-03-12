@@ -14,6 +14,67 @@ from typing import Any
 ITERATION_RE = re.compile(r"^iteration-(\d+)$")
 WORD_RE = re.compile(r"\S+")
 
+BENCHMARK_AGENTS = {
+    "manager": "Skill Benchmark Manager",
+    "without_skill": "Skill Benchmark Baseline",
+    "with_skill": "Skill Benchmark With Skill",
+    "blind_compare": "Skill Blind Comparator",
+}
+BLIND_FORBIDDEN_TOKENS = [
+    "blind-map.json",
+    "with_skill/response.md",
+    "without_skill/response.md",
+    "with_skill-summary.json",
+    "without_skill-summary.json",
+    "with_skill-run-metrics.json",
+    "without_skill-run-metrics.json",
+    "SKILL.md",
+]
+REQUIRED_RUN_METRIC_KEYS = (
+    "skill_name",
+    "configuration",
+    "language",
+    "mcp_used",
+    "started_at",
+    "finished_at",
+    "elapsed_seconds_total",
+    "files_read_count",
+    "files_written_count",
+)
+RUN_METRIC_KEY_ALIASES = {
+    "skill_name": ("skill_name",),
+    "configuration": ("configuration",),
+    "language": ("language",),
+    "mcp_used": ("mcp_used",),
+    "started_at": ("started_at", "started_at_utc", "start_timestamp_utc"),
+    "finished_at": ("finished_at", "finished_at_utc", "finish_timestamp_utc"),
+    "elapsed_seconds_total": ("elapsed_seconds_total",),
+    "files_read_count": ("files_read_count", "intentionally_read_workspace_files_count", "workspace_files_intentionally_read"),
+    "files_written_count": (
+        "files_written_count",
+        "files_written_under_target_output_dir_count",
+        "files_written_under_target_output_directory_count",
+    ),
+}
+RUN_METRIC_LIST_FALLBACKS = {
+    "files_read_count": ("intentionally_read_workspace_files", "workspace_files_read"),
+    "files_written_count": (
+        "files_written_under_target_output_dir",
+        "files_written_under_target_output_directory",
+        "files_written",
+    ),
+}
+RUN_METRIC_DEFAULTS = {
+    "language": "English",
+    "mcp_used": False,
+}
+RUN_METRIC_ALIAS_KEYS_TO_DROP = {
+    alias
+    for key, aliases in RUN_METRIC_KEY_ALIASES.items()
+    for alias in aliases
+    if alias != key
+}
+
 
 def read_json(path: Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -44,6 +105,168 @@ def round_or_none(value: float | None, digits: int = 4) -> float | None:
     if value is None:
         return None
     return round(value, digits)
+
+
+def iso_to_datetime(value: Any) -> datetime | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    normalized = value.strip()
+    if normalized.endswith("Z"):
+        normalized = normalized[:-1] + "+00:00"
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
+
+def coerce_bool(value: Any) -> bool | None:
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        lowered = value.strip().lower()
+        if lowered in {"true", "1", "yes", "y"}:
+            return True
+        if lowered in {"false", "0", "no", "n"}:
+            return False
+    return None
+
+
+def coerce_int(value: Any) -> int | None:
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def coerce_float(value: Any) -> float | None:
+    if value is None or isinstance(value, bool):
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def infer_run_metrics_fields(metrics_path: Path) -> dict[str, str | None]:
+    configuration = None
+    file_name = metrics_path.name
+    for candidate in ("with_skill", "without_skill"):
+        if file_name == f"{candidate}-run-metrics.json":
+            configuration = candidate
+            break
+    return {
+        "skill_name": metrics_path.parent.name if metrics_path.parent != metrics_path else None,
+        "configuration": configuration,
+    }
+
+
+def build_run_metrics_payload(
+    *,
+    skill_name: str,
+    configuration: str,
+    language: str,
+    mcp_used: bool,
+    started_at: str,
+    finished_at: str,
+    elapsed_seconds_total: float,
+    files_read_count: int,
+    files_written_count: int,
+) -> dict[str, Any]:
+    return {
+        "skill_name": skill_name,
+        "configuration": configuration,
+        "language": language,
+        "mcp_used": mcp_used,
+        "started_at": started_at,
+        "finished_at": finished_at,
+        "elapsed_seconds_total": elapsed_seconds_total,
+        "files_read_count": files_read_count,
+        "files_written_count": files_written_count,
+    }
+
+
+def canonicalize_run_metrics(metrics: dict[str, Any], metrics_path: Path | None = None) -> tuple[dict[str, Any], list[str]]:
+    inferred = infer_run_metrics_fields(metrics_path) if metrics_path else {}
+    canonical: dict[str, Any] = {}
+    changes: list[str] = []
+
+    for key in REQUIRED_RUN_METRIC_KEYS:
+        aliases = RUN_METRIC_KEY_ALIASES.get(key, (key,))
+        value = None
+        source_key = None
+        for alias in aliases:
+            if alias in metrics and metrics[alias] is not None:
+                value = metrics[alias]
+                source_key = alias
+                break
+
+        if value is None and key in RUN_METRIC_LIST_FALLBACKS:
+            for list_key in RUN_METRIC_LIST_FALLBACKS[key]:
+                list_value = metrics.get(list_key)
+                if isinstance(list_value, list):
+                    value = len(list_value)
+                    source_key = list_key
+                    changes.append(f"derived {key} from {list_key}")
+                    break
+
+        if value is None and inferred.get(key) is not None:
+            value = inferred[key]
+            changes.append(f"inferred {key} from metrics path")
+
+        if value is None and key in RUN_METRIC_DEFAULTS:
+            value = RUN_METRIC_DEFAULTS[key]
+            changes.append(f"defaulted {key}")
+
+        if key == "mcp_used":
+            coerced = coerce_bool(value)
+            if value is not None and coerced is None:
+                changes.append(f"could not coerce {key}; leaving as-is")
+            value = coerced if coerced is not None else value
+        elif key in {"files_read_count", "files_written_count"}:
+            coerced = coerce_int(value)
+            value = coerced if coerced is not None else value
+        elif key == "elapsed_seconds_total":
+            coerced = coerce_float(value)
+            value = coerced if coerced is not None else value
+
+        if source_key and source_key != key:
+            changes.append(f"mapped {source_key} -> {key}")
+
+        canonical[key] = value
+
+    if canonical.get("elapsed_seconds_total") is None:
+        started_at = iso_to_datetime(canonical.get("started_at"))
+        finished_at = iso_to_datetime(canonical.get("finished_at"))
+        if started_at and finished_at:
+            canonical["elapsed_seconds_total"] = round((finished_at - started_at).total_seconds(), 6)
+            changes.append("derived elapsed_seconds_total from started_at and finished_at")
+
+    normalized = {key: canonical.get(key) for key in REQUIRED_RUN_METRIC_KEYS}
+    for key, value in metrics.items():
+        if key in normalized or key in RUN_METRIC_ALIAS_KEYS_TO_DROP:
+            continue
+        normalized[key] = value
+
+    return normalized, changes
+
+
+def load_run_metrics(metrics_path: Path, *, write_back: bool) -> tuple[dict[str, Any], list[str]]:
+    metrics = read_json(metrics_path)
+    normalized, changes = canonicalize_run_metrics(metrics, metrics_path)
+    if write_back and (changes or normalized != metrics):
+        write_json(metrics_path, normalized)
+    return normalized, changes
+
+
+def delta_or_none(left: float | int | None, right: float | int | None, digits: int = 4) -> float | None:
+    if left is None or right is None:
+        return None
+    return round(float(left) - float(right), digits)
 
 
 def iteration_number(path: Path) -> int | None:
@@ -178,6 +401,220 @@ def skill_dirs(iteration_dir: Path) -> list[Path]:
     )
 
 
+def benchmark_agent_plan(iteration_dir: Path, skill: str | None = None) -> dict[str, Any]:
+    notes = [
+        "Enable chat.useCustomAgentHooks = true before using the benchmark agents.",
+        "Keep the physical relocation step for the without_skill phase; hooks strengthen isolation but do not replace it.",
+        "The benchmark manager may delegate only to the constrained benchmark worker agents.",
+        "Benchmark worker agents are read-only and set agents: [] so they cannot chain into unconstrained subagents.",
+    ]
+    if skill:
+        notes.append(
+            f"For with_skill runs, open a fresh session with {BENCHMARK_AGENTS['with_skill']} and read only the target skill '{skill}'."
+        )
+
+    return {
+        "iteration": iteration_dir.name,
+        "required_setting": {
+            "chat.useCustomAgentHooks": True,
+        },
+        "agents": BENCHMARK_AGENTS,
+        "phases": [
+            {
+                "phase": "without_skill",
+                "agent": BENCHMARK_AGENTS["without_skill"],
+                "precondition": "Workspace skills were physically moved out of .github/skills/ and fresh workers were started afterwards.",
+            },
+            {
+                "phase": "with_skill",
+                "agent": BENCHMARK_AGENTS["with_skill"],
+                "precondition": "Workspace skills were restored and each fresh worker stays inside one target skill directory.",
+                "target_skill": skill,
+            },
+            {
+                "phase": "blind_compare",
+                "agent": BENCHMARK_AGENTS["blind_compare"],
+                "precondition": "Only blind A/B artifacts and the target eval definitions are exposed to the comparator.",
+            },
+        ],
+        "notes": notes,
+    }
+
+
+def validate_blind_isolation(iteration_dir: Path) -> dict[str, Any]:
+    issues: list[dict[str, Any]] = []
+    checked_skills = 0
+    checked_evals = 0
+
+    for skill_dir in skill_dirs(iteration_dir):
+        checked_skills += 1
+        comparisons_path = skill_dir / "blind-comparisons.json"
+        if comparisons_path.exists():
+            comparisons_text = comparisons_path.read_text(encoding="utf-8")
+            for forbidden in BLIND_FORBIDDEN_TOKENS:
+                if forbidden in comparisons_text:
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "path": comparisons_path.relative_to(iteration_dir).as_posix(),
+                            "issue": f"forbidden token '{forbidden}' leaked into blind-comparisons.json",
+                        }
+                    )
+
+        for eval_dir in sorted(skill_dir.glob("eval-*"), key=lambda path: path.name):
+            blind_dir = eval_dir / "blind"
+            if not blind_dir.exists():
+                continue
+            checked_evals += 1
+
+            for required_name in ("A.md", "B.md"):
+                if not (blind_dir / required_name).exists():
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "path": blind_dir.relative_to(iteration_dir).as_posix(),
+                            "issue": f"missing {required_name}",
+                        }
+                    )
+
+            extra_files = sorted(
+                child.name
+                for child in blind_dir.iterdir()
+                if child.is_file() and child.name not in {"A.md", "B.md"}
+            )
+            if extra_files:
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "path": blind_dir.relative_to(iteration_dir).as_posix(),
+                        "issue": f"unexpected files in blind directory: {', '.join(extra_files)}",
+                    }
+                )
+
+            if (blind_dir / "blind-map.json").exists():
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "path": blind_dir.relative_to(iteration_dir).as_posix(),
+                        "issue": "blind-map.json must stay outside the blind/ directory",
+                    }
+                )
+
+            if not (eval_dir / "blind-map.json").exists():
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "path": eval_dir.relative_to(iteration_dir).as_posix(),
+                        "issue": "missing blind-map.json beside the eval directory",
+                    }
+                )
+
+    return {
+        "iteration": iteration_dir.name,
+        "checked_skills": checked_skills,
+        "checked_evals": checked_evals,
+        "issue_count": len(issues),
+        "issues": issues,
+        "passed": len(issues) == 0,
+    }
+
+
+def validate_run_metrics_payload(metrics: dict[str, Any]) -> list[str]:
+    return [key for key in REQUIRED_RUN_METRIC_KEYS if key not in metrics or metrics[key] is None]
+
+
+def validate_iteration_metrics(iteration_dir: Path) -> dict[str, Any]:
+    issues: list[dict[str, Any]] = []
+    normalized_files: list[dict[str, Any]] = []
+    expected_files = len(skill_dirs(iteration_dir)) * 2
+    checked_files = 0
+
+    for skill_dir in skill_dirs(iteration_dir):
+        for config in ("with_skill", "without_skill"):
+            metrics_path = skill_dir / f"{config}-run-metrics.json"
+            relative_path = metrics_path.relative_to(iteration_dir).as_posix()
+            if not metrics_path.exists():
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "configuration": config,
+                        "path": relative_path,
+                        "problem": "missing-file",
+                    }
+                )
+                continue
+
+            checked_files += 1
+            metrics, changes = load_run_metrics(metrics_path, write_back=True)
+            if changes:
+                normalized_files.append(
+                    {
+                        "skill": skill_dir.name,
+                        "configuration": config,
+                        "path": relative_path,
+                        "changes": changes,
+                    }
+                )
+            missing_keys = validate_run_metrics_payload(metrics)
+            if missing_keys:
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "configuration": config,
+                        "path": relative_path,
+                        "problem": "missing-or-null-keys",
+                        "missing_keys": missing_keys,
+                    }
+                )
+
+    summary = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "iteration": iteration_dir.name,
+        "status": "passed" if not issues else "failed",
+        "expected_files": expected_files,
+        "checked_files": checked_files,
+        "normalized_file_count": len(normalized_files),
+        "normalized_files": normalized_files,
+        "issue_count": len(issues),
+        "issues": issues,
+    }
+    write_json(iteration_dir / "_meta" / "metric-validation.json", summary)
+    return summary
+
+
+def normalize_iteration_metrics(iteration_dir: Path) -> dict[str, Any]:
+    normalized_files: list[dict[str, Any]] = []
+    checked_files = 0
+
+    for skill_dir in skill_dirs(iteration_dir):
+        for config in ("with_skill", "without_skill"):
+            metrics_path = skill_dir / f"{config}-run-metrics.json"
+            if not metrics_path.exists():
+                continue
+            checked_files += 1
+            metrics, changes = load_run_metrics(metrics_path, write_back=True)
+            if changes:
+                normalized_files.append(
+                    {
+                        "skill": skill_dir.name,
+                        "configuration": config,
+                        "path": metrics_path.relative_to(iteration_dir).as_posix(),
+                        "changes": changes,
+                        "required_keys_present": len(validate_run_metrics_payload(metrics)) == 0,
+                    }
+                )
+
+    summary = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "iteration": iteration_dir.name,
+        "checked_files": checked_files,
+        "normalized_file_count": len(normalized_files),
+        "normalized_files": normalized_files,
+    }
+    write_json(iteration_dir / "_meta" / "metric-normalization.json", summary)
+    return summary
+
+
 def prepare_blind(iteration_dir: Path) -> dict[str, Any]:
     prepared: list[dict[str, Any]] = []
     for skill_dir in skill_dirs(iteration_dir):
@@ -292,6 +729,11 @@ def comparison_metrics(skill_dir: Path, comparison_items: list[dict[str, Any]]) 
     with_win_rate = (with_win_count / total_resolved) if total_resolved else None
     without_win_rate = (without_win_count / total_resolved) if total_resolved else None
 
+    with_expectation_mean = safe_mean(with_expectation_rates)
+    without_expectation_mean = safe_mean(without_expectation_rates)
+    with_rubric_mean = safe_mean(with_rubric_scores)
+    without_rubric_mean = safe_mean(without_rubric_scores)
+
     return {
         "blind": {
             "with_skill_wins": with_win_count,
@@ -301,14 +743,14 @@ def comparison_metrics(skill_dir: Path, comparison_items: list[dict[str, Any]]) 
             "without_skill_win_rate": round_or_none(without_win_rate),
         },
         "expectation_pass_rate": {
-            "with_skill": safe_mean(with_expectation_rates),
-            "without_skill": safe_mean(without_expectation_rates),
-            "delta": round_or_none((safe_mean(with_expectation_rates) or 0.0) - (safe_mean(without_expectation_rates) or 0.0)),
+            "with_skill": with_expectation_mean,
+            "without_skill": without_expectation_mean,
+            "delta": delta_or_none(with_expectation_mean, without_expectation_mean),
         },
         "rubric_score": {
-            "with_skill": safe_mean(with_rubric_scores),
-            "without_skill": safe_mean(without_rubric_scores),
-            "delta": round_or_none((safe_mean(with_rubric_scores) or 0.0) - (safe_mean(without_rubric_scores) or 0.0)),
+            "with_skill": with_rubric_mean,
+            "without_skill": without_rubric_mean,
+            "delta": delta_or_none(with_rubric_mean, without_rubric_mean),
         },
         "comparison_count": total_resolved,
     }
@@ -346,9 +788,9 @@ def build_skill_row(skill_dir: Path, workspace_root: Path) -> dict[str, Any] | N
                 "files_written_count": without_metrics.get("files_written_count"),
             },
             "delta": {
-                "response_words_per_eval": round_or_none((with_metrics.get("response_words_per_eval") or 0.0) - (without_metrics.get("response_words_per_eval") or 0.0)),
-                "files_read_count": round_or_none((with_metrics.get("files_read_count") or 0.0) - (without_metrics.get("files_read_count") or 0.0)),
-                "files_written_count": round_or_none((with_metrics.get("files_written_count") or 0.0) - (without_metrics.get("files_written_count") or 0.0)),
+                "response_words_per_eval": delta_or_none(with_metrics.get("response_words_per_eval"), without_metrics.get("response_words_per_eval")),
+                "files_read_count": delta_or_none(with_metrics.get("files_read_count"), without_metrics.get("files_read_count")),
+                "files_written_count": delta_or_none(with_metrics.get("files_written_count"), without_metrics.get("files_written_count")),
             },
         },
         "time": {
@@ -361,8 +803,8 @@ def build_skill_row(skill_dir: Path, workspace_root: Path) -> dict[str, Any] | N
                 "elapsed_seconds_per_eval": without_metrics.get("elapsed_seconds_per_eval"),
             },
             "delta": {
-                "elapsed_seconds_total": round_or_none((with_metrics.get("elapsed_seconds_total") or 0.0) - (without_metrics.get("elapsed_seconds_total") or 0.0)),
-                "elapsed_seconds_per_eval": round_or_none((with_metrics.get("elapsed_seconds_per_eval") or 0.0) - (without_metrics.get("elapsed_seconds_per_eval") or 0.0)),
+                "elapsed_seconds_total": delta_or_none(with_metrics.get("elapsed_seconds_total"), without_metrics.get("elapsed_seconds_total")),
+                "elapsed_seconds_per_eval": delta_or_none(with_metrics.get("elapsed_seconds_per_eval"), without_metrics.get("elapsed_seconds_per_eval")),
             },
         },
     }
@@ -389,7 +831,15 @@ def suite_overview_rows(skill_rows: list[dict[str, Any]]) -> list[dict[str, Any]
 def summarize_config(skill_dir: Path, config: str, evals_path: Path, metrics_path: Path | None = None) -> dict[str, Any]:
     eval_definition = read_json(evals_path)
     metrics_file = metrics_path or (skill_dir / f"{config}-run-metrics.json")
-    metrics = read_json(metrics_file) if metrics_file.exists() else {}
+    if not metrics_file.exists():
+        raise FileNotFoundError(f"Missing run metrics for {skill_dir.name} {config}: {metrics_file}")
+
+    metrics, _changes = load_run_metrics(metrics_file, write_back=True)
+    missing_metric_keys = validate_run_metrics_payload(metrics)
+    if missing_metric_keys:
+        raise ValueError(
+            f"Incomplete run metrics for {skill_dir.name} {config}: missing/null keys {missing_metric_keys} in {metrics_file}"
+        )
 
     eval_rows: list[dict[str, Any]] = []
     total_words = 0
@@ -428,7 +878,7 @@ def summarize_config(skill_dir: Path, config: str, evals_path: Path, metrics_pat
             "response_words_total": total_words,
             "response_words_per_eval": round_or_none(total_words / eval_count) if eval_count else None,
             "files_read_count": metrics.get("files_read_count"),
-            "files_written_count": metrics.get("files_written_count", eval_count),
+            "files_written_count": metrics.get("files_written_count"),
         },
         "evals": eval_rows,
     }
@@ -442,6 +892,7 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
     previous_iteration = find_previous_iteration(test_root, iteration_dir)
     previous_summary_path = previous_iteration / "suite-summary.json" if previous_iteration else None
     previous_summary = read_json(previous_summary_path) if previous_summary_path and previous_summary_path.exists() else None
+    metric_validation = validate_iteration_metrics(iteration_dir)
 
     skill_rows = [row for row in (build_skill_row(skill_dir, workspace_root) for skill_dir in skill_dirs(iteration_dir)) if row]
     overview_rows = suite_overview_rows(skill_rows)
@@ -459,6 +910,7 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
             "words_delta_per_eval": safe_mean([row["consumption"]["delta"]["response_words_per_eval"] for row in skill_rows]),
             "files_read_delta": safe_mean([row["consumption"]["delta"]["files_read_count"] for row in skill_rows]),
         },
+        "metric_validation": metric_validation,
         "overview": overview_rows,
         "skills": skill_rows,
         "previous_iteration_comparison": None,
@@ -476,16 +928,16 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
                     "skill": row["skill"],
                     "previous_with_skill_win_rate": previous_row.get("with_skill_win_rate"),
                     "current_with_skill_win_rate": row.get("with_skill_win_rate"),
-                    "delta_with_skill_win_rate": round_or_none((row.get("with_skill_win_rate") or 0.0) - (previous_row.get("with_skill_win_rate") or 0.0)),
+                    "delta_with_skill_win_rate": delta_or_none(row.get("with_skill_win_rate"), previous_row.get("with_skill_win_rate")),
                     "previous_expectation_delta": previous_row.get("expectation_delta"),
                     "current_expectation_delta": row.get("expectation_delta"),
-                    "delta_expectation_delta": round_or_none((row.get("expectation_delta") or 0.0) - (previous_row.get("expectation_delta") or 0.0)),
+                    "delta_expectation_delta": delta_or_none(row.get("expectation_delta"), previous_row.get("expectation_delta")),
                     "previous_rubric_delta": previous_row.get("rubric_delta"),
                     "current_rubric_delta": row.get("rubric_delta"),
-                    "delta_rubric_delta": round_or_none((row.get("rubric_delta") or 0.0) - (previous_row.get("rubric_delta") or 0.0)),
+                    "delta_rubric_delta": delta_or_none(row.get("rubric_delta"), previous_row.get("rubric_delta")),
                     "previous_time_delta_per_eval": previous_row.get("time_delta_per_eval"),
                     "current_time_delta_per_eval": row.get("time_delta_per_eval"),
-                    "delta_time_delta_per_eval": round_or_none((row.get("time_delta_per_eval") or 0.0) - (previous_row.get("time_delta_per_eval") or 0.0)),
+                    "delta_time_delta_per_eval": delta_or_none(row.get("time_delta_per_eval"), previous_row.get("time_delta_per_eval")),
                 }
             )
         suite_summary["previous_iteration_comparison"] = {
@@ -514,12 +966,19 @@ def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
 
 
 def render_markdown(summary: dict[str, Any]) -> str:
+    metric_validation = summary.get("metric_validation") or {}
     lines = [
         f"# Skill Suite Summary — {summary['iteration']}",
         "",
         f"Generated at: {summary['generated_at']}",
         f"Previous iteration: {summary['previous_iteration'] or 'None found'}",
         f"Skill count: {summary['skill_count']}",
+        "",
+        "## Metric validation",
+        "",
+        f"Status: {metric_validation.get('status', 'unknown')}",
+        f"Files checked: {metric_validation.get('checked_files', 0)}/{metric_validation.get('expected_files', 0)}",
+        f"Issues: {metric_validation.get('issue_count', 0)}",
         "",
         "## Metric legend",
         "",
@@ -543,6 +1002,29 @@ def render_markdown(summary: dict[str, Any]) -> str:
         "## Suite overview",
         "",
     ]
+
+    if metric_validation.get("issues"):
+        issue_headers = ["Skill", "Config", "Path", "Problem", "Missing keys"]
+        issue_rows = []
+        for issue in metric_validation["issues"]:
+            issue_rows.append(
+                [
+                    issue.get("skill", "-"),
+                    issue.get("configuration", "-"),
+                    issue.get("path", "-"),
+                    issue.get("problem", "-"),
+                    ", ".join(issue.get("missing_keys", [])) if issue.get("missing_keys") else "-",
+                ]
+            )
+        lines.extend([
+            markdown_table(issue_headers, issue_rows),
+            "",
+        ])
+    else:
+        lines.extend([
+            "All required run-metrics files were present and complete.",
+            "",
+        ])
 
     overview_headers = [
         "Skill",
@@ -684,8 +1166,62 @@ def cmd_aggregate(args: argparse.Namespace) -> None:
         "iteration": args.iteration.name,
         "skill_count": summary["skill_count"],
         "previous_iteration": summary["previous_iteration"],
+        "metric_issue_count": summary.get("metric_validation", {}).get("issue_count", 0),
         "output_json": str(args.iteration / "suite-summary.json"),
         "output_md": str(args.iteration / "suite-summary.md"),
+    }, indent=2, ensure_ascii=False))
+
+
+def cmd_agent_plan(args: argparse.Namespace) -> None:
+    plan = benchmark_agent_plan(args.iteration, args.skill)
+    print(json.dumps(plan, indent=2, ensure_ascii=False))
+
+
+def cmd_validate_blind_isolation(args: argparse.Namespace) -> None:
+    summary = validate_blind_isolation(args.iteration)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_validate_metrics(args: argparse.Namespace) -> None:
+    summary = validate_iteration_metrics(args.iteration)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_normalize_metrics(args: argparse.Namespace) -> None:
+    summary = normalize_iteration_metrics(args.iteration)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_write_run_metrics(args: argparse.Namespace) -> None:
+    inferred = infer_run_metrics_fields(args.output)
+    started_at = args.started_at
+    finished_at = args.finished_at
+    started_dt = iso_to_datetime(started_at)
+    finished_dt = iso_to_datetime(finished_at)
+    if not started_dt or not finished_dt:
+        raise ValueError("started_at and finished_at must be valid ISO-8601 timestamps")
+
+    elapsed_seconds_total = args.elapsed_seconds_total
+    if elapsed_seconds_total is None:
+        elapsed_seconds_total = round((finished_dt - started_dt).total_seconds(), 6)
+
+    payload = build_run_metrics_payload(
+        skill_name=args.skill_name or inferred.get("skill_name") or "unknown-skill",
+        configuration=args.configuration or inferred.get("configuration") or "with_skill",
+        language=args.language,
+        mcp_used=args.mcp_used,
+        started_at=started_at,
+        finished_at=finished_at,
+        elapsed_seconds_total=elapsed_seconds_total,
+        files_read_count=args.files_read_count,
+        files_written_count=args.files_written_count,
+    )
+    write_json(args.output, payload)
+    print(json.dumps({
+        "output": str(args.output),
+        "skill_name": payload["skill_name"],
+        "configuration": payload["configuration"],
+        "elapsed_seconds_total": payload["elapsed_seconds_total"],
     }, indent=2, ensure_ascii=False))
 
 
@@ -714,10 +1250,40 @@ def build_parser() -> argparse.ArgumentParser:
     summarize_parser.add_argument("--metrics", type=Path, help="Optional path to the run-metrics JSON file")
     summarize_parser.set_defaults(func=cmd_summarize_config)
 
+    write_metrics_parser = subparsers.add_parser("write-run-metrics", help="Write a canonical run-metrics JSON file using the required benchmark schema")
+    write_metrics_parser.add_argument("--output", type=Path, required=True, help="Path to the target *-run-metrics.json file")
+    write_metrics_parser.add_argument("--skill-name", help="Optional skill name; inferred from the output path when omitted")
+    write_metrics_parser.add_argument("--configuration", choices=["with_skill", "without_skill"], help="Optional configuration; inferred from the output filename when omitted")
+    write_metrics_parser.add_argument("--language", default="English", help="Language used for the run output (default: English)")
+    write_metrics_parser.add_argument("--mcp-used", action="store_true", help="Set this flag if any MCP tool was used during the run")
+    write_metrics_parser.add_argument("--started-at", required=True, help="ISO-8601 UTC timestamp for run start")
+    write_metrics_parser.add_argument("--finished-at", required=True, help="ISO-8601 UTC timestamp for run finish")
+    write_metrics_parser.add_argument("--elapsed-seconds-total", type=float, help="Optional explicit elapsed time; otherwise derived from timestamps")
+    write_metrics_parser.add_argument("--files-read-count", type=int, required=True, help="Repository files intentionally read during the run")
+    write_metrics_parser.add_argument("--files-written-count", type=int, required=True, help="Files written under /test during the run")
+    write_metrics_parser.set_defaults(func=cmd_write_run_metrics)
+
+    validate_parser = subparsers.add_parser("validate-metrics", help="Validate that every run-metrics file exists and contains all required non-null keys")
+    validate_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    validate_parser.set_defaults(func=cmd_validate_metrics)
+
+    normalize_parser = subparsers.add_parser("normalize-metrics", help="Normalize known legacy run-metrics aliases into the canonical benchmark schema")
+    normalize_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    normalize_parser.set_defaults(func=cmd_normalize_metrics)
+
     aggregate_parser = subparsers.add_parser("aggregate", help="Aggregate per-skill results into suite-summary files")
     aggregate_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     aggregate_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
     aggregate_parser.set_defaults(func=cmd_aggregate)
+
+    agent_plan_parser = subparsers.add_parser("agent-plan", help="Describe which benchmark custom agent should be used for each benchmark phase")
+    agent_plan_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    agent_plan_parser.add_argument("--skill", help="Optional target skill name for with_skill planning")
+    agent_plan_parser.set_defaults(func=cmd_agent_plan)
+
+    validate_blind_parser = subparsers.add_parser("validate-blind-isolation", help="Validate that blind artifacts stayed isolated from mapping and non-blind references")
+    validate_blind_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    validate_blind_parser.set_defaults(func=cmd_validate_blind_isolation)
 
     return parser
 

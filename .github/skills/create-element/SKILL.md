@@ -5,214 +5,191 @@ description: Use when creating or modifying LikeC4 elements (systems, containers
 
 # Create LikeC4 Element
 
-## Overview
+## Goal
 
-Defines the rules and patterns for declaring LikeC4 elements: naming conventions (PascalCase kinds, camelCase variables), required fields (technology, description), tag usage, icon references, and correct parent-child hierarchy (System → Container → Component).
+Answer with a usable, repo-aligned declaration first.
+
+Default flow:
+1. choose the exact declared kind
+2. place it under the right parent
+3. show the smallest valid snippet
+4. add only the extra fields or handoffs the user actually needs
+
+If the user asks “what should I model?”, do **not** respond with routing alone when you can already give the declaration.
 
 ## When to Use
 
 - Creating a new system, container, component, or deployment node
-- Modifying element properties (technology, description, tags, icon)
-- Checking whether an existing shared-spec kind fits your need before creating a custom one
-- Adding metadata fields used for filtering or automation
+- Modifying `technology`, `description`, tags, links, icons, or metadata
+- Checking whether an existing shared kind fits before proposing a new one
+- Distinguishing “new element” from “new kind”
 
-**Do not use** to create relationship arrows or design views — use `create-relationship` and `design-view` respectively.
+**Do not use** for relationship arrows or view design — use `create-relationship` and `design-view`.
 
-**Before creating:**
-1. Read `c4-modeling-process` skill to understand C4 framework and top-to-bottom design (C1 → C2 → C3)
-2. **Check shared specification first** - Use LikeC4 MCP `read-project-summary` to list available element kinds
-3. Only create new kinds if absolutely necessary (and ask permission first)
-4. When adding relationships, follow `create-relationship` skill
+If the system boundary itself is still unclear, hand off to `c4-modeling-process` **after** giving the minimal element recommendation.
 
-**If you need rich descriptions:** Use `write-rich-descriptions` for metadata blocks (system models) or markdown tables (deployment models).
+## Local source of truth
 
-## Quick Reference
+Check these in this order:
 
-| Topic | Rule |
-|------|------|
-| Kind naming | `Category_Subtype` in PascalCase (`Container_Api`, `Node_Vm`) |
-| Variable naming | camelCase (`apiGateway`, `prodUploadVm`) |
-| Required fields | `technology` + `description` (where applicable by kind) |
-| Tag source | Reuse declared shared-spec tags with exact spelling/case; do not duplicate them in metadata |
-| Hierarchy | System → Container → Component; Environment → Zone → VM → App |
-| New kind creation | Prefer shared spec first; ask before introducing new kinds |
+1. active project summary (`read-project-summary`) or the project config/model files
+2. `projects/shared/SPEC_CHEATSHEET.md`
+3. `projects/shared/spec-context.c4`, `spec-containers.c4`, `spec-components.c4`, `spec-deployment.c4`
+4. existing project model files for placement and naming consistency
 
-## Shared Spec First Principle
+Example projects help with inspiration, but they are **not** the semantic source of truth for kinds or tags.
 
-**IMPORTANT:** Use existing element kinds from shared spec instead of creating new ones.
+## Default response shape
 
-### Why Use Shared Spec?
-- Consistency across models and projects
-- Maintainability - changes apply everywhere
-- Visual consistency - same kinds always look the same
-- Avoiding proliferation - keep kinds focused and organized
+When the prompt is concrete, answer in this order:
 
-### How to Use Shared Spec
-1. Run LikeC4 MCP `read-project-summary` to see available kinds
-2. Check `spec-*.c4` files in `shared/` folder
-3. Use existing kind that matches your need
-4. **If no matching kind exists:**
-   - Ask user permission first
-   - Suggest contributing new kind to shared spec
-   - Don't create one-off custom kinds in project-specific files
-   - Add to spec so it can be reused
+1. **Recommended kind + parent**
+2. **Minimal declaration**
+3. **Optional enrichments** (`tag`, `link`, `icon`, metadata)
+4. **Follow-up skill** only if the user is now moving to arrows, views, descriptions, or deployment
 
-## C4 Design Hierarchy
+## Common declared kinds in this repository
 
-Always design **top-to-bottom:**
-- **C1 Context:** System boundary with external actors and systems
-- **C2 Container:** Major deployable components and their relationships  
-- **C3 Component:** Internal modules within important containers (optional, for complex containers only)
+| Layer | Typical kinds used here |
+|---|---|
+| Context | `Actor_Person`, `Actor_Staff`, `Actor_Admin`, `System_New`, `System_Existing`, `System_Legacy`, `System_External` |
+| Containers | `Container_Api`, `Container_Webapp`, `Container_Queue`, `Container_Database`, `Container_ObjectStorage`, `Container_Directory`, `Container_Loadbalancer`, `Container_FileServer` |
+| Components | `Component` |
+| Deployment | `Node_Environment`, `Zone`, `Node_Vm`, `Node_App`, `Infra_Fw` |
 
-See `c4-modeling-process` skill for detailed step-by-step guidance.
+Use the exact shared spelling/case. For example: `Container_Api`, **not** `Container_API`.
 
-## Validation Rules
+## Direct answer first, handoff second
 
-1. **Naming:** Element kind uses `Category_Subtype` PascalCase exactly as declared in shared specs (e.g., `Container_Api`, `Node_Vm`)
-2. **Variable:** Instance name uses camelCase (e.g., `apiGateway`, `prodVM`)
-3. **Technology:** Required for Containers, Components, and Nodes
-4. **Description:** Required for ALL elements (explain purpose and responsibilities)
-5. **Tags:** 
-  - Reuse declared shared-spec tags only when they add meaning beyond the kind itself
-  - Keep the declared spelling/case exactly as-is (for example `#Production`, not `#production`)
-  - Never repeat family/type tags already implied by the element kind specification
-6. **Metadata:** Optional (only add if you filter/query by the field)
-7. **Hierarchy:** Place in correct parent (Containers inside Systems, Components inside Containers)
-
-## Essential Metadata
-
-### Technology Stack
-
-```likec4
-model {
-  api = Container_Api 'REST API' {
-    technology 'Node.js, Express'
-    description 'Handles business logic and data processing'
-  }
-  
-  userService = Component 'User Service' {
-    technology 'Java 17, Spring Boot, Hibernate'
-    description 'User management and authentication'
-  }
-}
-```
-
-### Rich Descriptions with Markdown
+### Canonical internal container example
 
 ```likec4
 model {
   ingestionApi = Container_Api 'Ingestion API' {
     technology 'Node.js, Fastify'
-    
+    description 'Receives uploaded files and starts the ingestion workflow.'
+  }
+}
+```
+
+### Canonical external system example
+
+```likec4
+model {
+  virusScanProvider = System_External 'Virus Scan Provider' {
+    technology 'HTTPS API'
+    description 'Third-party malware scanning service used before file acceptance.'
+  }
+}
+```
+
+If the prompt also asks for arrows or views, still lead with the element declarations, then route:
+- arrows → `create-relationship`
+- C1/C2/C3/deployment views → `design-view`
+- richer descriptive blocks/tables → `write-rich-descriptions`
+- deployment/runtime placement → `model-deployment-infrastructure`
+
+## Core rules
+
+| Topic | Rule |
+|---|---|
+| Kind naming | Exact declared `Category_Subtype` PascalCase (`Container_Api`, `Node_Vm`) |
+| Variable naming | camelCase (`ingestionApi`, `prodUploadVm`) |
+| Description | Required for all elements; explain purpose and responsibilities |
+| Technology | Expected for systems/containers/components/nodes when it is known; always include it for containers, components, and deployment nodes |
+| Tags | Reuse declared tags with exact spelling/case only when they add operational meaning beyond the kind |
+| Metadata | Optional; add only if someone will filter/query it |
+| Hierarchy | `System → Container → Component` and `Environment → Zone → VM → App` |
+| New kinds | Last resort only; check shared specs first and ask before introducing one |
+
+## Shared-spec-first rule
+
+Prefer an existing shared kind over a one-off local kind.
+
+### Good decisions
+- use `Container_Api` for a new internal API
+- use `System_External` for a vendor platform
+- use two elements of the same kind when responsibilities differ (for example prod vs mock API)
+
+### Bad decisions
+- invent `Container_UploadOrchestrator` for a single service when `Container_Api` or another declared kind already fits
+- invent `Container_MockApi` just to distinguish a test double from production
+- create project-local kinds that should really live in shared specs
+
+## Enrichment patterns
+
+### Multi-line description
+
+```likec4
+model {
+  ingestionApi = Container_Api 'Ingestion API' {
+    technology 'Node.js, Fastify'
     description """
-      Receives file uploads and starts the ingestion workflow.
-      
+      Receives upload requests and starts the ingestion workflow.
+
       **Responsibilities:**
-      - Validate upload requests
-      - Forward accepted files to downstream processing
-      
-      **Availability:** 99.9% SLA
+      - validate upload metadata
+      - persist accepted jobs for downstream processing
     """
   }
 }
 ```
 
-### External Documentation Links
+### Links and icons
 
 ```likec4
 model {
-  paymentIntegration = Component 'Payment Integration' {
-    technology 'Node.js, Stripe SDK'
-    description 'Handles payment processing'
-    
-    link https://docs.stripe.com 'Stripe API Docs'
-    link https://github.com/myorg/payment-service 'Source Code'
-  }
-}
-```
-
-### Icons
-
-```likec4
-model {
-  database = Container_Database 'PostgreSQL' {
+  primaryDatabase = Container_Database 'Primary Database' {
     technology 'PostgreSQL 15'
-    description 'Primary application database'
+    description 'Stores canonical application data.'
     icon tech:postgresql
-  }
-  
-  queue = Container_Queue 'Async Queue' {
-    technology 'RabbitMQ'
-    description 'Buffers background jobs and asynchronous processing'
-    icon tech:rabbitmq
+    link https://www.postgresql.org/docs/ 'PostgreSQL documentation'
   }
 }
 ```
 
-Common icon namespaces: `tech:`, `aws:`, `gcp:`, `azure:`
+Use icon namespaces such as `tech:`, `aws:`, `gcp:`, `azure:` only when they help the view.
 
-## Tagging Guidelines
+## Validation checklist
 
-Prefer tags only when they add queryable operational meaning. The element kind already carries most family/type semantics.
+- [ ] Exact kind reused from shared specs
+- [ ] Variable is camelCase
+- [ ] Parent hierarchy is correct
+- [ ] Description explains purpose, not just type
+- [ ] Technology is present for containers/components/deployment nodes
+- [ ] Tags keep exact shared spelling/case when reused
+- [ ] Metadata is present only if it serves querying/automation
 
-### Deployment / runtime tags
-```likec4
-prodApiVm = Node_Vm 'Production API VM' {
-  #Production #Service
-  technology 'Ubuntu 22.04'
-  description 'Hosts the production API workload'
-}
-```
+## If MCP is unavailable
 
-### Backup / recovery tags
-```likec4
-backupWorker = Node_App 'Backup Worker' {
-  #Backup #Recovery
-  technology 'BorgBackup'
-  description 'Runs scheduled backups and restore checks'
-}
-```
+Stay useful anyway:
 
-## Validation Checklist
+1. inspect `projects/shared/SPEC_CHEATSHEET.md` and `projects/shared/spec-*.c4`
+2. inspect the active project `likec4.config.json` and nearby model files
+3. recommend the exact kind and give the minimal snippet immediately
+4. list the checks to run later once MCP is back (`read-project-summary`, `search-element`, `read-element`)
 
-- [ ] Technology specified for Containers, Components, and Nodes
-- [ ] Description provided for ALL elements (explain purpose and responsibilities)
-- [ ] Descriptions use Markdown for structure when multi-line
-- [ ] Links use HTTPS and descriptive text (not "click here")
-- [ ] Icons use valid namespace (tech:, aws:, gcp:, azure:) if adding icons
-- [ ] Tags match shared-spec spelling/case exactly when reusing declared tags
-- [ ] Element placed in correct parent hierarchy
-- [ ] Metadata (optional) — only if you filter/query by those fields
+Do **not** become generic just because MCP is unavailable; use the repository taxonomy you can already see.
 
-## MCP Validation
+## Context7 validation
 
-**Before creating:** Use LikeC4 MCP `read-project-summary` to check declared element kinds and tags  
-**After creating:** Use `read-element` to verify description quality and technology field  
-**For searching:** Use `search-element` to find elements by tag
+Use Context7 `/likec4/likec4` only when syntax remains unclear after reading local files, especially for:
+- property syntax (`technology`, `description`, `link`, `icon`)
+- Markdown description formatting
+- uncommon element-property combinations
 
-## Context7 Validation
+## Common mistakes
 
-Use Context7 MCP `query-docs` with library `/likec4/likec4` if uncertain about:
-- Element property syntax (technology, description, link, icon)
-- Markdown formatting in descriptions
-- Icon namespace conventions
+❌ guessed kinds such as `Container_API`, `Component_Service`, `Node_VM`
 
-## Common Mistakes
+❌ answering only with “use another skill” when a minimal declaration is already possible
 
-❌ **Using guessed kind names** — `Container_API`, `Container_Gateway`, `Component_Service`, `Node_VM` are not declared in this repo.
+❌ creating a new kind instead of reusing an existing shared kind
 
-❌ **Using a generic base kind when a shared subtype exists** — prefer `Container_Api` or `Container_Database` over bare `Container` for common application elements.
+❌ using tags to repeat what the kind already says
 
-❌ **camelCase kind, PascalCase variable** — kinds must be `PascalCase_Subtype`; variables must be `camelCase`
-
-❌ **Missing technology on Containers/Components** — `technology` field is required for all non-actor elements
-
-❌ **Description missing** — all elements must have a description explaining their purpose and responsibilities
-
-❌ **Creating one-off custom kinds** — always check shared spec first; contributing to spec ensures consistency across projects
-
-❌ **Placing Containers outside their System** — hierarchy must be: System → Container → Component
+❌ placing containers outside their system or apps outside their VM hierarchy
 
 ## Output
 
-Well-documented elements with complete descriptions, proper hierarchy, and consistent naming. Metadata is optional and minimal.
+Return a concrete declaration that is ready to paste, with minimal but sufficient documentation and the correct parent placement.

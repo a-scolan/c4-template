@@ -1,0 +1,110 @@
+{
+  "skill_name": "create-relationship",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "TIE",
+      "reasoning": "Both responses correctly place relationship type in arrow, keep labels inline, and technology in properties block. A is more concise; B explicitly lists anti-patterns. Both fully meet all expectations.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "Both use `-[async]->` and `-[writes]->` consistently and reject return relationships. A presents a clearer linear producer→queue→consumer flow; B's bidirectional queue consumption is valid but slightly less transparent about the pattern.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 8
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "Both distinguish `reads` from `calls` and `writes`. A provides comprehensive examples covering both reads and writes operations; B covers main rule but with less write example coverage.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 8
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "Both reject composite kinds and use explicit `-[reads]->` with action labels. A explicitly mentions delegating fallback logic to sequence-view (aligns with expectation 4); B covers core points without sequence-view guidance.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "TIE",
+      "reasoning": "Both comprehensively address system-model vs deployment distinction, recommend technology values (`Manual`, `HTTPS`, `HTTP/8080`), and prescribe `instanceOf` inheritance with rare infrastructure exceptions. Equal depth and clarity.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

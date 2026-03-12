@@ -10,7 +10,8 @@
         "The response classifies `.github/skills/create-relationship/SKILL.md` and `projects/shared/spec-context.c4` as generic/syncable upstream assets.",
         "The response keeps `projects/payments/system-model.c4` and `README.md` out of template push.",
         "The response asks to generalize and remove project names before push.",
-        "The response requires a confidentiality review before push."
+        "The response requires a confidentiality review before push.",
+        "The response makes the syncable-vs-local split explicit instead of giving only generic Git advice."
       ]
     },
     {
@@ -22,7 +23,8 @@
         "The response fetches `c4-template/main` and creates a `sync/*` branch from that base.",
         "The response only picks the generic file from `main`.",
         "The response requires diff/confidentiality review before `git push`.",
-        "The response pushes from a `sync/*` branch, not directly from `main`."
+        "The response pushes from a `sync/*` branch, not directly from `main`.",
+        "The response keeps the workflow scoped to the generic change rather than broad repo synchronization."
       ]
     },
     {
@@ -34,7 +36,8 @@
         "The response provides `git fetch c4-template main`.",
         "The response provides both `git subtree pull` commands targeting `.github` and `projects/shared`.",
         "The response explains that `--squash` keeps history cleaner/more compact.",
-        "The response avoids suggesting pulls for project-specific files."
+        "The response avoids suggesting pulls for project-specific files.",
+        "The response keeps the pull scope limited to reusable workspace assets."
       ]
     },
     {
@@ -46,7 +49,20 @@
         "The response requires an explicit audit to distinguish generic fix from project-specific need.",
         "The response requests diff/confidentiality review before any push.",
         "The response creates or uses a `sync/*` branch from `c4-template/main`, not from `main`.",
-        "The response includes a simple rollback plan if the fix turns out too local or regressive."
+        "The response includes a simple rollback plan if the fix turns out too local or regressive.",
+        "The response treats shared specs as sync candidates only after proving they are still generic."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "My `sync/spec-hardening` branch already contains a good generic change to `.github/skills/create-element/SKILL.md`, but I accidentally committed local edits to `projects/acme/system-model.c4` and `README.md` on the same branch. How do I recover before opening a PR to `c4-template`?",
+      "expected_output": "The response detects the polluted sync branch, isolates the generic change onto a clean `sync/*` branch from `c4-template/main`, and keeps local files out of the upstream PR.",
+      "files": [],
+      "expectations": [
+        "The response identifies that the current `sync/*` branch is polluted by local-only content.",
+        "The response rebuilds or recreates a clean `sync/*` branch from `c4-template/main` before proposing the PR.",
+        "The response carries forward only the generic `.github/skills/create-element/SKILL.md` change.",
+        "The response includes a rollback or abort option if the branch cleanup reveals the change is not truly generic."
       ]
     }
   ]

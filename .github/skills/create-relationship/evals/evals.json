@@ -10,7 +10,8 @@
         "The response uses a typed arrow `-[calls]->` between the web application and API containers.",
         "The response places the relationship type in the arrow, not in the properties block.",
         "The response keeps the label inline and `technology 'HTTPS'` in the block.",
-        "The response avoids invalid syntax like `-> { calls ... }`."
+        "The response avoids invalid syntax like `-> { calls ... }`.",
+        "The response contrasts the correct form with an incorrect one, or otherwise makes the syntax rule explicit with a concrete example."
       ]
     },
     {
@@ -22,7 +23,8 @@
         "The response uses `-[async]->` between producer and queue, then between queue and worker.",
         "The response explicitly says there should be no return relationship from worker back to producer.",
         "The response uses `-[writes]->` for database writes rather than generic `calls`.",
-        "The response preserves a one-way async pattern without modeling ACK as a callback relationship."
+        "The response preserves a one-way async pattern without modeling ACK as a callback relationship.",
+        "The response provides a consistent minimal example covering the producer, queue/worker interaction, and database write."
       ]
     },
     {
@@ -34,7 +36,8 @@
         "The response uses `-[reads]->` for reads from cache and database.",
         "The response reserves `-[calls]->` for service-to-service interactions.",
         "The response mentions `-[writes]->` for persistence or data mutation.",
-        "The response provides a short example consistent with this rule."
+        "The response provides a short example consistent with this rule.",
+        "The response makes it clear why `calls` would be weaker or misleading here."
       ]
     },
     {
@@ -46,7 +49,8 @@
         "The response creates two explicit read relationships rather than a composite or polymorphic one.",
         "The response uses `-[reads]->` for Redis and PostgreSQL instead of inventing a type like `reads_with_fallback`.",
         "The response proposes explicit action labels if it wants to document fallback behavior.",
-        "The response keeps fallback timing details outside model relationships, or delegates them to `create-sequence-view`."
+        "The response keeps fallback timing details outside model relationships, or delegates them to `create-sequence-view`.",
+        "The response provides a short consistent example rather than only describing the rule verbally."
       ]
     },
     {
@@ -58,7 +62,8 @@
         "The response says normal application traffic should be modeled in the system model rather than duplicated in deployment.",
         "The response uses or recommends `technology 'Manual'` for human interaction.",
         "The response uses or recommends `technology 'HTTPS'` for browser or service traffic and `technology 'HTTP/8080'` only when the port is non-default.",
-        "The response says deployment instances should inherit these relationships via `instanceOf`, reserving deployment relationships for infrastructure-specific exceptions."
+        "The response says deployment instances should inherit these relationships via `instanceOf`, reserving deployment relationships for infrastructure-specific exceptions.",
+        "The response shows or clearly describes the corrected logical-model relationship form."
       ]
     }
   ]

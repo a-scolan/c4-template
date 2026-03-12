@@ -9,7 +9,8 @@
       "expectations": [
         "The response enforces the `Environment → Zone → VM → Node_App` hierarchy.",
         "The response links `Node_App` to model containers via `instanceOf` and says relationships are inherited rather than duplicated.",
-        "The response requests rich VM/zone descriptions with network and specs, putting `eth0` first in the VM table."
+        "The response requests rich VM/zone descriptions with network and specs, putting `eth0` first in the VM table.",
+        "The response stays aligned with declared deployment kinds such as `Node_Environment`, `Zone`, `Node_Vm`, and `Node_App`."
       ]
     },
     {
@@ -20,7 +21,8 @@
       "expectations": [
         "The response explicitly routes tier organization and firewall rules to `structure-deployment-tiers`.",
         "The response reminds that the base hierarchy remains `Environment → Zone → VM → Node_App`.",
-        "The response presents this skill as infrastructure modeling framework, not a one-stop skill for full network design."
+        "The response presents this skill as infrastructure modeling framework, not a one-stop skill for full network design.",
+        "The response keeps the boundary between base deployment modeling and tier/firewall design explicit."
       ]
     },
     {
@@ -30,9 +32,10 @@
       "files": [],
       "expectations": [
         "The response acknowledges that physical VMs should not be invented when managed infrastructure hides them.",
-        "The response still keeps an explicit deployment hierarchy with coherent logical nodes.",
+        "The response still keeps an explicit deployment hierarchy with coherent logical nodes or platform nodes at the abstraction level that is actually known.",
         "The response links `Node_App` to the logical model via `instanceOf`.",
-        "The response routes tier/security-zone organization to `structure-deployment-tiers` if discussion drifts into network design."
+        "The response routes tier/security-zone organization to `structure-deployment-tiers` if discussion drifts into network design.",
+        "The response does not invent hidden physical hosts merely to satisfy the shape of the hierarchy."
       ]
     },
     {
@@ -44,7 +47,20 @@
         "The response says those deployment relationships should generally not be added for normal application traffic.",
         "The response says protocol and port details belong on system-model relationships, for example `technology 'HTTPS'` or `technology 'HTTP/8080'`.",
         "The response explains that deployment instances inherit logical relationships via `instanceOf`.",
-        "The response allows deployment relationships only for infrastructure-specific cases such as monitoring, replication, bastion access, or explicit network hops."
+        "The response allows deployment relationships only for infrastructure-specific cases such as monitoring, replication, bastion access, or explicit network hops.",
+        "The response clearly distinguishes inherited application traffic from true infrastructure-only deployment edges."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Prometheus scrapes my production API VM, but browser/API traffic already exists in the logical model. Which deployment relationships should I add, and which ones should I avoid duplicating?",
+      "expected_output": "The response keeps normal application traffic inherited from the logical model, while allowing a monitoring-specific deployment relationship as an infrastructure exception.",
+      "files": [],
+      "expectations": [
+        "The response rejects duplicating normal browser/API or service/database traffic in deployment just to visualize it again.",
+        "The response allows a monitoring/scrape relationship as a valid infrastructure-specific deployment exception.",
+        "The response ties the runtime element back to the logical model via `instanceOf` inheritance.",
+        "The response keeps the answer honest about which interactions belong to the logical model versus deployment."
       ]
     }
   ]

@@ -1,0 +1,89 @@
+{
+  "skill_name": "design-view",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "Both satisfy all listed expectations; B is slightly stronger because it makes neighbor coverage and the web-app drill-down target more explicit while keeping the C2 view in the right place.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.4
+        },
+        "B": {
+          "overall_score": 9.6
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "TIE",
+      "reasoning": "Both responses use `views 'Deployment'` with a deployment view, enumerate environment/zones/VMs without wildcards, keep hierarchy visible, stop at VM level, and prefer inherited system-model relationships for ordinary traffic.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.5
+        },
+        "B": {
+          "overall_score": 9.5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "Both hand off sequence work to `create-sequence-view` and styling to `customize-view`, but A more clearly separates all three concerns by giving concrete dynamic, structural, and styling examples.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.8
+        },
+        "B": {
+          "overall_score": 9.2
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "Both correctly start with Deployment, avoid forcing a C2, and route tier/styling follow-ups to the right skills; A is slightly clearer about when a distinct C2 becomes justified.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.7
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

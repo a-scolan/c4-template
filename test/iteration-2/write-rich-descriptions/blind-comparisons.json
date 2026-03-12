@@ -1,0 +1,68 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "B explicitly sends the service to `create-element` and the VM to `model-deployment-infrastructure`; A correctly says to create first but does not name either required skill. Both correctly split system `metadata {}` vs deployment Markdown table.",
+      "rubric": {
+        "A": {
+          "overall_score": 5
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.5
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "TIE",
+      "reasoning": "Both require a Markdown table, put `eth0` then `eth1` first, move gateway details to zone/subnet context, and keep metadata optional for automation. A is a bit broader; B is a bit more example-driven, but both fully meet the rubric.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "TIE",
+      "reasoning": "Both structure the VM as an ops-first Markdown table, keep `eth0` then `eth1` first, preserve only high-signal details in the block, and push encyclopedic or zone-level details elsewhere.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "skill_name": "sync-with-template",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 87.8724,
+    "elapsed_seconds_per_eval": 21.9681,
+    "response_words_total": 744,
+    "response_words_per_eval": 186.0,
+    "files_read_count": null,
+    "files_written_count": 4
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/with_skill/response.md",
+      "response_words": 155
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/with_skill/response.md",
+      "response_words": 187
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/with_skill/response.md",
+      "response_words": 125
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/with_skill/response.md",
+      "response_words": 277
+    }
+  ]
+}

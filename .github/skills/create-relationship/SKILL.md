@@ -5,103 +5,94 @@ description: Use when connecting LikeC4 elements and you need to choose the exac
 
 # Create LikeC4 Relationship
 
-## Overview
+## Goal
 
-Declare typed directional relationships between LikeC4 elements without blurring three separate concerns:
-- **kind** goes in the arrow (`-[calls]->`, `-[reads]->`, `-[async]->`)
-- **label** stays inline and action-focused
-- **technology** describes the interaction medium or protocol
+Choose the exact relationship, explain the rule briefly, and show a paste-ready example.
 
-**Default rule:** model normal application traffic in the **system model** and let deployment instances inherit it via `instanceOf`. Deployment relationships are rare infrastructure-only exceptions.
+Default answer shape:
+1. **relationship choice**
+2. **short rule**
+3. **minimal example**
+4. **counter-example / anti-pattern**
+5. **handoff to `create-sequence-view`** only if timing or fallback order matters
 
 ## When to Use
 
-- Connecting two elements in the logical model
+- Connecting two existing elements in the logical model
 - Choosing between `calls`, `async`, `reads`, `writes`, or `uses`
-- Deciding whether a connection belongs in the model or only in deployment
-- Adding protocol or medium details such as `Manual`, `HTTPS`, `HTTP/8080`, `AMQP`, or `LDAP`
+- Deciding whether the connection belongs in `model {}` or deployment
+- Placing protocol or medium details such as `Manual`, `HTTPS`, `HTTP/8080`, `AMQP`, or `LDAP`
 - Modeling queue/event flows without inventing return paths
 
-**Do not use** for creating elements themselves — use `create-element` first. For temporal order, retries, fallback logic, or webhook sequencing, use `create-sequence-view`.
+**Do not use** to create the elements themselves — use `create-element` first.
 
-## Quick Reference
+## Local taxonomy to respect in this repository
 
-| Need | Preferred pattern | Avoid |
-|------|-------------------|-------|
-| Service-to-service request | `source -[calls]-> target` | inventing a custom kind like `invokes` |
-| Data retrieval | `service -[reads]-> store` | `service -[calls]-> database` |
-| Data mutation | `service -[writes]-> store` | modeling persistence as a generic call |
-| Queue/event flow | `producer -[async]-> queue`, `worker -[async]-> queue` | return relationships back to the producer |
-| Human interaction | `user -[calls]-> ui { technology 'Manual' }` | treating human actions as deployment traffic |
-| Protocol detail | `technology 'HTTPS'` or `technology 'HTTP/8080'` | putting protocol in the relationship kind for normal app traffic |
+### Model relationship kinds
 
-## Model First, Deployment Rarely
+`uses`, `calls`, `async`, `reads`, `writes`
 
-Model the relationship once in `model {}` and let deployment instances inherit it.
+### Deployment relationship kinds
+
+`http`, `https`, `tcp`, `nfs`, `amqp`, `oidc_saml`, `ldap`, `sql`, `redis`, `smtp`
+
+Normal application traffic belongs in the **system model** with a model relationship kind plus `technology '...'`. Deployment relationships are reserved for infrastructure-only exceptions.
+
+## Quick decision table
+
+| Need | Use | Avoid |
+|---|---|---|
+| Service invokes service | `-[calls]->` | inventing `invokes` |
+| Read from cache/database/directory | `-[reads]->` | `-[calls]->` to data stores |
+| Persist or mutate data | `-[writes]->` | generic `calls` for persistence |
+| Queue/event flow | `-[async]->` | return arrows to the producer |
+| Human interaction | `-[calls]->` + `technology 'Manual'` | deployment-only browser traffic |
+| Protocol detail | `technology 'HTTPS'`, `technology 'HTTP/8080'`, `technology 'AMQP'` | putting protocol into model relationship kind |
+
+## Teach by contrast
+
+### Service-to-service request
 
 ```likec4
-user -[calls]-> webApp 'Uses UI' {
-  technology 'Manual'
-}
-
 webApp -[calls]-> api 'Sends request' {
   technology 'HTTPS'
 }
+```
 
-api -[calls]-> internalService 'Routes request' {
-  technology 'HTTP/8080'
+```likec4
+// ❌ Wrong: kind in block
+webApp -> api {
+  calls 'Sends request'
+  technology 'HTTPS'
 }
+```
 
-api -[reads]-> primaryDatabase 'Reads records' {
+### Reads vs calls
+
+Use `calls` for service behavior, `reads` for data access.
+
+```likec4
+retrievalService -[reads]-> redisCache 'Checks cache'
+retrievalService -[reads]-> primaryDatabase 'Fetches on cache miss'
+```
+
+```likec4
+// ❌ Wrong: databases modeled as generic service calls
+retrievalService -[calls]-> primaryDatabase 'Fetch data'
+```
+
+### Writes for persistence
+
+```likec4
+worker -[writes]-> primaryDatabase 'Stores processing result' {
   technology 'PostgreSQL'
 }
-
-webAppInstance = Node_App 'Web App' {
-  instanceOf webApp
-}
-
-apiInstance = Node_App 'API' {
-  instanceOf api
-}
 ```
 
-```likec4
-// ❌ Anti-pattern: repeating app traffic in deployment just to show protocol/port
-Prod.Web.webApp -[https]-> Prod.App.apiApp 'Browser traffic'
-Prod.App.apiApp -[tcp]-> Prod.Data.database 'Reads records'
-```
-
-Add a deployment relationship only when it documents an infrastructure fact that the logical model does not express: replication, monitoring scrapes, bastion access, or a network hop that matters operationally.
-
-## Relationship Syntax
-
-**The relationship kind goes in the arrow, never in the properties block.**
+### Async queue/worker flow
 
 ```likec4
-// ✅ Correct
-source -[calls]-> target 'Action description' {
-  technology 'HTTPS'
-}
-
-// ✅ Also correct when technology is obvious
-service -[reads]-> database 'Query records'
-
-// ❌ Wrong: kind in the block
-source -> target {
-  calls 'Action description'
-  technology 'HTTPS'
-}
-
-// ❌ Wrong: missing kind
-source -> target 'Action description'
-```
-
-## Async & Event-Driven Flows
-
-Use `-[async]->` for queue and event flows. Async is one-way: do **not** model an ACK or result as a return relationship to the producer.
-
-```likec4
-uploadApi -[async]-> jobQueue 'Publishes job' {
+uploadService -[async]-> jobQueue 'Publishes job' {
   technology 'AMQP'
 }
 
@@ -115,59 +106,85 @@ worker -[writes]-> primaryDatabase 'Stores result' {
 ```
 
 ```likec4
-// ❌ Wrong: fake synchronous return path
-worker -[calls]-> uploadApi 'Send completion'
+// ❌ Wrong: fake return path from async worker to producer
+worker -[calls]-> uploadService 'Send completion'
 ```
 
-If the timing matters — validation before queuing, fallback behavior, webhook callback order — keep the model relationships explicit and move the temporal story to `create-sequence-view`.
-
-## Reads, Writes, and Fallback Logic
-
-Use `reads` and `writes` for data access. Do not invent composite kinds such as `reads_with_fallback`.
+### Cache fallback is two reads, not a smart composite kind
 
 ```likec4
-api -[reads]-> cache 'Check cache'
-api -[reads]-> primaryDatabase 'Fetch on cache miss'
-api -[writes]-> cache 'Refresh cached value'
+api -[reads]-> redisCache 'Checks cache'
+api -[reads]-> primaryDatabase 'Fetches on cache miss'
+api -[writes]-> redisCache 'Refreshes cached value'
 ```
 
-If you need to explain fallback, put it in the label or in a dynamic view — not in a custom relationship kind.
+```likec4
+// ❌ Wrong: invented behavior-specific kind
+api -[reads_with_fallback]-> primaryDatabase
+```
 
-## Relationship Documentation Standard
+If fallback timing or retries matter, keep the model relationships explicit and move the temporal story to `create-sequence-view`.
+
+## Model first, deployment rarely
+
+Prefer this:
+
+```likec4
+user -[calls]-> webApp 'Uses UI' {
+  technology 'Manual'
+}
+
+webApp -[calls]-> api 'Sends request' {
+  technology 'HTTPS'
+}
+
+api -[calls]-> internalService 'Routes request' {
+  technology 'HTTP/8080'
+}
+```
+
+Not this:
+
+```likec4
+// ❌ Duplicating normal app traffic in deployment
+Prod.Web.webApp -[https]-> Prod.App.apiApp 'Browser traffic'
+```
+
+Use a deployment relationship only when the logical model does **not** already express the fact: monitoring scrapes, replication, bastion access, storage mounts, or an operational network hop.
+
+## Relationship documentation standard
 
 Always think in this order:
+
 1. **Kind** — `calls`, `async`, `reads`, `writes`, `uses`
 2. **Label** — short action phrase such as `Queues job`, `Fetches records`, `Authenticates user`
-3. **Technology** — protocol or medium only, such as `Manual`, `HTTPS`, `HTTP/8080`, `AMQP`, `LDAP`, `SMTP`, `PostgreSQL`
-4. **Description** — optional, only when the label still leaves an important ambiguity
+3. **Technology** — protocol or medium only (`Manual`, `HTTPS`, `HTTP/8080`, `AMQP`, `LDAP`, `SMTP`, `PostgreSQL`)
+4. **Description** — optional, only when the label is still ambiguous
 
-### Common Technology Values
+## If MCP is unavailable
 
-| Situation | Technology value |
-|---|---|
-| Human interaction | `Manual` |
-| TLS browser or service call | `HTTPS` |
-| Non-default internal HTTP | `HTTP/8080` |
-| Queue/event broker | `AMQP` |
-| PostgreSQL access | `PostgreSQL` |
-| Generic SQL access | `SQL` |
-| Directory lookup | `LDAP` |
-| Mail delivery | `SMTP` |
-| Federation / SSO | `OIDC/SAML` |
+Stay specific:
 
-## Common Mistakes
+1. inspect `projects/shared/SPEC_CHEATSHEET.md` and `projects/shared/spec-*.c4`
+2. verify whether you are in logical model vs deployment files
+3. answer with the rule and the minimal example immediately
+4. list the follow-up checks to run later (`find-relationships`, `read-project-summary`, preview affected views)
+
+Do not fall back to generic “it depends” wording when the repository taxonomy already tells you the right relationship family.
+
+## Common mistakes
 
 ```likec4
 ❌ api -> service 'Call endpoint'                 // Missing relationship kind
 ❌ api -> service { calls 'Call endpoint' }       // Kind in block
 ❌ api -[invokes]-> service                       // Invalid undeclared kind
 ❌ api -[reads_with_fallback]-> database          // Composite kind invented for behavior
-❌ worker -[calls]-> uploadApi 'Send completion'  // Fake return path in async flow
-❌ Prod.Web.webApp -[https]-> Prod.App.apiApp     // Duplicated app traffic in deployment
+❌ worker -[calls]-> uploadService 'Send completion'  // Fake return path in async flow
+❌ Prod.Web.webApp -[https]-> Prod.App.apiApp     // Duplicated normal app traffic in deployment
 ```
 
 ## Handoffs
 
-- Need exact kinds for the endpoints? Use `lookup-element-kinds`
-- Need to create the endpoints first? Use `create-element`
-- Need to show retries, fallback, or webhook timing? Use `create-sequence-view`
+- Need the endpoints first? Use `create-element`
+- Need the exact kinds available in the workspace? Use `lookup-element-kinds`
+- Need retries, callbacks, fallback order, or webhook timing? Use `create-sequence-view`

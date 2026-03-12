@@ -1,0 +1,26 @@
+{
+  "skill_name": "organize-multi-project",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-12T17:40:48.204344Z",
+  "finished_at": "2026-03-12T17:42:22.608209Z",
+  "elapsed_seconds_total": 94.403865,
+  "files_read_count": 2,
+  "files_written_count": 5,
+  "iteration": 2,
+  "eval_count": 4,
+  "response_files_created_count": 4,
+  "all_responses_created": true,
+  "intentionally_read_workspace_files": [
+    ".github/skills/organize-multi-project/SKILL.md",
+    ".github/skills/organize-multi-project/evals/evals.json"
+  ],
+  "files_written_under_target_output_directory": [
+    "test/iteration-2/organize-multi-project/eval-0/with_skill/response.md",
+    "test/iteration-2/organize-multi-project/eval-1/with_skill/response.md",
+    "test/iteration-2/organize-multi-project/eval-2/with_skill/response.md",
+    "test/iteration-2/organize-multi-project/eval-3/with_skill/response.md",
+    "test/iteration-2/organize-multi-project/with_skill-run-metrics.json"
+  ]
+}

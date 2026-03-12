@@ -5,127 +5,192 @@ description: Use when resolving LikeC4 errors—element not found, unknown kinds
 
 # Troubleshoot LikeC4 Errors
 
-## Overview
+## Goal
 
-Diagnoses and resolves common LikeC4 compilation and rendering errors by mapping symptoms to root causes and targeted fixes.
+Diagnose the root cause, verify it quickly, then show the smallest correct fix.
+
+Default response shape:
+1. **probable error category**
+2. **root cause**
+3. **verification step**
+4. **minimal fix**
+
+Prefer one corrected snippet over a long essay.
 
 ## When to Use
 
-- Compilation errors appear in VS Code Problems panel
-- LikeC4 MCP returns "element not found" or "unknown kind" responses
-- Diagram rendering fails or shows unexpected elements
-- Syntax errors after editing model or view files
+- Errors appear in the VS Code Problems panel
+- LikeC4 reports unknown kinds, unknown relationships, or missing elements
+- Views render incorrectly or show unexpected elements
+- Syntax errors appear after editing model/view/deployment files
 
-**Tip:** Use `read-project-summary` first to confirm valid element kinds, tags, and relationship types.
+## Triage order
 
-## Quick Reference
+1. identify whether the problem is taxonomy, FQN, syntax, view scope, or deployment inheritance
+2. compare the failing construct against shared specs and the project summary
+3. verify the smallest relevant file/line
+4. apply the minimal correction instead of compensating elsewhere
 
-| Symptom | Root Cause | Fix |
-|---------|-----------|-----|
-| "Element not found" | Short name instead of FQN | Use a full FQN such as `system.api`, not `api` |
-| "Unknown kind" | Invalid element kind | Check `projects/shared/spec-*.c4` |
-| "Invalid relationship kind" | Undefined relationship type | Use `calls`, `async`, `reads`, `writes` |
-| `Unknown relationship type: https` in `model {}` | Deployment kind used in system model | Use a model kind plus `technology 'HTTPS'` |
-| Syntax error in relationship block | Kind in property block | Move type to arrow: `-[calls]->` |
-| Parent-child in dynamic view | Conceptual violation | Have actor access component directly |
-| Unexpected elements in diagram | Over-broad wildcard include | Scope: `include system.*` |
-| "instanceOf target not found" | Wrong element type or FQN | Target must be a Container, use a full FQN |
-| Deployment diagram shows duplicate app edges | Relationship restated in deployment | Remove duplicate edge and rely on inherited model relationship |
+## Quick reference
 
-## Common Issues
+| Symptom | Root cause | Minimal fix |
+|---|---|---|
+| `Element not found` | short name instead of FQN | use full FQN such as `system.api` |
+| `Unknown kind` | undeclared element kind | replace with exact shared kind from `spec-*.c4` |
+| `Invalid relationship kind` | undeclared or wrong-scope relationship type | use model kinds (`calls`, `async`, `reads`, `writes`, `uses`) or proper deployment kinds |
+| `Unknown relationship type: https` in `model {}` | deployment type used in logical model | use `-[calls]->` + `technology 'HTTPS'` |
+| syntax error in relationship block | kind placed in properties block | move the kind into the arrow |
+| dynamic view parent → child | containment shown as interaction | have the actor or peer call the component directly |
+| unexpected elements in view | include pattern too broad | scope includes to the intended boundary |
+| `instanceOf target not found` | wrong FQN or wrong target type | point `instanceOf` to a real model container FQN |
+| duplicate app edges in deployment | logical traffic restated in deployment | remove duplicate deployment edges and rely on inherited model relationships |
 
-### "Element not found"
-- **Cause:** Using short name instead of FQN
-- **Solution:** Use a full FQN like `system.api`, not `api`, for nested elements
+## Minimal fix templates
 
-### "Unknown element kind"
-- **Cause:** Invalid or generic element kind
-- **Solution:** Check `projects/shared/spec-*.c4` for valid kinds; use specific kinds like `Container_Api` not `Container`
+### 1. Unknown kind
 
-### "Invalid relationship kind"
-- **Cause:** Undefined relationship type
-- **Solution:** Use defined kinds: `calls`, `async`, `reads`, `writes`, `uses` (model) or `http`, `https`, `tcp` (deployment)
+- **Root cause:** the element kind is not declared in shared specs
+- **Verify:** check `projects/shared/spec-*.c4` or the project summary
+- **Fix:** replace guessed kinds with exact shared ones
 
-### `Unknown relationship type: https` (or `ldap`, `amqp`, etc.) inside `model {}`
-- **Cause:** A deployment relationship kind was used in the logical system model.
-- **Solution:** Keep a model relationship kind in the arrow and move the protocol to the relationship technology.
-- **Example fix:**
-  ```likec4
-  // ❌ WRONG
-  webapp -[https]-> api 'Makes API requests'
+```likec4
+// ❌ Wrong
+api = Container_API 'API'
 
-  // ✅ CORRECT
-  webapp -[calls]-> api 'Makes API requests' {
-    technology 'HTTPS'
-  }
-  ```
+// ✅ Correct
+api = Container_Api 'API' {
+  technology 'Node.js'
+  description 'Exposes the platform API.'
+}
+```
 
-### Relationship syntax error (calls/uses/reads/writes in block)
-- **Error:** `calls 'Action description'` inside relationship block
-- **Cause:** Relationship kind placed in property block instead of arrow
-- **Solution:** Move type to arrow: `source -[calls]-> target 'Action' { technology 'X' }`
-- **Example fix:**
-  ```likec4
-  // ❌ WRONG
-  api -> service {
-    calls 'Fetch data'
-  }
-  
-  // ✅ CORRECT
-  api -[calls]-> service 'Fetch data'
-  ```
+### 2. Wrong FQN / element not found
 
-### Parent-child relationship in dynamic view
-- **Error:** Compilation error when showing `container -> container.component` in dynamic view
-- **Cause:** Dynamic views cannot show parent calling its own child (conceptual violation)
-- **Solution:** Have actor/external element directly access the component
-- **Example fix:**
-  ```likec4
-  // ❌ WRONG (in dynamic view)
-  user -> system.webapp
-  system.webapp -> system.webapp.authModule
-  
-  // ✅ CORRECT
-  user -> system.webapp.authModule 'Accesses directly'
-  system.webapp.authModule -> ldapServer 'Validates'
-  ```
+- **Root cause:** nested element referenced by short name only
+- **Verify:** inspect parent hierarchy or use `search-element`
+- **Fix:** use the full FQN
 
-### Invalid "rank same" constraint
-- **Error:** `rank same` rule fails with elements from different parent contexts
-- **Cause:** Rank constraints can only group elements sharing the same parent
-- **Solution:** Remove or split constraint, only rank siblings together
-- **Example fix:**
-  ```likec4
-  // ❌ WRONG: Different parents (external vs internal)
-  rank same ldapServer, devforge.postgresDb
-  
-  // ✅ CORRECT: Same parent context
-  rank same devforge.api, devforge.database
-  ```
+```likec4
+// ❌ Wrong
+instanceOf api
 
-### View became brittle after adding many rank hints
-- **Symptom:** Layout looks worse or starts breaking after adding several `rank source`, `rank sink`, or `rank same` directives
-- **Cause:** The view is over-constrained; rank hints are being used to force structure that should come from `autoLayout` and better includes
-- **Solution:** Remove most rank hints, keep `autoLayout`, then reintroduce at most one or two obvious anchors if still needed (often just the initiating user as `rank source`)
+// ✅ Correct
+instanceOf corePlatform.api
+```
 
-### Diagram shows unexpected elements
-- **Cause:** Over-broad wildcard includes like `include **`
-- **Solution:** Use scoped wildcards: `include system.*` or `include system.* ->`
+### 3. Deployment relationship kind used in `model {}`
 
-### "instanceOf target not found"
-- **Cause:** Referencing non-existent or wrong element type
-- **Solution:** Ensure target is a Container from model and use a full FQN such as `instanceOf system.api`
+- **Root cause:** protocol encoded as relationship type instead of `technology`
+- **Verify:** confirm you are in the logical model, not deployment
+- **Fix:** keep the model relationship kind and move the protocol to `technology`
 
-### Deployment view is cluttered with duplicate relationships
-- **Cause:** Application traffic was restated in deployment nodes/views instead of being inherited from the system model.
-- **Solution:** Delete the duplicate deployment relationships, add or fix the logical relationship in `model {}`, and put protocol/port details on that relationship’s `technology` field.
+```likec4
+// ❌ Wrong
+webApp -[https]-> api 'Makes API requests'
 
-## Common Mistakes
+// ✅ Correct
+webApp -[calls]-> api 'Makes API requests' {
+  technology 'HTTPS'
+}
+```
 
-- ❌ Fixing the symptom (renaming) without finding the root cause (wrong FQN or kind)
-- ❌ Using generic kinds (`Container`) instead of spec-defined kinds (`Container_Api`)
-- ❌ Retrying the same syntax without checking Context7 MCP for current DSL docs
-- ❌ Editing view includes to work around a model error instead of fixing the model
-- ❌ Using deployment relationship kinds in `model {}` instead of `technology 'HTTPS'` / `technology 'AMQP'` / `technology 'Manual'`
-- ❌ Recreating inherited app-level relationships in deployment just to show technical details
-- ❌ Skipping `read-project-summary` — always verify valid kinds before manual edits
+### 4. Relationship kind inside block
+
+- **Root cause:** `calls`, `reads`, or similar placed in the property block
+- **Verify:** inspect the exact arrow syntax
+- **Fix:** move the kind into the arrow
+
+```likec4
+// ❌ Wrong
+api -> service {
+  calls 'Fetch data'
+}
+
+// ✅ Correct
+api -[calls]-> service 'Fetch data'
+```
+
+### 5. Dynamic view parent → child error
+
+- **Root cause:** a container is shown calling its own component in a dynamic view
+- **Verify:** check whether both endpoints are in a containment chain
+- **Fix:** have the actor or an external peer target the child directly
+
+```likec4
+// ❌ Wrong
+user -> system.webApp
+system.webApp -> system.webApp.authModule
+
+// ✅ Correct
+user -> system.webApp.authModule 'Starts login'
+system.webApp.authModule -> directoryService 'Validates credentials'
+```
+
+### 6. Duplicate deployment edges
+
+- **Root cause:** normal application traffic was redrawn between deployment instances
+- **Verify:** check whether the corresponding model relationship already exists
+- **Fix:** keep the relationship in `model {}` and let `instanceOf` propagate it
+
+```likec4
+// ❌ Wrong
+Prod.Web.webApp -[https]-> Prod.App.apiApp 'Browser traffic'
+
+// ✅ Better
+webApp -[calls]-> api 'Browser traffic' {
+  technology 'HTTPS'
+}
+```
+
+## View/layout-specific fixes
+
+### Invalid `rank same`
+
+Only rank siblings that share the same parent context.
+
+```likec4
+// ❌ Wrong
+rank same ldapServer, devforge.postgresDb
+
+// ✅ Correct
+rank same devforge.api, devforge.database
+```
+
+### Too many rank hints
+
+- **Root cause:** the view is over-constrained
+- **Fix:** remove most `rank` hints, keep `autoLayout`, then add at most one obvious anchor if still needed
+
+### Over-broad include
+
+```likec4
+// ❌ Wrong
+include **
+
+// ✅ Better
+include corePlatform.*
+include -> corePlatform.api
+include corePlatform.api ->
+```
+
+## If MCP is unavailable
+
+Use an offline diagnosis path:
+
+1. inspect the exact failing line and file type (`model`, `view`, or deployment)
+2. compare it to `projects/shared/SPEC_CHEATSHEET.md` and `projects/shared/spec-*.c4`
+3. inspect nearby FQNs and hierarchy in the local model files
+4. give the minimal corrected snippet now
+5. list the MCP checks to run later (`read-project-summary`, `find-relationships`, `search-element`)
+
+## Common mistakes
+
+- ❌ fixing the symptom without identifying the category of error first
+- ❌ guessing kinds instead of comparing against shared specs
+- ❌ working around a bad model with broader view includes
+- ❌ using deployment relationship kinds in `model {}`
+- ❌ redrawing inherited app traffic in deployment
+
+## Output
+
+Return a short diagnosis with the root cause, the verification step, and a corrected snippet ready to paste.

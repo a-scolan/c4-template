@@ -5,131 +5,144 @@ description: Use when validating model integrity—element references are valid,
 
 # Test LikeC4 Model
 
-## Overview
+## Goal
 
-Validates LikeC4 model correctness and integrity by checking element references, relationship kinds, view rendering, and syntax against project specifications.
+Validate the model at the right depth.
+
+Default to **quick validation** unless the prompt asks for a full audit.
+
+## Modes
+
+| Mode | Use when | Output |
+|---|---|---|
+| **Quick validation** | a narrow sanity check, a small edit, or a single suspicious file/view | short checklist + likely issues + next checks |
+| **Full validation** | before commit, after structural changes, or when multiple files were touched | end-to-end validation report |
 
 ## When to Use
 
-- Compilation errors appear in VS Code Problems panel
+- Problems appear in the VS Code Problems panel
 - Elements or relationships reference undefined kinds or FQNs
 - Views render with unexpected elements or layout issues
-- After structural changes (new elements, kinds, or topology)
-- Before committing significant model changes
+- After structural changes (new elements, new topology, new deployment nodes)
+- Before committing significant LikeC4 work
 
-## Validation Workflow
+## Quick validation (default)
 
-### 1. Project Structure Validation (REQUIRED)
+Run this small sequence first:
 
-Use LikeC4 MCP `read-project-summary` to validate:
-- All element kinds are defined in shared specifications
-- All relationship kinds exist in spec files
-- Tags are properly declared
-- No orphaned elements
+1. verify the active project and shared taxonomy
+2. check the exact file(s) changed
+3. verify FQNs and `instanceOf` targets
+4. verify relationship kinds and technology placement
+5. preview only the impacted view(s)
 
-### 2. Element Reference Validation (REQUIRED)
+### Quick checklist
 
-Use LikeC4 MCP `search-element` to verify:
-- All referenced elements exist
-- FQN usage is correct for nested elements
-- instanceOf references point to valid Containers
+- [ ] kinds come from shared specs
+- [ ] FQNs resolve to real elements
+- [ ] `instanceOf` points to a real model container
+- [ ] model relationships use `calls` / `async` / `reads` / `writes` / `uses`
+- [ ] deployment relationships are used only for infrastructure-specific facts
+- [ ] touched views still show the parent boundary and expected neighbors
 
-### 3. Relationship Validation (REQUIRED)
+## Full validation workflow
 
-Use LikeC4 MCP `find-relationships` to check:
-- Relationships use valid typed kinds
-- No duplicate relationships between same elements
-- All relationships have descriptive labels
-- No reverse/return relationships exist
+### 1. Project structure validation
 
-### 4. View Validation (RECOMMENDED)
+Use `read-project-summary` to confirm:
+- element kinds are declared
+- relationship kinds are declared
+- tags are valid
+- the active project is the intended one
 
-Use LikeC4 MCP `open-view` to preview:
-- Views render correctly without errors
-- Include patterns show expected elements
-- If rank hints exist, they are sparse, justified, and do not make the view brittle
-- No unexpected elements appear due to over-broad wildcards
+### 2. Reference validation
 
-### 5. Syntax Validation (RECOMMENDED)
+Use `search-element` or `read-element` to confirm:
+- FQNs are correct
+- nested references resolve
+- `instanceOf` targets are real containers
 
-Use Context7 MCP `query-docs` to verify:
-- Relationship syntax is correct
-- View syntax follows LikeC4 DSL standards
-- Deployment instanceOf syntax is proper
+### 3. Relationship validation
 
-## Common Issues to Check
+Use `find-relationships` to confirm:
+- typed kinds are valid
+- normal application traffic lives in the logical model
+- no fake return path appears in async flows
+- no duplicated app traffic is redrawn in deployment
 
-### Broken References
-```bash
-# Use LikeC4 MCP search-element to find elements
-# Verify all referenced elements exist in model
-```
+### 4. View validation
 
-### Invalid Element Kinds
-```bash
-# Use LikeC4 MCP read-project-summary
-# Check that all element kinds are in spec-*.c4 files
-```
+Use `open-view` to confirm:
+- the view renders without surprises
+- include patterns are scoped correctly
+- parent context is present
+- rank hints, if any, are sparse and justified
 
-### Missing Relationship Labels
+### 5. Syntax/documentation validation
+
+Use Context7 only if local files and specs still leave a syntax doubt.
+
+## Parent-context validation
+
+Every view must show what contains the focus.
+
+- **C1**: system boundary and external context
+- **C2**: parent system + containers + neighbors
+- **C3**: parent container + components + neighbors
+- **Deployment zone**: environment + zone + contained VMs
+- **Deployment VM**: parent zone + VM + contained apps
+- **Dynamic view**: initiating actor + causal sequence
+
+### Typical failures
+
+- ❌ C3 view without the parent container
+- ❌ C2 view without the parent system
+- ❌ deployment VM view without the parent zone
+- ❌ dynamic view without the initiating actor
+
+## Minimal issue patterns to check
+
+### Missing relationship label
+
 ```likec4
-❌ api -[calls]-> service          // Missing label
+❌ api -[calls]-> service
 ✅ api -[calls]-> service 'Fetches data'
 ```
 
-### Over-broad View Includes
+### Over-broad include
+
 ```likec4
-❌ include **                      // Too broad
-✅ include system.*                // Scoped
+❌ include **
+✅ include system.*
 ```
 
-## Quick Reference
+### Deployment protocol placed on the edge type in the logical model
 
-- [ ] Run LikeC4 MCP `read-project-summary` - verify all element kinds exist
-- [ ] Search for all FQN references - use `search-element` to validate
-- [ ] Check relationships - use `find-relationships` for key connections
-- [ ] Preview all views - use `open-view` for each defined view
-- [ ] Verify syntax - use Context7 MCP if uncertain about syntax features
-- [ ] Check for compilation errors in VS Code Problems panel
-- [ ] Run `likec4 start` locally to ensure diagrams render
+```likec4
+❌ webApp -[https]-> api
+✅ webApp -[calls]-> api { technology 'HTTPS' }
+```
 
-## Parent Context Validation
+## If MCP is unavailable
 
-**Critical requirement:** Every view MUST explicitly include its parent/surrounding element.
+Do an offline validation pass:
 
-For detailed context requirements, see the `design-view` skill.
+1. read `projects/shared/SPEC_CHEATSHEET.md` and `projects/shared/spec-*.c4`
+2. inspect the touched model/view/deployment files directly
+3. inspect the Problems panel or compile errors available in the editor
+4. provide the quick validation result first
+5. list the MCP checks to run later (`read-project-summary`, `find-relationships`, `open-view`)
 
-### Context Checklist for Views
+## Common mistakes
 
-- [ ] **C1 Context view:** System boundary clearly shown? External systems included?
-- [ ] **C2 Container view:** System boundary shown? Containers appear WITHIN system?
-- [ ] **C2 Container view:** Neighboring containers shown? (include -> system.* and system.* ->)
-- [ ] **C3 Component view:** Parent container boundary shown? Components appear WITHIN container?
-- [ ] **C3 Component view:** Neighboring containers shown? (include -> service and service ->)
-- [ ] **Deployment Zone view:** Zone container shown? VMs appear WITHIN zone? Parent environment included?
-- [ ] **Deployment VM view:** VM container shown? Instances appear WITHIN VM? Parent zone included?
-- [ ] **Dynamic/Sequence view:** Initiating actor shown at start? Causality clear?
-
-**Common mistakes:**
-- ❌ C3 view without parent container boundary
-- ❌ C2 view without system boundary
-- ❌ Deployment VM without parent zone
-- ❌ Sequence without initiating actor
-- ✅ Every view contextualized by showing what contains it
-
-## Common Mistakes
-
-- ❌ Verifying syntax only without checking FQN references via MCP
-- ❌ Skipping `open-view` preview — render failures can be silent
-- ❌ Using element kinds not declared in `spec-*.c4` files
-- ❌ Relationships without typed kinds (`->` instead of `-[calls]->`)
-- ❌ Views that omit the parent container or zone boundary
-- ❌ Forgetting to check the VS Code Problems panel for compile errors
+- ❌ expanding into a full workflow when the user only asked for a narrow sanity check
+- ❌ checking syntax but not FQNs or `instanceOf`
+- ❌ validating views without checking the parent boundary rule
+- ❌ using deployment relationships to compensate for missing logical relationships
+- ❌ ignoring the Problems panel because “the syntax looks fine”
 
 ## Output
 
-Comprehensive validation report identifying:
-- Broken or invalid references
-- Syntax errors or warnings
-- Missing or incorrect metadata
-- Views that don't render as expected
+Return either:
+- a **quick validation** result with the highest-risk checks and immediate fixes, or
+- a **full validation** report covering structure, references, relationships, and views

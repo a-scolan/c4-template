@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-03-12T12:00:10Z",
+  "cwd": "C:/Users/ascolan/Documents/Workspace/c4_template",
+  "sessionId": "blind-session-2",
+  "hookEventName": "PreToolUse",
+  "tool_name": "read_file",
+  "tool_input": {
+    "filePath": "C:/Users/ascolan/Documents/Workspace/c4_template/.github/skills/create-element/evals/evals.json",
+    "startLine": 1,
+    "endLine": 200
+  }
+}

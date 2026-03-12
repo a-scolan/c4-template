@@ -1,0 +1,89 @@
+{
+  "skill_name": "create-element",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "TIE",
+      "reasoning": "Both A and B successfully reuse Container_Api, include technology and description, place the element under the parent system with camelCase naming, and stay focused on element declaration. A provides fuller system context while B is more minimal; both satisfy all expectations equally.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "TIE",
+      "reasoning": "Both A and B clearly explain the shared-spec-first rule, explicitly discourage one-off kinds by referencing Container_Api as the correct choice, and ask for approval before introducing new kinds. Both responses are comprehensive and meet all three expectations equivalently.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "Both identify correct element kinds (System_External, Container_Api) and route to appropriate skills. A is concise in stating boundaries. B strengthens the response by providing concrete LikeC4 code examples for both elements, making the skill delegation more tangible and easier to apply.",
+      "rubric": {
+        "A": {
+          "overall_score": 8
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "B",
+      "reasoning": "Both reject creating two kinds and reuse an existing kind while suggesting tags/view context for mock vs prod distinction. B provides concrete working code showing two distinct Container_Api elements with clear descriptions, directly demonstrating the concept. A describes the approach more abstractly, making B's example-driven approach more practical and illustrative.",
+      "rubric": {
+        "A": {
+          "overall_score": 8
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

@@ -10,7 +10,8 @@
         "The response explicitly identifies the active project or a reliable method to identify it.",
         "The response cites source-of-truth inputs (config, shared specs, model/views).",
         "The response mentions valid kinds/relationships/tags without inventing them.",
-        "The response provides an ordered C1→C2→C3 plan before modification."
+        "The response provides an ordered C1→C2→C3 plan before modification.",
+        "The response treats shared specs and project summary as primary truth, not example projects."
       ]
     },
     {
@@ -22,7 +23,8 @@
         "The response requires revalidating the active project after switching.",
         "The response includes at least list-projects + read-project-summary in the sequence.",
         "The response mentions rereading shared specs before C3 edits.",
-        "The response makes at least two avoided risks explicit (stale context, invalid kind, wrong C3 parent)."
+        "The response makes at least two avoided risks explicit (stale context, invalid kind, wrong C3 parent).",
+        "The response keeps semantic validation ahead of example-file browsing."
       ]
     },
     {
@@ -34,7 +36,8 @@
         "Diagnosis starts from source of truth (shared specs + project summary), not guessing.",
         "The response explicitly compares requested kind/relationship against valid taxonomy.",
         "The response describes a confirmation sequence before correction.",
-        "The response proposes a fallback if project summary appears inconsistent."
+        "The response proposes a fallback if project summary appears inconsistent.",
+        "The response does not treat `.github/skills/` as the source of valid kinds or relationship names."
       ]
     },
     {
@@ -46,7 +49,8 @@
         "The response frames active project and source of truth before discussing modeling.",
         "The response explicitly cites `c4-modeling-process` as handoff skill.",
         "The response specifies handoff comes after validating project, kinds/relationships/tags, and relevant files.",
-        "The response distinguishes this skill’s workspace-framing role from the next skill’s C1→C2→C3 orchestration role."
+        "The response distinguishes this skill’s workspace-framing role from the next skill’s C1→C2→C3 orchestration role.",
+        "The response distinguishes semantic truth from workflow guidance during the handoff."
       ]
     },
     {
@@ -58,7 +62,20 @@
         "The response cites relevant local structures such as the shared spec area, project folders, and `.github/skills/`.",
         "The response points to local sources of truth such as `SPEC_CHEATSHEET.md`, shared specs, and project summary.",
         "The response gives examples of taxonomy actually used here, such as `Container_Api` and valid model relationships.",
-        "The response provides explicit handoff to `c4-modeling-process` or another suitable editing skill once framing is complete."
+        "The response provides explicit handoff to `c4-modeling-process` or another suitable editing skill once framing is complete.",
+        "The response makes it explicit that `.github/skills/` provides workflow guidance, while shared specs and project summary provide the semantic truth."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I found a nice pattern in `projects/spec-showcase/container-views.c4`. Can I treat that as the authoritative taxonomy for adding a new queue and API in another project? What should I validate first?",
+      "expected_output": "The response rejects example projects as the authoritative taxonomy, validates the active project first, and points back to shared specs plus project summary.",
+      "files": [],
+      "expectations": [
+        "The response says example projects such as `spec-showcase` are references, not the authoritative taxonomy.",
+        "The response validates the active project before applying patterns from another project.",
+        "The response points to shared specs and project summary as the real source of valid kinds and relationships.",
+        "The response gives at least one concrete taxonomy example from this repo, such as `Container_Api`, `Container_Queue`, or model relationships like `calls` and `async`."
       ]
     }
   ]

@@ -1,0 +1,131 @@
+{
+  "skill_name": "c4-modeling-process",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "TIE",
+      "reasoning": "Both A and B enforce C1→C2→C3 progression and explicitly mark Deployment and Dynamic as optional. Both meet all 3 expectations with clear, well-structured explanations. A is more narrative; B is better organized.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "TIE",
+      "reasoning": "Both A and B clearly state C3 is not mandatory and reserve it only for complex/critical containers. Both maintain C1→C2→C3 progression throughout. All 3 expectations met equally well.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "TIE",
+      "reasoning": "Both A and B forbid temporal flows in C1, redirect to dynamic views/Use Cases, and explain the boundary distinction (C1=context, dynamic=temporal flow). All 3 expectations met. B slightly more explicit on view placement.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "A explicitly names understand-project-structure as the first step and delegates to create-element, create-relationship, and design-view. B describes the conceptual approach but omits skill names. A meets all 4 expectations; B meets 2/4.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.5
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "B",
+      "reasoning": "B explicitly routes deployment work to model-deployment-infrastructure and nominal scenarios to create-sequence-view, and defines this skill as an orchestration framework. A describes the concepts without naming the specialized skills. B meets all 4 expectations; A meets 2/4.",
+      "rubric": {
+        "A": {
+          "overall_score": 7
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.5
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 5,
+      "winner": "B",
+      "reasoning": "B explicitly names understand-project-structure first, delegates C3 work, routes user scenarios to create-sequence-view, and final validation to test-model. A describes the flow conceptually but omits explicit skill routing. B meets all 4 expectations; A meets 2/4.",
+      "rubric": {
+        "A": {
+          "overall_score": 7
+        },
+        "B": {
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 0.5
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

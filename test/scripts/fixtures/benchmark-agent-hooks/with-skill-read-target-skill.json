@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-03-12T12:00:00Z",
+  "cwd": "C:/Users/ascolan/Documents/Workspace/c4_template",
+  "sessionId": "with-skill-session",
+  "hookEventName": "PreToolUse",
+  "tool_name": "read_file",
+  "tool_input": {
+    "filePath": "C:/Users/ascolan/Documents/Workspace/c4_template/.github/skills/create-element/SKILL.md",
+    "startLine": 1,
+    "endLine": 80
+  }
+}

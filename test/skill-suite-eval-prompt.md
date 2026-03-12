@@ -26,6 +26,8 @@ All logs and reports must stay **anonymous**: never expose the absolute workspac
 - Use a **fresh session or fresh worker** for each `<skill, configuration>` pair.
 - In `with_skill`, enable only the single target skill.
 - In `without_skill`, read **no** `SKILL.md` file at all.
+- A run is invalid if its `*-run-metrics.json` file is missing required keys or contains `null` for required metric values.
+- Do **not** hand-author `*-run-metrics.json` files; write them with `python test/scripts/skill_suite_tools.py write-run-metrics ...`.
 - **Critically important:** prompt-level instructions are **not enough** to guarantee a clean `without_skill` baseline.
 - Before any `without_skill` run, physically disable workspace skills by moving every directory from `.github/skills/` into `test/iteration-N/_disabled-skills/`.
 - Run **all** `without_skill` scenarios first while skills are physically disabled.
@@ -45,17 +47,20 @@ The run order is mandatory:
 1. Move every directory from `.github/skills/` to `test/iteration-N/_disabled-skills/` and write a relocation manifest.
 2. Start fresh sessions or fresh workers created **after** the relocation step, with no prior exposure to workspace skill contents.
 3. Run **all** eval prompts for **all** skills in `without_skill` mode first.
-4. Save one English response per eval and one compact run-metrics JSON per skill configuration.
-5. Build one anonymous summary JSON per `without_skill` configuration.
-6. Restore every skill directory back into `.github/skills/` and write a restoration manifest.
-7. Start fresh sessions or fresh workers created **after** the restore step.
-8. For each skill, read `SKILL.md` and `evals/evals.json`, then run all eval prompts once in `with_skill` mode.
-9. Save one English response per eval and one compact run-metrics JSON per skill configuration.
-10. Build one anonymous summary JSON per `with_skill` configuration.
-11. Blind the pairwise outputs into `A.md` and `B.md` per eval.
-12. Compare `A` vs `B` without revealing the mapping.
-13. Aggregate capability, consumption, and execution-time metrics per skill.
-14. Produce suite-level tables for the full iteration.
+4. Save one English response per eval and write one canonical run-metrics JSON per skill configuration with `skill_suite_tools.py write-run-metrics`.
+5. Run `skill_suite_tools.py normalize-metrics` and `skill_suite_tools.py validate-metrics` on the iteration before building `without_skill` summaries; fix or rerun any configuration that still fails validation.
+6. Build one anonymous summary JSON per `without_skill` configuration.
+7. Restore every skill directory back into `.github/skills/` and write a restoration manifest.
+8. Start fresh sessions or fresh workers created **after** the restore step.
+9. For each skill, read `SKILL.md` and `evals/evals.json`, then run all eval prompts once in `with_skill` mode.
+10. Save one English response per eval and write one canonical run-metrics JSON per skill configuration with `skill_suite_tools.py write-run-metrics`.
+11. Run `skill_suite_tools.py normalize-metrics` and `skill_suite_tools.py validate-metrics` on the iteration before building `with_skill` summaries; fix or rerun any configuration that still fails validation.
+12. Build one anonymous summary JSON per `with_skill` configuration.
+13. Blind the pairwise outputs into `A.md` and `B.md` per eval.
+14. Compare `A` vs `B` without revealing the mapping.
+15. Run `skill_suite_tools.py normalize-metrics` and then `skill_suite_tools.py validate-metrics` for the whole iteration; resolve any remaining metric issues before aggregation.
+16. Aggregate capability, consumption, and execution-time metrics per skill.
+17. Produce suite-level tables for the full iteration.
 
 ## Critical baseline isolation
 
@@ -86,6 +91,25 @@ This step is **non-negotiable**.
 - Do not reuse a worker that has already read a skill file for any `without_skill` task.
 - Parallelize across independent workers only when their output directories do not overlap.
 - Parallelize **within a phase** (`without_skill` batch or `with_skill` batch), never across both phases at once.
+
+### Custom-agent mapping
+
+When using the workspace benchmark agents, keep this mapping explicit:
+
+- benchmark manager → `skill-benchmark-manager`
+- `without_skill` phase → `skill-benchmark-baseline`
+- `with_skill` phase → `skill-benchmark-with-skill`
+- blind comparison → `skill-blind-comparator`
+
+The manager may delegate only to those constrained benchmark workers.
+
+### Critical subagent propagation rule
+
+- A benchmark worker must not escape its file-access policy through subagents.
+- Worker agents should therefore set `agents: []` unless a future helper agent exists with an equal or stricter hook policy.
+- If a manager delegates work, it must do so only to explicitly allowlisted benchmark worker agents.
+- Do not use unconstrained exploratory or generic subagents anywhere in the measured benchmark flow.
+- Do not assume a parent agent's hooks are automatically reused by a delegated custom worker. Each benchmark worker must carry its own read-only tool limits and its own scoped hook policy.
 
 ## Isolation rules
 
@@ -121,6 +145,8 @@ This step is **non-negotiable**.
       notes.md
       skills-relocation.json
       skills-restoration.json
+      metric-normalization.json
+      metric-validation.json
     <skill-name>/
       with_skill-run-metrics.json
       without_skill-run-metrics.json
@@ -168,6 +194,8 @@ Each configuration summary file should use this shape:
 }
 ```
 
+All metric fields shown above are required when available in the schema; do not emit `null` for `elapsed_seconds_total`, `files_read_count`, or `files_written_count`.
+
 Each configuration must also write a compact run-metrics file:
 
 ```json
@@ -183,6 +211,30 @@ Each configuration must also write a compact run-metrics file:
   "files_written_count": 4
 }
 ```
+
+Required rule: every key in the run-metrics schema above must be present and non-null.
+
+Recommended safe path: write the file with the helper instead of typing JSON manually.
+
+```bash
+python test/scripts/skill_suite_tools.py write-run-metrics \
+  --output test/iteration-3/create-element/with_skill-run-metrics.json \
+  --started-at 2026-03-12T10:00:00Z \
+  --finished-at 2026-03-12T10:00:12Z \
+  --files-read-count 4 \
+  --files-written-count 5
+```
+
+This command infers `skill_name` and `configuration` from the output path when possible and always writes the canonical schema expected by summary/validation.
+
+After a batch, run:
+
+```bash
+python test/scripts/skill_suite_tools.py normalize-metrics --iteration test/iteration-3
+python test/scripts/skill_suite_tools.py validate-metrics --iteration test/iteration-3
+```
+
+`normalize-metrics` repairs known legacy alias keys in-place before validation. `validate-metrics` must still end with zero remaining issues.
 
 ## Blind-comparison rules
 
@@ -313,5 +365,7 @@ The iteration is complete when:
 
 - every skill with an `evals/evals.json` file has both configurations executed
 - every eval has a blind comparison
+- `test/iteration-N/_meta/metric-normalization.json` exists (or `normalize-metrics` was run without needing changes)
+- `test/iteration-N/_meta/metric-validation.json` exists and reports no remaining metric issues
 - `/test/iteration-N/suite-summary.{json,md}` exists
 - the suite report includes previous-iteration comparison if available

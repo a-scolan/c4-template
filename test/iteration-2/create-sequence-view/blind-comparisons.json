@@ -1,0 +1,89 @@
+{
+  "skill_name": "create-sequence-view",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "TIE",
+      "reasoning": "Both A and B satisfy all three expectations: views 'Use Cases' with dynamic view, starting with user actor, using only -> arrows with action labels. A provides a clean skeleton; B adds helpful guidance on element ID replacement. Quality parity.",
+      "rubric": {
+        "A": {
+          "overall_score": 9
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "Both explain the parent→own-child restriction and provide corrected code. A shows one approach (direct user→component targeting). B provides two valid patterns demonstrating flexibility, and more explicitly articulates the rule with clearer alternative examples.",
+      "rubric": {
+        "A": {
+          "overall_score": 8
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "Both create the view in 'Use Cases', start with externalUser, show api→jobQueue→processingWorker in temporal order with action labels. B includes reinforcing explanatory text about the key principles (temporal order, action labels, no kinds), providing better pedagogical value.",
+      "rubric": {
+        "A": {
+          "overall_score": 8
+        },
+        "B": {
+          "overall_score": 9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "All expectations require: explicit initiating actor, -> only, separated views, and explanation of if/else anti-pattern. A comprehensively addresses all four, explicitly emphasizing the anti-pattern throughout ('one overloaded pseudo-if/else', avoiding 'logic tree'). B separates views correctly but underemphasizes the anti-pattern warning relative to the expectation.",
+      "rubric": {
+        "A": {
+          "overall_score": 10
+        },
+        "B": {
+          "overall_score": 8
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "pass_rate": 1.0
+        },
+        "B": {
+          "pass_rate": 0.8
+        }
+      }
+    }
+  ]
+}
