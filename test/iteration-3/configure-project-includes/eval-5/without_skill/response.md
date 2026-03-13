@@ -1,0 +1,1 @@
+Change only these parts and leave every other field untouched: {"include":{"paths":["../shared","../platform-shared"]},"imageAliases":{"@":"../shared/images/","@platform":"../platform-shared/images/"}}. This keeps existing @/... references working, appends the new shared source after the old one, and gives platform images their own alias so there is no collision.

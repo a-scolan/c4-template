@@ -1,0 +1,4 @@
+For this repo, `c2_webapp_details` in `projects/template/system-views.c4` already shows the right focused-C2 pattern: `include user`, `include mySystem.webapp`, `include mySystem.api`.
+Validate parent context by checking that `webapp` and `api` are still declared inside `mySystem` in `projects/template/system-model.c4`; that keeps the detail view anchored to the same parent system at C2. `user` is fine as the external actor around that context.
+Validate include breadth by avoiding `include *` and `include mySystem.*` in the detail view. Those are appropriate in the broad `c2_containers` view, but too broad for a detail view.
+A good rendering sanity check is: the detail view should contain only `user`, `mySystem.webapp`, and `mySystem.api`, plus the relationships between those included elements. If `database`, `emailService`, or the new worker appears, the include scope is too broad or another rule is pulling them in.

@@ -1,0 +1,52 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-13T00:00:00Z",
+  "finished_at": "2026-03-13T00:00:01Z",
+  "files_read": [
+    "README.md",
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/spec-showcase/likec4.config.json",
+    "projects/spec-showcase/container-views.c4",
+    "projects/spec-showcase/containers.c4",
+    "projects/spec-showcase/component-views.c4",
+    "projects/spec-showcase/components.c4",
+    "projects/spec-showcase/context-views.c4",
+    "projects/template/likec4.config.json",
+    "projects/template/system-model.c4",
+    "projects/template/system-views.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Full preflight before adding a new API container:\n1. Active project first: this workspace has two visible LikeC4 project roots, `projects/template` (`name: template-project`) and `projects/spec-showcase` (`name: spec-showcase`). Before any change, fix one `likec4.config.json` as the active project and keep model + views inside that folder only. Both projects include `../shared`, so the shared taxonomy comes from `projects/shared/`.\n2. Available taxonomy from shared specs:\n- C1 kinds: `Actor_Person`, `Actor_Staff`, `Actor_Admin`, `System_New`, `System_Existing`, `System_Legacy`, `System_External`\n- C2 kinds: `Container_Api`, `Container_Api_Geo`, `Container_Queue`, `Container_Webapp`, `Container_WebServer`, `Container_ApplicationServer`, `Container_ProcessingServer`, `Container_ExchangeServer`, `Container_IamServer`, `Container_Database`, `Container_DatabaseGeo`, `Container_ObjectStorage`, `Container_Directory`, `Container_DataServer`, `Container_FileServer`, `Container_ReverseProxy`, `Container_Waf`, `Container_Loadbalancer`, `Container_Browser`, `Container_MobileApp`, `Container_Spa`\n- C3 kind: `Component`\n- Model relationships: `uses`, `calls`, `async`, `reads`, `writes`\n- Deployment-only relationships: `http`, `https`, `tcp`, `nfs`, `amqp`, `oidc_saml`, `ldap`, `sql`, `redis`, `smtp`\n- Core tags: `#Internal`, `#External`, `#Legacy`, `#Cloud`, `#Saas`, `#Queue`, `#Security`, plus family/type tags from the shared spec files such as `#Actor`, `#System`, `#Container`, `#Component`, `#Api`, `#Database`, `#ObjectStorage`, and deployment tags in `spec-deployment.c4`.\n3. Source-of-truth files:\n- Project activation/boundary: active project's `likec4.config.json`\n- Taxonomy: `projects/shared/spec-context.c4`, `spec-containers.c4`, `spec-components.c4`, `spec-global.c4`, `spec-deployment.c4`\n- Local model/view truth: the active project's own model and view files. In `projects/template`, that is `system-model.c4` and `system-views.c4`; in the showcase-style split, it is files such as `containers.c4` / `container-views.c4` and `components.c4` / `component-views.c4`.\n- Important repo rule from `README.md`: `projects/shared/` is the automation-facing source of truth; `projects/spec-showcase/` and `projects/template/` are examples, not the authoritative taxonomy.\n4. C1 -> C2 -> C3 plan:\n- C1: lock the owning system and its actors/external dependencies first. If the system boundary is unclear, resolve that before adding a container.\n- C2: add the new `Container_Api` inside the owning system, set `technology`/`description`, then add the right `calls` / `reads` / `writes` / `async` relationships. If the API introduces async work, add `Container_Queue` at the same time.\n- C3: only after the C2 role is stable, add internal `Component` children inside that API container and create or update a C3 view `of` that container.\nOne practical warning: prefer the exact names from `projects/shared/spec-*.c4`, not aliases from summaries. The cheat sheet already drifts from source of truth in places."
+    },
+    {
+      "id": 1,
+      "response": "To avoid context errors after switching projects, re-establish all three boundaries: project config, local model IDs, and local view file.\n- Pick the active project's `likec4.config.json` again (`projects/template` or `projects/spec-showcase`).\n- Edit only that project's component model and C3 view files; do not point a view in one project at a container declared in the other project.\n- Reconfirm that the target container exists in the active project model and actually contains `Component` elements.\n\nThe showcase C3 example demonstrates the dependency clearly: `projects/spec-showcase/components.c4` defines `api_container = Container_Api ...` with nested `Component`s, and `projects/spec-showcase/component-views.c4` has `view api_components of api_container`. If `api_container` were missing or from another project, the C3 view would be context-wrong.\n\nIf you were back in a tool-enabled workflow, the checks to rerun before editing are the ones that answer: (1) which project is active now, (2) where the target container/view ID is defined, (3) which shared taxonomy is included, and (4) what the current C3 view scope is. In this baseline, the safe equivalent is to re-read the active `likec4.config.json`, the active project's component model file, the active project's C3 view file, and the relevant shared spec file before touching the view."
+    },
+    {
+      "id": 2,
+      "response": "Structured diagnosis for an unknown kind/relationship error:\n1. Classify the token first.\n- Element kind/tag problem: check `projects/shared/spec-context.c4`, `spec-containers.c4`, `spec-components.c4`, or `spec-deployment.c4`\n- Model relationship problem: check `projects/shared/spec-global.c4`\n- Deployment relationship problem: check `projects/shared/spec-deployment.c4`\n2. Check the active project's `likec4.config.json` and confirm it includes `../shared`. In this repo both visible projects do, so taxonomy should be shared if the correct project is active.\n3. Compare the exact token against the shared spec declaration: same casing, same underscores, same singular/plural. This workspace uses exact PascalCase names for kinds/tags.\n4. Confirm the usage context:\n- `kind is ...` in a view filter must match a declared kind name exactly\n- `view ... of <container>` must reference a container ID that exists in the active project model\n- Deployment node kinds/relationships belong in deployment modeling, not in the core system model\n5. Use the spec file itself as the final authority, not summaries or examples. The repo already shows why: `SPEC_CHEATSHEET.md` drifts from the actual shared specs (`Container_ObjectStorage` in `spec-containers.c4`, not `Storage`; `Container_DatabaseGeo`, not `Container_Database_Geo`).\n6. Only after the token matches the source-of-truth spec should you update the model/view.\n\nShort version: check active project -> check shared include -> check exact token in the right shared spec -> check that the token is being used in the right modeling layer."
+    },
+    {
+      "id": 3,
+      "response": "Once project context is established, the next skill for sequence modeling should be `create-sequence-view`.\n\nBefore that handoff, this first skill should lock in five things:\n1. the active project folder and its `likec4.config.json`\n2. the shared taxonomy actually in scope via `../shared`\n3. the exact system/container/component IDs the sequence will reference\n4. the source-of-truth model and view files for that project\n5. the intended abstraction level of the sequence (system, container, or component)\n\nIf those are not fixed first, sequence modeling becomes guesswork and tends to fail in two boring but common ways: it targets the wrong project, or it invents IDs that do not exist in the active model."
+    },
+    {
+      "id": 4,
+      "response": "If you are coming from UML or ArchiMate, understand the local conventions before mapping your concepts directly:\n- kinds and tags are centrally declared in `projects/shared/spec-*.c4`; this repo is taxonomy-driven, not free-form stereotype-driven\n- public names are exact PascalCase (`Container_Api`, `System_Existing`, `Node_Vm`, etc.)\n- containers belong inside systems, and components belong inside containers\n- technology is carried on the relationship in the system model (`calls`, `reads`, `writes`, `async`, etc.)\n- deployment taxonomy is separate from the main model taxonomy\n- views do not define taxonomy; they visualize model content\n\nReal sources of truth are:\n1. the active project's `likec4.config.json`\n2. `projects/shared/spec-context.c4`, `spec-containers.c4`, `spec-components.c4`, `spec-global.c4`, `spec-deployment.c4`\n3. the active project's own model/view files\n\nWhat is not the final authority: `projects/spec-showcase/` and `projects/template/` as examples, plus `projects/shared/SPEC_CHEATSHEET.md` as a quick reference. Useful? Yes. Authoritative? No.\n\nBest next handoff: `lookup-element-kinds`. That is the clean bridge from UML/ArchiMate concepts into this repository's exact LikeC4 taxonomy before you create or edit anything. After that, `create-element` becomes the practical next move."
+    },
+    {
+      "id": 5,
+      "response": "No. `projects/spec-showcase/container-views.c4` is not the authoritative taxonomy for another project.\n\nWhy not:\n- it is a view file, so it filters kinds; it does not define them\n- `README.md` explicitly says `projects/shared/` is the automation-facing source of truth, while `projects/spec-showcase/` is example material\n- example content can drift or be selective; the actual kind declarations live in `projects/shared/spec-containers.c4`\n\nValidate these first before adding a queue and API elsewhere:\n1. the active target project's `likec4.config.json`\n2. the exact shared kind names in `projects/shared/spec-containers.c4` (`Container_Api`, `Container_Queue`, and any supporting kinds)\n3. the correct relationship types in `projects/shared/spec-global.c4` (`calls`, `async`, `reads`, `writes`)\n4. the owning system and local model file structure in the target project\n5. whether the target project already has naming/ID patterns you should follow\n\nSo: copy the idea of the view pattern if it helps, but validate taxonomy from `projects/shared/` and perform the actual queue/API modeling in the active target project's model files."
+    }
+  ]
+}

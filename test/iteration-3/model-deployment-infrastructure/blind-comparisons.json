@@ -1,0 +1,130 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "A est plus complet : hierarchie exacte, `instanceOf`, heritage des relations, et descriptions riches VM/zone avec `eth0` en premier ; B oublie la partie descriptions.",
+      "rubric": {
+        "A": {
+          "overall_score": 0.98
+        },
+        "B": {
+          "overall_score": 0.84
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "A fait le bon routage vers `structure-deployment-tiers` tout en rappelant la base `Environment -> Zone -> VM -> Node_App` ; B garde trop de conception reseau dans ce skill et brouille la frontiere.",
+      "rubric": {
+        "A": {
+          "overall_score": 0.98
+        },
+        "B": {
+          "overall_score": 0.38
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 1,
+          "total": 4,
+          "pass_rate": 0.25
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "A est mieux aligne : il refuse les hotes inventes, garde une hierarchie Kubernetes honnete, explique `instanceOf`, et redirige les sujets de zonage/firewall ; B est bon mais omet ce renvoi.",
+      "rubric": {
+        "A": {
+          "overall_score": 0.97
+        },
+        "B": {
+          "overall_score": 0.89
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "A est plus fort car il interdit clairement la duplication du trafic applicatif en deployment, deplace protocoles/ports vers le modele logique, explique l heritage via `instanceOf`, et reserve les edges deployment aux cas infra.",
+      "rubric": {
+        "A": {
+          "overall_score": 0.98
+        },
+        "B": {
+          "overall_score": 0.89
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "B",
+      "reasoning": "Les deux reussissent, mais B est legerement plus utile car il distingue explicitement scrape au niveau VM versus `apiApp`, tout en evitant la duplication du trafic logique et en rappelant `instanceOf`.",
+      "rubric": {
+        "A": {
+          "overall_score": 0.95
+        },
+        "B": {
+          "overall_score": 0.97
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

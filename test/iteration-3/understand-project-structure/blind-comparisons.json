@@ -1,0 +1,155 @@
+{
+  "skill_name": "understand-project-structure",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "A is more on-target because it centers the preflight on the project summary plus shared specs and ends with a clear ordered C1→C2→C3 plan; B is detailed but does not elevate the project summary as a primary truth source.",
+      "rubric": {
+        "A": {
+          "overall_score": 4.8
+        },
+        "B": {
+          "overall_score": 4.2
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "B wins by giving the required revalidation sequence with list-projects, read-project-summary, shared-spec rereads, and explicit avoided risks; A stays too implicit and leans on an example file.",
+      "rubric": {
+        "A": {
+          "overall_score": 2.3
+        },
+        "B": {
+          "overall_score": 4.9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 5,
+          "pass_rate": 0.4
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "B provides the fuller diagnosis by starting from project summary plus shared specs, comparing exact taxonomy, and adding an explicit fallback for inconsistent summaries; A is solid but missing that summary-centric fallback.",
+      "rubric": {
+        "A": {
+          "overall_score": 3.8
+        },
+        "B": {
+          "overall_score": 4.9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "A directly answers the handoff question with c4-modeling-process and clearly separates workspace framing from C1→C2→C3 orchestration; B chooses the wrong next skill.",
+      "rubric": {
+        "A": {
+          "overall_score": 5.0
+        },
+        "B": {
+          "overall_score": 1.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 1,
+          "total": 5,
+          "pass_rate": 0.2
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "A",
+      "reasoning": "A gives stronger onboarding because it covers local structures, real truth sources, concrete taxonomy, and the workflow-versus-semantic-truth split; B has useful conventions but misses project summary and the .github/skills distinction.",
+      "rubric": {
+        "A": {
+          "overall_score": 4.9
+        },
+        "B": {
+          "overall_score": 2.8
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 2,
+          "total": 5,
+          "pass_rate": 0.4
+        }
+      }
+    },
+    {
+      "eval_id": 5,
+      "winner": "A",
+      "reasoning": "A is more complete because it rejects spec-showcase as authority, validates the active project first, and points back to shared specs plus project summary with concrete taxonomy examples; B omits the project summary.",
+      "rubric": {
+        "A": {
+          "overall_score": 4.9
+        },
+        "B": {
+          "overall_score": 4.1
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        }
+      }
+    }
+  ]
+}

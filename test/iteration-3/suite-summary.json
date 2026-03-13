@@ -1,0 +1,1554 @@
+{
+  "generated_at": "2026-03-13T10:11:03Z",
+  "iteration": "iteration-3",
+  "previous_iteration": "iteration-2",
+  "skill_count": 19,
+  "suite_averages": {
+    "with_skill_win_rate": 0.9491,
+    "expectation_delta": 0.3341,
+    "rubric_delta": 0.8645,
+    "time_delta_per_eval": -2.0868,
+    "words_delta_per_eval": 4.5368,
+    "files_read_delta": -5.3158
+  },
+  "metric_validation": {
+    "generated_at": "2026-03-13T10:11:03Z",
+    "iteration": "iteration-3",
+    "status": "passed",
+    "expected_files": 38,
+    "checked_files": 38,
+    "normalized_file_count": 0,
+    "normalized_files": [],
+    "issue_count": 0,
+    "issues": []
+  },
+  "overview": [
+    {
+      "skill": "c4-modeling-process",
+      "eval_count": 6,
+      "with_skill_win_rate": 0.8333,
+      "expectation_delta": 0.0833,
+      "rubric_delta": 0.225,
+      "time_delta_per_eval": -0.8334,
+      "words_delta_per_eval": -25.1667,
+      "files_read_delta": -13.0
+    },
+    {
+      "skill": "configure-project-includes",
+      "eval_count": 6,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.2,
+      "rubric_delta": 0.5867,
+      "time_delta_per_eval": 0.0,
+      "words_delta_per_eval": 1.5,
+      "files_read_delta": -9.0
+    },
+    {
+      "skill": "create-element",
+      "eval_count": 5,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.3,
+      "rubric_delta": 1.132,
+      "time_delta_per_eval": -4.0,
+      "words_delta_per_eval": 34.0,
+      "files_read_delta": -4.0
+    },
+    {
+      "skill": "create-relationship",
+      "eval_count": 5,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.08,
+      "rubric_delta": 0.92,
+      "time_delta_per_eval": -4.0,
+      "words_delta_per_eval": 40.6,
+      "files_read_delta": -2.0
+    },
+    {
+      "skill": "create-sequence-view",
+      "eval_count": 4,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.2292,
+      "rubric_delta": 0.2075,
+      "time_delta_per_eval": 0.25,
+      "words_delta_per_eval": -12.75,
+      "files_read_delta": -6.0
+    },
+    {
+      "skill": "customize-view",
+      "eval_count": 5,
+      "with_skill_win_rate": 0.8,
+      "expectation_delta": 0.43,
+      "rubric_delta": 2.66,
+      "time_delta_per_eval": -1.4,
+      "words_delta_per_eval": 15.4,
+      "files_read_delta": -11.0
+    },
+    {
+      "skill": "design-view",
+      "eval_count": 4,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.5625,
+      "rubric_delta": 0.3275,
+      "time_delta_per_eval": -0.75,
+      "words_delta_per_eval": -59.75,
+      "files_read_delta": -8.0
+    },
+    {
+      "skill": "document-decision",
+      "eval_count": 3,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.2611,
+      "rubric_delta": 0.1833,
+      "time_delta_per_eval": -1.6666,
+      "words_delta_per_eval": 67.3334,
+      "files_read_delta": 0.0
+    },
+    {
+      "skill": "implement-pattern",
+      "eval_count": 4,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.3125,
+      "rubric_delta": 1.575,
+      "time_delta_per_eval": 0.5,
+      "words_delta_per_eval": 48.5,
+      "files_read_delta": -4.0
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "eval_count": 5,
+      "with_skill_win_rate": 0.6,
+      "expectation_delta": 0.0,
+      "rubric_delta": 0.008,
+      "time_delta_per_eval": -3.8,
+      "words_delta_per_eval": -9.4,
+      "files_read_delta": -6.0
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "eval_count": 5,
+      "with_skill_win_rate": 0.8,
+      "expectation_delta": 0.28,
+      "rubric_delta": 0.178,
+      "time_delta_per_eval": -23.8,
+      "words_delta_per_eval": 3.8,
+      "files_read_delta": -1.0
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "eval_count": 3,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.9167,
+      "rubric_delta": 0.6533,
+      "time_delta_per_eval": 0.6667,
+      "words_delta_per_eval": -19.6666,
+      "files_read_delta": -4.0
+    },
+    {
+      "skill": "organize-multi-project",
+      "eval_count": 4,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.25,
+      "rubric_delta": 0.1,
+      "time_delta_per_eval": 1.25,
+      "words_delta_per_eval": -18.75,
+      "files_read_delta": -3.0
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "eval_count": 3,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.1933,
+      "rubric_delta": 0.1233,
+      "time_delta_per_eval": 0.0,
+      "words_delta_per_eval": -12.0,
+      "files_read_delta": -2.0
+    },
+    {
+      "skill": "sync-with-template",
+      "eval_count": 5,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.25,
+      "rubric_delta": 1.88,
+      "time_delta_per_eval": -2.4,
+      "words_delta_per_eval": 2.8,
+      "files_read_delta": -5.0
+    },
+    {
+      "skill": "test-model",
+      "eval_count": 3,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.7767,
+      "rubric_delta": 0.2933,
+      "time_delta_per_eval": 0.0,
+      "words_delta_per_eval": 38.0,
+      "files_read_delta": -10.0
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "eval_count": 4,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.165,
+      "rubric_delta": 0.09,
+      "time_delta_per_eval": 1.0,
+      "words_delta_per_eval": 34.75,
+      "files_read_delta": -6.0
+    },
+    {
+      "skill": "understand-project-structure",
+      "eval_count": 6,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.475,
+      "rubric_delta": 1.8167,
+      "time_delta_per_eval": 0.6666,
+      "words_delta_per_eval": -26.0,
+      "files_read_delta": -2.0
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "eval_count": 3,
+      "with_skill_win_rate": 1.0,
+      "expectation_delta": 0.5833,
+      "rubric_delta": 3.4667,
+      "time_delta_per_eval": -1.3334,
+      "words_delta_per_eval": -17.0,
+      "files_read_delta": -5.0
+    }
+  ],
+  "skills": [
+    {
+      "skill": "c4-modeling-process",
+      "eval_count": 6,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 5,
+          "without_skill_wins": 1,
+          "ties": 0,
+          "with_skill_win_rate": 0.8333,
+          "without_skill_win_rate": 0.1667
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1,
+          "without_skill": 0.9167,
+          "delta": 0.0833
+        },
+        "rubric_score": {
+          "with_skill": 4.755,
+          "without_skill": 4.53,
+          "delta": 0.225
+        },
+        "comparison_count": 6
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 71.5,
+          "files_read_count": 2,
+          "files_written_count": 6
+        },
+        "without_skill": {
+          "response_words_per_eval": 96.6667,
+          "files_read_count": 15,
+          "files_written_count": 6
+        },
+        "delta": {
+          "response_words_per_eval": -25.1667,
+          "files_read_count": -13.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 5.0,
+          "elapsed_seconds_per_eval": 0.8333
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 10.0,
+          "elapsed_seconds_per_eval": 1.6667
+        },
+        "delta": {
+          "elapsed_seconds_total": -5.0,
+          "elapsed_seconds_per_eval": -0.8334
+        }
+      }
+    },
+    {
+      "skill": "configure-project-includes",
+      "eval_count": 6,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 6,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1,
+          "without_skill": 0.8,
+          "delta": 0.2
+        },
+        "rubric_score": {
+          "with_skill": 4.8117,
+          "without_skill": 4.225,
+          "delta": 0.5867
+        },
+        "comparison_count": 6
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 83.1667,
+          "files_read_count": 3,
+          "files_written_count": 6
+        },
+        "without_skill": {
+          "response_words_per_eval": 81.6667,
+          "files_read_count": 12,
+          "files_written_count": 6
+        },
+        "delta": {
+          "response_words_per_eval": 1.5,
+          "files_read_count": -9.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.1667
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.1667
+        },
+        "delta": {
+          "elapsed_seconds_total": 0.0,
+          "elapsed_seconds_per_eval": 0.0
+        }
+      }
+    },
+    {
+      "skill": "create-element",
+      "eval_count": 5,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 5,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1,
+          "without_skill": 0.7,
+          "delta": 0.3
+        },
+        "rubric_score": {
+          "with_skill": 4.936,
+          "without_skill": 3.804,
+          "delta": 1.132
+        },
+        "comparison_count": 5
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 73.0,
+          "files_read_count": 5,
+          "files_written_count": 5
+        },
+        "without_skill": {
+          "response_words_per_eval": 39.0,
+          "files_read_count": 9,
+          "files_written_count": 5
+        },
+        "delta": {
+          "response_words_per_eval": 34.0,
+          "files_read_count": -4.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 10.0,
+          "elapsed_seconds_per_eval": 2.0
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 30.0,
+          "elapsed_seconds_per_eval": 6.0
+        },
+        "delta": {
+          "elapsed_seconds_total": -20.0,
+          "elapsed_seconds_per_eval": -4.0
+        }
+      }
+    },
+    {
+      "skill": "create-relationship",
+      "eval_count": 5,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 5,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.92,
+          "delta": 0.08
+        },
+        "rubric_score": {
+          "with_skill": 9.84,
+          "without_skill": 8.92,
+          "delta": 0.92
+        },
+        "comparison_count": 5
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 97.4,
+          "files_read_count": 8,
+          "files_written_count": 5
+        },
+        "without_skill": {
+          "response_words_per_eval": 56.8,
+          "files_read_count": 10,
+          "files_written_count": 5
+        },
+        "delta": {
+          "response_words_per_eval": 40.6,
+          "files_read_count": -2.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 10.0,
+          "elapsed_seconds_per_eval": 2.0
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 30.0,
+          "elapsed_seconds_per_eval": 6.0
+        },
+        "delta": {
+          "elapsed_seconds_total": -20.0,
+          "elapsed_seconds_per_eval": -4.0
+        }
+      }
+    },
+    {
+      "skill": "create-sequence-view",
+      "eval_count": 4,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 4,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.7708,
+          "delta": 0.2292
+        },
+        "rubric_score": {
+          "with_skill": 0.9675,
+          "without_skill": 0.76,
+          "delta": 0.2075
+        },
+        "comparison_count": 4
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 97.0,
+          "files_read_count": 2,
+          "files_written_count": 4
+        },
+        "without_skill": {
+          "response_words_per_eval": 109.75,
+          "files_read_count": 8,
+          "files_written_count": 4
+        },
+        "delta": {
+          "response_words_per_eval": -12.75,
+          "files_read_count": -6.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 6.0,
+          "elapsed_seconds_per_eval": 1.5
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 5.0,
+          "elapsed_seconds_per_eval": 1.25
+        },
+        "delta": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.25
+        }
+      }
+    },
+    {
+      "skill": "customize-view",
+      "eval_count": 5,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 4,
+          "without_skill_wins": 1,
+          "ties": 0,
+          "with_skill_win_rate": 0.8,
+          "without_skill_win_rate": 0.2
+        },
+        "expectation_pass_rate": {
+          "with_skill": 0.96,
+          "without_skill": 0.53,
+          "delta": 0.43
+        },
+        "rubric_score": {
+          "with_skill": 8.8,
+          "without_skill": 6.14,
+          "delta": 2.66
+        },
+        "comparison_count": 5
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 37.0,
+          "files_read_count": 4,
+          "files_written_count": 5
+        },
+        "without_skill": {
+          "response_words_per_eval": 21.6,
+          "files_read_count": 15,
+          "files_written_count": 5
+        },
+        "delta": {
+          "response_words_per_eval": 15.4,
+          "files_read_count": -11.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 3.0,
+          "elapsed_seconds_per_eval": 0.6
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 10.0,
+          "elapsed_seconds_per_eval": 2.0
+        },
+        "delta": {
+          "elapsed_seconds_total": -7.0,
+          "elapsed_seconds_per_eval": -1.4
+        }
+      }
+    },
+    {
+      "skill": "design-view",
+      "eval_count": 4,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 4,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.4375,
+          "delta": 0.5625
+        },
+        "rubric_score": {
+          "with_skill": 0.965,
+          "without_skill": 0.6375,
+          "delta": 0.3275
+        },
+        "comparison_count": 4
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 109.5,
+          "files_read_count": 5,
+          "files_written_count": 4
+        },
+        "without_skill": {
+          "response_words_per_eval": 169.25,
+          "files_read_count": 13,
+          "files_written_count": 4
+        },
+        "delta": {
+          "response_words_per_eval": -59.75,
+          "files_read_count": -8.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 5.0,
+          "elapsed_seconds_per_eval": 1.25
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 8.0,
+          "elapsed_seconds_per_eval": 2.0
+        },
+        "delta": {
+          "elapsed_seconds_total": -3.0,
+          "elapsed_seconds_per_eval": -0.75
+        }
+      }
+    },
+    {
+      "skill": "document-decision",
+      "eval_count": 3,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 3,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.7389,
+          "delta": 0.2611
+        },
+        "rubric_score": {
+          "with_skill": 0.96,
+          "without_skill": 0.7767,
+          "delta": 0.1833
+        },
+        "comparison_count": 3
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 225.6667,
+          "files_read_count": 2,
+          "files_written_count": 3
+        },
+        "without_skill": {
+          "response_words_per_eval": 158.3333,
+          "files_read_count": 2,
+          "files_written_count": 3
+        },
+        "delta": {
+          "response_words_per_eval": 67.3334,
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 5.0,
+          "elapsed_seconds_per_eval": 1.6667
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 10.0,
+          "elapsed_seconds_per_eval": 3.3333
+        },
+        "delta": {
+          "elapsed_seconds_total": -5.0,
+          "elapsed_seconds_per_eval": -1.6666
+        }
+      }
+    },
+    {
+      "skill": "implement-pattern",
+      "eval_count": 4,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 4,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.6875,
+          "delta": 0.3125
+        },
+        "rubric_score": {
+          "with_skill": 9.7,
+          "without_skill": 8.125,
+          "delta": 1.575
+        },
+        "comparison_count": 4
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 149.0,
+          "files_read_count": 7,
+          "files_written_count": 4
+        },
+        "without_skill": {
+          "response_words_per_eval": 100.5,
+          "files_read_count": 11,
+          "files_written_count": 4
+        },
+        "delta": {
+          "response_words_per_eval": 48.5,
+          "files_read_count": -4.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 8.0,
+          "elapsed_seconds_per_eval": 2.0
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 6.0,
+          "elapsed_seconds_per_eval": 1.5
+        },
+        "delta": {
+          "elapsed_seconds_total": 2.0,
+          "elapsed_seconds_per_eval": 0.5
+        }
+      }
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "eval_count": 5,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 3,
+          "without_skill_wins": 2,
+          "ties": 0,
+          "with_skill_win_rate": 0.6,
+          "without_skill_win_rate": 0.4
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 1.0,
+          "delta": 0.0
+        },
+        "rubric_score": {
+          "with_skill": 0.962,
+          "without_skill": 0.954,
+          "delta": 0.008
+        },
+        "comparison_count": 5
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 95.6,
+          "files_read_count": 10,
+          "files_written_count": 5
+        },
+        "without_skill": {
+          "response_words_per_eval": 105.0,
+          "files_read_count": 16,
+          "files_written_count": 5
+        },
+        "delta": {
+          "response_words_per_eval": -9.4,
+          "files_read_count": -6.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.2
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 20.0,
+          "elapsed_seconds_per_eval": 4.0
+        },
+        "delta": {
+          "elapsed_seconds_total": -19.0,
+          "elapsed_seconds_per_eval": -3.8
+        }
+      }
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "eval_count": 5,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 4,
+          "without_skill_wins": 1,
+          "ties": 0,
+          "with_skill_win_rate": 0.8,
+          "without_skill_win_rate": 0.2
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.72,
+          "delta": 0.28
+        },
+        "rubric_score": {
+          "with_skill": 0.972,
+          "without_skill": 0.794,
+          "delta": 0.178
+        },
+        "comparison_count": 5
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 125.0,
+          "files_read_count": 3,
+          "files_written_count": 5
+        },
+        "without_skill": {
+          "response_words_per_eval": 121.2,
+          "files_read_count": 4,
+          "files_written_count": 5
+        },
+        "delta": {
+          "response_words_per_eval": 3.8,
+          "files_read_count": -1.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.2
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 120.0,
+          "elapsed_seconds_per_eval": 24.0
+        },
+        "delta": {
+          "elapsed_seconds_total": -119.0,
+          "elapsed_seconds_per_eval": -23.8
+        }
+      }
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "eval_count": 3,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 3,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.0833,
+          "delta": 0.9167
+        },
+        "rubric_score": {
+          "with_skill": 0.98,
+          "without_skill": 0.3267,
+          "delta": 0.6533
+        },
+        "comparison_count": 3
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 73.6667,
+          "files_read_count": 2,
+          "files_written_count": 3
+        },
+        "without_skill": {
+          "response_words_per_eval": 93.3333,
+          "files_read_count": 6,
+          "files_written_count": 3
+        },
+        "delta": {
+          "response_words_per_eval": -19.6666,
+          "files_read_count": -4.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 2.0,
+          "elapsed_seconds_per_eval": 0.6667
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 0.0,
+          "elapsed_seconds_per_eval": 0.0
+        },
+        "delta": {
+          "elapsed_seconds_total": 2.0,
+          "elapsed_seconds_per_eval": 0.6667
+        }
+      }
+    },
+    {
+      "skill": "organize-multi-project",
+      "eval_count": 4,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 4,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.75,
+          "delta": 0.25
+        },
+        "rubric_score": {
+          "with_skill": 0.9675,
+          "without_skill": 0.8675,
+          "delta": 0.1
+        },
+        "comparison_count": 4
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 80.0,
+          "files_read_count": 6,
+          "files_written_count": 4
+        },
+        "without_skill": {
+          "response_words_per_eval": 98.75,
+          "files_read_count": 9,
+          "files_written_count": 4
+        },
+        "delta": {
+          "response_words_per_eval": -18.75,
+          "files_read_count": -3.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 12.0,
+          "elapsed_seconds_per_eval": 3.0
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 7.0,
+          "elapsed_seconds_per_eval": 1.75
+        },
+        "delta": {
+          "elapsed_seconds_total": 5.0,
+          "elapsed_seconds_per_eval": 1.25
+        }
+      }
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "eval_count": 3,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 3,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.8067,
+          "delta": 0.1933
+        },
+        "rubric_score": {
+          "with_skill": 0.97,
+          "without_skill": 0.8467,
+          "delta": 0.1233
+        },
+        "comparison_count": 3
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 103.3333,
+          "files_read_count": 2,
+          "files_written_count": 3
+        },
+        "without_skill": {
+          "response_words_per_eval": 115.3333,
+          "files_read_count": 4,
+          "files_written_count": 3
+        },
+        "delta": {
+          "response_words_per_eval": -12.0,
+          "files_read_count": -2.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 7.0,
+          "elapsed_seconds_per_eval": 2.3333
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 7.0,
+          "elapsed_seconds_per_eval": 2.3333
+        },
+        "delta": {
+          "elapsed_seconds_total": 0.0,
+          "elapsed_seconds_per_eval": 0.0
+        }
+      }
+    },
+    {
+      "skill": "sync-with-template",
+      "eval_count": 5,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 5,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.75,
+          "delta": 0.25
+        },
+        "rubric_score": {
+          "with_skill": 9.66,
+          "without_skill": 7.78,
+          "delta": 1.88
+        },
+        "comparison_count": 5
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 129.8,
+          "files_read_count": 2,
+          "files_written_count": 5
+        },
+        "without_skill": {
+          "response_words_per_eval": 127.0,
+          "files_read_count": 7,
+          "files_written_count": 5
+        },
+        "delta": {
+          "response_words_per_eval": 2.8,
+          "files_read_count": -5.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 5.0,
+          "elapsed_seconds_per_eval": 1.0
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 17.0,
+          "elapsed_seconds_per_eval": 3.4
+        },
+        "delta": {
+          "elapsed_seconds_total": -12.0,
+          "elapsed_seconds_per_eval": -2.4
+        }
+      }
+    },
+    {
+      "skill": "test-model",
+      "eval_count": 3,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 3,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.2233,
+          "delta": 0.7767
+        },
+        "rubric_score": {
+          "with_skill": 0.9533,
+          "without_skill": 0.66,
+          "delta": 0.2933
+        },
+        "comparison_count": 3
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 195.0,
+          "files_read_count": 4,
+          "files_written_count": 3
+        },
+        "without_skill": {
+          "response_words_per_eval": 157.0,
+          "files_read_count": 14,
+          "files_written_count": 3
+        },
+        "delta": {
+          "response_words_per_eval": 38.0,
+          "files_read_count": -10.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.3333
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.3333
+        },
+        "delta": {
+          "elapsed_seconds_total": 0.0,
+          "elapsed_seconds_per_eval": 0.0
+        }
+      }
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "eval_count": 4,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 4,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.835,
+          "delta": 0.165
+        },
+        "rubric_score": {
+          "with_skill": 0.965,
+          "without_skill": 0.875,
+          "delta": 0.09
+        },
+        "comparison_count": 4
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 157.25,
+          "files_read_count": 6,
+          "files_written_count": 4
+        },
+        "without_skill": {
+          "response_words_per_eval": 122.5,
+          "files_read_count": 12,
+          "files_written_count": 4
+        },
+        "delta": {
+          "response_words_per_eval": 34.75,
+          "files_read_count": -6.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 12.0,
+          "elapsed_seconds_per_eval": 3.0
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 8.0,
+          "elapsed_seconds_per_eval": 2.0
+        },
+        "delta": {
+          "elapsed_seconds_total": 4.0,
+          "elapsed_seconds_per_eval": 1.0
+        }
+      }
+    },
+    {
+      "skill": "understand-project-structure",
+      "eval_count": 6,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 6,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.525,
+          "delta": 0.475
+        },
+        "rubric_score": {
+          "with_skill": 4.9,
+          "without_skill": 3.0833,
+          "delta": 1.8167
+        },
+        "comparison_count": 6
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 171.1667,
+          "files_read_count": 14,
+          "files_written_count": 6
+        },
+        "without_skill": {
+          "response_words_per_eval": 197.1667,
+          "files_read_count": 16,
+          "files_written_count": 6
+        },
+        "delta": {
+          "response_words_per_eval": -26.0,
+          "files_read_count": -2.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 5.0,
+          "elapsed_seconds_per_eval": 0.8333
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.1667
+        },
+        "delta": {
+          "elapsed_seconds_total": 4.0,
+          "elapsed_seconds_per_eval": 0.6666
+        }
+      }
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "eval_count": 3,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 3,
+          "without_skill_wins": 0,
+          "ties": 0,
+          "with_skill_win_rate": 1.0,
+          "without_skill_win_rate": 0.0
+        },
+        "expectation_pass_rate": {
+          "with_skill": 1.0,
+          "without_skill": 0.4167,
+          "delta": 0.5833
+        },
+        "rubric_score": {
+          "with_skill": 9.6667,
+          "without_skill": 6.2,
+          "delta": 3.4667
+        },
+        "comparison_count": 3
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 111.6667,
+          "files_read_count": 2,
+          "files_written_count": 3
+        },
+        "without_skill": {
+          "response_words_per_eval": 128.6667,
+          "files_read_count": 7,
+          "files_written_count": 3
+        },
+        "delta": {
+          "response_words_per_eval": -17.0,
+          "files_read_count": -5.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 1.0,
+          "elapsed_seconds_per_eval": 0.3333
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 5.0,
+          "elapsed_seconds_per_eval": 1.6667
+        },
+        "delta": {
+          "elapsed_seconds_total": -4.0,
+          "elapsed_seconds_per_eval": -1.3334
+        }
+      }
+    }
+  ],
+  "previous_iteration_comparison": {
+    "previous_iteration": "iteration-2",
+    "skills": [
+      {
+        "skill": "c4-modeling-process",
+        "previous_with_skill_win_rate": 0.5,
+        "current_with_skill_win_rate": 0.8333,
+        "delta_with_skill_win_rate": 0.3333,
+        "previous_expectation_delta": 0.25,
+        "current_expectation_delta": 0.0833,
+        "delta_expectation_delta": -0.1667,
+        "previous_rubric_delta": 1.5,
+        "current_rubric_delta": 0.225,
+        "delta_rubric_delta": -1.275,
+        "previous_time_delta_per_eval": -8.3159,
+        "current_time_delta_per_eval": -0.8334,
+        "delta_time_delta_per_eval": 7.4825
+      },
+      {
+        "skill": "configure-project-includes",
+        "previous_with_skill_win_rate": 0.2,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.8,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.2,
+        "delta_expectation_delta": 0.2,
+        "previous_rubric_delta": 0.0,
+        "current_rubric_delta": 0.5867,
+        "delta_rubric_delta": 0.5867,
+        "previous_time_delta_per_eval": -4.6225,
+        "current_time_delta_per_eval": 0.0,
+        "delta_time_delta_per_eval": 4.6225
+      },
+      {
+        "skill": "create-element",
+        "previous_with_skill_win_rate": 0.0,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 1.0,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.3,
+        "delta_expectation_delta": 0.3,
+        "previous_rubric_delta": -0.5,
+        "current_rubric_delta": 1.132,
+        "delta_rubric_delta": 1.632,
+        "previous_time_delta_per_eval": 7.8966,
+        "current_time_delta_per_eval": -4.0,
+        "delta_time_delta_per_eval": -11.8966
+      },
+      {
+        "skill": "create-relationship",
+        "previous_with_skill_win_rate": 0.0,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 1.0,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.08,
+        "delta_expectation_delta": 0.08,
+        "previous_rubric_delta": -0.8,
+        "current_rubric_delta": 0.92,
+        "delta_rubric_delta": 1.72,
+        "previous_time_delta_per_eval": -2.5466,
+        "current_time_delta_per_eval": -4.0,
+        "delta_time_delta_per_eval": -1.4534
+      },
+      {
+        "skill": "create-sequence-view",
+        "previous_with_skill_win_rate": 0.75,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.25,
+        "previous_expectation_delta": 0.05,
+        "current_expectation_delta": 0.2292,
+        "delta_expectation_delta": 0.1792,
+        "previous_rubric_delta": 1.0,
+        "current_rubric_delta": 0.2075,
+        "delta_rubric_delta": -0.7925,
+        "previous_time_delta_per_eval": 5.2094,
+        "current_time_delta_per_eval": 0.25,
+        "delta_time_delta_per_eval": -4.9594
+      },
+      {
+        "skill": "customize-view",
+        "previous_with_skill_win_rate": 0.6,
+        "current_with_skill_win_rate": 0.8,
+        "delta_with_skill_win_rate": 0.2,
+        "previous_expectation_delta": 0.076,
+        "current_expectation_delta": 0.43,
+        "delta_expectation_delta": 0.354,
+        "previous_rubric_delta": 0.6,
+        "current_rubric_delta": 2.66,
+        "delta_rubric_delta": 2.06,
+        "previous_time_delta_per_eval": -9.2349,
+        "current_time_delta_per_eval": -1.4,
+        "delta_time_delta_per_eval": 7.8349
+      },
+      {
+        "skill": "design-view",
+        "previous_with_skill_win_rate": 0.75,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.25,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.5625,
+        "delta_expectation_delta": 0.5625,
+        "previous_rubric_delta": 0.3,
+        "current_rubric_delta": 0.3275,
+        "delta_rubric_delta": 0.0275,
+        "previous_time_delta_per_eval": 10.1639,
+        "current_time_delta_per_eval": -0.75,
+        "delta_time_delta_per_eval": -10.9139
+      },
+      {
+        "skill": "document-decision",
+        "previous_with_skill_win_rate": 0.3333,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.6667,
+        "previous_expectation_delta": 0.11,
+        "current_expectation_delta": 0.2611,
+        "delta_expectation_delta": 0.1511,
+        "previous_rubric_delta": 0.4,
+        "current_rubric_delta": 0.1833,
+        "delta_rubric_delta": -0.2167,
+        "previous_time_delta_per_eval": -4.3223,
+        "current_time_delta_per_eval": -1.6666,
+        "delta_time_delta_per_eval": 2.6557
+      },
+      {
+        "skill": "implement-pattern",
+        "previous_with_skill_win_rate": 0.75,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.25,
+        "previous_expectation_delta": 0.0625,
+        "current_expectation_delta": 0.3125,
+        "delta_expectation_delta": 0.25,
+        "previous_rubric_delta": 1.0,
+        "current_rubric_delta": 1.575,
+        "delta_rubric_delta": 0.575,
+        "previous_time_delta_per_eval": 11.9526,
+        "current_time_delta_per_eval": 0.5,
+        "delta_time_delta_per_eval": -11.4526
+      },
+      {
+        "skill": "lookup-element-kinds",
+        "previous_with_skill_win_rate": 0.4,
+        "current_with_skill_win_rate": 0.6,
+        "delta_with_skill_win_rate": 0.2,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.0,
+        "delta_expectation_delta": 0.0,
+        "previous_rubric_delta": 0.06,
+        "current_rubric_delta": 0.008,
+        "delta_rubric_delta": -0.052,
+        "previous_time_delta_per_eval": -1.0722,
+        "current_time_delta_per_eval": -3.8,
+        "delta_time_delta_per_eval": -2.7278
+      },
+      {
+        "skill": "model-deployment-infrastructure",
+        "previous_with_skill_win_rate": 0.25,
+        "current_with_skill_win_rate": 0.8,
+        "delta_with_skill_win_rate": 0.55,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.28,
+        "delta_expectation_delta": 0.28,
+        "previous_rubric_delta": -0.25,
+        "current_rubric_delta": 0.178,
+        "delta_rubric_delta": 0.428,
+        "previous_time_delta_per_eval": -12.7765,
+        "current_time_delta_per_eval": -23.8,
+        "delta_time_delta_per_eval": -11.0235
+      },
+      {
+        "skill": "name-deployment-nodes",
+        "previous_with_skill_win_rate": 0.3333,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.6667,
+        "previous_expectation_delta": 0.11,
+        "current_expectation_delta": 0.9167,
+        "delta_expectation_delta": 0.8067,
+        "previous_rubric_delta": 1.0,
+        "current_rubric_delta": 0.6533,
+        "delta_rubric_delta": -0.3467,
+        "previous_time_delta_per_eval": -4.1165,
+        "current_time_delta_per_eval": 0.6667,
+        "delta_time_delta_per_eval": 4.7832
+      },
+      {
+        "skill": "organize-multi-project",
+        "previous_with_skill_win_rate": 0.5,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.5,
+        "previous_expectation_delta": 0.125,
+        "current_expectation_delta": 0.25,
+        "delta_expectation_delta": 0.125,
+        "previous_rubric_delta": 1.0,
+        "current_rubric_delta": 0.1,
+        "delta_rubric_delta": -0.9,
+        "previous_time_delta_per_eval": -6.6323,
+        "current_time_delta_per_eval": 1.25,
+        "delta_time_delta_per_eval": 7.8823
+      },
+      {
+        "skill": "structure-deployment-tiers",
+        "previous_with_skill_win_rate": 0.3333,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.6667,
+        "previous_expectation_delta": 0.1667,
+        "current_expectation_delta": 0.1933,
+        "delta_expectation_delta": 0.0266,
+        "previous_rubric_delta": 1.3333,
+        "current_rubric_delta": 0.1233,
+        "delta_rubric_delta": -1.21,
+        "previous_time_delta_per_eval": -2.3333,
+        "current_time_delta_per_eval": 0.0,
+        "delta_time_delta_per_eval": 2.3333
+      },
+      {
+        "skill": "sync-with-template",
+        "previous_with_skill_win_rate": 0.0,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 1.0,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.25,
+        "delta_expectation_delta": 0.25,
+        "previous_rubric_delta": -0.375,
+        "current_rubric_delta": 1.88,
+        "delta_rubric_delta": 2.255,
+        "previous_time_delta_per_eval": 7.2181,
+        "current_time_delta_per_eval": -2.4,
+        "delta_time_delta_per_eval": -9.6181
+      },
+      {
+        "skill": "test-model",
+        "previous_with_skill_win_rate": 0.6667,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.3333,
+        "previous_expectation_delta": 0.11,
+        "current_expectation_delta": 0.7767,
+        "delta_expectation_delta": 0.6667,
+        "previous_rubric_delta": 1.2,
+        "current_rubric_delta": 0.2933,
+        "delta_rubric_delta": -0.9067,
+        "previous_time_delta_per_eval": -0.0426,
+        "current_time_delta_per_eval": 0.0,
+        "delta_time_delta_per_eval": 0.0426
+      },
+      {
+        "skill": "troubleshoot-errors",
+        "previous_with_skill_win_rate": 0.0,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 1.0,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.165,
+        "delta_expectation_delta": 0.165,
+        "previous_rubric_delta": -0.5,
+        "current_rubric_delta": 0.09,
+        "delta_rubric_delta": 0.59,
+        "previous_time_delta_per_eval": 8.75,
+        "current_time_delta_per_eval": 1.0,
+        "delta_time_delta_per_eval": -7.75
+      },
+      {
+        "skill": "understand-project-structure",
+        "previous_with_skill_win_rate": 0.4,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.6,
+        "previous_expectation_delta": 0.0,
+        "current_expectation_delta": 0.475,
+        "delta_expectation_delta": 0.475,
+        "previous_rubric_delta": -0.04,
+        "current_rubric_delta": 1.8167,
+        "delta_rubric_delta": 1.8567,
+        "previous_time_delta_per_eval": -14.5609,
+        "current_time_delta_per_eval": 0.6666,
+        "delta_time_delta_per_eval": 15.2275
+      },
+      {
+        "skill": "write-rich-descriptions",
+        "previous_with_skill_win_rate": 0.3333,
+        "current_with_skill_win_rate": 1.0,
+        "delta_with_skill_win_rate": 0.6667,
+        "previous_expectation_delta": 0.1667,
+        "current_expectation_delta": 0.5833,
+        "delta_expectation_delta": 0.4166,
+        "previous_rubric_delta": 1.6667,
+        "current_rubric_delta": 3.4667,
+        "delta_rubric_delta": 1.8,
+        "previous_time_delta_per_eval": 2.0199,
+        "current_time_delta_per_eval": -1.3334,
+        "delta_time_delta_per_eval": -3.3533
+      }
+    ]
+  }
+}

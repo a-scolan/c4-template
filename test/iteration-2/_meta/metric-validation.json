@@ -1,65 +1,11 @@
 {
-  "generated_at": "2026-03-12T21:16:12Z",
+  "generated_at": "2026-03-13T08:20:04Z",
   "iteration": "iteration-2",
-  "status": "failed",
+  "status": "passed",
   "expected_files": 38,
   "checked_files": 38,
-  "issue_count": 4,
-  "issues": [
-    {
-      "skill": "implement-pattern",
-      "configuration": "with_skill",
-      "path": "implement-pattern/with_skill-run-metrics.json",
-      "problem": "missing-or-null-keys",
-      "missing_keys": [
-        "language",
-        "mcp_used",
-        "started_at",
-        "finished_at",
-        "files_read_count",
-        "files_written_count"
-      ]
-    },
-    {
-      "skill": "name-deployment-nodes",
-      "configuration": "with_skill",
-      "path": "name-deployment-nodes/with_skill-run-metrics.json",
-      "problem": "missing-or-null-keys",
-      "missing_keys": [
-        "language",
-        "mcp_used",
-        "started_at",
-        "finished_at",
-        "files_read_count"
-      ]
-    },
-    {
-      "skill": "organize-multi-project",
-      "configuration": "with_skill",
-      "path": "organize-multi-project/with_skill-run-metrics.json",
-      "problem": "missing-or-null-keys",
-      "missing_keys": [
-        "language",
-        "mcp_used",
-        "started_at",
-        "finished_at",
-        "files_read_count",
-        "files_written_count"
-      ]
-    },
-    {
-      "skill": "sync-with-template",
-      "configuration": "with_skill",
-      "path": "sync-with-template/with_skill-run-metrics.json",
-      "problem": "missing-or-null-keys",
-      "missing_keys": [
-        "language",
-        "mcp_used",
-        "started_at",
-        "finished_at",
-        "files_read_count",
-        "files_written_count"
-      ]
-    }
-  ]
+  "normalized_file_count": 0,
+  "normalized_files": [],
+  "issue_count": 0,
+  "issues": []
 }

@@ -1,0 +1,1 @@
+No—C3 is not mandatory for every container. Keep the C1→C2 progression, and only add C3 when a container is complex, architecturally central, risky, or hard to understand from C2 alone. If your API container is simple and already well explained at C2, stop at C2 and skip the detailed C3 view.

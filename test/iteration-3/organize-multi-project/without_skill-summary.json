@@ -1,0 +1,36 @@
+{
+  "skill_name": "organize-multi-project",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 7.0,
+    "elapsed_seconds_per_eval": 1.75,
+    "response_words_total": 395,
+    "response_words_per_eval": 98.75,
+    "files_read_count": 9,
+    "files_written_count": 4
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/without_skill/response.md",
+      "response_words": 91
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "response_words": 128
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/without_skill/response.md",
+      "response_words": 58
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/without_skill/response.md",
+      "response_words": 118
+    }
+  ]
+}

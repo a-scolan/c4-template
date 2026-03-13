@@ -1,14 +1,14 @@
 # Skill Suite Summary — iteration-2
 
-Generated at: 2026-03-12T21:16:12Z
+Generated at: 2026-03-13T08:20:04Z
 Previous iteration: iteration-1
 Skill count: 19
 
 ## Metric validation
 
-Status: failed
+Status: passed
 Files checked: 38/38
-Issues: 4
+Issues: 0
 
 ## Metric legend
 
@@ -31,12 +31,7 @@ Issues: 4
 
 ## Suite overview
 
-| Skill | Config | Path | Problem | Missing keys |
-| --- | --- | --- | --- | --- |
-| implement-pattern | with_skill | implement-pattern/with_skill-run-metrics.json | missing-or-null-keys | language, mcp_used, started_at, finished_at, files_read_count, files_written_count |
-| name-deployment-nodes | with_skill | name-deployment-nodes/with_skill-run-metrics.json | missing-or-null-keys | language, mcp_used, started_at, finished_at, files_read_count |
-| organize-multi-project | with_skill | organize-multi-project/with_skill-run-metrics.json | missing-or-null-keys | language, mcp_used, started_at, finished_at, files_read_count, files_written_count |
-| sync-with-template | with_skill | sync-with-template/with_skill-run-metrics.json | missing-or-null-keys | language, mcp_used, started_at, finished_at, files_read_count, files_written_count |
+All required run-metrics files were present and complete.
 
 | Skill | Evals | With-skill win rate | Expectation Δ | Rubric Δ | Time Δ / eval (s) | Words Δ / eval | Files read Δ |
 | --- | --- | --- | --- | --- | --- | --- | --- |

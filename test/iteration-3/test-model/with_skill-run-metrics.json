@@ -1,0 +1,11 @@
+{
+  "skill_name": "test-model",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-13T00:00:00Z",
+  "finished_at": "2026-03-13T00:00:01Z",
+  "elapsed_seconds_total": 1.0,
+  "files_read_count": 4,
+  "files_written_count": 3
+}

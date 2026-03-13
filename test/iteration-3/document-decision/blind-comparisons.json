@@ -1,0 +1,80 @@
+{
+  "skill_name": "document-decision",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "B is more complete and usable: it gives an ADR file path, clean ADR sections, explicit impacted elements, and concrete follow-up; A has solid trade-offs but is more inline and omits the ADR/NNNN path.",
+      "rubric": {
+        "A": {
+          "overall_score": 0.68
+        },
+        "B": {
+          "overall_score": 0.96
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "A aligns better because it explicitly says the skill is not for repo tooling or CI/CD changes and gives concise alternatives; B is reasonable but less explicit about the skill boundary.",
+      "rubric": {
+        "A": {
+          "overall_score": 0.95
+        },
+        "B": {
+          "overall_score": 0.83
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 3,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6667
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "B is the stronger ADR framing: it includes the ADR file path, clear Status/Context/Decision/Consequences sections, explicit impacted elements, and concrete follow-up items; A covers the trade-offs well but is less structured and misses the ADR path.",
+      "rubric": {
+        "A": {
+          "overall_score": 0.82
+        },
+        "B": {
+          "overall_score": 0.97
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

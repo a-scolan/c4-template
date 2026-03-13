@@ -1,0 +1,6 @@
+Because you changed structure and added a new C2 view, use a full validation pass before commit:
+1. Start with `read-project-summary`: confirm the active project is correct, the new worker uses a valid container kind from the shared taxonomy, and the project exposes the expected model relationship kinds (`uses`, `calls`, `async`, `reads`, `writes`).
+2. Validate references and FQNs with `search-element` or `read-element`: confirm the worker container resolves everywhere it is referenced in the main model and views files, and check for stale names from the previous design.
+3. Validate relationships with `find-relationships`: review every edge to and from the worker, keep normal application traffic in the logical model, and keep interaction technology on the relationship body instead of inventing a custom edge type.
+4. Validate rendering with `open-view`: preview the new C2 view and any affected parent/neighbor views, confirm the parent system boundary is visible, the worker appears with the expected neighbors, and the include scope is not over-broad.
+5. Finish with editor validation: clear the Problems panel / compile errors, then do a before-commit comparison of changed relationships and rendered views so you catch issues that are semantically wrong even if syntax is clean.

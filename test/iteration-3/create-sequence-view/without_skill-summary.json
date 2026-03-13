@@ -1,0 +1,36 @@
+{
+  "skill_name": "create-sequence-view",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "summary": {
+    "elapsed_seconds_total": 5.0,
+    "elapsed_seconds_per_eval": 1.25,
+    "response_words_total": 439,
+    "response_words_per_eval": 109.75,
+    "files_read_count": 8,
+    "files_written_count": 4
+  },
+  "evals": [
+    {
+      "id": 0,
+      "response_path": "eval-0/without_skill/response.md",
+      "response_words": 95
+    },
+    {
+      "id": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "response_words": 92
+    },
+    {
+      "id": 2,
+      "response_path": "eval-2/without_skill/response.md",
+      "response_words": 116
+    },
+    {
+      "id": 3,
+      "response_path": "eval-3/without_skill/response.md",
+      "response_words": 136
+    }
+  ]
+}

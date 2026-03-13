@@ -1,0 +1,50 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-13T00:00:00Z",
+  "finished_at": "2026-03-13T00:00:05Z",
+  "files_read": [
+    ".github/skills/understand-project-structure/SKILL.md",
+    ".github/skills/understand-project-structure/evals/evals.json",
+    "README.md",
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/template/likec4.config.json",
+    "projects/spec-showcase/likec4.config.json",
+    "projects/shared/spec-global.c4",
+    "projects/spec-showcase/container-views.c4",
+    "projects/template/system-model.c4",
+    "projects/template/system-views.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Preflight before adding a new API container:\n1. Confirm the active project first. Do not assume it. In this repo, the visible project configs are `projects/template/likec4.config.json` (`name: template-project`) and `projects/spec-showcase/likec4.config.json` (`name: spec-showcase`). Reliable method: run `list-projects`, then `read-project-summary` for the intended project; offline, verify the matching `projects/<project>/likec4.config.json`.\n2. Lock the semantic source of truth in this order: project summary, `projects/shared/SPEC_CHEATSHEET.md` for orientation, then the actual declarations in `projects/shared/spec-context.c4`, `spec-containers.c4`, `spec-components.c4`, `spec-global.c4`, and `spec-deployment.c4`.\n3. Check project wiring: confirm the chosen project includes `../shared`, then inspect the nearby model/view files that will actually be edited.\n4. Valid local taxonomy already present includes kinds such as `Actor_Person`, `System_Existing`, `System_External`, `Container_Api`, `Container_Queue`, `Container_Database`, and `Component`; tags such as `#Internal`, `#External`, `#Legacy`, `#Cloud`, `#Saas`, `#Queue`, and `#Security`; model relationships `uses`, `calls`, `async`, `reads`, `writes`; and deployment relationships `http`, `https`, `tcp`, `nfs`, `amqp`, `ldap`, `sql`, `redis`, `smtp`, `oidc_saml`.\n5. Risks avoided by this preflight: wrong project, stale taxonomy, invalid kind/relationship names, wrong parent system/container, and mixing deployment protocols into the system model.\nOrdered C1 -> C2 -> C3 plan:\n- C1: confirm the target system boundary and any external actors/systems first.\n- C2: add the new `Container_Api` under the correct system and wire only valid model relationships (`calls`, `async`, `reads`, `writes`, `uses`) with technology on the relationship.\n- C3: only if deeper internal detail is needed, confirm the real parent API container and then model components under it and update the C3 view.\nTreat shared specs and the project summary as primary truth; example projects are references only. After this preflight, the sequencing handoff belongs to `c4-modeling-process`."
+    },
+    {
+      "id": 1,
+      "response": "When you switch projects before editing a C3 view, revalidate context before touching the model.\nVerification sequence:\n1. Reconfirm the active project immediately after the switch.\n2. Re-run MCP checks in this order: `list-projects` -> `read-project-summary` for the explicit project -> `search-element` or `read-element` for the target system/container boundary you plan to edit.\n3. Re-read shared semantics before the C3 change: `projects/shared/SPEC_CHEATSHEET.md`, then confirm the actual taxonomy in `projects/shared/spec-components.c4`, `spec-containers.c4`, `spec-global.c4`, and any other relevant shared spec.\n4. Re-open the target project's `likec4.config.json` to confirm it still includes `../shared`.\n5. Inspect the exact model/view files for that C3 area, then edit.\nRisks avoided: stale context from the previous project, invalid kind or relationship names copied from the wrong context, wrong C3 parent container/system, and broken FQNs or references. Keep semantic validation ahead of browsing example files; examples can illustrate patterns, but shared specs plus the project summary remain the truth."
+    },
+    {
+      "id": 2,
+      "response": "Structured diagnosis for an unknown kind/relationship error:\n1. Start from the source of truth, not from memory: the active project's summary plus `projects/shared/spec-*.c4`. Use `projects/shared/SPEC_CHEATSHEET.md` only as a quick index.\n2. Compare the exact failing token against the declared taxonomy:\n- kinds in `spec-context.c4`, `spec-containers.c4`, `spec-components.c4`, `spec-deployment.c4`\n- model relationships in `spec-global.c4`\n- deployment relationships in `spec-deployment.c4`\n3. Check for scope confusion: deployment relationships such as `https` or `amqp` belong to deployment modeling, while system-model relationships here are `uses`, `calls`, `async`, `reads`, `writes`.\n4. Check for naming drift between a quick reference and the actual spec files. In this repo, `SPEC_CHEATSHEET.md` mentions `Container_Database_Geo`, but `projects/shared/spec-containers.c4` declares `Container_DatabaseGeo`; the spec file wins.\n5. Confirmation sequence before correction: revalidate the active project, re-run `read-project-summary`, confirm the project `likec4.config.json` includes `../shared`, confirm the exact kind/relationship in the relevant shared spec, inspect the nearby model/view file to verify parent and context, and only then fix the model.\nIf the project summary looks inconsistent, re-run `list-projects`, re-run `read-project-summary` with the explicit project ID, re-check `likec4.config.json` include paths, verify the shared specs are reachable, and stop as blocked if the context still disagrees. `.github/skills/` can guide workflow, but it is not the source of valid kinds or relationship names."
+    },
+    {
+      "id": 3,
+      "response": "Once project context is established, hand off to `c4-modeling-process`.\nBefore that handoff, this first skill must lock in:\n- the active project, or the exact method to confirm it;\n- the semantic source of truth: project summary plus `projects/shared/spec-*.c4` and `projects/shared/SPEC_CHEATSHEET.md`;\n- the valid local kinds, relationships, and tags for the target change;\n- the target project's `likec4.config.json`;\n- the nearby model/view files that will actually be edited.\nRole split:\n- `understand-project-structure` = workspace framing and semantic validation.\n- `c4-modeling-process` = sequencing the actual modeling work from C1 -> C2 -> C3.\nThe handoff should stay explicit that shared specs and the project summary define semantic truth, while `.github/skills/` provides workflow guidance only."
+    },
+    {
+      "id": 4,
+      "response": "If you are coming from UML or ArchiMate, learn this LikeC4 workspace in this order:\n1. Shared semantic taxonomy: `projects/shared/SPEC_CHEATSHEET.md` plus the authoritative declarations in `projects/shared/spec-context.c4`, `spec-containers.c4`, `spec-components.c4`, `spec-global.c4`, and `spec-deployment.c4`.\n2. Project-specific wiring: the chosen project's `likec4.config.json` and the nearby model/view files under `projects/<project>/`.\n3. Workflow guidance: `.github/skills/` explains how to work safely, but it does not redefine the taxonomy.\nThe real sources of truth here are the shared specs and the project summary for the active project. Concrete taxonomy already used in this repo includes `Actor_Person`, `System_External`, `Container_Api`, `Container_Queue`, `Container_Database`, `Component`, and model relationships `uses`, `calls`, `async`, `reads`, `writes`. Global tags include `#Internal`, `#External`, `#Legacy`, `#Cloud`, `#Saas`, `#Queue`, and `#Security`.\nHandoff after preflight:\n- use `c4-modeling-process` if you need to sequence modeling from C1 -> C2 -> C3;\n- otherwise hand off to a narrower editing skill only after the project, taxonomy, and target files are validated.\nThat keeps you from importing UML habits into the wrong LikeC4 kind, tag, or parent boundary."
+    },
+    {
+      "id": 5,
+      "response": "No. `projects/spec-showcase/container-views.c4` is useful as a pattern reference, but it is not the authoritative taxonomy for another project. The repo `README.md` explicitly treats example projects such as `projects/spec-showcase/` and `projects/template/` as pedagogical references, while `projects/shared/` is the automation-facing semantic source.\nValidate this first:\n1. confirm the active project (`list-projects` -> `read-project-summary`; offline, match the intended `projects/<project>/likec4.config.json`),\n2. confirm that project includes `../shared`,\n3. confirm the actual container kinds in `projects/shared/spec-containers.c4`, such as `Container_Api` and `Container_Queue`,\n4. confirm the valid model relationships in `projects/shared/spec-global.c4`, for example `calls` and `async`,\n5. then inspect the target model/view files in that project.\nSo yes, reuse the pattern idea from `spec-showcase`; no, do not reuse it as semantic truth. Example files are inspiration, while shared specs plus the active project's summary are the source of valid kinds and relationships."
+    }
+  ]
+}

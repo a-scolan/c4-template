@@ -1,0 +1,130 @@
+{
+  "skill_name": "create-relationship",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "Both pass all expectations, but A is more usable because it states the placement rule more explicitly and includes a clear anti-pattern.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.8
+        },
+        "B": {
+          "overall_score": 9.1
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "B",
+      "reasoning": "Both are correct, but B better emphasizes the one-way async rule, explicitly rejects ACK/callback modeling, and adds a cleaner anti-pattern.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.4
+        },
+        "B": {
+          "overall_score": 9.9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "B covers the full rule set by reserving `calls` for service interactions, adding `writes` for mutation, and explaining why `calls` would mislead for datastores; A omits `writes`.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.3
+        },
+        "B": {
+          "overall_score": 9.8
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "Both are strong, but A more fully answers the prompt by rejecting invented composite kinds, showing a counterexample, and pushing timing/fallback detail out of the relationship type.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.8
+        },
+        "B": {
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "B",
+      "reasoning": "B is more precise about keeping normal traffic in the system model, inheriting via `instanceOf`, and using `HTTP/8080` only for non-default ports; A’s example is slightly muddier.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.5
+        },
+        "B": {
+          "overall_score": 9.9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,519 @@
+{
+  "skill_name": "configure-project-includes",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "winner": "A",
+      "reasoning": "A wins with a complete expectation hit: it preserves the baseline fields, uses the correct relative shared references, explicitly rejects workspace-root or absolute paths, and gives a concrete minimal JSON shape to copy. B is directionally correct but stays prose-only and leaves the no-absolute-path rule implicit.",
+      "rubric": {
+        "A": {
+          "content": {
+            "correctness": 5,
+            "completeness": 5,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 4,
+            "formatting": 4,
+            "usability": 5
+          },
+          "content_score": 5,
+          "structure_score": 4.33,
+          "overall_score": 4.67
+        },
+        "B": {
+          "content": {
+            "correctness": 4,
+            "completeness": 4,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 4,
+            "formatting": 4,
+            "usability": 4
+          },
+          "content_score": 4.33,
+          "structure_score": 4,
+          "overall_score": 4.17
+        }
+      },
+      "output_quality": {
+        "A": {
+          "score": 5,
+          "strengths": [
+            "Covers all required baseline fields and path rules.",
+            "Provides a copyable minimal JSON shape."
+          ],
+          "weaknesses": [
+            "The JSON is inline rather than formatted for easier scanning."
+          ]
+        },
+        "B": {
+          "score": 4,
+          "strengths": [
+            "Keeps the baseline fields and relative shared references intact.",
+            "Warns against rewriting the existing shared baseline."
+          ],
+          "weaknesses": [
+            "No concrete JSON edit is shown.",
+            "It does not explicitly say to avoid absolute paths."
+          ]
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1,
+          "details": [
+            "PASS - preserves the core config fields.",
+            "PASS - uses paths relative to the project folder.",
+            "PASS - references ../shared and maps @ to ../shared/images/.",
+            "PASS - explicitly discourages workspace-root or absolute paths.",
+            "PASS - provides a concrete minimal JSON shape."
+          ]
+        },
+        "B": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6,
+          "details": [
+            "PASS - preserves the core config fields.",
+            "PASS - uses paths relative to the project folder.",
+            "PASS - references ../shared and maps @ to ../shared/images/.",
+            "FAIL - does not explicitly discourage absolute paths.",
+            "FAIL - gives prose guidance but no concrete minimal JSON sketch."
+          ]
+        }
+      }
+    },
+    {
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "A is more aligned to the requested progressive baseline: it starts with system-model.c4 plus system-views.c4, keeps C1/C2/C3 views in system-views.c4, and only then extracts sequences, deployment, and operations as needed. B is useful but drifts toward a larger spec-showcase style split that blurs the minimal baseline the prompt asks for.",
+      "rubric": {
+        "A": {
+          "content": {
+            "correctness": 5,
+            "completeness": 5,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 5,
+            "formatting": 4,
+            "usability": 5
+          },
+          "content_score": 5,
+          "structure_score": 4.67,
+          "overall_score": 4.84
+        },
+        "B": {
+          "content": {
+            "correctness": 4,
+            "completeness": 4,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 4,
+            "formatting": 4,
+            "usability": 4
+          },
+          "content_score": 4.33,
+          "structure_score": 4,
+          "overall_score": 4.17
+        }
+      },
+      "output_quality": {
+        "A": {
+          "score": 5,
+          "strengths": [
+            "Gives a clear baseline-first migration path.",
+            "Assigns C1/C2/C3, Use Cases, deployment, and operations to the expected files."
+          ],
+          "weaknesses": [
+            "It could have anchored the advice with a brief repository example."
+          ]
+        },
+        "B": {
+          "score": 4,
+          "strengths": [
+            "Uses a clear two-pass progression.",
+            "Provides concrete file examples drawn from repository patterns."
+          ],
+          "weaknesses": [
+            "It over-rotates toward a larger showcase split instead of staying on the minimal baseline.",
+            "Its Use Cases guidance is less aligned with dedicated sequence extraction."
+          ]
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1,
+          "details": [
+            "PASS - starts with a minimal split baseline including system-model.c4 and system-views.c4.",
+            "PASS - places C1, C2, and C3 views in system-views.c4.",
+            "PASS - places Use Cases in a dedicated sequences file when extraction is warranted.",
+            "PASS - separates deployment and operations into dedicated files and views when those concerns exist.",
+            "PASS - frames the work as progressive rather than a one-shot redesign."
+          ]
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8,
+          "details": [
+            "PASS - starts with system-model.c4 and system-views.c4 as the baseline.",
+            "PASS - the first pass keeps all views in system-views.c4.",
+            "FAIL - suggests use-case-views.c4 rather than a dedicated sequences-oriented extraction for dynamic flows.",
+            "PASS - separates deployment and operations when those concerns appear.",
+            "PASS - describes a progressive two-pass reorganization rather than a forced big-bang rewrite."
+          ]
+        }
+      }
+    },
+    {
+      "eval_id": 2,
+      "winner": "B",
+      "reasoning": "B is stronger because it explicitly frames the change as a targeted config edit, preserves the existing path order, explains why append order affects resolution, keeps the shared image alias intact, and directly says to avoid absolute paths. A is solid on precedence and alias safety but is less explicit on scope and the absolute-path rule.",
+      "rubric": {
+        "A": {
+          "content": {
+            "correctness": 4,
+            "completeness": 4,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 4,
+            "formatting": 4,
+            "usability": 4
+          },
+          "content_score": 4.33,
+          "structure_score": 4,
+          "overall_score": 4.17
+        },
+        "B": {
+          "content": {
+            "correctness": 5,
+            "completeness": 5,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 5,
+            "formatting": 4,
+            "usability": 5
+          },
+          "content_score": 5,
+          "structure_score": 4.67,
+          "overall_score": 4.84
+        }
+      },
+      "output_quality": {
+        "A": {
+          "score": 4,
+          "strengths": [
+            "Protects existing include order and current alias behavior.",
+            "Adds a sensible fresh-alias strategy for new images."
+          ],
+          "weaknesses": [
+            "The warning against absolute paths is only implicit.",
+            "It is less explicit that this is just a targeted config change."
+          ]
+        },
+        "B": {
+          "score": 5,
+          "strengths": [
+            "Explicitly explains append order and current resolution behavior.",
+            "Clearly preserves the shared alias and the relative-path rule."
+          ],
+          "weaknesses": [
+            "It is less specific about naming a new alias if the added source also introduces its own images."
+          ]
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8,
+          "details": [
+            "PASS - says to add the new path without replacing existing paths.",
+            "PASS - reminds the reader to keep existing image aliases unchanged.",
+            "FAIL - keeps paths relative but does not explicitly discourage absolute paths.",
+            "PASS - stays focused on config-edit rules rather than a broader reorganization.",
+            "PASS - explicitly preserves order so current precedence does not change."
+          ]
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1,
+          "details": [
+            "PASS - says to append the new path without replacing the existing array.",
+            "PASS - explicitly keeps the existing image alias behavior.",
+            "PASS - says to use relative paths only and avoid absolute paths.",
+            "PASS - clearly frames the task as a targeted config edit.",
+            "PASS - explains why the existing order preserves current resolution behavior."
+          ]
+        }
+      }
+    },
+    {
+      "eval_id": 3,
+      "winner": "A",
+      "reasoning": "A cleanly separates responsibilities: this skill handles per-project likec4.config.json includes and image aliases with relative shared paths, while organize-multi-project handles workspace layout. B reaches the same overall conclusion but is less explicit about the relative-path rule and adds extra guidance that is not needed for the prompt.",
+      "rubric": {
+        "A": {
+          "content": {
+            "correctness": 5,
+            "completeness": 5,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 5,
+            "formatting": 4,
+            "usability": 5
+          },
+          "content_score": 5,
+          "structure_score": 4.67,
+          "overall_score": 4.84
+        },
+        "B": {
+          "content": {
+            "correctness": 4,
+            "completeness": 4,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 4,
+            "formatting": 4,
+            "usability": 4
+          },
+          "content_score": 4.33,
+          "structure_score": 4,
+          "overall_score": 4.17
+        }
+      },
+      "output_quality": {
+        "A": {
+          "score": 5,
+          "strengths": [
+            "Very clear split between project-local config work and workspace-wide organization.",
+            "Explicitly preserves relative shared-spec and shared-image rules."
+          ],
+          "weaknesses": [
+            "It could have been slightly shorter without losing clarity."
+          ]
+        },
+        "B": {
+          "score": 4,
+          "strengths": [
+            "Correctly delegates multi-project structure to organize-multi-project.",
+            "Keeps the answer centered on likec4.config.json wiring."
+          ],
+          "weaknesses": [
+            "It does not restate the relative-path rule to shared specs and images.",
+            "The extra understand-project-structure note adds mild noise."
+          ]
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1,
+          "details": [
+            "PASS - says this skill covers likec4.config.json configuration and include/image-alias handling.",
+            "PASS - does not present this skill as the only solution for full multi-project organization.",
+            "PASS - delegates overall structuring to organize-multi-project.",
+            "PASS - preserves the relative shared-path rules with ../shared and ../shared/images/.",
+            "PASS - distinguishes targeted config editing from overall workspace organization."
+          ]
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8,
+          "details": [
+            "PASS - says this skill handles project-level likec4.config.json wiring for shared specs and images.",
+            "PASS - avoids presenting this skill as sufficient for full multi-project organization.",
+            "PASS - delegates overall workspace structure to organize-multi-project.",
+            "FAIL - does not explicitly restate the relative-path rule for shared specs and images.",
+            "PASS - distinguishes project config work from workspace organization."
+          ]
+        }
+      }
+    },
+    {
+      "eval_id": 4,
+      "winner": "B",
+      "reasoning": "B is stronger because it makes the resolution-order rule explicit, keeps ../shared first with an intentional-precedence caveat, preserves the existing shared alias, and proposes a clear non-colliding platform alias. A is sound but leaves the effect of include order more implicit.",
+      "rubric": {
+        "A": {
+          "content": {
+            "correctness": 4,
+            "completeness": 4,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 4,
+            "formatting": 4,
+            "usability": 4
+          },
+          "content_score": 4.33,
+          "structure_score": 4,
+          "overall_score": 4.17
+        },
+        "B": {
+          "content": {
+            "correctness": 5,
+            "completeness": 5,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 5,
+            "formatting": 4,
+            "usability": 5
+          },
+          "content_score": 5,
+          "structure_score": 4.67,
+          "overall_score": 4.84
+        }
+      },
+      "output_quality": {
+        "A": {
+          "score": 4,
+          "strengths": [
+            "Keeps the existing shared source first and protects the current shared alias.",
+            "Provides a workable alias-collision strategy for platform images."
+          ],
+          "weaknesses": [
+            "It implies rather than explicitly states that include order affects resolution.",
+            "The relative-path rule is shown by example rather than called out."
+          ]
+        },
+        "B": {
+          "score": 5,
+          "strengths": [
+            "Makes precedence and resolution order explicit.",
+            "Uses a clean, non-colliding alias strategy while preserving relative paths."
+          ],
+          "weaknesses": [
+            "It is slightly wordier than necessary for a surgical config change."
+          ]
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8,
+          "details": [
+            "PASS - adds the new source without replacing existing paths.",
+            "FAIL - preserves order but does not explicitly say include-path order affects resolution.",
+            "PASS - preserves the existing shared alias behavior and uses relative ../ paths.",
+            "PASS - proposes a distinct alias for platform images instead of blind merging.",
+            "PASS - keeps ../shared first unless a different precedence is intentionally chosen."
+          ]
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1,
+          "details": [
+            "PASS - adds the new source without replacing existing paths.",
+            "PASS - explicitly explains that include-path order affects resolution and precedence.",
+            "PASS - keeps relative paths and preserves the shared image alias behavior.",
+            "PASS - proposes a distinct platform alias to avoid collisions.",
+            "PASS - keeps ../shared first unless a different precedence is intentionally desired."
+          ]
+        }
+      }
+    },
+    {
+      "eval_id": 5,
+      "winner": "B",
+      "reasoning": "Both answers satisfy the listed expectations, but B is the better blind choice because it gives the same minimal JSON edit with clearer safety rationale: append rather than replace, keep the existing top-level fields untouched, preserve the shared alias, and keep the scope limited to config editing. A is accurate but terser and less self-validating.",
+      "rubric": {
+        "A": {
+          "content": {
+            "correctness": 5,
+            "completeness": 4,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 4,
+            "formatting": 4,
+            "usability": 5
+          },
+          "content_score": 4.67,
+          "structure_score": 4.33,
+          "overall_score": 4.5
+        },
+        "B": {
+          "content": {
+            "correctness": 5,
+            "completeness": 5,
+            "accuracy": 5
+          },
+          "structure": {
+            "organization": 5,
+            "formatting": 4,
+            "usability": 5
+          },
+          "content_score": 5,
+          "structure_score": 4.67,
+          "overall_score": 4.84
+        }
+      },
+      "output_quality": {
+        "A": {
+          "score": 4,
+          "strengths": [
+            "Provides the smallest actionable JSON change.",
+            "Clearly avoids alias collisions by introducing a separate platform alias."
+          ],
+          "weaknesses": [
+            "It does not explicitly restate that the unchanged top-level fields remain in place.",
+            "The safety explanation is brief."
+          ]
+        },
+        "B": {
+          "score": 5,
+          "strengths": [
+            "Provides a concrete minimal JSON edit plus a clear explanation of why it is safe.",
+            "Explicitly scopes the answer to config editing and preserves current alias behavior."
+          ],
+          "weaknesses": [
+            "It could be slightly terser since the JSON edit already carries most of the answer."
+          ]
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1,
+          "details": [
+            "PASS - shows a concrete JSON edit.",
+            "PASS - appends ../platform-shared after ../shared instead of replacing the array.",
+            "PASS - preserves the shared alias and adds a non-conflicting platform alias.",
+            "PASS - keeps the scope limited to config editing by changing only the relevant sections."
+          ]
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1,
+          "details": [
+            "PASS - shows a concrete JSON edit.",
+            "PASS - appends ../platform-shared after ../shared instead of replacing the array.",
+            "PASS - preserves the shared alias and adds a non-conflicting platform alias.",
+            "PASS - keeps the scope limited to config editing and explicitly leaves other top-level fields untouched."
+          ]
+        }
+      }
+    }
+  ]
+}

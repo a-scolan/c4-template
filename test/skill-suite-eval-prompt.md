@@ -33,6 +33,7 @@ All logs and reports must stay **anonymous**: never expose the absolute workspac
 - Run **all** `without_skill` scenarios first while skills are physically disabled.
 - Restore the skill directories back into `.github/skills/` only after the baseline batch is fully complete.
 - Run `with_skill` scenarios **only after** restoration, in fresh workers created after the restore step.
+- If you intentionally run a hook-only baseline probe, label it as experimental and keep it separate from the strict relocated baseline results.
 
 ## Workspace scope
 
@@ -62,12 +63,19 @@ The run order is mandatory:
 16. Aggregate capability, consumption, and execution-time metrics per skill.
 17. Produce suite-level tables for the full iteration.
 
+Optional experimental probe:
+
+- Instead of the strict relocated baseline phase, you may run a separate hook-only baseline probe with `skill-benchmark-baseline-hook-only` to measure whether hooks alone appear sufficient.
+- Do **not** treat that probe as a drop-in replacement for the strict relocated baseline.
+- Report it separately until repeated runs prove it trustworthy.
+
 ## Critical baseline isolation
 
 This step is **non-negotiable**.
 
 - A `without_skill` run is valid only if workspace skills are physically absent from `.github/skills/` for the entire baseline batch.
 - Do not rely on “do not read the skill” instructions alone.
+- A hook-only baseline probe may be useful diagnostically, but it is not the default validity rule for benchmark reporting.
 - Do not mix `without_skill` and `with_skill` workers in the same phase.
 - If a baseline response mentions workspace skill names, MCP recommendations, or skill-only handoff patterns, invalidate that baseline batch and rerun it from the physical-disable step.
 - Keep the disabled skill backup under `test/iteration-N/_disabled-skills/` so the procedure is auditable and reversible.
@@ -98,6 +106,7 @@ When using the workspace benchmark agents, keep this mapping explicit:
 
 - benchmark manager → `skill-benchmark-manager`
 - `without_skill` phase → `skill-benchmark-baseline`
+- experimental hook-only `without_skill` probe → `skill-benchmark-baseline-hook-only`
 - `with_skill` phase → `skill-benchmark-with-skill`
 - blind comparison → `skill-blind-comparator`
 

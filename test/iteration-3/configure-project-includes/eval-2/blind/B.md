@@ -1,0 +1,3 @@
+Treat this as a targeted config edit, not a full model reorganization. Keep the existing `include.paths` entries exactly as they are and append the new source instead of replacing the array, for example `['../shared', '../platform-shared', '../new-common-source']`.
+
+Order matters because it preserves current resolution behavior: keeping `../shared` first and `../platform-shared` second minimizes surprises for anything already resolving from those sources, so add the new path after them unless you intentionally want different precedence. Also keep `imageAliases` intact—especially the shared `"@": "../shared/images/"` mapping—so existing icons keep working. Stay with relative paths only; avoid absolute paths.

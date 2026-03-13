@@ -5,15 +5,23 @@ This guide documents the custom benchmark agents and the shared hook policy used
 ## Required setup
 
 - Enable `chat.useCustomAgentHooks = true` in VS Code.
-- Keep using the physical relocation step for the full `without_skill` batch.
-- Treat the hook policy as additive protection, not as a replacement for relocation.
+- Use the strict relocated baseline by default for the full `without_skill` batch.
+- Treat the hook-only baseline worker as an explicit probe mode, not as a replacement for relocation.
+
+## Entry points
+
+- **Human / interactive entrypoint**: use the workspace custom agent `Skill Benchmark Manager`.
+- **Automation / offline entrypoint**: run `python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-N --workspace-root .`.
+
+The other `skill_suite_tools.py` subcommands are low-level harness helpers. They remain useful for reproducibility and automation, but they are not the day-to-day starting point for humans.
 
 ## Agent inventory
 
 | Agent file | Role | Tools | Subagents |
 | --- | --- | --- | --- |
 | `.github/agents/skill-benchmark-manager.agent.md` | Orchestrates the benchmark workflow and benchmark-specific documentation work | `read`, `search`, `edit`, `execute`, `todo`, `agent` | Only the constrained benchmark workers |
-| `.github/agents/skill-benchmark-baseline.agent.md` | Executes the `without_skill` phase in a fresh read-only worker | `read`, `search`, `todo` | None (`agents: []`) |
+| `.github/agents/skill-benchmark-baseline.agent.md` | Executes the strict relocated `without_skill` phase in a fresh read-only worker | `read`, `search`, `todo` | None (`agents: []`) |
+| `.github/agents/skill-benchmark-baseline-hook-only.agent.md` | Executes an experimental hook-only `without_skill` probe without relocating workspace skills | `read`, `search`, `todo` | None (`agents: []`) |
 | `.github/agents/skill-benchmark-with-skill.agent.md` | Executes the `with_skill` phase in a fresh read-only worker locked to one target skill | `read`, `search`, `todo` | None (`agents: []`) |
 | `.github/agents/skill-blind-comparator.agent.md` | Compares blinded `A.md` vs `B.md` without seeing mapping or raw non-blind artifacts | `read`, `search`, `todo` | None (`agents: []`) |
 
@@ -28,9 +36,10 @@ This guide documents the custom benchmark agents and the shared hook policy used
 
 | Mode | Purpose | Main guardrails |
 | --- | --- | --- |
-| `benchmark_manager` | Orchestrate benchmark work and benchmark-specific docs | Can delegate only to allowlisted benchmark workers; edits are limited to `README.md`, `test/`, and `.github/agents/*.agent.md`; no shell escape |
-| `baseline` | Clean `without_skill` worker | No `SKILL.md`, no edits, no terminal, no subagents |
-| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; no edits, no terminal, no subagents |
+| `benchmark_manager` | Orchestrate benchmark work and benchmark-specific docs | Can delegate only to allowlisted benchmark workers; edits are limited to `README.md`, `test/`, and `.github/agents/*.agent.md`; no shell escape; no MCP |
+| `baseline` | Strict relocated `without_skill` worker | Requires `.github/skills/` to be empty before tool use; no `SKILL.md`, no `test/` artefacts, no edits, no terminal, no subagents |
+| `baseline_hook_only` | Hook-only `without_skill` isolation probe | Workspace skills may remain in place, but no `.github` path, no `_disabled-skills` backup, and no `SKILL.md` may be read; no edits, no terminal, no subagents |
+| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; no unrelated `test/` artefacts, no edits, no terminal, no subagents |
 | `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `evals.json`; no `blind-map.json`, no raw outputs, no `SKILL.md` |
 
 ## Critical subagent rule
@@ -63,18 +72,55 @@ This is intentional.
 - They are excellent methodological assets (`comparator.md`, `analyzer.md`, `grader.md`), but they are **not** VS Code `.agent.md` custom agents and therefore are **not** an enforcement boundary for tools or hooks.
 - The repo-level benchmark agents exist to provide the missing enforcement layer: explicit tool lists, explicit subagent allowlists, and agent-scoped hooks.
 
-The benchmark manager may consult the support skills `skill-creator` and `writing-skills`, but the measured benchmark workers remain isolated repo custom agents.
+The benchmark manager may consult the workspace skill `skill-creator`, but the measured benchmark workers remain isolated repo custom agents.
+
+## Support playbook mapping
+
+| Support playbook | Used by | Purpose |
+| --- | --- | --- |
+| `skill-creator/agents/comparator.md` | Benchmark manager + blind comparator workflow | Blind A/B judging style, rubric framing, decisive winner selection |
+| `skill-creator/agents/analyzer.md` | Benchmark manager | Post-hoc pattern analysis across benchmark outputs |
+| `skill-creator/agents/grader.md` | Benchmark manager | Evaluating expectation quality and spotting weak assertions |
+| `skill-creator/eval-viewer/generate_review.py` | Benchmark manager | Generate a human-review HTML from exported benchmark outputs |
+| `skill-creator/references/schemas.md` | Benchmark manager | Keep exported `benchmark.json` and review workspace layouts compatible with the viewer |
 
 ## Using the helper commands
 
-Use the harness helpers to keep the workflow repeatable:
+Recommended starting points:
 
 ```bash
-python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2
-python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --skill create-element
-python test/scripts/skill_suite_tools.py validate-blind-isolation --iteration test/iteration-2
-python -m pytest test/scripts/test_benchmark_agent_policy.py
+python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-2 --workspace-root .
+python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --baseline-isolation relocation
+python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --baseline-isolation hook-only
 ```
+
+Low-level helper commands remain available when you need them:
+
+```bash
+python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --skill create-element
+python test/scripts/skill_suite_tools.py blind-compare-bundle --iteration test/iteration-2 --workspace-root . --skill create-element --eval-id 0
+python test/scripts/skill_suite_tools.py analyzer-bundle --iteration test/iteration-2 --workspace-root . --skill create-element
+python test/scripts/skill_suite_tools.py grader-bundle --iteration test/iteration-2 --workspace-root . --skill create-element --eval-id 0 --configuration with_skill
+python test/scripts/skill_suite_tools.py materialize-run --iteration test/iteration-2 --skill create-element --configuration with_skill --raw-json test/iteration-2/_meta/create-element-with_skill.json
+python test/scripts/skill_suite_tools.py materialize-comparisons --iteration test/iteration-2 --skill create-element --raw-json test/iteration-2/_meta/create-element-blind.json
+python test/scripts/skill_suite_tools.py export-review-workspace --iteration test/iteration-2 --workspace-root . --skill create-element
+python test/scripts/skill_suite_tools.py write-skill-creator-benchmark --iteration test/iteration-2 --workspace-root . --skill create-element
+python test/scripts/skill_suite_tools.py write-static-review --iteration test/iteration-2 --workspace-root . --skill create-element
+python test/scripts/skill_suite_tools.py validate-blind-isolation --iteration test/iteration-2
+python test/scripts/test_benchmark_agent_policy.py
+```
+
+## Skill-creator-aligned review flow
+
+1. Use `export-review-workspace` to adapt one benchmarked skill into the directory layout expected by `skill-creator`'s review viewer.
+2. Use `write-skill-creator-benchmark` to export a viewer-compatible `benchmark.json` without inventing token counts when they were never captured.
+3. Use `write-static-review` to invoke `skill-creator/eval-viewer/generate_review.py` and write a standalone HTML file under `test/`, including the benchmark tab.
+4. Use `grader-bundle` when you want a run-level grading handoff in the style of `skill-creator/agents/grader.md`.
+5. Use `analyzer-bundle` when preparing a benchmark-analysis task in the style of `skill-creator/agents/analyzer.md`.
+
+This keeps the benchmark workflow inside the same evaluation family as `skill-creator`, instead of creating a parallel review system.
+
+The support skill `.github/skills/skill-creator/` is intentionally vendored and versioned here. The exported review workspaces and HTML/benchmark files produced from it are generated artifacts under `test/` and should normally be regenerated rather than committed.
 
 ## Diagnostics
 
@@ -86,4 +132,4 @@ python -m pytest test/scripts/test_benchmark_agent_policy.py
 
 - Physical relocation remains the strict guarantee for the baseline phase.
 - Agent-scoped hooks reduce accidental leakage and keep comparator discipline tight.
-- Do not claim hook-only isolation is sufficient until repeated benchmark runs prove it in practice.
+- Hook-only baseline runs are useful probes, but do not claim they are sufficient until repeated benchmark runs prove it in practice.

@@ -2,25 +2,125 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 HOOK_SCRIPT = ROOT / ".github" / "agents" / "scripts" / "enforce-test-access.py"
-FIXTURES = ROOT / "test" / "scripts" / "fixtures" / "benchmark-agent-hooks"
+ALLOWED_SUBAGENTS = "Skill Benchmark Baseline,Skill Benchmark Baseline Hook-Only,Skill Benchmark With Skill,Skill Blind Comparator"
 
 
 class BenchmarkAgentPolicyTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.workspace_root = ROOT
+        self.workspace_dir = tempfile.TemporaryDirectory()
+        self.workspace_root = Path(self.workspace_dir.name).resolve()
         self.state_root = tempfile.TemporaryDirectory()
+        self.addCleanup(self.workspace_dir.cleanup)
         self.addCleanup(self.state_root.cleanup)
+        self.create_workspace_fixture()
 
-    def run_hook(self, fixture_name: str, *, mode: str, extra_env: dict[str, str] | None = None) -> dict:
-        payload = json.loads((FIXTURES / fixture_name).read_text(encoding="utf-8"))
+    def create_workspace_fixture(self) -> None:
+        (self.workspace_root / "README.md").write_text("# temp workspace\n", encoding="utf-8")
+        blind_dir = self.workspace_root / "test" / "iteration-1" / "create-element" / "eval-0" / "blind"
+        blind_dir.mkdir(parents=True, exist_ok=True)
+        (blind_dir / "A.md").write_text("blind artifact\n", encoding="utf-8")
+        (blind_dir.parent / "blind-map.json").write_text("{}\n", encoding="utf-8")
+        disabled_skill = self.workspace_root / "test" / "iteration-1" / "_disabled-skills" / "create-element"
+        disabled_skill.mkdir(parents=True, exist_ok=True)
+        (disabled_skill / "SKILL.md").write_text("# disabled create-element\n", encoding="utf-8")
+        (self.workspace_root / "projects").mkdir(parents=True, exist_ok=True)
+        (self.workspace_root / ".github" / "agents").mkdir(parents=True, exist_ok=True)
+
+        create_element_root = self.workspace_root / ".github" / "skills" / "create-element"
+        (create_element_root / "evals").mkdir(parents=True, exist_ok=True)
+        (create_element_root / "SKILL.md").write_text("# create-element\n", encoding="utf-8")
+        (create_element_root / "evals" / "evals.json").write_text("{}\n", encoding="utf-8")
+
+        create_relationship_root = self.workspace_root / ".github" / "skills" / "create-relationship"
+        create_relationship_root.mkdir(parents=True, exist_ok=True)
+        (create_relationship_root / "SKILL.md").write_text("# create-relationship\n", encoding="utf-8")
+
+        skill_creator_agents = self.workspace_root / ".github" / "skills" / "skill-creator" / "agents"
+        skill_creator_agents.mkdir(parents=True, exist_ok=True)
+        (skill_creator_agents / "comparator.md").write_text("# comparator\n", encoding="utf-8")
+
+    def clear_workspace_skills(self) -> None:
+        skills_root = self.workspace_root / ".github" / "skills"
+        if not skills_root.exists():
+            return
+        for child in list(skills_root.iterdir()):
+            if child.is_dir():
+                shutil.rmtree(child)
+            else:
+                child.unlink()
+
+    def payload(
+        self,
+        *,
+        session_id: str,
+        tool_name: str,
+        tool_input: dict[str, Any],
+        timestamp: str = "2026-03-12T12:00:00Z",
+    ) -> dict[str, Any]:
+        return {
+            "timestamp": timestamp,
+            "cwd": self.workspace_root.as_posix(),
+            "sessionId": session_id,
+            "hookEventName": "PreToolUse",
+            "tool_name": tool_name,
+            "tool_input": tool_input,
+        }
+
+    def read_payload(
+        self,
+        session_id: str,
+        relative_path: str,
+        *,
+        start_line: int = 1,
+        end_line: int = 50,
+        timestamp: str = "2026-03-12T12:00:00Z",
+    ) -> dict[str, Any]:
+        return self.payload(
+            session_id=session_id,
+            tool_name="read_file",
+            tool_input={
+                "filePath": (self.workspace_root / relative_path).as_posix(),
+                "startLine": start_line,
+                "endLine": end_line,
+            },
+            timestamp=timestamp,
+        )
+
+    def subagent_payload(self, session_id: str, agent_name: str, description: str, prompt: str) -> dict[str, Any]:
+        return self.payload(
+            session_id=session_id,
+            tool_name="runSubagent",
+            tool_input={
+                "agentName": agent_name,
+                "description": description,
+                "prompt": prompt,
+            },
+        )
+
+    def command_payload(self, session_id: str, command: str) -> dict[str, Any]:
+        return self.payload(
+            session_id=session_id,
+            tool_name="run_in_terminal",
+            tool_input={
+                "command": command,
+                "goal": "shell escape",
+                "explanation": "unsafe command",
+                "isBackground": False,
+                "timeout": 0,
+            },
+        )
+
+    def run_hook_payload(self, payload: dict[str, Any], *, mode: str, extra_env: dict[str, str] | None = None) -> dict[str, Any]:
         env = os.environ.copy()
         env.update(
             {
@@ -43,72 +143,132 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             self.fail(f"hook exited with {result.returncode}: {result.stderr}\nstdout={result.stdout}")
         return json.loads(result.stdout)
 
-    def decision(self, output: dict) -> str:
+    def decision(self, output: dict[str, Any]) -> str:
         return output["hookSpecificOutput"]["permissionDecision"]
 
-    def test_baseline_allows_readme(self) -> None:
-        output = self.run_hook("baseline-read-readme.json", mode="baseline")
+    def test_baseline_allows_readme_after_relocation(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(self.read_payload("baseline-session", "README.md", end_line=20), mode="baseline")
         self.assertEqual(self.decision(output), "allow")
 
-    def test_baseline_denies_skill_reads(self) -> None:
-        output = self.run_hook("baseline-deny-skill.json", mode="baseline")
+    def test_baseline_denies_when_skills_are_still_present(self) -> None:
+        output = self.run_hook_payload(self.read_payload("baseline-session", "README.md", end_line=20), mode="baseline")
+        self.assertEqual(self.decision(output), "deny")
+        self.assertIn("relocating workspace skills", output["hookSpecificOutput"]["permissionDecisionReason"])
+
+    def test_baseline_hook_only_allows_readme_without_relocation(self) -> None:
+        output = self.run_hook_payload(self.read_payload("baseline-session", "README.md", end_line=20), mode="baseline_hook_only")
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_baseline_hook_only_denies_skill_reads(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload("baseline-session", ".github/skills/create-element/SKILL.md", end_line=50),
+            mode="baseline_hook_only",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_denies_test_artifacts(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload("baseline-session", "test/iteration-1/create-element/eval-0/blind/A.md", end_line=20),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_denies_disabled_skill_backup(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload("baseline-session", "test/iteration-1/_disabled-skills/create-element/SKILL.md", end_line=20),
+            mode="baseline",
+        )
         self.assertEqual(self.decision(output), "deny")
 
     def test_manager_allows_only_allowlisted_subagents(self) -> None:
-        output = self.run_hook(
-            "manager-allow-subagent.json",
+        output = self.run_hook_payload(
+            self.subagent_payload(
+                "manager-session",
+                "Skill Benchmark Baseline",
+                "run baseline worker",
+                "Execute the without_skill phase for create-element.",
+            ),
             mode="benchmark_manager",
-            extra_env={
-                "BENCH_ALLOWED_AGENTS": "Skill Benchmark Baseline,Skill Benchmark With Skill,Skill Blind Comparator"
-            },
+            extra_env={"BENCH_ALLOWED_AGENTS": ALLOWED_SUBAGENTS},
         )
         self.assertEqual(self.decision(output), "allow")
 
     def test_manager_denies_unconstrained_subagents(self) -> None:
-        output = self.run_hook(
-            "manager-deny-subagent.json",
+        output = self.run_hook_payload(
+            self.subagent_payload(
+                "manager-session",
+                "Explore",
+                "unsafe exploratory worker",
+                "Search the repo for anything useful.",
+            ),
             mode="benchmark_manager",
-            extra_env={
-                "BENCH_ALLOWED_AGENTS": "Skill Benchmark Baseline,Skill Benchmark With Skill,Skill Blind Comparator"
-            },
+            extra_env={"BENCH_ALLOWED_AGENTS": ALLOWED_SUBAGENTS},
         )
         self.assertEqual(self.decision(output), "deny")
 
-    def test_manager_may_read_allowed_support_skills_only(self) -> None:
-        allowed = self.run_hook(
-            "manager-read-support-skill.json",
+    def test_manager_denies_mcp_tools(self) -> None:
+        output = self.run_hook_payload(
+            self.payload(
+                session_id="manager-session-mcp",
+                tool_name="mcp_context7_query-docs",
+                tool_input={
+                    "libraryId": "/likec4/likec4",
+                    "query": "How do custom agents restrict tools?",
+                },
+            ),
             mode="benchmark_manager",
-            extra_env={"BENCH_SUPPORT_SKILLS": "skill-creator,writing-skills"},
         )
-        self.assertEqual(self.decision(allowed), "allow")
-
-        denied = self.run_hook(
-            "worker-read-support-skill.json",
-            mode="baseline",
-            extra_env={"BENCH_SUPPORT_SKILLS": "skill-creator,writing-skills"},
-        )
-        self.assertEqual(self.decision(denied), "deny")
+        self.assertEqual(self.decision(output), "deny")
 
     def test_with_skill_locks_first_skill_directory(self) -> None:
-        first = self.run_hook("with-skill-read-target-skill.json", mode="with_skill_targeted")
+        first = self.run_hook_payload(
+            self.read_payload("with-skill-session", ".github/skills/create-element/SKILL.md", end_line=80),
+            mode="with_skill_targeted",
+        )
         self.assertEqual(self.decision(first), "allow")
 
-        second = self.run_hook("with-skill-read-other-skill.json", mode="with_skill_targeted")
+        second = self.run_hook_payload(
+            self.read_payload(
+                "with-skill-session",
+                ".github/skills/create-relationship/SKILL.md",
+                end_line=80,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="with_skill_targeted",
+        )
         self.assertEqual(self.decision(second), "deny")
 
     def test_blind_comparator_denies_mapping_file(self) -> None:
-        output = self.run_hook("blind-deny-map.json", mode="blind_compare")
+        output = self.run_hook_payload(
+            self.read_payload("blind-session", "test/iteration-1/create-element/eval-0/blind-map.json", end_line=40),
+            mode="blind_compare",
+        )
         self.assertEqual(self.decision(output), "deny")
 
     def test_blind_comparator_allows_blind_artifacts_and_evals(self) -> None:
-        blind = self.run_hook("blind-read-a.json", mode="blind_compare")
+        blind = self.run_hook_payload(
+            self.read_payload("blind-session-2", "test/iteration-1/create-element/eval-0/blind/A.md", end_line=120),
+            mode="blind_compare",
+        )
         self.assertEqual(self.decision(blind), "allow")
 
-        evals = self.run_hook("blind-read-evals.json", mode="blind_compare")
+        evals = self.run_hook_payload(
+            self.read_payload(
+                "blind-session-2",
+                ".github/skills/create-element/evals/evals.json",
+                end_line=200,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="blind_compare",
+        )
         self.assertEqual(self.decision(evals), "allow")
 
     def test_manager_command_allowlist_blocks_shell_escape(self) -> None:
-        output = self.run_hook("manager-deny-command.json", mode="benchmark_manager")
+        output = self.run_hook_payload(
+            self.command_payload("manager-session-2", "python -c \"print('hello from outside the allowlist')\""),
+            mode="benchmark_manager",
+        )
         self.assertEqual(self.decision(output), "deny")
 
 

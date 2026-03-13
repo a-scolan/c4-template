@@ -1,0 +1,671 @@
+{
+  "generated_at": "2026-03-13T09:49:13Z",
+  "iteration": "iteration-3",
+  "prepared": [
+    {
+      "skill": "c4-modeling-process",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "c4-modeling-process",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "c4-modeling-process",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "c4-modeling-process",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "c4-modeling-process",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "c4-modeling-process",
+      "eval": "eval-5",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "configure-project-includes",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "configure-project-includes",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "configure-project-includes",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "configure-project-includes",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "configure-project-includes",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "configure-project-includes",
+      "eval": "eval-5",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-element",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-element",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-element",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "create-element",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-element",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-relationship",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "create-relationship",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-relationship",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-relationship",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "create-relationship",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-sequence-view",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-sequence-view",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "create-sequence-view",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "create-sequence-view",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "customize-view",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "customize-view",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "customize-view",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "customize-view",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "customize-view",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "design-view",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "design-view",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "design-view",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "design-view",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "document-decision",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "document-decision",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "document-decision",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "implement-pattern",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "implement-pattern",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "implement-pattern",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "implement-pattern",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "organize-multi-project",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "organize-multi-project",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "organize-multi-project",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "organize-multi-project",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "sync-with-template",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "sync-with-template",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "sync-with-template",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "sync-with-template",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "sync-with-template",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "test-model",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "test-model",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "test-model",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "understand-project-structure",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "understand-project-structure",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "understand-project-structure",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "understand-project-structure",
+      "eval": "eval-3",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "understand-project-structure",
+      "eval": "eval-4",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "understand-project-structure",
+      "eval": "eval-5",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "eval": "eval-0",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "eval": "eval-1",
+      "mapping": {
+        "A": "without_skill",
+        "B": "with_skill"
+      }
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "eval": "eval-2",
+      "mapping": {
+        "A": "with_skill",
+        "B": "without_skill"
+      }
+    }
+  ],
+  "prepared_count": 83
+}

@@ -1,3 +1,13 @@
 # Skill evaluation workspaces belong under tests/skills/, never under .github/skills/
 .github/skills/*-workspace/
 
+# Vendored support skills stay versioned, but generated benchmark review exports do not.
+test/iteration-*/**/_skill-creator-review-workspace*/
+test/iteration-*/**/skill-creator-review.html
+test/iteration-*/**/skill-creator-benchmark.json
+test/iteration-*/**/skill-creator-benchmark.md
+
+# Python cache artifacts are generated locally and should never be versioned.
+__pycache__/
+*.py[cod]
+
