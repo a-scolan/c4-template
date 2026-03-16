@@ -1,0 +1,33 @@
+{
+  "skill_name": "sync-with-template",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Push upstream only the changes that are reusable template material:\n- The generic .github improvement, if it changes reusable guidance only.\n- The projects/shared/spec-context.c4 change, if it stays generic and reusable across repositories.\n\nKeep local:\n- projects/payments/system-model.c4, because it is project-specific.\n- README.md by default, unless that edit is truly template-wide and contains no local onboarding, naming, or confidential details.\n\nRule of thumb: upstream gets reusable template assets (.github and projects/shared); derived-repo assets stay local (projects/<project>/... and local documentation)."
+    },
+    {
+      "id": 1,
+      "response": "Use a clean sync branch from the upstream default branch so only the generic .github improvement is carried. Replace main if the upstream default branch is different.\n\ngit fetch c4-template\ngit switch --create sync/github-improvement c4-template/main\ngit cherry-pick <commit-with-the-generic-.github-change>\ngit diff --stat c4-template/main...HEAD\ngit diff c4-template/main...HEAD -- .github\ngit diff --name-only c4-template/main...HEAD\n\nDo the confidentiality review before any push: confirm the diff contains only the intended generic .github file(s), with no customer names, project models, local docs, secrets, or internal URLs.\n\nThen push the sync branch:\n\ngit push c4-template HEAD:sync/github-improvement\n\nIf the improvement is not committed yet, commit it locally first, then cherry-pick that commit onto the clean sync branch."
+    },
+    {
+      "id": 2,
+      "response": "A safe path is to fetch upstream, create a sync branch, copy only .github and projects/shared from the upstream reference, and commit that as one sync change. Replace main if needed.\n\ngit switch main\ngit pull --ff-only\ngit fetch c4-template\ngit switch --create sync/template-refresh\ngit restore --source=c4-template/main --staged --worktree .github projects/shared\ngit diff --stat\ngit commit -m \"Sync .github and projects/shared from c4-template\"\n\nWhy squash: one sync commit is easier to review, easier to revert, keeps the derived repository history clean, and avoids importing a long chain of upstream commits when all you want is the current upstream state for those shared paths."
+    },
+    {
+      "id": 3,
+      "response": "Verify it is truly generic before upstreaming by using the shared-spec bar:\n- The change should improve reusable shared vocabulary only, not one project model.\n- It should stay consistent with the generic naming and taxonomy already used in the shared specs, such as Actor_*, System_*, and Container_* patterns.\n- It must not introduce project names, customer terminology, local environments, confidential URLs, or assumptions tied to one derived repository.\n- Another derived repository should be able to apply it unchanged; if it needs exceptions or local caveats, it is not upstream material.\n\nA safe review flow is:\n\ngit fetch c4-template\ngit switch --create sync/shared-container-fix c4-template/main\ngit cherry-pick <commit-with-the-shared-fix>\ngit diff --stat c4-template/main...HEAD\ngit diff c4-template/main...HEAD -- projects/shared/spec-containers.c4\n\nOnly push upstream if the isolated diff is still clearly generic after that review."
+    },
+    {
+      "id": 4,
+      "response": "Safest recovery: do not open the PR from the contaminated branch. Create a new clean sync branch from the upstream default branch and carry over only the generic .github change.\n\nIf the generic change is already in its own commit:\n\ngit branch backup/sync-spec-hardening\ngit fetch c4-template\ngit switch --create sync/spec-hardening-clean c4-template/main\ngit cherry-pick <good-generic-commit>\ngit diff --name-only c4-template/main...HEAD\ngit push c4-template HEAD:sync/spec-hardening-clean\n\nIf the generic change and the local projects/acme/system-model.c4 and README.md edits were mixed into one commit, split it first:\n\ngit branch backup/sync-spec-hardening\ngit fetch c4-template\ngit reset --soft c4-template/main\ngit restore --source=c4-template/main --staged --worktree projects/acme/system-model.c4 README.md\ngit commit -m \"Isolate generic .github improvement\"\ngit diff --name-only c4-template/main...HEAD\n\nOpen the PR only when the diff contains the generic .github change and nothing from projects/acme or README.md."
+    }
+  ]
+}

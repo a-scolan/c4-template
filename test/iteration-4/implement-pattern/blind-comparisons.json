@@ -1,0 +1,138 @@
+{
+  "schema_version": 2,
+  "skill_name": "implement-pattern",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B is more correct and actionable because it names System_External, a typed calls relationship, and a clear action label, while A stays generic. Both miss the explicit #External tag, but B matches more of the grading spec.",
+      "rubric": {
+        "A": {
+          "content_score": 3,
+          "structure_score": 4,
+          "overall_score": 3,
+          "notes": "High-level only; misses explicit calls typing, tag, and action label."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Concrete LikeC4 guidance with typed relation and label; only the shared external tag is missing."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 0,
+          "total": 3,
+          "pass_rate": 0.0
+        },
+        "B": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B fully matches the queue/worker pattern with a RabbitMQ queue, explicit async publish/consume legs, and a clear ban on fake worker-to-API return flow. A is solid but its warning focuses on bypassing the queue rather than the specific false return-flow mistake.",
+      "rubric": {
+        "A": {
+          "content_score": 7,
+          "structure_score": 7,
+          "overall_score": 7,
+          "notes": "Good queue pattern; weaker on the one-way return-flow guardrail."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 9,
+          "overall_score": 9,
+          "notes": "Complete and precise async queue/worker pattern with the key anti-pattern called out."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6666666666666666
+        },
+        "B": {
+          "passed": 3,
+          "total": 3,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B better fits the cache pattern by choosing a valid storage-style kind for Redis, keeping Postgres explicit as source of truth, and warning against misleading shapes that imply replacement. A captures the concept well but is too generic on concrete LikeC4 kinds and relationship typing.",
+      "rubric": {
+        "A": {
+          "content_score": 6,
+          "structure_score": 7,
+          "overall_score": 6,
+          "notes": "Correct source-of-truth story, but no explicit valid workspace kind for Redis."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Best fit: Redis modeled with a valid kind, DB retained as primary, and misleading diagrams explicitly avoided."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6666666666666666
+        },
+        "B": {
+          "passed": 3,
+          "total": 3,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A is more structurally precise because it models two distinct interactions, names internal and external elements, and clearly separates the webhook from any synchronous response. B usefully adds a sequence-view hint, but it is less explicit about LikeC4 element kinds and typed structural relationships.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Strong structural answer with separate webhook leg; misses the shared external tag and sequence-view complement."
+        },
+        "B": {
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Good callback separation and temporal-view guidance, but more generic on concrete LikeC4 elements."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 4,
+          "pass_rate": 0.5
+        },
+        "B": {
+          "passed": 2,
+          "total": 4,
+          "pass_rate": 0.5
+        }
+      }
+    }
+  ]
+}

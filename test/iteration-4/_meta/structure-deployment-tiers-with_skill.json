@@ -1,0 +1,24 @@
+{
+  "skill_name": "structure-deployment-tiers",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/structure-deployment-tiers/SKILL.md",
+    ".github/skills/structure-deployment-tiers/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use a Production environment with explicitly nested sibling zones: Dmz, AppTier, ProcTier, DataTier, and SecZone for monitoring. Dmz handles Internet-facing edge concerns only; AppTier contains business services and is internal-only; ProcTier is for asynchronous processing only; DataTier contains persistent storage and is never Internet-facing; SecZone is the optional monitoring and security tier for Prometheus, Grafana, logs, and alerting. Keep the hierarchy clear as Environment to Zone to VM to service instance, keep one primary responsibility per tier, and document firewall rules in the zone descriptions so the security boundary is obvious."
+    },
+    {
+      "id": 1,
+      "response": "No. This skill should primarily decide the tier split, parent-child hierarchy, and firewall boundaries, not become the full specification for every low-level deployment detail. It can show light examples of VM names, Markdown tables, and Node_App instanceOf usage, but the authoritative detail for exact VM naming, rich infrastructure tables, and precise instance wiring belongs in the follow-on deployment-modeling work. Use this skill to answer where things belong and how tiers communicate; use the deeper deployment-detail workflow to standardize exact names, spec tables, and instanceOf wiring."
+    },
+    {
+      "id": 2,
+      "response": "Add a dedicated SecZone as a sibling of Dmz, AppTier, ProcTier, and DataTier under the same parent environment. Put cross-cutting audit, monitoring, log aggregation, and alerting there so security tooling is explicit without polluting the application tiers. For disaster recovery, use an InfraZone when you want backup, replication, and failover infrastructure represented without cluttering the main tier flow, or model a full secondary site as a separate environment with its own tier structure and only the essential cross-site replication and failover relationships shown."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "skill_name": "implement-pattern",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I need to model in LikeC4 a call from an internal API to an external payment provider. Which standard elements and relationships should I add to stay consistent?",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I want to represent async processing: an API publishes a job, and a worker consumes it from RabbitMQ. Which LikeC4 pattern should I apply, and which mistake should I avoid?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to add Redis in front of Postgres to speed up API reads. How should I model this cache without implying it replaces the database?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need to integrate Stripe: an internal API creates a payment, then Stripe sends a confirmation webhook to an internal endpoint. How do I model this pattern without implying a synchronous return?",
+      "files": []
+    }
+  ]
+}

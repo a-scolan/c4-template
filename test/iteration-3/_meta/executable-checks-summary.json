@@ -1,0 +1,273 @@
+{
+  "generated_at": "2026-03-13T11:29:01Z",
+  "iteration": "iteration-3",
+  "summary_count": 38,
+  "summaries": [
+    {
+      "skill": "c4-modeling-process",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/c4-modeling-process/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "c4-modeling-process",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/c4-modeling-process/without_skill-executable-checks.json",
+      "applicable_eval_count": 1,
+      "valid_eval_rate": 1.0
+    },
+    {
+      "skill": "configure-project-includes",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/configure-project-includes/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "configure-project-includes",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/configure-project-includes/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "create-element",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/create-element/with_skill-executable-checks.json",
+      "applicable_eval_count": 4,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "create-element",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/create-element/without_skill-executable-checks.json",
+      "applicable_eval_count": 2,
+      "valid_eval_rate": 1.0
+    },
+    {
+      "skill": "create-relationship",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/create-relationship/with_skill-executable-checks.json",
+      "applicable_eval_count": 5,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "create-relationship",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/create-relationship/without_skill-executable-checks.json",
+      "applicable_eval_count": 5,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "create-sequence-view",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/create-sequence-view/with_skill-executable-checks.json",
+      "applicable_eval_count": 4,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "create-sequence-view",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/create-sequence-view/without_skill-executable-checks.json",
+      "applicable_eval_count": 2,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "customize-view",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/customize-view/with_skill-executable-checks.json",
+      "applicable_eval_count": 5,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "customize-view",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/customize-view/without_skill-executable-checks.json",
+      "applicable_eval_count": 4,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "design-view",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/design-view/with_skill-executable-checks.json",
+      "applicable_eval_count": 4,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "design-view",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/design-view/without_skill-executable-checks.json",
+      "applicable_eval_count": 2,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "document-decision",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/document-decision/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "document-decision",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/document-decision/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "implement-pattern",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/implement-pattern/with_skill-executable-checks.json",
+      "applicable_eval_count": 4,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "implement-pattern",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/implement-pattern/without_skill-executable-checks.json",
+      "applicable_eval_count": 2,
+      "valid_eval_rate": 1.0
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/lookup-element-kinds/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/lookup-element-kinds/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/model-deployment-infrastructure/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/model-deployment-infrastructure/without_skill-executable-checks.json",
+      "applicable_eval_count": 1,
+      "valid_eval_rate": 0.0
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/name-deployment-nodes/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/name-deployment-nodes/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "organize-multi-project",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/organize-multi-project/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "organize-multi-project",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/organize-multi-project/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/structure-deployment-tiers/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/structure-deployment-tiers/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "sync-with-template",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/sync-with-template/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "sync-with-template",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/sync-with-template/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "test-model",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/test-model/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "test-model",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/test-model/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/troubleshoot-errors/with_skill-executable-checks.json",
+      "applicable_eval_count": 1,
+      "valid_eval_rate": 1.0
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/troubleshoot-errors/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "understand-project-structure",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/understand-project-structure/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "understand-project-structure",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/understand-project-structure/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "configuration": "with_skill",
+      "output_path": "test/iteration-3/write-rich-descriptions/with_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "configuration": "without_skill",
+      "output_path": "test/iteration-3/write-rich-descriptions/without_skill-executable-checks.json",
+      "applicable_eval_count": 0,
+      "valid_eval_rate": null
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Use an element-creation task for the two declarations: model virusScanProvider as an external system and scanApi as an API container. Use a relationship-creation task for the arrows. Use a container-view design task for the C2 view.

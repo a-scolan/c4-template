@@ -1,0 +1,1 @@
+Use the cache plus source-of-truth pattern so Redis accelerates reads without replacing Postgres. Show the API reading the cache first, reading the database on cache miss, writing the cache on refresh, and writing the database as the source of truth. The key rule is to keep Postgres clearly modeled as the source of truth and Redis as an optimization layer.

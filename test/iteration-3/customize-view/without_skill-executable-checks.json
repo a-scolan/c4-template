@@ -1,0 +1,131 @@
+{
+  "iteration": "iteration-3",
+  "skill_name": "customize-view",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-13T11:29:01Z",
+  "run_count": 1,
+  "summary": {
+    "applicable_eval_count": 4,
+    "valid_eval_count": 0,
+    "valid_eval_rate": 0.0,
+    "snippet_count_total": 5,
+    "error_count_total": 10,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "}\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/without_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    }
+  ]
+}

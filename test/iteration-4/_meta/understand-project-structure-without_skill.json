@@ -1,0 +1,41 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/spec-code.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Preflight grounded in the readable shared specs: active project is not determinable from projects/shared/ alone, so confirm the selected project local config, model, and view files before any edit. Available kinds: C1 has Actor_Person, Actor_Staff, Actor_Admin, System_New, System_Existing, System_Legacy, System_External; C2 has Container_Api, Container_Queue, Container_Database, Container_ObjectStorage, Container_Webapp, Container_Spa, Container_Browser, Container_ReverseProxy, Container_Waf, Container_Loadbalancer, Container_Directory, Container_Mailserver, Container_FileServer, Container_DataServer, Container_ProcessingServer, Container_ExchangeServer, Container_IamServer, Container_WebServer, Container_ApplicationServer, Container_Api_Geo, Container_DatabaseGeo; C3 has Component; code has Code; deployment nodes are defined in spec-deployment.c4. Model relationships are uses, calls, async, reads, writes; deployment-only relationships are http, https, tcp, nfs, amqp, oidc_saml, ldap, sql, redis, smtp. Relevant tags include #Internal, #External, #Legacy, #Cloud, #Saas, #Queue, #Security, plus level, family, and deployment tags from the shared specs. Source of truth for taxonomy is projects/shared/spec-context.c4, spec-containers.c4, spec-components.c4, spec-code.c4, spec-global.c4, and spec-deployment.c4; projects/shared/SPEC_CHEATSHEET.md is a helper, not the final authority. C1 to C2 to C3 plan: first place the API in its owning system context and confirm actors and external systems; then add the API as Container_Api with technology plus any queue or data containers and valid model relationships; only after that decompose the API with Component elements."
+    },
+    {
+      "id": 1,
+      "response": "To avoid context errors after switching projects, first re-establish the active project and do not reuse element paths, IDs, or assumptions from the previous project. Then confirm that the target C3 view belongs to the current project model and that its parent system or container exists in that same project. In this repository, the shared C3 taxonomy is minimal: spec-components.c4 defines Component, so any richer component taxonomy must be confirmed before editing. Before touching the view, re-run the equivalent of a project summary check, an element lookup for the parent system or container, a relationship lookup for the components you expect to show, and a current view preview or validation for the active project. If any result still resolves to the old project, stop and realign context first."
+    },
+    {
+      "id": 2,
+      "response": "Structured diagnosis: 1) Check the authoritative shared spec file first, not examples: C1 kinds in spec-context.c4, C2 kinds in spec-containers.c4, C3 in spec-components.c4, code in spec-code.c4, model relationships in spec-global.c4, and deployment relationships and nodes in spec-deployment.c4. 2) Compare exact spelling and case; public names are PascalCase and often follow Category_Subtype. 3) Compare level and family: do not use deployment relationships in the system model, and do not use a tag where a kind is required. 4) Confirm the cheat sheet against the real spec files before fixing; it is useful but it already diverges from the actual specs in places, for example it shows Storage and Container_Database_Geo, while the readable spec defines Container_ObjectStorage and Container_DatabaseGeo. 5) Confirm the correction by matching the exact identifier in the shared spec file and then rechecking any tags and relationships attached to that element."
+    },
+    {
+      "id": 3,
+      "response": "Once project context is established, hand off to c4-modeling-process. Before that handoff, understand-project-structure should lock in the active project, which files are shared taxonomy versus project-local model and view files, the allowed kinds, relationships, and tags from the shared specs, the target abstraction level you are editing, and the exact parent system or container you will extend. That way the modeling step can sequence work against the correct project and taxonomy instead of guessing."
+    },
+    {
+      "id": 4,
+      "response": "The first local conventions to understand are: shared taxonomy by level in spec-context.c4, spec-containers.c4, spec-components.c4, and spec-code.c4; the split between business or model relationships in spec-global.c4 and deployment or infrastructure relationships in spec-deployment.c4; PascalCase public names with Category_Subtype patterns; tags as semantics and filtering rather than replacements for kinds; and the rule that technology belongs on the system-model relationship. The real sources of truth are the shared .c4 spec files; projects/shared/SPEC_CHEATSHEET.md is only a convenience summary. After that, hand off to c4-modeling-process so the actual modeling follows the repository C1 to C2 to C3 structure instead of importing UML or ArchiMate structure directly."
+    },
+    {
+      "id": 5,
+      "response": "No. projects/spec-showcase/container-views.c4 is a view file by name, so treat it as an example of usage, not as the authoritative taxonomy for another project. Validate first: the active project you are editing; the real shared kind names in projects/shared/spec-containers.c4 such as Container_Api and Container_Queue; the allowed model relationships in projects/shared/spec-global.c4, which are uses, calls, async, reads, and writes; and any relevant shared tags from spec-global.c4 and spec-deployment.c4. Also validate copied examples against the authoritative shared specs before reusing them, because helper material can drift from the actual identifiers."
+    }
+  ]
+}

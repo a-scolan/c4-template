@@ -1,0 +1,22 @@
+{
+  "skill_name": "test-model",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I just added a worker container and a dedicated C2 view in my main model and views files. Before commit, give me a LikeC4 validation plan to check kinds, FQNs, relationships, and rendering.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "In my C2 detail view, I show the user, the web application, and the API. How do I validate that it keeps the right parent context and that no include is too broad?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I replaced a `calls` relationship with `async` between two containers. LikeC4 no longer complains, but the C2 view looks odd. How do I validate that the model is truly correct and not just syntactically acceptable?",
+      "files": []
+    }
+  ]
+}

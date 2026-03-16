@@ -1,0 +1,25 @@
+{
+  "skill_name": "name-deployment-nodes",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-containers.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use the shared deployment shape Node_Environment -> Zone -> Node_Vm. For this production setup, I would name it as: Environment = Prod; Zones = Dmz, AppTier, ProcTier, DataTier, Monitoring; VMs = apiGatewayVm, uploadVm, workerVm, mongoDbVm, monitoringVm. A clean mapping is Dmz -> apiGatewayVm, AppTier -> uploadVm, ProcTier -> workerVm, DataTier -> mongoDbVm, Monitoring -> monitoringVm. Fix the candidates as follows: ProdApiVM -> apiGatewayVm (or prodApiGatewayVm if you need one flat global VM identifier), prod_upload_vm -> uploadVm (or prodUploadVm in the flat form), AppServers -> AppTier if it is a zone or appCluster if it is actually a server group, MonitoringTier -> Monitoring. Keep one rule everywhere: short PascalCase names for the higher-level environment/zone identifiers, and readable VM identifiers that end with Vm."
+    },
+    {
+      "id": 1,
+      "response": "No. That is broader than a naming-only request. The naming part fits, but a full deployment model needs the complete hierarchy Node_Environment -> Zone -> Node_Vm -> Node_App, Markdown descriptions with IP/CPU/RAM, and instanceOf links to container elements such as Container_Api, Container_ProcessingServer, and Container_Database. Treat it as a full deployment-structure/modeling task, not just a naming task."
+    },
+    {
+      "id": 2,
+      "response": "Prefer ProdEuApiVm over EuProdApiVm. The readable convention is Environment + Region + Role + Kind, so keep the same order across everything: ProdEuAppTier, ProdEuApiVm, ProdEuWorkerVm, ProdEuMongoDbVm, ProdUsApiVm. If you want to stay closest to the shared examples where VM instances look like apiVm, the lowerCamelCase equivalent would be prodEuApiVm. The important part is consistency: do not mix ProdEu... and EuProd... in the same model."
+    }
+  ]
+}

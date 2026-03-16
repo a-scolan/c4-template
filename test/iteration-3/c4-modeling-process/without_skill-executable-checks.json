@@ -1,0 +1,92 @@
+{
+  "iteration": "iteration-3",
+  "skill_name": "c4-modeling-process",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-13T11:29:01Z",
+  "run_count": 1,
+  "summary": {
+    "applicable_eval_count": 1,
+    "valid_eval_count": 1,
+    "valid_eval_rate": 1.0,
+    "snippet_count_total": 1,
+    "error_count_total": 0,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Model first, then views, and go from broad to detailed: 1) make sure the project includes `projects/shared`; 2) define the C1 scope with actors and the main SaaS system; 3) add relevant external systems if they matter; 4) add the C1 relationships and their technology; 5) decompose the system into C2 containers and container relationships; 6) create the primary C1 context view; 7) create the primary C2 container view and any focused C2 drill-downs; 8) add C3 components only for containers that need internal structure explained; 9) add `Use Cases`, `Deployment`, and `Operations` views afterward as separate concerns. Optional here: external systems, focused C2 detail views, C3 views, and all `Use Cases` / `Deployment` / `Operations` work. The rule is to stop at the lowest level that answers the question clearly.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/without_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 5,
+      "run_number": 1,
+      "response_path": "eval-5/without_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    }
+  ]
+}

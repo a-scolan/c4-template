@@ -1,0 +1,1 @@
+Yes, this belongs in views Use Cases. Model the async processing flow chronologically with plain arrows from the external user to webApp to api to jobQueue to processingWorker to database. Critical anti-pattern: do not invent async arrow syntax in a dynamic view; keep plain arrows and let the labels describe the asynchronous handoff.

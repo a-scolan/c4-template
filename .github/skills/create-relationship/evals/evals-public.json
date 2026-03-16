@@ -1,0 +1,32 @@
+{
+  "skill_name": "create-relationship",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I need to connect a web application container to an API container in my system model. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I’m modeling an async upload flow: `uploadService` publishes to `jobQueue`, then `worker` consumes and writes to the database. Should I also draw a return relationship from worker back to upload service?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "My `retrievalService` reads Redis and then PostgreSQL. Should I use `calls`, `reads`, or something else? Give me the rule and a short example.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "My API reads Redis as cache, then PostgreSQL as fallback on cache miss. Should I model this with one “smart” relationship, two `reads`, or something else?",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "I added `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment because I wanted the diagram to show browser traffic. Should I keep that there, and where should `Manual`, `HTTPS`, and `HTTP/8080` actually live?",
+      "files": []
+    }
+  ]
+}

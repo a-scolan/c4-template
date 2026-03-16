@@ -1,7 +1,8 @@
 # Skill Suite Summary — iteration-3
 
-Generated at: 2026-03-13T10:11:03Z
+Generated at: 2026-03-13T11:29:01Z
 Previous iteration: iteration-2
+Protocol version: benchmark-v2
 Skill count: 19
 
 ## Metric validation
@@ -20,6 +21,7 @@ Issues: 0
 | Time per eval | Average wall-clock seconds spent per eval. | Lower is faster. `Time Δ = with_skill - without_skill`, so a negative delta means the skill was faster. |
 | Words per eval | Average response length in words. | Lower means more concise, but not automatically better unless quality stays strong. |
 | Files read count | Count of repository files intentionally read during a run. | Proxy for context consumption. Higher means more repository context was consumed. |
+| Executable validity | Share of snippet-bearing eval runs whose LikeC4 snippets passed automated structural checks. | Higher is better. `Executable Δ = with_skill - without_skill`. |
 
 ### Reading deltas
 
@@ -28,56 +30,72 @@ Issues: 0
 - `Time Δ < 0`: the skill was faster.
 - `Words Δ < 0`: the skill was more concise.
 - `Files read Δ > 0`: the skill consumed more repository context.
+- `Executable Δ > 0`: the skill produced more structurally valid LikeC4 snippets.
+
+## Suite variance
+
+| Metric | Mean | Stddev | Min | Max |
+| --- | --- | --- | --- | --- |
+| With-skill win rate | 0.949 | 0.110 | 0.600 | 1.000 |
+| Expectation Δ | 0.334 | 0.238 | 0.000 | 0.917 |
+| Rubric Δ | 0.865 | 0.986 | 0.008 | 3.467 |
+| Time Δ / eval | -2.087 | 5.515 | -23.800 | 1.250 |
+| Executable Δ | -0.333 | 0.516 | -1.000 | 0.000 |
+
 
 ## Suite overview
 
 All required run-metrics files were present and complete.
 
-| Skill | Evals | With-skill win rate | Expectation Δ | Rubric Δ | Time Δ / eval (s) | Words Δ / eval | Files read Δ |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| c4-modeling-process | 6 | 83.3% | 0.083 | 0.225 | -0.833 | -25.2 | -13.0 |
-| configure-project-includes | 6 | 100.0% | 0.200 | 0.587 | 0.000 | 1.5 | -9.0 |
-| create-element | 5 | 100.0% | 0.300 | 1.132 | -4.000 | 34.0 | -4.0 |
-| create-relationship | 5 | 100.0% | 0.080 | 0.920 | -4.000 | 40.6 | -2.0 |
-| create-sequence-view | 4 | 100.0% | 0.229 | 0.207 | 0.250 | -12.8 | -6.0 |
-| customize-view | 5 | 80.0% | 0.430 | 2.660 | -1.400 | 15.4 | -11.0 |
-| design-view | 4 | 100.0% | 0.562 | 0.328 | -0.750 | -59.8 | -8.0 |
-| document-decision | 3 | 100.0% | 0.261 | 0.183 | -1.667 | 67.3 | 0.0 |
-| implement-pattern | 4 | 100.0% | 0.312 | 1.575 | 0.500 | 48.5 | -4.0 |
-| lookup-element-kinds | 5 | 60.0% | 0.000 | 0.008 | -3.800 | -9.4 | -6.0 |
-| model-deployment-infrastructure | 5 | 80.0% | 0.280 | 0.178 | -23.800 | 3.8 | -1.0 |
-| name-deployment-nodes | 3 | 100.0% | 0.917 | 0.653 | 0.667 | -19.7 | -4.0 |
-| organize-multi-project | 4 | 100.0% | 0.250 | 0.100 | 1.250 | -18.8 | -3.0 |
-| structure-deployment-tiers | 3 | 100.0% | 0.193 | 0.123 | 0.000 | -12.0 | -2.0 |
-| sync-with-template | 5 | 100.0% | 0.250 | 1.880 | -2.400 | 2.8 | -5.0 |
-| test-model | 3 | 100.0% | 0.777 | 0.293 | 0.000 | 38.0 | -10.0 |
-| troubleshoot-errors | 4 | 100.0% | 0.165 | 0.090 | 1.000 | 34.8 | -6.0 |
-| understand-project-structure | 6 | 100.0% | 0.475 | 1.817 | 0.667 | -26.0 | -2.0 |
-| write-rich-descriptions | 3 | 100.0% | 0.583 | 3.467 | -1.333 | -17.0 | -5.0 |
+| Skill | Evals | Runs | With-skill win rate | Expectation Δ | Rubric Δ | Time Δ / eval (s) | Executable Δ | Words Δ / eval | Files read Δ | High-var evals |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| c4-modeling-process | 6 | 1 | 83.3% | 0.083 | 0.225 | -0.833 | - | -25.2 | -13.0 | 0 |
+| configure-project-includes | 6 | 1 | 100.0% | 0.200 | 0.587 | 0.000 | - | 1.5 | -9.0 | 0 |
+| create-element | 5 | 1 | 100.0% | 0.300 | 1.132 | -4.000 | -1.000 | 34.0 | -4.0 | 0 |
+| create-relationship | 5 | 1 | 100.0% | 0.080 | 0.920 | -4.000 | 0.000 | 40.6 | -2.0 | 0 |
+| create-sequence-view | 4 | 1 | 100.0% | 0.229 | 0.207 | 0.250 | 0.000 | -12.8 | -6.0 | 0 |
+| customize-view | 5 | 1 | 80.0% | 0.430 | 2.660 | -1.400 | 0.000 | 15.4 | -11.0 | 0 |
+| design-view | 4 | 1 | 100.0% | 0.562 | 0.328 | -0.750 | 0.000 | -59.8 | -8.0 | 0 |
+| document-decision | 3 | 1 | 100.0% | 0.261 | 0.183 | -1.667 | - | 67.3 | 0.0 | 0 |
+| implement-pattern | 4 | 1 | 100.0% | 0.312 | 1.575 | 0.500 | -1.000 | 48.5 | -4.0 | 0 |
+| lookup-element-kinds | 5 | 1 | 60.0% | 0.000 | 0.008 | -3.800 | - | -9.4 | -6.0 | 0 |
+| model-deployment-infrastructure | 5 | 1 | 80.0% | 0.280 | 0.178 | -23.800 | - | 3.8 | -1.0 | 0 |
+| name-deployment-nodes | 3 | 1 | 100.0% | 0.917 | 0.653 | 0.667 | - | -19.7 | -4.0 | 0 |
+| organize-multi-project | 4 | 1 | 100.0% | 0.250 | 0.100 | 1.250 | - | -18.8 | -3.0 | 0 |
+| structure-deployment-tiers | 3 | 1 | 100.0% | 0.193 | 0.123 | 0.000 | - | -12.0 | -2.0 | 0 |
+| sync-with-template | 5 | 1 | 100.0% | 0.250 | 1.880 | -2.400 | - | 2.8 | -5.0 | 0 |
+| test-model | 3 | 1 | 100.0% | 0.777 | 0.293 | 0.000 | - | 38.0 | -10.0 | 0 |
+| troubleshoot-errors | 4 | 1 | 100.0% | 0.165 | 0.090 | 1.000 | - | 34.8 | -6.0 | 0 |
+| understand-project-structure | 6 | 1 | 100.0% | 0.475 | 1.817 | 0.667 | - | -26.0 | -2.0 | 0 |
+| write-rich-descriptions | 3 | 1 | 100.0% | 0.583 | 3.467 | -1.333 | - | -17.0 | -5.0 | 0 |
 
 ## Per-skill detailed comparison
 
-| Skill | Exp pass with | Exp pass without | Rubric with | Rubric without | Sec/eval with | Sec/eval without | Words/eval with | Words/eval without | Files read with | Files read without |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| c4-modeling-process | 1 | 0.917 | 4.755 | 4.530 | 0.833 | 1.667 | 71.5 | 96.7 | 2 | 15 |
-| configure-project-includes | 1 | 0.800 | 4.812 | 4.225 | 0.167 | 0.167 | 83.2 | 81.7 | 3 | 12 |
-| create-element | 1 | 0.700 | 4.936 | 3.804 | 2.000 | 6.000 | 73.0 | 39.0 | 5 | 9 |
-| create-relationship | 1.000 | 0.920 | 9.840 | 8.920 | 2.000 | 6.000 | 97.4 | 56.8 | 8 | 10 |
-| create-sequence-view | 1.000 | 0.771 | 0.968 | 0.760 | 1.500 | 1.250 | 97.0 | 109.8 | 2 | 8 |
-| customize-view | 0.960 | 0.530 | 8.800 | 6.140 | 0.600 | 2.000 | 37.0 | 21.6 | 4 | 15 |
-| design-view | 1.000 | 0.438 | 0.965 | 0.637 | 1.250 | 2.000 | 109.5 | 169.2 | 5 | 13 |
-| document-decision | 1.000 | 0.739 | 0.960 | 0.777 | 1.667 | 3.333 | 225.7 | 158.3 | 2 | 2 |
-| implement-pattern | 1.000 | 0.688 | 9.700 | 8.125 | 2.000 | 1.500 | 149.0 | 100.5 | 7 | 11 |
-| lookup-element-kinds | 1.000 | 1.000 | 0.962 | 0.954 | 0.200 | 4.000 | 95.6 | 105.0 | 10 | 16 |
-| model-deployment-infrastructure | 1.000 | 0.720 | 0.972 | 0.794 | 0.200 | 24.000 | 125.0 | 121.2 | 3 | 4 |
-| name-deployment-nodes | 1.000 | 0.083 | 0.980 | 0.327 | 0.667 | 0.000 | 73.7 | 93.3 | 2 | 6 |
-| organize-multi-project | 1.000 | 0.750 | 0.968 | 0.868 | 3.000 | 1.750 | 80.0 | 98.8 | 6 | 9 |
-| structure-deployment-tiers | 1.000 | 0.807 | 0.970 | 0.847 | 2.333 | 2.333 | 103.3 | 115.3 | 2 | 4 |
-| sync-with-template | 1.000 | 0.750 | 9.660 | 7.780 | 1.000 | 3.400 | 129.8 | 127.0 | 2 | 7 |
-| test-model | 1.000 | 0.223 | 0.953 | 0.660 | 0.333 | 0.333 | 195.0 | 157.0 | 4 | 14 |
-| troubleshoot-errors | 1.000 | 0.835 | 0.965 | 0.875 | 3.000 | 2.000 | 157.2 | 122.5 | 6 | 12 |
-| understand-project-structure | 1.000 | 0.525 | 4.900 | 3.083 | 0.833 | 0.167 | 171.2 | 197.2 | 14 | 16 |
-| write-rich-descriptions | 1.000 | 0.417 | 9.667 | 6.200 | 0.333 | 1.667 | 111.7 | 128.7 | 2 | 7 |
+| Skill | Runs | Exp pass with | Exp pass without | Rubric with | Rubric without | Sec/eval with | Sec/eval without | Exec with | Exec without | Words/eval with | Words/eval without | Files read with | Files read without |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| c4-modeling-process | 1 | 1 | 0.917 | 4.755 | 4.530 | 0.833 | 1.667 | - | 1.000 | 71.5 | 96.7 | 2 | 15 |
+| configure-project-includes | 1 | 1 | 0.800 | 4.812 | 4.225 | 0.167 | 0.167 | - | - | 83.2 | 81.7 | 3 | 12 |
+| create-element | 1 | 1 | 0.700 | 4.936 | 3.804 | 2.000 | 6.000 | 0.000 | 1.000 | 73.0 | 39.0 | 5 | 9 |
+| create-relationship | 1 | 1.000 | 0.920 | 9.840 | 8.920 | 2.000 | 6.000 | 0.000 | 0.000 | 97.4 | 56.8 | 8 | 10 |
+| create-sequence-view | 1 | 1.000 | 0.771 | 0.968 | 0.760 | 1.500 | 1.250 | 0.000 | 0.000 | 97.0 | 109.8 | 2 | 8 |
+| customize-view | 1 | 0.960 | 0.530 | 8.800 | 6.140 | 0.600 | 2.000 | 0.000 | 0.000 | 37.0 | 21.6 | 4 | 15 |
+| design-view | 1 | 1.000 | 0.438 | 0.965 | 0.637 | 1.250 | 2.000 | 0.000 | 0.000 | 109.5 | 169.2 | 5 | 13 |
+| document-decision | 1 | 1.000 | 0.739 | 0.960 | 0.777 | 1.667 | 3.333 | - | - | 225.7 | 158.3 | 2 | 2 |
+| implement-pattern | 1 | 1.000 | 0.688 | 9.700 | 8.125 | 2.000 | 1.500 | 0.000 | 1.000 | 149.0 | 100.5 | 7 | 11 |
+| lookup-element-kinds | 1 | 1.000 | 1.000 | 0.962 | 0.954 | 0.200 | 4.000 | - | - | 95.6 | 105.0 | 10 | 16 |
+| model-deployment-infrastructure | 1 | 1.000 | 0.720 | 0.972 | 0.794 | 0.200 | 24.000 | - | 0.000 | 125.0 | 121.2 | 3 | 4 |
+| name-deployment-nodes | 1 | 1.000 | 0.083 | 0.980 | 0.327 | 0.667 | 0.000 | - | - | 73.7 | 93.3 | 2 | 6 |
+| organize-multi-project | 1 | 1.000 | 0.750 | 0.968 | 0.868 | 3.000 | 1.750 | - | - | 80.0 | 98.8 | 6 | 9 |
+| structure-deployment-tiers | 1 | 1.000 | 0.807 | 0.970 | 0.847 | 2.333 | 2.333 | - | - | 103.3 | 115.3 | 2 | 4 |
+| sync-with-template | 1 | 1.000 | 0.750 | 9.660 | 7.780 | 1.000 | 3.400 | - | - | 129.8 | 127.0 | 2 | 7 |
+| test-model | 1 | 1.000 | 0.223 | 0.953 | 0.660 | 0.333 | 0.333 | - | - | 195.0 | 157.0 | 4 | 14 |
+| troubleshoot-errors | 1 | 1.000 | 0.835 | 0.965 | 0.875 | 3.000 | 2.000 | 1.000 | - | 157.2 | 122.5 | 6 | 12 |
+| understand-project-structure | 1 | 1.000 | 0.525 | 4.900 | 3.083 | 0.833 | 0.167 | - | - | 171.2 | 197.2 | 14 | 16 |
+| write-rich-descriptions | 1 | 1.000 | 0.417 | 9.667 | 6.200 | 0.333 | 1.667 | - | - | 111.7 | 128.7 | 2 | 7 |
+
+## High-variance evals
+
+No high-variance evals were flagged.
 
 ## Previous-iteration comparison
 

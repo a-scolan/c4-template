@@ -1,0 +1,32 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I need to document production deployment for a document platform with an API gateway, an upload service, a processing worker, and MongoDB. Give me the LikeC4 structure to follow for environments, zones, VMs, and Node_App. Also explain how to link deployed apps to the logical model and whether deployment relationships must be copied manually.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I mainly want to split production into `Dmz`, `AppTier`, `ProcTier`, and `DataTier`, with firewall rules between zones. Should this skill detail that itself, or should I switch to another skill?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I’m deploying on managed Kubernetes in production and I don’t have access to underlying VM details. How do I keep an honest deployment hierarchy in LikeC4 without inventing physical hosts? And how do I wire `instanceOf`?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "In `deployment.c4`, I was about to add `Prod.Web.webApp -[https]-> Prod.App.apiApp` and `Prod.App.apiApp -[tcp]-> Prod.Data.dbApp` so the diagram shows protocols and ports. Is that the right place, or should those technologies live somewhere else?",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Prometheus scrapes my production API VM, but browser/API traffic already exists in the logical model. Which deployment relationships should I add, and which ones should I avoid duplicating?",
+      "files": []
+    }
+  ]
+}

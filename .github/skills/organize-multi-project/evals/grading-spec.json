@@ -1,0 +1,51 @@
+{
+  "skill_name": "organize-multi-project",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "The response starts from a minimal project baseline, creates a self-contained project with local config, and keeps reusable specs in the shared area.",
+      "files": [],
+      "expectations": [
+        "The response starts from a minimal baseline rather than treating an example project as the canonical source.",
+        "The response creates one `likec4.config.json` per project with `include.paths: [\"../shared\"]`.",
+        "The response keeps a minimal split like `system-model.c4` + `system-views.c4`.",
+        "The response keeps the shared area for reusable specs, not project-specific models."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "The response rejects putting project-specific models in the shared area and proposes explicit, minimal, non-circular cross-references.",
+      "files": [],
+      "expectations": [
+        "The response says the shared area should contain only reusable definitions, not project-specific models.",
+        "The response proposes keeping `paymentsCore` / `backOfficeUser` in the owning project, or modeling a truly shared external separately.",
+        "The response mentions an explicit/minimal cross-reference strategy (shared external systems or an `externals` project).",
+        "The response avoids circular dependencies between projects."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response keeps multi-project structure here, but delegates config details to `configure-project-includes`.",
+      "files": [],
+      "expectations": [
+        "The response covers multi-project structure / bootstrap through this skill.",
+        "The response delegates `include.paths` / `imageAliases` details to `configure-project-includes`.",
+        "The response reminds that each project has its own `likec4.config.json`.",
+        "The response keeps using relative paths to `../shared`."
+      ]
+    },
+    {
+      "id": 3,
+      "expected_output": "The response clearly separates shared specs from reusable business models, with a simple structure and no circular dependencies.",
+      "files": [],
+      "expectations": [
+        "The response keeps the shared area for truly reusable specs, conventions, and assets.",
+        "The response avoids placing project-specific business models in the shared area.",
+        "The response proposes a simple structure for reusable domain models, without circular dependencies between projects.",
+        "The response delegates include/config details to `configure-project-includes` when needed."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

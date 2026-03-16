@@ -1,0 +1,1 @@
+The exact firewall deployment kind is Infra_Fw. Infra_Firewall is not declared. Two nearby valid deployment infrastructure kinds in the same shared taxonomy are Infra_F5 and Infra_Router. You can verify all three by checking the deploymentNode declarations in projects/shared/spec-deployment.c4.

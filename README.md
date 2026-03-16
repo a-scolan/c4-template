@@ -75,7 +75,7 @@ The benchmark is designed to answer three questions:
 2. **What extra cost does it introduce?**
 3. **Can the comparison be trusted?**
 
-Quality is measured through eval expectations and blind A/B comparison. Cost is tracked through run metrics and suite summaries. Trust comes from strict isolation rules for the baseline, targeted skill access for the `with_skill` phase, and validation of the generated artefacts.
+Quality is measured through hidden grading expectations, blind A/B comparison, and automated LikeC4 snippet checks. Cost is tracked through run metrics and suite summaries. Trust comes from strict isolation rules for the baseline, prompt-only `evals-public.json` access for the `with_skill` phase, hidden `grading-spec.json` access for blind comparison only, a frozen protocol manifest per iteration, tightly limited shared-spec access outside the locked skill, and validation of the generated artefacts.
 
 ### What to use
 
@@ -88,29 +88,36 @@ Quality is measured through eval expectations and blind A/B comparison. Cost is 
 
 Before running a benchmark:
 
-- Enable `chat.useCustomAgentHooks = true` in VS Code.
+- Keep the workspace setting in `.vscode/settings.json` so `chat.useCustomAgentHooks = true` is enabled by default.
 - Use the **strict relocated baseline** by default.
+- Run independent workers in parallel by default inside each phase, with a hard barrier between phases.
 - Keep all benchmark artefacts under `test/iteration-N/`.
 - Keep reports anonymous and repository-relative.
+
+Before the first scored worker of a campaign, run one tiny live probe with the actual benchmark worker agent and confirm that a forbidden file such as `README.md` or a prior-iteration artefact is really blocked. Offline policy tests are necessary, but they are not sufficient on their own.
 
 The hook-only baseline worker exists only for explicit isolation probes. It is useful diagnostically, but it is **not** the default trust boundary for published benchmark results.
 
 ### Recommended workflow
 
 1. Create or select an iteration folder such as `test/iteration-3/`.
-2. Run the offline sanity check:
+2. Ensure every target skill already exposes split eval artifacts (`evals-public.json` and `grading-spec.json`) and lock the active protocol before scored runs:
+	- `python test/scripts/skill_suite_tools.py write-protocol-manifest --workspace-root .`
+	- `python test/scripts/skill_suite_tools.py protocol-preflight --iteration test/iteration-N --workspace-root .`
+3. Run the offline sanity check:
 	- `python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-N --workspace-root .`
-3. Run the full `without_skill` batch **first**, after physically relocating workspace skills out of `.github/skills/`.
-4. Restore the skill directories to `.github/skills/`.
-5. Run the `with_skill` batch in fresh workers created after restoration.
-6. Produce blinded `A.md` / `B.md` artefacts and evaluate them with the blind comparator.
-7. Write, normalise, and validate run metrics before aggregation:
+4. Run the full `without_skill` batch **first**, after physically relocating workspace skills out of `.github/skills/`, and parallelize across independent skill workers.
+5. Restore the skill directories to `.github/skills/`.
+6. Run the `with_skill` batch in fresh workers created after restoration, parallelized across independent skill workers. Prefer `n >= 3` runs per `<skill, configuration>` when you want publishable claims.
+7. Produce blinded `A.md` / `B.md` artefacts and evaluate them with the blind comparator.
+8. Write, normalise, and validate run metrics before aggregation:
 	- `python test/scripts/skill_suite_tools.py materialize-run --iteration test/iteration-N --skill <name> --configuration with_skill --raw-json test/iteration-N/_meta/<name>-with_skill.json`
 	- `python test/scripts/skill_suite_tools.py materialize-comparisons --iteration test/iteration-N --skill <name> --raw-json test/iteration-N/_meta/<name>-blind.json`
 	- `python test/scripts/skill_suite_tools.py write-run-metrics ...`
 	- `python test/scripts/skill_suite_tools.py normalize-metrics --iteration test/iteration-N`
 	- `python test/scripts/skill_suite_tools.py validate-metrics --iteration test/iteration-N`
-8. Aggregate per-skill and suite-level outputs.
+	- `python test/scripts/skill_suite_tools.py validate-executable-checks --iteration test/iteration-N --workspace-root .`
+	9. Aggregate per-skill and suite-level outputs.
 
 If you intentionally run a hook-only baseline probe, keep its results separate from the strict relocated baseline.
 
@@ -129,9 +136,10 @@ All of them rely on the shared hook engine in `.github/agents/scripts/enforce-te
 In practice, the benchmark works like this:
 
 - the **manager** may delegate only to constrained benchmark workers;
-- the **baseline** worker must operate with `.github/skills/` emptied beforehand;
-- the **with-skill** worker is locked to one target skill per session;
-- the **blind comparator** may read only blinded artefacts plus the target `evals.json` entry.
+- the **baseline** worker must operate with `.github/skills/` emptied beforehand and may read only shared specification examples under `projects/shared/`;
+- the **with-skill** worker is locked to one target skill per session, reads prompts only from `evals/evals-public.json`, and may otherwise read only shared specification examples under `projects/shared/`;
+- the **blind comparator** may read only blinded artefacts plus the target `evals/grading-spec.json` entry;
+- the **manager** freezes the active protocol version into `test/iteration-N/_meta/protocol-lock.json` before scored runs.
 
 The bundled workspace skill `.github/skills/skill-creator/` is used as a methodological support skill for review/export tooling, but it is **not** the enforcement boundary. The enforcement boundary is provided by the repo custom agents and their hooks.
 
@@ -142,10 +150,15 @@ The benchmark is only meaningful if these constraints hold:
 - No MCP tools are used by benchmark agents.
 - No unconstrained subagent chaining is allowed.
 - The full `without_skill` batch is executed before any `with_skill` run.
+- Parallelism is intra-phase only: workers may run concurrently inside one phase, but `without_skill` and `with_skill` phases must never overlap.
 - `with_skill` runs happen only after skill restoration and in fresh sessions.
+- Benchmark workers do not read `README.md` or project-local examples such as `projects/template/` or `projects/spec-showcase/`; outside the target skill, repository reads are limited to `projects/shared/` as specification examples only.
+- `with_skill` workers do not read hidden grading artefacts such as `grading-spec.json`; they read only `evals-public.json` for prompts.
 - Benchmark workers do not read prior iteration artefacts under `test/`, except for the dedicated blind comparator reading `blind/A.md` and `blind/B.md`.
 - The relocated backup under `test/iteration-N/_disabled-skills/` is never worker-readable.
-- Blind comparison must stay blind to `blind-map.json`, raw `with_skill` outputs, raw `without_skill` outputs, summaries, metrics, and every `SKILL.md` file.
+- Blind comparison must stay blind to `blind-map.json`, raw `with_skill` outputs, raw `without_skill` outputs, summaries, metrics, and every `SKILL.md` file; it reads hidden grading data only from `grading-spec.json`.
+- The protocol manifest and iteration lock must validate before a scored campaign starts.
+- Repeated runs should be used for publishable comparisons so the suite can report variance, not just directionality.
 - Metrics must be validated before suite aggregation.
 
 If a baseline run can still see workspace skills, or if a blind-comparison worker can see non-blind artefacts, the run should be treated as contaminated and rerun.
@@ -159,7 +172,9 @@ Canonical benchmark outputs live under `test/iteration-N/` and include:
 - `with_skill-summary.json` / `without_skill-summary.json`;
 - `with_skill-run-metrics.json` / `without_skill-run-metrics.json`;
 - `blind-comparisons.json`;
+- `with_skill-executable-checks.json` / `without_skill-executable-checks.json`;
 - `_meta/metric-validation.json` and, when needed, `_meta/metric-normalization.json`;
+- `_meta/protocol-lock.json` and `_meta/executable-checks-summary.json`;
 - suite-level summaries such as `suite-summary.json` and `suite-summary.md`.
 
 The support skill `.github/skills/skill-creator/` is intentionally versioned because the review/export workflow depends on it.

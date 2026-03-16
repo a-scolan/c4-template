@@ -1,0 +1,1 @@
+Use Container_Api under the existing system; do not invent a custom kind. Inside your system block declare ingestionApi as Container_Api named File Ingestion API with a technology such as Node.js and Fastify and a description that it receives uploaded files and starts the ingestion workflow.

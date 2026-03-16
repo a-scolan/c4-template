@@ -1,0 +1,1 @@
+The exact deployment infrastructure kind for a firewall is Infra_Fw. Reject Infra_Firewall because it is not the declared identifier here. Two nearby valid kinds in this workspace are Infra_F5 and Infra_Router.

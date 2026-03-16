@@ -1,0 +1,38 @@
+{
+  "skill_name": "structure-deployment-tiers",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "A response organized into DMZ/AppTier/ProcTier/DataTier (with optional SecZone/InfraZone), with correct role placement and essential network rules.",
+      "files": [],
+      "expectations": [
+        "The response organizes infrastructure into `Dmz`, `AppTier`, `ProcTier`, `DataTier`, with optional `SecZone` or `InfraZone` when useful.",
+        "The response places queue/workers in `ProcTier` and persistent stores (`MongoDB`, `MinIO`) in `DataTier`.",
+        "The response documents inter-tier network/firewall rules and avoids exposing `DataTier` to the Internet."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "The response keeps this skill focused on tier responsibilities and delegates detailed infrastructure to `model-deployment-infrastructure`, with optional mention of `name-deployment-nodes` for naming.",
+      "files": [],
+      "expectations": [
+        "The response delegates names, detailed hierarchy, Markdown descriptions, and `instanceOf` to `model-deployment-infrastructure`.",
+        "The response keeps this skill focused on tier responsibilities, isolation, and firewall rules.",
+        "The response may mention `name-deployment-nodes` as complementary help for naming details, without losing the main handoff."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response keeps main tiers readable, handles cross-cutting additions explicitly, and clearly separates the recovery site.",
+      "files": [],
+      "expectations": [
+        "The response keeps primary tiers readable (`Dmz`, `AppTier`, `DataTier`, and `ProcTier` when useful).",
+        "The response treats audit/security zone as an explicit complement, not a fuzzy replacement for a main tier.",
+        "The response models disaster recovery as a distinctly identified environment or tier set.",
+        "The response delegates VM/`Node_App`/`instanceOf` details to `model-deployment-infrastructure`."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

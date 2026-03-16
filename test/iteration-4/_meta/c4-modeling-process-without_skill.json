@@ -1,0 +1,40 @@
+{
+  "skill_name": "c4-modeling-process",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/spec-global.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Follow the structural levels in order. 1) Start with C1 context: identify actors, your SaaS product as a system, and external systems, then add the high-level relationships. 2) Move to C2 containers: decompose your system into containers such as web app, API, database, queue, and storage, and model their relationships. 3) Add C3 components only for containers whose internal building blocks matter. 4) Add deployment only when you need runtime or infrastructure topology. The usual backbone is C1 then C2; C3 is optional, deployment is optional, and sequence/scenario-style views are optional and should be added only when you need time-ordered behavior."
+    },
+    {
+      "id": 1,
+      "response": "No, not automatically. The decision rule is: create C3 only if the API container has meaningful internal components whose responsibilities and interactions are important to understand, review, or change. If the API is simple and the C2 already explains it well enough, stop at C2. In this repository, C3 is the component level for internal building blocks, so use it only when that extra internal structure adds real value."
+    },
+    {
+      "id": 2,
+      "response": "No. A C1 diagram is for actors and systems, not for time-ordered steps, and a webapp plus an API are containers rather than C1 systems. If you want the structure, show user-to-system at C1 and webapp-to-API at C2. If you want temporal arrows for a user journey, put that in a separate sequence/scenario diagram, because time and order are behavioral concerns while C1, C2, and C3 are structural."
+    },
+    {
+      "id": 3,
+      "response": "Approach it in this order: 1) orient yourself in the workspace and shared specifications; 2) find the target system boundary and confirm the existing C1 context; 3) identify the containers inside that system and the external dependencies they use; 4) model or refine the container relationships; 5) build the new C2 view with only the needed scope; 6) adjust layout or filtering if needed. The complementary capabilities to call are: workspace-structure discovery, shared-spec/include review, element lookup, relationship lookup, and view design/customization."
+    },
+    {
+      "id": 4,
+      "response": "It should rely on other specialized capabilities rather than trying to detail everything itself. Once C2 exists, this process should branch by concern: use a deployment or infrastructure modeling capability for production topology, and use a sequence or scenario capability for the nominal user journey. In short, this process defines the order and handoff points; the detailed production and behavioral work belongs in focused follow-on capabilities."
+    },
+    {
+      "id": 5,
+      "response": "Do it in this order, without skipping: 1) re-orient on the multi-project workspace and identify which project owns the target model; 2) review the changed shared specifications first, because they define the valid kinds, tags, and relationship vocabulary; 3) confirm the existing system and C2 still fit those shared definitions; 4) decompose the target container into components; 5) create the sensitive C3 view with the minimum necessary scope and filtering; 6) only after the structural C3 is stable, document the nominal user scenario in a separate sequence/scenario diagram; 7) finish with a cross-project consistency and sensitivity check. The follow-on capabilities are: workspace discovery, shared-spec/config review, component-view design/customization, and sequence/scenario modeling."
+    }
+  ]
+}

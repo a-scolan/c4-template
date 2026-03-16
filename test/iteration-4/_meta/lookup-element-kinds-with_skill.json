@@ -1,0 +1,38 @@
+{
+  "skill_name": "lookup-element-kinds",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/lookup-element-kinds/SKILL.md",
+    ".github/skills/lookup-element-kinds/evals/evals-public.json",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/spec-code.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-global.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Container_Api is the exact declared backend or API container kind in this workspace. Reject Container_API because it is only a lookalike. The base Container kind is valid, but use it only when no more specific declared subtype fits. For logical model relationships, the declared taxonomy is calls, async, reads, writes, and uses. Toward a database, the most specific choices are usually reads and writes."
+    },
+    {
+      "id": 1,
+      "response": "Between an app VM and a database VM in deployment, calls is not valid because it belongs to the logical model taxonomy. Use sql when the edge represents database access; use tcp only when you intentionally want a generic transport-level deployment link. In the logical application model, deployment kinds such as tcp and sql are not valid; the valid logical kinds are calls, async, reads, writes, and uses."
+    },
+    {
+      "id": 2,
+      "response": "The exact deployment infrastructure kind for a firewall is Infra_Fw. Reject Infra_Firewall because it is not the declared identifier here. Two nearby valid kinds in this workspace are Infra_F5 and Infra_Router."
+    },
+    {
+      "id": 3,
+      "response": "For an HTTP API, the exact container kind is Container_Api. For a message queue, it is Container_Queue. For an async worker, do not guess Container_Worker because it is not declared; the closest worker-like subtype is Container_ProcessingServer, and if that still does not fit, use the base Container rather than inventing a new kind."
+    },
+    {
+      "id": 4,
+      "response": "For a web application talking to an API in the logical model, use calls, not https. The logical relationship kinds are declared in spec-global, while https is a deployment-side relationship kind. In the logical model, keep the relationship kind as calls and put the protocol in technology, for example HTTPS."
+    }
+  ]
+}

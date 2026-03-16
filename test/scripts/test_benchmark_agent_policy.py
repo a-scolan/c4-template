@@ -26,20 +26,31 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
 
     def create_workspace_fixture(self) -> None:
         (self.workspace_root / "README.md").write_text("# temp workspace\n", encoding="utf-8")
-        blind_dir = self.workspace_root / "test" / "iteration-1" / "create-element" / "eval-0" / "blind"
+        blind_dir_old = self.workspace_root / "test" / "iteration-1" / "create-element" / "eval-0" / "blind"
+        blind_dir_old.mkdir(parents=True, exist_ok=True)
+        (blind_dir_old / "A.md").write_text("blind artifact old\n", encoding="utf-8")
+        (blind_dir_old.parent / "blind-map.json").write_text("{}\n", encoding="utf-8")
+        blind_dir = self.workspace_root / "test" / "iteration-2" / "create-element" / "eval-0" / "blind"
         blind_dir.mkdir(parents=True, exist_ok=True)
-        (blind_dir / "A.md").write_text("blind artifact\n", encoding="utf-8")
+        (blind_dir / "A.md").write_text("blind artifact current\n", encoding="utf-8")
         (blind_dir.parent / "blind-map.json").write_text("{}\n", encoding="utf-8")
+        (blind_dir.parent.parent / "blind-comparisons.json").write_text("{}\n", encoding="utf-8")
         disabled_skill = self.workspace_root / "test" / "iteration-1" / "_disabled-skills" / "create-element"
         disabled_skill.mkdir(parents=True, exist_ok=True)
         (disabled_skill / "SKILL.md").write_text("# disabled create-element\n", encoding="utf-8")
-        (self.workspace_root / "projects").mkdir(parents=True, exist_ok=True)
+        shared_root = self.workspace_root / "projects" / "shared"
+        shared_root.mkdir(parents=True, exist_ok=True)
+        (shared_root / "spec-context.c4").write_text("specification example\n", encoding="utf-8")
+        template_root = self.workspace_root / "projects" / "template"
+        template_root.mkdir(parents=True, exist_ok=True)
+        (template_root / "system-model.c4").write_text("template example\n", encoding="utf-8")
         (self.workspace_root / ".github" / "agents").mkdir(parents=True, exist_ok=True)
 
         create_element_root = self.workspace_root / ".github" / "skills" / "create-element"
         (create_element_root / "evals").mkdir(parents=True, exist_ok=True)
         (create_element_root / "SKILL.md").write_text("# create-element\n", encoding="utf-8")
-        (create_element_root / "evals" / "evals.json").write_text("{}\n", encoding="utf-8")
+        (create_element_root / "evals" / "evals-public.json").write_text("{}\n", encoding="utf-8")
+        (create_element_root / "evals" / "grading-spec.json").write_text("{}\n", encoding="utf-8")
 
         create_relationship_root = self.workspace_root / ".github" / "skills" / "create-relationship"
         create_relationship_root.mkdir(parents=True, exist_ok=True)
@@ -66,15 +77,18 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         tool_name: str,
         tool_input: dict[str, Any],
         timestamp: str = "2026-03-12T12:00:00Z",
+        include_hook_event_name: bool = True,
     ) -> dict[str, Any]:
-        return {
+        payload = {
             "timestamp": timestamp,
             "cwd": self.workspace_root.as_posix(),
             "sessionId": session_id,
-            "hookEventName": "PreToolUse",
             "tool_name": tool_name,
             "tool_input": tool_input,
         }
+        if include_hook_event_name:
+            payload["hookEventName"] = "PreToolUse"
+        return payload
 
     def read_payload(
         self,
@@ -120,6 +134,18 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             },
         )
 
+    def mcp_payload(
+        self,
+        session_id: str,
+        tool_name: str,
+        tool_input: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        return self.payload(
+            session_id=session_id,
+            tool_name=tool_name,
+            tool_input=tool_input or {},
+        )
+
     def run_hook_payload(self, payload: dict[str, Any], *, mode: str, extra_env: dict[str, str] | None = None) -> dict[str, Any]:
         env = os.environ.copy()
         env.update(
@@ -146,19 +172,54 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
     def decision(self, output: dict[str, Any]) -> str:
         return output["hookSpecificOutput"]["permissionDecision"]
 
-    def test_baseline_allows_readme_after_relocation(self) -> None:
+    def test_baseline_allows_shared_specs_after_relocation(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.read_payload("baseline-session", "projects/shared/spec-context.c4", end_line=20),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_baseline_denies_readme_after_relocation(self) -> None:
         self.clear_workspace_skills()
         output = self.run_hook_payload(self.read_payload("baseline-session", "README.md", end_line=20), mode="baseline")
-        self.assertEqual(self.decision(output), "allow")
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_denies_readme_when_live_payload_omits_hook_event_name(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.payload(
+                session_id="baseline-live-session",
+                tool_name="read_file",
+                tool_input={
+                    "filePath": (self.workspace_root / "README.md").as_posix(),
+                    "startLine": 1,
+                    "endLine": 20,
+                },
+                include_hook_event_name=False,
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
 
     def test_baseline_denies_when_skills_are_still_present(self) -> None:
         output = self.run_hook_payload(self.read_payload("baseline-session", "README.md", end_line=20), mode="baseline")
         self.assertEqual(self.decision(output), "deny")
         self.assertIn("relocating workspace skills", output["hookSpecificOutput"]["permissionDecisionReason"])
 
-    def test_baseline_hook_only_allows_readme_without_relocation(self) -> None:
-        output = self.run_hook_payload(self.read_payload("baseline-session", "README.md", end_line=20), mode="baseline_hook_only")
+    def test_baseline_hook_only_allows_shared_specs_without_relocation(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload("baseline-session", "projects/shared/spec-context.c4", end_line=20),
+            mode="baseline_hook_only",
+        )
         self.assertEqual(self.decision(output), "allow")
+
+    def test_baseline_hook_only_denies_readme(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload("baseline-session", "README.md", end_line=20),
+            mode="baseline_hook_only",
+        )
+        self.assertEqual(self.decision(output), "deny")
 
     def test_baseline_hook_only_denies_skill_reads(self) -> None:
         output = self.run_hook_payload(
@@ -169,7 +230,7 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
 
     def test_baseline_denies_test_artifacts(self) -> None:
         output = self.run_hook_payload(
-            self.read_payload("baseline-session", "test/iteration-1/create-element/eval-0/blind/A.md", end_line=20),
+            self.read_payload("baseline-session", "test/iteration-2/create-element/eval-0/blind/A.md", end_line=20),
             mode="baseline",
         )
         self.assertEqual(self.decision(output), "deny")
@@ -177,6 +238,14 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
     def test_baseline_denies_disabled_skill_backup(self) -> None:
         output = self.run_hook_payload(
             self.read_payload("baseline-session", "test/iteration-1/_disabled-skills/create-element/SKILL.md", end_line=20),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_denies_nonshared_project_examples(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.read_payload("baseline-session", "projects/template/system-model.c4", end_line=20),
             mode="baseline",
         )
         self.assertEqual(self.decision(output), "deny")
@@ -221,6 +290,96 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(output), "deny")
 
+    def test_manager_denies_likec4_mcp_tools(self) -> None:
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "manager-session-likec4",
+                "mcp_likec4_read-project-summary",
+                {"project": "template"},
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_allows_likec4_mcp_tools_after_relocation(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "baseline-mcp-session",
+                "mcp_likec4_read-project-summary",
+                {"project": "template"},
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_baseline_allows_additional_likec4_mcp_tools_after_relocation(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "baseline-mcp-extra-session",
+                "mcp_likec4_element-diff",
+                {"element1Id": "shop.frontend", "element2Id": "shop.backend"},
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_baseline_denies_non_likec4_mcp_tools(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "baseline-context7-session",
+                "mcp_context7_query-docs",
+                {"libraryId": "/likec4/likec4", "query": "views"},
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_hook_only_allows_likec4_mcp_tools(self) -> None:
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "baseline-hook-mcp-session",
+                "mcp_likec4_list-projects",
+            ),
+            mode="baseline_hook_only",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_with_skill_allows_likec4_mcp_tools(self) -> None:
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "with-skill-mcp-session",
+                "mcp_likec4_search-element",
+                {"search": "corePlatform"},
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_with_skill_denies_non_likec4_mcp_tools(self) -> None:
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "with-skill-context7-session",
+                "mcp_context7_query-docs",
+                {"libraryId": "/likec4/likec4", "query": "views"},
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_blind_comparator_denies_likec4_mcp_tools(self) -> None:
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "blind-likec4-session",
+                "mcp_likec4_read-project-summary",
+                {"project": "template"},
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
     def test_with_skill_locks_first_skill_directory(self) -> None:
         first = self.run_hook_payload(
             self.read_payload("with-skill-session", ".github/skills/create-element/SKILL.md", end_line=80),
@@ -239,30 +398,105 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(second), "deny")
 
+    def test_with_skill_allows_shared_specs_but_denies_nonshared_projects(self) -> None:
+        shared = self.run_hook_payload(
+            self.read_payload("with-skill-shared-session", "projects/shared/spec-context.c4", end_line=40),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(shared), "allow")
+
+        denied = self.run_hook_payload(
+            self.read_payload(
+                "with-skill-shared-session",
+                "projects/template/system-model.c4",
+                end_line=40,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(denied), "deny")
+
+    def test_with_skill_denies_test_artifacts_even_for_locked_skill(self) -> None:
+        first = self.run_hook_payload(
+            self.read_payload("with-skill-test-session", ".github/skills/create-element/SKILL.md", end_line=80),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(first), "allow")
+
+        denied = self.run_hook_payload(
+            self.read_payload(
+                "with-skill-test-session",
+                "test/iteration-2/create-element/eval-0/blind/A.md",
+                end_line=40,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(denied), "deny")
+
+    def test_with_skill_allows_public_evals_but_denies_hidden_grading(self) -> None:
+        public_evals = self.run_hook_payload(
+            self.read_payload("with-skill-evals-session", ".github/skills/create-element/evals/evals-public.json", end_line=80),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(public_evals), "allow")
+
+        hidden_grading = self.run_hook_payload(
+            self.read_payload(
+                "with-skill-evals-session",
+                ".github/skills/create-element/evals/grading-spec.json",
+                end_line=80,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(hidden_grading), "deny")
+
     def test_blind_comparator_denies_mapping_file(self) -> None:
         output = self.run_hook_payload(
-            self.read_payload("blind-session", "test/iteration-1/create-element/eval-0/blind-map.json", end_line=40),
+            self.read_payload("blind-session", "test/iteration-2/create-element/eval-0/blind-map.json", end_line=40),
             mode="blind_compare",
         )
         self.assertEqual(self.decision(output), "deny")
 
-    def test_blind_comparator_allows_blind_artifacts_and_evals(self) -> None:
+    def test_blind_comparator_allows_blind_artifacts_and_grading_spec(self) -> None:
         blind = self.run_hook_payload(
-            self.read_payload("blind-session-2", "test/iteration-1/create-element/eval-0/blind/A.md", end_line=120),
+            self.read_payload("blind-session-2", "test/iteration-2/create-element/eval-0/blind/A.md", end_line=120),
             mode="blind_compare",
         )
         self.assertEqual(self.decision(blind), "allow")
 
-        evals = self.run_hook_payload(
+        grading = self.run_hook_payload(
             self.read_payload(
                 "blind-session-2",
-                ".github/skills/create-element/evals/evals.json",
+                ".github/skills/create-element/evals/grading-spec.json",
                 end_line=200,
                 timestamp="2026-03-12T12:00:10Z",
             ),
             mode="blind_compare",
         )
-        self.assertEqual(self.decision(evals), "allow")
+        self.assertEqual(self.decision(grading), "allow")
+
+    def test_blind_comparator_denies_public_eval_artifacts(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload("blind-public-session", ".github/skills/create-element/evals/evals-public.json", end_line=40),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_blind_comparator_denies_previous_iteration_blind_artifacts(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload("blind-old-session", "test/iteration-1/create-element/eval-0/blind/A.md", end_line=40),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_blind_comparator_denies_previous_comparison_results(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload("blind-results-session", "test/iteration-2/create-element/blind-comparisons.json", end_line=40),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "deny")
 
     def test_manager_command_allowlist_blocks_shell_escape(self) -> None:
         output = self.run_hook_payload(

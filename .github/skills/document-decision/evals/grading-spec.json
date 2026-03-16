@@ -1,0 +1,40 @@
+{
+  "skill_name": "document-decision",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "A standard ADR framework for a technology choice tied to impacted LikeC4 elements, with explicit trade-offs and follow-up consequences.",
+      "files": [],
+      "expectations": [
+        "The response uses the standard ADR structure `Status / Context / Decision / Consequences`.",
+        "The response covers both positive and negative consequences, not just benefits.",
+        "The response proposes a path/file in `ADR/NNNN-...` format.",
+        "The response links the decision to the impacted database element and at least one other affected scope such as the calling service, relevant views, or operational follow-up."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "A reasoned refusal to use this skill for a CI/CD change outside architecture scope.",
+      "files": [],
+      "expectations": [
+        "The response explicitly says this skill is not for repo tooling / CI-CD changes.",
+        "The response avoids forcing an out-of-scope ADR.",
+        "The response proposes at least one short alternative (README, ops doc, repo note, etc.)."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response frames an ADR for architectural replacement with explicit trade-offs, impacted elements, and concrete follow-up consequences.",
+      "files": [],
+      "expectations": [
+        "The response uses the ADR structure `Status / Context / Decision / Consequences`.",
+        "The response makes both gains and costs/risks explicit (SaaS dependency, reduced control, etc.).",
+        "The response proposes an ADR file in `ADR/NNNN-...` format.",
+        "The response links the decision to impacted LikeC4 elements such as the removed internal service, the retained internal adapter, and the external provider boundary.",
+        "The response identifies at least one follow-up implication such as migration scope, webhook handling, validation changes, or operational ownership."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

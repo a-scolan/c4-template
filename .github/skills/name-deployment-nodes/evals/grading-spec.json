@@ -1,0 +1,38 @@
+{
+  "skill_name": "name-deployment-nodes",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "A response that strictly applies VM/zone/environment naming patterns and corrects the provided counter-examples.",
+      "files": [],
+      "expectations": [
+        "The response applies VM pattern `{Environment}{Service}Vm` and corrects `ProdApiVM` / `prod_upload_vm` to names like `ProdApigwVm` / `ProdUploadVm`.",
+        "The response distinguishes tier zones (`AppTier`, `ProcTier`, `DataTier`) from functional zones (`SecZone`, `InfraZone`) and corrects `AppServers` / `MonitoringTier`.",
+        "The response keeps PascalCase identifiers with `Vm` suffix, not `VM` and not snake_case."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "The response keeps scope on naming and delegates full modeling to `model-deployment-infrastructure`.",
+      "files": [],
+      "expectations": [
+        "The response says this skill mainly covers naming and delegates full modeling to `model-deployment-infrastructure`.",
+        "The response preserves useful naming patterns as guidance (`{Env}{Service}Vm`, `{Tier}Tier`, or `{Function}Zone`).",
+        "The response does not try to detail full hierarchy, descriptions, and `instanceOf` itself."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response chooses a consistent extension of the base pattern, applies it to VMs and zones, then rejects mixed variants.",
+      "files": [],
+      "expectations": [
+        "The response chooses a consistent extension of existing `{Environment}{Service}Vm`, for example `{Environment}{Region}{Service}Vm`.",
+        "The response applies the same naming logic to corresponding zones or tiers.",
+        "The response rejects inconsistent or mixed variants within the same estate.",
+        "The response keeps scan-friendly PascalCase identifiers with expected suffixes (`Vm`, `Tier`, `Zone`)."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

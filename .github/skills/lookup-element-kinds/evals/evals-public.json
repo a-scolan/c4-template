@@ -1,0 +1,32 @@
+{
+  "skill_name": "lookup-element-kinds",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I’m not sure whether my backend should use `Container_Api`, `Container_API`, or just `Container`, and which model relationships are valid toward a database. Give me the exact taxonomy and how to verify it in the active workspace.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Between an app VM and a database VM in deployment, should I use `calls`, `tcp`, or `sql`? And in the logical application model, what remains valid?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "For a firewall in deployment infrastructure, is the exact kind `Infra_Firewall`, `Infra_Fw`, or something else? Also give two nearby kinds that are truly valid in the active workspace.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I’m looking for exact kinds for an HTTP API, an async worker, and a message queue, but I don’t want to guess. How do you find them in the active workspace, and how do you resolve it when two names look similar?",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "For a web application talking to an API in the logical model, should the relationship kind be `https` or `calls`? And when does `https` become valid in the active workspace?",
+      "files": []
+    }
+  ]
+}

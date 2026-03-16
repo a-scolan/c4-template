@@ -1,0 +1,104 @@
+{
+  "skill_name": "document-decision",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B better fits the ADR-framing task by naming an `ADR/NNNN-...` file and tying the database choice to specific impacted elements and views, while A is clearer to scan but misses the file-path requirement.",
+      "rubric": {
+        "A": {
+          "content_score": 7,
+          "structure_score": 9,
+          "overall_score": 8,
+          "notes": "Clear bullets; missing `ADR/NNNN` path."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Covers path, impacted elements, trade-offs, follow-up."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B gives the more useful refusal by steering CI-only changes away from ADRs and naming concrete alternatives, whereas A is accurate on scope but does not suggest where to document the change instead.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 7,
+          "overall_score": 8,
+          "notes": "Strong scope refusal; no alternative doc target."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Refuses ADR by default and names alternatives."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6666666666666666
+        },
+        "B": {
+          "passed": 3,
+          "total": 3,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B is more complete because it includes the `ADR/NNNN-...` path, names the removed and retained payment elements, and adds concrete follow-up implications; A is strong but misses the file-path requirement.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 9,
+          "overall_score": 8,
+          "notes": "Concrete trade-offs and follow-up; missing path."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Covers path, elements, risks, and follow-up."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

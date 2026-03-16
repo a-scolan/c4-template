@@ -1,0 +1,170 @@
+{
+  "skill_name": "sync-with-template",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B matches the expected split better because it names the exact syncable workspace assets and keeps the local files firmly out of the upstream push. A is solid but more generic and leaves README.md slightly conditional.",
+      "rubric": {
+        "A": {
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Clear reusable-vs-local split, but the .github asset is unnamed and README.md is not kept strictly local."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Most aligned with the expected asset classification and review gate, though project-name removal could be stated more explicitly."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "Both follow the safe sync workflow, but A is more usable because it gives an exact clean-branch, cherry-pick, diff, and push sequence anchored on c4-template/main. B is correct, just more abstract.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
+          "structure_score": 9,
+          "overall_score": 9,
+          "notes": "Concrete, executable workflow from c4-template/main with explicit diff and confidentiality checks before push."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 7,
+          "overall_score": 8,
+          "notes": "Covers the right branch-and-review flow, but without the same operational detail or command-level clarity."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B is the only response that stays on the requested subtree-sync path and explains the value of --squash; A pivots to a different restore-based workflow. B is not perfect because it does not spell out the full commands and is a bit cavalier about pushing main.",
+      "rubric": {
+        "A": {
+          "content_score": 4,
+          "structure_score": 7,
+          "overall_score": 5,
+          "notes": "Good scope control, but it does not provide the expected subtree-pull approach or the requested fetch/pull commands."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 6,
+          "overall_score": 8,
+          "notes": "Much closer to the expected answer because it centers subtree pulls for .github and projects/shared and explains compact history, though it is terse."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 5,
+          "pass_rate": 0.4
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A covers both the genericity/confidentiality audit and the dedicated sync/* flow from c4-template/main, which is the main gap in B. Neither includes a true rollback step, but A otherwise matches the expected safe sync workflow closely.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Strong genericity screen plus clean sync branch workflow and targeted diff review; only rollback guidance is missing."
+        },
+        "B": {
+          "content_score": 7,
+          "structure_score": 7,
+          "overall_score": 7,
+          "notes": "Good audit criteria, but it never advances to the required dedicated branch workflow or fallback plan."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 4,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A handles the polluted sync branch more concretely by rebuilding from c4-template/main, isolating the generic .github change, and preserving a backup/split path if the history is messy. B has the right direction but is less specific about the cleanup and fallback mechanics.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
+          "structure_score": 9,
+          "overall_score": 9,
+          "notes": "Best recovery workflow: identifies contamination, rebuilds from c4-template/main, isolates the upstream-worthy change, and preserves a backup path."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 7,
+          "overall_score": 8,
+          "notes": "Directionally correct cleanup advice, but less explicit about isolating the precise upstream-worthy change and unwinding safely."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        }
+      }
+    }
+  ]
+}

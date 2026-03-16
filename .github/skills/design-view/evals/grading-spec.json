@@ -1,0 +1,49 @@
+{
+  "skill_name": "design-view",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "A structured C2 view in the correct folder with parent, focus, neighbors, and navigation.",
+      "files": [],
+      "expectations": [
+        "The response places the view in `views 'C2'` rather than at root level.",
+        "The response explicitly includes the parent system, focus on its child containers, and neighboring context.",
+        "The response adds a relevant `navigateTo` from the web application element."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "A Deployment view with explicit environment → zones → VMs hierarchy, without wildcards.",
+      "files": [],
+      "expectations": [
+        "The response uses `views 'Deployment'` with a `deployment view`.",
+        "The response explicitly lists environment, zones, and VMs without `*` or `**` wildcards.",
+        "The response keeps parent hierarchy and stops at VM level.",
+        "The response does not require explicit deployment relationships for ordinary application traffic, or it explicitly prefers inherited relationships from the system model."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "A response that separates structure, dynamic behavior, and customization, with correct handoffs.",
+      "files": [],
+      "expectations": [
+        "The response explicitly routes temporal flow work to `create-sequence-view`.",
+        "The response explicitly routes styling work to `customize-view`.",
+        "The response limits `design-view` to framing a companion structural view."
+      ]
+    },
+    {
+      "id": 3,
+      "expected_output": "The response prioritizes a Deployment view first for infrastructure, then adds an extra structural view only if the need is truly distinct.",
+      "files": [],
+      "expectations": [
+        "The response starts with a `Deployment` view for `SecZone` infrastructure.",
+        "The response does not automatically create a detailed C2 view for the zone unless the need is demonstrated.",
+        "The response delegates zone/security-rule organization to `structure-deployment-tiers` when needed.",
+        "The response keeps a clear boundary between structural view design and styling, handing off to `customize-view` only for visual treatment."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

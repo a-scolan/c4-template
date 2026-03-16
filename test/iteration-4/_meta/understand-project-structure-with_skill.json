@@ -1,0 +1,42 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/understand-project-structure/SKILL.md",
+    ".github/skills/understand-project-structure/evals/evals-public.json",
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-deployment.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Preflight: confirm the active project with list-projects, then read-project-summary. Lock taxonomy from the shared cheat sheet and shared spec files: C1 uses Actor and System kinds, C2 uses typed containers such as Container_Api, Container_Queue, and Container_Database, C3 uses Component, model relationships are uses, calls, async, reads, and writes, and common tags include Internal, External, Queue, plus deployment tags like Production and Vm. Then inspect the target project config and nearby model and view files. C1 to C2 to C3 plan: verify the system boundary, add the API container under the right system, then add components only if C3 detail is truly needed."
+    },
+    {
+      "id": 1,
+      "response": "After switching projects, re-run context checks instead of trusting memory: list-projects, read-project-summary, then locate the system or container that owns the C3 view. Re-open the target project config and exact model or view files to confirm include paths, parent hierarchy, and FQNs. Re-validate shared taxonomy from the shared spec files because the same idea may live under a different project boundary. Only edit the C3 view after the parent system or container is confirmed."
+    },
+    {
+      "id": 2,
+      "response": "Diagnosis order: confirm the active project, compare the failing kind or relationship against the shared spec files, verify the project config includes the shared specs, and verify the nearest model or view file is using the correct parent and FQN. Check exact identifiers in the spec files, not example projects or workflow guidance. In this repo, model relationships are uses, calls, async, reads, and writes, while deployment uses http, https, tcp, amqp, ldap, sql, redis, smtp, nfs, and oidc_saml. If the project summary still conflicts after revalidation, stop and report the context as blocked instead of guessing."
+    },
+    {
+      "id": 3,
+      "response": "Once project context is established, hand off to c4-modeling-process to sequence C1 to C2 to C3 work. Before handoff, this first skill must lock in four things: the active project, the shared taxonomy, the project wiring, and the true edit scope. In practice that means confirming the project summary, reading the shared cheat sheet and shared spec files, checking the project config, and locating the model and view files that will change."
+    },
+    {
+      "id": 4,
+      "response": "First learn the local semantic conventions, not UML habits: C1 uses Actor and System kinds, C2 uses typed containers such as Container_Api, Container_Queue, and Container_Database, and C3 uses Component. The real sources of truth are the shared spec files and the shared cheat sheet. Skill files give workflow guidance only, and example projects are references, not taxonomy. Also lock in the core model relationships uses, calls, async, reads, and writes, plus repo tags such as Internal, External, Queue, Production, and Vm. After preflight, hand off to the next task-specific skill, usually c4-modeling-process."
+    },
+    {
+      "id": 5,
+      "response": "No. The spec-showcase view file is a reference pattern, not authoritative taxonomy. Before adding a new queue and API elsewhere, validate the active project, then read the real semantic sources: the shared cheat sheet and especially the shared spec files. Confirm the exact container kinds such as Container_Api and Container_Queue, the valid relationship types such as calls and async, and any required tags from the shared specs and project summary. Then inspect the destination project config and nearby model and view files to confirm include paths, parent system, and FQNs."
+    }
+  ]
+}

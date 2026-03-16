@@ -1,0 +1,70 @@
+{
+  "skill_name": "c4-modeling-process",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "A top-down C1→C2→C3 approach, with Deployment/Dynamic marked as optional.",
+      "files": [],
+      "expectations": [
+        "The response enforces a top-down C1→C2→C3 progression.",
+        "The response explicitly states that Deployment and Dynamic are optional.",
+        "The response avoids a bottom-up, code-first approach."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "The response states that C3 is selective and reserved for complex/critical containers.",
+      "files": [],
+      "expectations": [
+        "The response explicitly says that C3 is not mandatory for every container.",
+        "The response reserves C3 for containers that are complex, critical, or need deeper detail.",
+        "The response keeps the reasoning aligned with C1→C2→C3."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response forbids temporal flows in C1 and redirects them to 'Use Cases' / dynamic views.",
+      "files": [],
+      "expectations": [
+        "The response says C1 views must remain static.",
+        "The response explicitly redirects temporal flows to `views 'Use Cases'` / dynamic views.",
+        "The response explains why (C1 = boundary/context, not temporal flow)."
+      ]
+    },
+    {
+      "id": 3,
+      "expected_output": "The response starts by reloading the valid project structure/context, then follows C1→C2, and delegates detailed creation to specialized skills.",
+      "files": [],
+      "expectations": [
+        "The response starts by establishing or verifying the project structure before editing.",
+        "The response references `understand-project-structure` as a prerequisite or framing step.",
+        "The response keeps a C1→C2 progression instead of jumping straight into details.",
+        "The response delegates detailed creation to specialized skills such as `create-element`, `create-relationship`, or `design-view`."
+      ]
+    },
+    {
+      "id": 4,
+      "expected_output": "The response presents c4-modeling-process as an orchestration framework and routes deployment and flow details to the right skills.",
+      "files": [],
+      "expectations": [
+        "The response presents this skill as a sequencing framework, not a one-skill-does-everything solution.",
+        "The response routes deployment work to `model-deployment-infrastructure`.",
+        "The response routes temporal flows to `create-sequence-view`.",
+        "The response reminds that Deployment and Dynamic come after the C1/C2 core, in an optional or targeted way."
+      ]
+    },
+    {
+      "id": 5,
+      "expected_output": "The response first revalidates project context, keeps the C1→C2→C3 progression, then explicitly delegates user-scenario and validation work to specialized skills.",
+      "files": [],
+      "expectations": [
+        "The response starts by revalidating the active project and shared specs before discussing C3.",
+        "The response keeps the C1→C2→C3 progression instead of jumping straight to the detailed view.",
+        "The response explicitly routes the user scenario to `create-sequence-view`.",
+        "The response routes final model verification to `test-model` once structure changes are complete."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

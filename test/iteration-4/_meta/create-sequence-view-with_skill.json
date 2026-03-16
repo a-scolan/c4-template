@@ -1,0 +1,28 @@
+{
+  "skill_name": "create-sequence-view",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/create-sequence-view/SKILL.md",
+    ".github/skills/create-sequence-view/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Yes, put this under views Use Cases. Model the login journey as a dynamic view with plain arrows in chronological order from user to webApp to api to primaryDatabase and any notification service, then back to the webApp. Critical anti-pattern: do not use typed arrows like calls in a dynamic view; keep plain arrows with short action labels."
+    },
+    {
+      "id": 1,
+      "response": "Do not write a parent container calling its own child component in a dynamic view. That parent-to-own-child interaction is the key anti-pattern. Either call the component directly from the real caller or stay at container level if component detail is not needed."
+    },
+    {
+      "id": 2,
+      "response": "Yes, this belongs in views Use Cases. Model the async processing flow chronologically with plain arrows from the external user to webApp to api to jobQueue to processingWorker to database. Critical anti-pattern: do not invent async arrow syntax in a dynamic view; keep plain arrows and let the labels describe the asynchronous handoff."
+    },
+    {
+      "id": 3,
+      "response": "Keep it in views Use Cases and stay strictly chronological: show the immediate acknowledgment first, then the background validation and one representative retry cycle. If it becomes too busy, split it into two dynamic views under the same folder. Critical anti-pattern: do not try to model every possible retry attempt or use non-sequence branching notation; one retry loop with plain arrows is enough to show the behavior."
+    }
+  ]
+}

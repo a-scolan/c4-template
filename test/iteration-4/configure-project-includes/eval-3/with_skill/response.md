@@ -1,0 +1,1 @@
+This skill is not enough by itself if you are adding a second LikeC4 project and deciding workspace-level structure. Use organize-multi-project for the multi-project boundary and workspace layout decisions, then use configure-project-includes for the new project local likec4.config.json, shared include paths, image aliases, and any small file split inside that project.

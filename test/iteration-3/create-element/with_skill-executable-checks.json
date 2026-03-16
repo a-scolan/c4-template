@@ -1,0 +1,213 @@
+{
+  "iteration": "iteration-3",
+  "skill_name": "create-element",
+  "configuration": "with_skill",
+  "checked_at": "2026-03-13T11:29:01Z",
+  "run_count": 1,
+  "summary": {
+    "applicable_eval_count": 4,
+    "valid_eval_count": 0,
+    "valid_eval_rate": 0.0,
+    "snippet_count_total": 13,
+    "error_count_total": 20,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "fileIngestionApi = Container_Api 'File Ingestion API' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 0,
+      "error_count": 6,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "virusScanProvider = System_External 'Virus Scan Provider' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "scanApi = Container_Api 'Scan API' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 5,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "paymentApi = Container_Api 'Payment API' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}\npaymentApiMock = Container_Api 'Payment API Mock' {",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/with_skill/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 0,
+      "error_count": 6,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "identityProvider = System_External 'Identity Provider' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "portalApi = Container_Api 'Portal API' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-global.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use the deployment hierarchy Environment -> Zone -> Node_Vm -> Node_App. Your logical containers would normally be something like Container_ReverseProxy or Container_Api for the gateway, Container_Api for the upload service, Container_ProcessingServer for the worker, and Container_Database for MongoDB.\n\nExample structure:\ndeployment {\n  Node_Environment Prod Production {\n    #Production\n    Zone Dmz DMZ { #Dmz\n      Node_Vm gatewayVm API Gateway VM {\n        Node_App gatewayApp API Gateway { instanceOf platform.gateway }\n      }\n    }\n    Zone AppTier Application Tier { #AppTier\n      Node_Vm uploadVm Upload VM {\n        Node_App uploadApp Upload Service { instanceOf platform.uploadService }\n      }\n    }\n    Zone ProcTier Processing Tier { #ProcTier\n      Node_Vm workerVm Worker VM {\n        Node_App workerApp Processing Worker { instanceOf platform.processingWorker }\n      }\n    }\n    Zone DataTier Data Tier { #DataTier\n      Node_Vm mongoVm MongoDB VM {\n        Node_App mongoApp MongoDB { instanceOf platform.mongoDb }\n      }\n    }\n  }\n}\n\nLink each deployed app to the logical model with instanceOf. The shared cheat sheet says normal application traffic should usually stay in the system model and be inherited in deployment through instanceOf, so you do not usually copy those relationships manually; add deployment relationships only for infrastructure-specific connections."
+    },
+    {
+      "id": 1,
+      "response": "Keep this in deployment-focused guidance. The shared deployment spec already defines Dmz, AppTier, ProcTier, and DataTier as tier tags, so splitting production that way is in scope. Model each tier as a Zone with the matching tag, place Infra_Fw where the boundary matters, and add only the allowed cross-zone infrastructure links. You only need different guidance if the problem stops being about deployment structure and boundaries."
+    },
+    {
+      "id": 2,
+      "response": "Do not invent VMs. The shared deployment spec includes Node_Cluster and Node_Container, so an honest hierarchy is Node_Environment -> Zone -> Node_Cluster for the managed Kubernetes layer, then deployed workload nodes underneath it.\n\nSafe pattern:\nNode_Environment Prod Production {\n  #Production\n  Zone AppTier Application Tier { #AppTier\n    Node_Cluster k8s Managed Kubernetes Cluster {\n      Node_App apiApp { instanceOf platform.api }\n      Node_App workerApp { instanceOf platform.worker }\n    }\n  }\n}\n\nIf a dependency is a managed external service, model it as Node_SaaS or Node_External instead of a fake VM. For wiring, use instanceOf on the deployed application nodes to point back to the logical containers; that is the repository example pattern. Use Node_Container only if you want extra container-level detail."
+    },
+    {
+      "id": 3,
+      "response": "Usually no. The shared cheat sheet says to put interaction technology on the system-model relationship, and to add a port only when it is non-default for the protocol. It also says deployment relationships are for infrastructure-specific connections, while normal application traffic should usually be inherited in deployment through instanceOf. So webApp -> apiApp and apiApp -> dbApp should normally live in the logical model, using the relationship type that matches the behavior there. For the database side, prefer the logical relationship that expresses the behavior, such as reads or writes, and attach the technology there. Keep deployment.c4 for deployment-only edges like firewall hops, monitoring scrapes, backup mounts, or other infrastructure links."
+    },
+    {
+      "id": 4,
+      "response": "Add the Prometheus scrape as a deployment relationship, because it is infrastructure or observability traffic rather than duplicated business traffic. Model Prometheus as a deployment node and connect it with http or https to the real scrape target: Prometheus -> apiVm if it scrapes VM-level metrics, or Prometheus -> apiApp if it scrapes the application metrics endpoint. Avoid re-adding browser -> API traffic that already exists in the logical model, and avoid duplicating other normal application flows that instanceOf already brings into deployment."
+    }
+  ]
+}

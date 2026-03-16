@@ -1,0 +1,40 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "Prerequisite handoff to creation skills, then selection of the right description format.",
+      "files": [],
+      "expectations": [
+        "The response says the element must be created before writing its description.",
+        "The response routes system-element creation to `create-element`.",
+        "The response routes deployment infrastructure to the proper `model-deployment-infrastructure` skill.",
+        "The response then distinguishes `metadata {}` for system model vs Markdown table for deployment."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "Concrete rules to document a deployment VM with an ops-useful table.",
+      "files": [],
+      "expectations": [
+        "The response requests a Markdown table for the VM.",
+        "The response puts network interfaces (`eth0`, `eth1`) first.",
+        "The response says gateway info belongs more to the zone than to a standard VM.",
+        "The response keeps metadata optional, only when automation requires it."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response proposes a structured VM description, prioritizes operable information, and externalizes overly fine detail when needed.",
+      "files": [],
+      "expectations": [
+        "The response structures the VM description as an ops-useful Markdown table.",
+        "The response places network interfaces first (`eth0`, then `eth1`).",
+        "The response keeps critical information in the description and suggests externalizing overly detailed data when needed.",
+        "The response avoids duplicating in the VM block information that belongs to the zone or separate operations documentation."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

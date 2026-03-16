@@ -1,0 +1,32 @@
+{
+  "skill_name": "customize-view",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I want to improve an existing C2 container view to make flow left-to-right, keep the user as input, keep the database and an external mail service as outputs, and preserve drill-down on the web application. Give me only the LikeC4 block.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "In an existing view, I want to highlight API elements and de-emphasize everything else, but without inventing a local palette. Which LikeC4 customization would you propose?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to enrich an existing C2 view with an external link to internal spec docs and keep a stable drill-down from the web application to its existing detail view. Propose the customization block.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "On an existing C2 container view, I want to highlight API elements, keep a stable drill-down to the web application detail view, and add an external link to internal docs. Which LikeC4 customization block should I use, and where does this skill stop?",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "My C2 view already looks mostly fine. I just want the user to stay clearly on the left, but I do not want a pile of `rank` directives that make the diagram brittle. What customization would you suggest?",
+      "files": []
+    }
+  ]
+}

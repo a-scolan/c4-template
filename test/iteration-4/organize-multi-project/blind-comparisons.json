@@ -1,0 +1,138 @@
+{
+  "schema_version": 2,
+  "skill_name": "organize-multi-project",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B wins because it explicitly starts from a minimal baseline, specifies a per-project `likec4.config.json` using `../shared`, and preserves the minimal `system-model.c4`/`system-views.c4` split, while A leaves the include path implicit.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Good minimal bootstrap and ownership guidance, but the `../shared` include path is implied rather than stated."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 9,
+          "overall_score": 9,
+          "notes": "Directly matches the minimal-baseline bootstrap, per-project config, explicit shared include path, and local ownership."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B wins because it explicitly keeps `paymentsCore` in its owning project, treats `backOfficeUser` as shared only if truly cross-project, makes cross-references explicit and minimal, and warns against circular dependencies.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Correctly keeps shared for reusable definitions and suggests a canonical shared layer, but it does not explicitly address circular dependencies."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "More complete and concrete on ownership, cross-project reuse, and avoiding circular project dependencies."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A wins because it explicitly scopes this skill to multi-project structure and hands `include.paths`/`imageAliases` work to `configure-project-includes`, while B describes a follow-up but never names the required skill or the per-project config pattern.",
+      "rubric": {
+        "A": {
+          "content_score": 7,
+          "structure_score": 9,
+          "overall_score": 8,
+          "notes": "Best aligned on responsibility split between structural organization and config-specific follow-up."
+        },
+        "B": {
+          "content_score": 6,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Useful structural explanation, but it omits the explicit `configure-project-includes` handoff and does not remind about per-project config or `../shared`."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 4,
+          "pass_rate": 0.5
+        },
+        "B": {
+          "passed": 1,
+          "total": 4,
+          "pass_rate": 0.25
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B wins because it more concretely separates `projects/shared` technical conventions from a small common-domain or externals layer and keeps project-owned elements local; both responses miss the explicit `configure-project-includes` handoff.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Strong separation between shared specs, shared domain, and project-local files, but config delegation is missing."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Clearer repository-aligned split with a dedicated common-domain or externals option and strong local ownership guidance."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        }
+      }
+    }
+  ]
+}

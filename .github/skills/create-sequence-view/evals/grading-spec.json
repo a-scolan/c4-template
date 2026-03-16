@@ -1,0 +1,48 @@
+{
+  "skill_name": "create-sequence-view",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "A dynamic view in `views 'Use Cases'`, starting from the initiating actor and using only `->` arrows with action labels.",
+      "files": [],
+      "expectations": [
+        "The response places the sequence in `views 'Use Cases'` with a `dynamic view`.",
+        "The sequence explicitly starts with the `user` actor.",
+        "Interactions use only `->` arrows with action labels, without `-[kind]->`."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "A response that explains the parent→child restriction in dynamic views, then proposes a corrected view where the actor directly targets the component using simple arrows.",
+      "files": [],
+      "expectations": [
+        "The response explicitly explains that a dynamic view should not show `parent -> own-child`.",
+        "The corrected version has the actor target the component directly, instead of keeping `api_container -> api_container.auth_component`.",
+        "The corrected proposal stays in `views 'Use Cases'` with a `dynamic view` and simple `->` arrows."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "A use-case-style dynamic view initiated by `externalUser`, showing queue traversal in temporal order with action labels.",
+      "files": [],
+      "expectations": [
+        "The response creates a view in `views 'Use Cases'` with a `dynamic view`.",
+        "The sequence starts with the initiating actor `externalUser`.",
+        "The `api -> jobQueue -> processingWorker` segment is shown in temporal order with action labels and without relationship kinds."
+      ]
+    },
+    {
+      "id": 3,
+      "expected_output": "The response cleanly separates happy path and retry flow, keeps an explicit initiating actor, and does not introduce model-relationship syntax.",
+      "files": [],
+      "expectations": [
+        "The response explicitly starts the sequence with the initiating actor.",
+        "The response keeps only `->` arrows with action labels.",
+        "The response separates immediate success and async retry into one or more dynamic views, instead of mixing everything implicitly.",
+        "The response explains that a dynamic view should not become a pseudo `if/else` overloaded with full logic."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

@@ -1,0 +1,31 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/spec-global.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Start with the first error, not the second. In `projects/shared/spec-containers.c4` there is no `Container_WebUi`; declared web/container kinds include `Container_Webapp`, `Container_Spa`, `Container_Browser`, and `Container_WebServer`. If your `api` element was declared with `Container_WebUi`, LikeC4 never created that element, so `Element not found: api` is often just a cascade.\n\nProper diagnosis: (1) find the declaration that uses `Container_WebUi`, (2) replace it with a declared kind or define/import a custom kind, (3) parse again, and only then (4) if `api` still fails, verify the alias and scope exactly as declared, including whether the correct reference is `api` or a fuller path such as `system.api`."
+    },
+    {
+      "id": 1,
+      "response": "The real cause is the mixed level, not the `rank same` line by itself. `system.api` is a child container inside `system`, so `system -> system.api` is trying to model containment as if it were a runtime interaction. Then `rank same user, system.api` tries to lay out that child element as a peer in the same dynamic interaction set.\n\nFix it by choosing one abstraction level per dynamic view. At system level, use `user -> system`. At container level, use `user -> system.api` and other container-to-container steps, but do not also use the parent `system` as one end of the interaction. After that, apply `rank same` only to elements you actually keep at that same level."
+    },
+    {
+      "id": 2,
+      "response": "`sends` is definitely wrong in this repository. `projects/shared/spec-global.c4` defines model relationship types `uses`, `calls`, `async`, `reads`, and `writes`, while `projects/shared/spec-deployment.c4` defines deployment types such as `http`, `https`, `tcp`, `amqp`, `sql`, `redis`, and `smtp`; `sends` is in neither list.\n\nSo diagnose this in two passes. First, replace `sends` with the correct declared relationship type for the level you are modeling. Second, validate `dataLayer.cache` as a real alias path. That path only works if `dataLayer` is an actual declared parent alias and `cache` is its child. If `cache` is declared directly, the right reference may be `cache` or a fuller FQN such as `system.cache` instead. In short: the relationship name is definitely wrong, and the FQN may also be wrong."
+    },
+    {
+      "id": 3,
+      "response": "The root cause is abstraction leakage plus duplication. The shared specs separate business/model relationships from deployment/infrastructure relationships: `projects/shared/spec-global.c4` defines business types like `calls`, and `projects/shared/SPEC_CHEATSHEET.md` says to put interaction technology on the system-model relationship; `projects/shared/spec-deployment.c4` reserves `https` and similar types for infrastructure-specific deployment links.\n\nThe clean fix is to model the app interaction once in `model {}` with a business relationship such as `webapp -[calls]-> api` and set the technology to `HTTPS` there. Keep deployment focused on `instanceOf`, and only add deployment-level `-[https]->` links when they represent extra infrastructure connectivity that is not just the same logical app call repeated. The cheat sheet also says to add a port only when it is non-default for the protocol."
+    }
+  ]
+}

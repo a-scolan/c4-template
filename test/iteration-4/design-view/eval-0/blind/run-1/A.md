@@ -1,0 +1,1 @@
+Put it in a views C2 block as a static container view. Include the parent system, its direct containers, and the two neighbors, then add navigation from the web application to its C3 view. Keep the relationships in the model and use the view only to select the right scope.

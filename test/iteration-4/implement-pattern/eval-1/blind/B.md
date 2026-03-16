@@ -1,0 +1,1 @@
+Apply the async queue and worker pattern. Model a queue container with RabbitMQ technology, an async publish from the API to the queue, and an async consume from the worker to the queue using AMQP. Do not remodel this as synchronous request and response, and do not add a fake return call from the worker back to the API just to show completion.

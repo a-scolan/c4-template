@@ -1,0 +1,22 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I haven’t created my processing service or production VM yet, but I already want to document their descriptions. Which skill should I use first, then which description format should I choose?",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "For a future `ProdApiVm`, I want an ops-useful description. Which information should I include, in what order, and what should not be duplicated?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "For `ProdApiVm`, I have `eth0`, `eth1` monitoring, CPU/RAM/GPU specs, and many operational details. How do I write a rich ops-useful description without turning the block into an encyclopedia?",
+      "files": []
+    }
+  ]
+}

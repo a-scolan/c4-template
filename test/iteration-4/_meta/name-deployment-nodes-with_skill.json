@@ -1,0 +1,24 @@
+{
+  "skill_name": "name-deployment-nodes",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/name-deployment-nodes/SKILL.md",
+    ".github/skills/name-deployment-nodes/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use Prod for the environment. A consistent naming set is: zones Dmz, AppTier, ProcTier, DataTier, MonitoringZone; VMs ProdApigwVm, ProdUploadVm, ProdWorkerVm, ProdDatabaseVm, ProdMonitoringVm. Fix the candidates as: ProdApiVM becomes ProdApigwVm, prod_upload_vm becomes ProdUploadVm, AppServers becomes AppTier, MonitoringTier becomes MonitoringZone. If you also need FQN titles, use kebab-case such as prod-apigw-vm, prod-upload-vm, prod-worker-vm, prod-database-vm, and prod-monitoring-vm."
+    },
+    {
+      "id": 1,
+      "response": "Not by itself. name-deployment-nodes is the right skill for consistent identifiers such as Prod, AppTier, and ProdUploadVm, but the full Environment to Zone to VM to Node_App hierarchy, Markdown infrastructure descriptions with IP, CPU, and RAM, and instanceOf links belong to the broader deployment-modeling workflow. Use this skill for naming, and pair it with model-deployment-infrastructure for the complete structure."
+    },
+    {
+      "id": 2,
+      "response": "Choose ProdEuApiVm, not EuProdApiVm. The cleanest convention is to treat the region as part of the environment name, for example ProdEu and ProdUs, and then keep the normal VM formula unchanged: Environment plus Service plus Vm. That gives you ProdEuApiVm, ProdEuWorkerVm, ProdEuDatabaseVm, ProdUsApiVm, ProdUsWorkerVm, and ProdUsDatabaseVm. For zones, keep the standard names inside each environment: Dmz, AppTier, ProcTier, and DataTier. Only prefix zones if you truly need global uniqueness outside the environment scope; if so, stay consistent and use ProdEuAppTier, not EuProdAppTier."
+    }
+  ]
+}

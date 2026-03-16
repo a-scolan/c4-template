@@ -1,0 +1,29 @@
+{
+  "skill_name": "create-sequence-view",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-containers.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Assuming the elements already exist in your model, a clean LikeC4 dynamic-view skeleton is:\nviews {\n  dynamic view login_journey {\n    title 'Login journey'\n    include user, webApp, api, primaryDb, notificationService\n\n    user -> webApp 'Open login form and submit credentials'\n    webApp -> api 'POST /login'\n    api -> primaryDb 'Read user and verify credentials'\n    api -> notificationService 'Send login notification'\n    api -> webApp 'Return session or token'\n    webApp -> user 'Show signed-in state'\n  }\n}\nIf the notification is asynchronous in your model, make that underlying relationship `async` rather than `calls`."
+    },
+    {
+      "id": 1,
+      "response": "Do not use `api_container -> api_container.auth_component` as if the container itself were an active caller. Either stay at container level with `webApp -> api_container 'Authenticate user'`, or switch to a component-focused dynamic view and target the component directly:\nviews {\n  dynamic view auth_flow {\n    title 'Authentication inside API'\n    include webApp, api_container.auth_component, api_container.session_component\n\n    webApp -> api_container.auth_component 'Submit credentials'\n    api_container.auth_component -> api_container.session_component 'Create session'\n  }\n}\nIn short: use the parent container for container-level steps, use child components for component-level steps, and avoid parent-container-to-own-component as the narrative interaction."
+    },
+    {
+      "id": 2,
+      "response": "One reasonable LikeC4 proposal is:\nviews {\n  dynamic view async_processing_flow {\n    title 'Async processing flow'\n    include externalUser, webApp, api, jobQueue, processingWorker, database\n\n    externalUser -> webApp 'Start the upload'\n    webApp -> api 'POST /uploads'\n    api -> jobQueue 'Enqueue processing job'\n    api -> webApp '202 Accepted + tracking URL'\n    webApp -> externalUser 'Show tracking URL'\n    jobQueue -> processingWorker 'Deliver queued job'\n    processingWorker -> database 'Persist processing result'\n  }\n}\nFor the underlying model, the queue hops should be backed by `async` relationships."
+    },
+    {
+      "id": 3,
+      "response": "Do not try to force the whole branch-and-loop story into one overloaded dynamic view. The clean approach is to use two dynamic views.\n\nFirst, the immediate acknowledgement view:\nviews {\n  dynamic view upload_acknowledgement {\n    title 'Async upload acknowledgement'\n    include user, webApp, api, jobQueue\n\n    user -> webApp 'Upload file'\n    webApp -> api 'POST /uploads'\n    api -> jobQueue 'Enqueue validation job'\n    api -> webApp '202 Accepted + tracking URL'\n    webApp -> user 'Show tracking URL'\n  }\n}\n\nSecond, the background retry view:\nviews {\n  dynamic view validation_retries {\n    title 'Background validation with retries'\n    include jobQueue, validationWorker, database\n\n    jobQueue -> validationWorker 'Deliver validation job'\n    validationWorker -> database 'Write validated result'\n    validationWorker -> jobQueue 'Requeue job on failure (retry up to N times)'\n  }\n}\n\nIf you must keep a single view, summarize retries with one requeue step instead of drawing every retry iteration."
+    }
+  ]
+}

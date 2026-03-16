@@ -1,0 +1,36 @@
+{
+  "skill_name": "c4-modeling-process",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/c4-modeling-process/SKILL.md",
+    ".github/skills/c4-modeling-process/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Start top-down. If the workspace rules are not already clear, begin with understand-project-structure. Then do C1 first to define the system boundary, actors, and external systems. Next do C2 to identify the runtime or deployable containers and the relationships that explain how the system works. Only then add C3, and only for containers that are central, risky, or internally complex enough that C2 is no longer explanatory. After the structural model is stable, add dynamic views for time-ordered workflows and deployment views when runtime topology matters. Finish by validating with test-model."
+    },
+    {
+      "id": 1,
+      "response": "No, not automatically. A C3 view is not required for every container. Create C3 only when the container is architecturally central, risky, hard to reason about, or internally complex enough that C2 no longer explains it well. If the API container is simple and its role is already clear from C2, stop at C2. Components are logical code groupings, not deployable units, so do not add a C3 view just for completeness."
+    },
+    {
+      "id": 2,
+      "response": "No. C1 should stay static: it shows the system boundary, actors, and external systems, not a step-by-step journey. A temporal flow between the user, webapp, and API belongs in a use-case dynamic view because the point of that diagram is order in time. It also usually comes after C2, since webapp and API are container-level building blocks rather than C1 context elements."
+    },
+    {
+      "id": 3,
+      "response": "Approach it in this order: re-establish workspace rules with understand-project-structure; confirm the C1 boundary is clear enough to support a correct C2; identify the runtime containers and avoid dropping into component detail too early; use create-element to declare containers; use create-relationship to choose typed relationships; use design-view to build the static C2 view; and finish with test-model to validate integrity and rendering. Do not jump to C3, dynamic, or deployment until the C2 structure is stable."
+    },
+    {
+      "id": 4,
+      "response": "This skill should not detail everything itself. Its role is to decide the next stage and hand off the detailed work to specialized skills. Since the C2 already exists, treat the structural base as stable, then hand off the nominal user scenario to create-sequence-view and the production infrastructure to model-deployment-infrastructure. After those are added, validate with test-model."
+    },
+    {
+      "id": 5,
+      "response": "Do not jump straight into C3. Because you are resuming a multi-project workspace after shared-spec changes, start with understand-project-structure to confirm the current rules, valid kinds, relationships, and view organization. Then re-check that the existing C1 and C2 are still coherent under the updated shared specs; if the structural base moved, fix that first. Next, decide whether the target container truly deserves a C3 view; add it only if the container is central, sensitive, risky, or complex enough that C2 is no longer sufficient. For the C3 work itself, hand off to create-element for components, create-relationship for their typed connections, and design-view for the static C3 view. Once that structural detail is stable, document the nominal user scenario with create-sequence-view. Finish with test-model."
+    }
+  ]
+}

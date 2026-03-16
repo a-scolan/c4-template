@@ -1,0 +1,32 @@
+{
+  "skill_name": "sync-with-template",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I modified `.github/skills/create-relationship/SKILL.md`, `projects/shared/spec-context.c4`, `projects/payments/system-model.c4`, and `README.md`. What can be pushed to the upstream reference repo, and what must stay local?",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I improved `.github/skills/create-relationship/SKILL.md`. Give me the safe sequence to push this improvement to the upstream reference repo (remote `c4-template`) using a `sync/*` branch, while keeping confidentiality review before push.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to pull upstream improvements for `.github` and `projects/shared`. Which commands should I run, and why `--squash`?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I improved `projects/shared/spec-containers.c4` in this repo. Another derived repository wants the same fix. How do I verify it is truly generic before pushing it upstream via `c4-template`?",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "My `sync/spec-hardening` branch already contains a good generic change to `.github/skills/create-element/SKILL.md`, but I accidentally committed local edits to `projects/acme/system-model.c4` and `README.md` on the same branch. How do I recover before opening a PR to `c4-template`?",
+      "files": []
+    }
+  ]
+}

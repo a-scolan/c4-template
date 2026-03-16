@@ -1,0 +1,1 @@
+Yes, put this under views Use Cases. Model the login journey as a dynamic view with plain arrows in chronological order from user to webApp to api to primaryDatabase and any notification service, then back to the webApp. Critical anti-pattern: do not use typed arrows like calls in a dynamic view; keep plain arrows with short action labels.

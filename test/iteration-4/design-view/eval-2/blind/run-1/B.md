@@ -1,0 +1,1 @@
+Use a dynamic or sequence view under views Use Cases, not a static C1, C2, or C3 view. An upload journey step by step is temporal behavior, so first model the ordered interactions between the user, UI, API, scanners, storage, and any async workers; only after that should you add minimal color emphasis to the truly critical elements.

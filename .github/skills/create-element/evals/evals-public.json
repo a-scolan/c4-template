@@ -1,0 +1,32 @@
+{
+  "skill_name": "create-element",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I’m working in my system model. Add a new API container under an existing system for file ingestion. I want a correct and minimal LikeC4 declaration, without inventing a custom kind.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I’m thinking about creating a `Container_UploadOrchestrator` kind just for one upload service. Is that a good idea in this workspace? Explain the rule and what to do before adding a new kind.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I need to add an external `virusScanProvider` and an internal `scanApi`, then draw their arrows and a C2 view. Which skill should I use for each part?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need to model a real payment API and a mock variant for integration tests. Should I create two kinds, two elements, or something else? And which skill handles the difference between mock and prod?",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Don’t solve relationships yet: I only need a third-party identity provider and an internal portal API modeled in this workspace. Give me the most direct LikeC4 declarations you would start with.",
+      "files": []
+    }
+  ]
+}

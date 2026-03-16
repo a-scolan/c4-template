@@ -1,0 +1,37 @@
+{
+  "skill_name": "configure-project-includes",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I’m creating `projects/payments/likec4.config.json` for a new project based on the workspace baseline. Which fields should I keep, and how should I reference shared specs/images without breaking imports?",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I have a single 1200-line `system.c4`. How should I split it progressively into a clean project baseline, and which files should hold C1/C2/C3 views, Use Cases, deployment, and operations?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "My project already has `include.paths: ['../shared', '../platform-shared']`. I need to add a new shared source and keep icons working. Which edit rules should I follow to avoid breaking existing behavior?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I want to add a second LikeC4 project in this workspace with shared specs. Is this skill enough, or should it be combined with another skill?",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "In `projects/payments/likec4.config.json`, I already have `../shared` and need to add `../platform-shared`, but this source redefines some existing image aliases. How should I adjust `include.paths` and `imageAliases` without breaking current resolution?",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Show me the smallest safe JSON edit for `projects/payments/likec4.config.json`: append `../platform-shared` after `../shared`, keep shared images working, and avoid alias collisions with a new platform image source.",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "skill_name": "create-element",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/create-element/SKILL.md",
+    ".github/skills/create-element/evals/evals-public.json",
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-deployment.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use Container_Api under the existing system; do not invent a custom kind. Inside your system block declare ingestionApi as Container_Api named File Ingestion API with a technology such as Node.js and Fastify and a description that it receives uploaded files and starts the ingestion workflow."
+    },
+    {
+      "id": 1,
+      "response": "No. A new kind like Container_UploadOrchestrator is a last resort, not the default choice for a single service. Reuse an existing declared kind from the shared specs before inventing a one-off local kind. For one upload service, start with an existing kind such as Container_Api and distinguish it by element name and description instead of by creating a new kind. Only propose a new shared kind if no existing kind fits and the concept is reusable beyond one element."
+    },
+    {
+      "id": 2,
+      "response": "Use create-element for both declarations: model virusScanProvider as System_External, and model scanApi as Container_Api under the correct system. Then use create-relationship for the arrows between them, and use design-view for the C2 container view."
+    },
+    {
+      "id": 3,
+      "response": "Create two elements, not two new kinds. Reuse the same shared kind and distinguish mock versus prod by element name, variable name, description, and technology. If both are external provider endpoints, model both as System_External. If the mock runs inside your own system, keep the real provider as System_External and model the mock as an internal Container_Api under that system."
+    },
+    {
+      "id": 4,
+      "response": "Start with these declarations: identityProvider as System_External named Identity Provider with technology OIDC or SAML and a description for third-party authentication; and inside your existing system block portalApi as Container_Api named Portal API with a technology such as Node.js and Fastify and a description for internal portal business operations."
+    }
+  ]
+}

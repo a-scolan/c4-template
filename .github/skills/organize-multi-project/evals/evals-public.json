@@ -1,0 +1,27 @@
+{
+  "skill_name": "organize-multi-project",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "In a multi-project LikeC4 workspace with shared specs and two existing projects, I need to add a new payments project. How do I bootstrap it cleanly, and which minimum files/config should I create?",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I want to put a `paymentsCore` system and a `backOfficeUser` actor in the shared specifications area so they are visible everywhere. Good idea or not? And how should cross-project references be handled?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I’m adding a new project and also need to adjust its include paths and image aliases. Is this skill enough, or should it be combined with another one?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I want to share technical conventions AND some reusable business models. Should everything go in the shared area, or should specs and domains be separated without turning the repo into a maze?",
+      "files": []
+    }
+  ]
+}

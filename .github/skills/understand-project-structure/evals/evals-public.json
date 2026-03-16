@@ -1,0 +1,37 @@
+{
+  "skill_name": "understand-project-structure",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I need to add a new API container in this LikeC4 workspace. Before any change, run a full preflight: active project, available kinds/relationships/tags, source-of-truth files, then give a C1→C2→C3 plan.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "We have a multi-project workspace. I switched projects and want to edit a C3 view. Show how to avoid context errors and which MCP checks to re-run before editing.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I get an unknown kind/relationship error. Provide a structured diagnosis: where to check first, what to compare, and how to confirm the correct taxonomy before fixing.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I’m starting a new LikeC4 model in this repository. Once project context is established, which skill should take over to sequence modeling, and what must this first skill lock in before handoff?",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "I’m coming from UML/ArchiMate and need to contribute to this LikeC4 workspace without breaking the model. Which local conventions should I understand first, where are the real sources of truth, and which skill should I hand off to next?",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "I found a nice pattern in `projects/spec-showcase/container-views.c4`. Can I treat that as the authoritative taxonomy for adding a new queue and API in another project? What should I validate first?",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "skill_name": "design-view",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I want a proper C2 view for a system that shows the system, its containers, the user, and an external email service, with drill-down from the web application. Propose a LikeC4 skeleton in the right place.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I need to create a production infrastructure view with DMZ, app tier, and data tier. Give me a LikeC4 Deployment-view example aligned with workspace conventions.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to document the upload journey step by step, with colors to highlight critical elements. What LikeC4 approach do you recommend?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need to document a new production `SecZone` with bastion, firewall, and dedicated services. Should I create only a Deployment view, add a C2 as well, or both? Give me the cleanest LikeC4 approach.",
+      "files": []
+    }
+  ]
+}

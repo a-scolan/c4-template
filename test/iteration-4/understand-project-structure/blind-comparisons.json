@@ -1,0 +1,204 @@
+{
+  "schema_version": 2,
+  "skill_name": "understand-project-structure",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A better matches the expected preflight because it explicitly includes active-project confirmation via project summary alongside config, shared specs, and model/view files before the C1→C2→C3 plan. B is more taxonomically precise, but it omits project summary from the authoritative-source checklist.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Covers active-project detection, project summary, config, shared specs, and an ordered C1→C2→C3 plan; taxonomy examples are somewhat generic."
+        },
+        "B": {
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Strong repository-style taxonomy and file grounding, but project summary is missing from the preflight sources the spec emphasizes."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B wins because it gives the required post-switch sequence with list-projects, read-project-summary, shared-spec revalidation, and parent confirmation before editing C3. A has good risk awareness, but the required validation sequence stays too implicit.",
+      "rubric": {
+        "A": {
+          "content_score": 6,
+          "structure_score": 7,
+          "overall_score": 6,
+          "notes": "Good on stale-context and wrong-parent risks, but it lacks the explicit list-projects/read-project-summary sequence and only weakly rechecks shared specs."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Clear ordered verification flow with the required project-switch checks, shared-spec reread, and parent confirmation."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A better matches the expected diagnosis because it couples shared-spec checking with a concrete confirmation sequence and a fallback when project summary conflicts. B is very well structured, but it stays mostly at shared-spec taxonomy and never brings project summary into the corrective flow.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Strong root-cause sequence, explicit model-vs-deployment relationship check, and a project-summary fallback instead of guessing."
+        },
+        "B": {
+          "content_score": 7,
+          "structure_score": 9,
+          "overall_score": 7,
+          "notes": "Excellent structure and precise taxonomy guidance, but it omits project summary from both diagnosis and fallback."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B more clearly separates workspace framing from later C1→C2→C3 orchestration and explicitly validates kinds, relationships, tags, abstraction level, and parent before handoff. A names the handoff correctly, but its pre-handoff checklist is less complete.",
+      "rubric": {
+        "A": {
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Correct handoff and decent preflight framing, but relationships/tags and the semantic-truth split are less explicit."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Best match for the requested handoff: clear role split, explicit taxonomy checks, and precise pre-handoff scope control."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 4,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B is closer to the onboarding target because it provides concrete repo taxonomy, core relationships, and the workflow-guidance vs semantic-truth split before handing off. A is accurate on shared specs, but it lacks the requested concrete local examples and broader workspace framing.",
+      "rubric": {
+        "A": {
+          "content_score": 5,
+          "structure_score": 7,
+          "overall_score": 5,
+          "notes": "Useful shared-spec overview and handoff, but missing stronger local-structure framing, project-summary grounding, and concrete taxonomy examples."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Concrete taxonomy examples, relationship names, and a clear guidance-vs-truth distinction make it much more usable for onboarding."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 5,
+          "pass_rate": 0.4
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 5,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A best matches the prompt because it rejects spec-showcase as authoritative, validates the active project first, and explicitly sends the reader back to shared specs plus project summary with concrete taxonomy examples. B is more file-specific, but it omits project summary from the authoritative-source guidance.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Strong rejection of example-project authority, clear validation order, and direct use of shared specs plus project summary with concrete examples."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 9,
+          "overall_score": 8,
+          "notes": "Very precise about exact shared files and valid relationships, but it leaves project summary out of the authoritative-source chain."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        }
+      }
+    }
+  ]
+}

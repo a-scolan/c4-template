@@ -1,0 +1,41 @@
+{
+  "skill_name": "configure-project-includes",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/spec-code.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Keep the copied baseline config shape unchanged and only adjust path-based fields. The critical fields to preserve are the shared include list and the image alias mapping used by the shared specs. From the readable shared files, icons are referenced as `@/lucide-static/...`, `@/custom/...`, and `@/affinity-naked/...`, so keep `include.paths` pointing to `../shared` and keep the alias that resolves `@` pointed at the shared image root under `../shared/images`. That lets `spec-global.c4`, `spec-context.c4`, `spec-containers.c4`, `spec-components.c4`, `spec-deployment.c4`, and `spec-code.c4` keep working without rewriting imports. Everything else copied from the baseline should stay as-is unless you have a project-specific reason to change it."
+    },
+    {
+      "id": 1,
+      "response": "Split progressively, not all at once. Start from the visible baseline layout and separate model from views first: put elements and relationships in `system-model.c4`, and keep initial views in `system-views.c4`. Then split views by concern as they stabilize: `context-views.c4` for C1, `container-views.c4` for C2 view definitions, and `component-views.c4` for C3 view definitions. If the model side is still crowded, split it further like the visible showcase layout: `actors-systems.c4` for top-level actors/systems, `containers.c4` for container model parts, and `components.c4` for component model parts. Put Use Cases in a dedicated `use-cases.c4`, deployment in `deployment.c4`, and operational/monitoring content in `operations.c4` rather than mixing them into C1/C2/C3 view files."
+    },
+    {
+      "id": 2,
+      "response": "Edit rules: keep the existing `include.paths` entries in the same order, and append the new shared source at the end. Do not remove, rename, or reorder `../shared` or `../platform-shared` unless you explicitly want to change precedence. Keep the current image alias that existing shared specs already use; if the new shared source has icons, add a new alias for that source instead of repointing the old one. In short: stable old paths first, new path appended last, existing alias unchanged, new icon root gets its own alias if needed."
+    },
+    {
+      "id": 3,
+      "response": "This is enough if the job is only config wiring: add include paths, preserve relative imports, and keep shared images resolving. If adding the second project also means deciding folder layout, baseline file splits, or how multiple projects share ownership of common specs, combine it with generic project-structure and multi-project organization guidance. If you also want the new project to mirror the existing baseline layout, combine it with generic template-synchronization guidance."
+    },
+    {
+      "id": 4,
+      "response": "Set `include.paths` so `../shared` stays first and `../platform-shared` comes after it. Then leave the current alias used by the existing shared specs pointed at `../shared/images`, and give platform images a separate alias such as `@platform` -> `../platform-shared/images`. Do not merge both roots under the same alias when relative image names overlap, because one source will shadow the other and current `@/...` references may resolve differently."
+    },
+    {
+      "id": 5,
+      "response": "Smallest safe edit: only touch the two path-based sections. Example changed shape: { \"include\": { \"paths\": [\"../shared\", \"../platform-shared\"] }, \"imageAliases\": { \"@\": \"../shared/images\", \"@platform\": \"../platform-shared/images\" } }. Leave every other existing field untouched. The key safety rule is: append `../platform-shared` after `../shared`, keep `@` on the existing shared image root, and use a new alias for the new image source."
+    }
+  ]
+}

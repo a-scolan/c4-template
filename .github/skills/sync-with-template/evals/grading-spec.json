@@ -1,0 +1,66 @@
+{
+  "skill_name": "sync-with-template",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "The response separates reusable workspace assets from project-local files and requires a genericity/confidentiality review before push.",
+      "files": [],
+      "expectations": [
+        "The response classifies `.github/skills/create-relationship/SKILL.md` and `projects/shared/spec-context.c4` as generic/syncable upstream assets.",
+        "The response keeps `projects/payments/system-model.c4` and `README.md` out of template push.",
+        "The response asks to generalize and remove project names before push.",
+        "The response requires a confidentiality review before push.",
+        "The response makes the syncable-vs-local split explicit instead of giving only generic Git advice."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "The response follows the safe workflow: branch from `c4-template/main`, bring only the generic file, diff/confidentiality review, and push from `sync/*`.",
+      "files": [],
+      "expectations": [
+        "The response fetches `c4-template/main` and creates a `sync/*` branch from that base.",
+        "The response only picks the generic file from `main`.",
+        "The response requires diff/confidentiality review before `git push`.",
+        "The response pushes from a `sync/*` branch, not directly from `main`.",
+        "The response keeps the workflow scoped to the generic change rather than broad repo synchronization."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response gives targeted subtree commands for shared workspace assets and explains that `--squash` keeps history compact.",
+      "files": [],
+      "expectations": [
+        "The response provides `git fetch c4-template main`.",
+        "The response provides both `git subtree pull` commands targeting `.github` and `projects/shared`.",
+        "The response explains that `--squash` keeps history cleaner/more compact.",
+        "The response avoids suggesting pulls for project-specific files.",
+        "The response keeps the pull scope limited to reusable workspace assets."
+      ]
+    },
+    {
+      "id": 3,
+      "expected_output": "The response requires a genericity/confidentiality audit, then a safe sync workflow from a dedicated branch.",
+      "files": [],
+      "expectations": [
+        "The response requires an explicit audit to distinguish generic fix from project-specific need.",
+        "The response requests diff/confidentiality review before any push.",
+        "The response creates or uses a `sync/*` branch from `c4-template/main`, not from `main`.",
+        "The response includes a simple rollback plan if the fix turns out too local or regressive.",
+        "The response treats shared specs as sync candidates only after proving they are still generic."
+      ]
+    },
+    {
+      "id": 4,
+      "expected_output": "The response detects the polluted sync branch, isolates the generic change onto a clean `sync/*` branch from `c4-template/main`, and keeps local files out of the upstream PR.",
+      "files": [],
+      "expectations": [
+        "The response identifies that the current `sync/*` branch is polluted by local-only content.",
+        "The response rebuilds or recreates a clean `sync/*` branch from `c4-template/main` before proposing the PR.",
+        "The response carries forward only the generic `.github/skills/create-element/SKILL.md` change.",
+        "The response includes a rollback or abort option if the branch cleanup reveals the change is not truly generic."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

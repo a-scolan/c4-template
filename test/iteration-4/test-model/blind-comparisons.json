@@ -1,0 +1,105 @@
+{
+  "schema_version": 2,
+  "skill_name": "test-model",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B couvre mieux la validation pré-commit grâce aux vérifications de problèmes, de rendu et de vue impactée, alors que A reste plus manuel. Aucun des deux ne suit complètement les attentes outillées, mais B s'en approche davantage.",
+      "rubric": {
+        "A": {
+          "content_score": 6,
+          "structure_score": 8,
+          "overall_score": 6,
+          "notes": "Checklist claire sur kinds, FQNs et rendering, mais sans Problems-panel ni validation explicite via project summary/relationship tools."
+        },
+        "B": {
+          "content_score": 7,
+          "structure_score": 7,
+          "overall_score": 7,
+          "notes": "Plus complet sur taxonomy, FQNs, problèmes et preview; il manque toutefois un démarrage explicite via read-project-summary et des outils de relations nommés."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 0,
+          "total": 3,
+          "pass_rate": 0.0
+        },
+        "B": {
+          "passed": 1,
+          "total": 3,
+          "pass_rate": 0.3333333333333333
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B gagne parce qu'il vérifie à la fois la boundary parente, les includes et le rendu réel en preview, alors que A reste surtout analytique. Les deux ratent la délégation explicite vers design-view, mais B couvre davantage le besoin de validation.",
+      "rubric": {
+        "A": {
+          "content_score": 6,
+          "structure_score": 7,
+          "overall_score": 6,
+          "notes": "Bonne explication sur le parent context et les includes trop larges, mais pas de preview/rendu explicite ni de handoff vers design-view."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Réponse plus exploitable avec boundary parente visible, contrôle des includes, problèmes d'éditeur et preview concret; seule la délégation à design-view manque."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 1,
+          "total": 3,
+          "pass_rate": 0.3333333333333333
+        },
+        "B": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B est plus actionnable car il relie la sémantique async aux FQNs, à l'impact sur la vue C2 et à une revue finale problèmes/rendu. A a une bonne lecture conceptuelle, mais il ne déroule pas une validation aussi complète du modèle et de la vue impactée.",
+      "rubric": {
+        "A": {
+          "content_score": 6,
+          "structure_score": 7,
+          "overall_score": 6,
+          "notes": "Bonne analyse sémantique de async vs calls et suggestion pertinente de queue, mais peu de validation opérationnelle des références et des vues."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Valide mieux les FQNs, la cohérence du modèle, la vue C2 et la revue Problems/rendu; il manque encore une revalidation outillée explicite et un vrai avant/après des vues dépendantes."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 4,
+          "pass_rate": 0.5
+        },
+        "B": {
+          "passed": 2,
+          "total": 4,
+          "pass_rate": 0.5
+        }
+      }
+    }
+  ]
+}

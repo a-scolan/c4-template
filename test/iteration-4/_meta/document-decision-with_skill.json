@@ -1,0 +1,24 @@
+{
+  "skill_name": "document-decision",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/document-decision/SKILL.md",
+    ".github/skills/document-decision/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Yes. This is exactly the kind of decision that should be captured in an ADR. A solid frame would be: title such as ADR/NNNN-choose-postgresql-for-primary-transactional-store; status Proposed or Accepted; context covering transactional guarantees, relational querying, backup and restore, and the comparison with MongoDB; decision stating PostgreSQL is the primary database container for the main transactional workload; impacted elements covering the API or backend, main database container, workers or services depending on core persistence, and any persistence or failover views already defined; alternatives considered such as MongoDB for schema flexibility; consequences with positives, negatives, and operational follow-up; and next steps to update the model and documentation. Use real element IDs or stable names and include both benefits and costs so the ADR reads as rationale rather than advocacy."
+    },
+    {
+      "id": 1,
+      "response": "No. This skill is for architectural decisions with lasting design trade-offs, and it explicitly does not apply to repository tooling or CI/CD mechanics like a GitHub Actions workflow edit. You would only write an ADR if the workflow change reflected a broader architecture or deployment decision that needs long-term rationale recorded. In that case, document the architecture decision and its consequences, not the YAML change itself."
+    },
+    {
+      "id": 2,
+      "response": "Yes. This is a strong ADR candidate because it changes a system boundary, an integration pattern, and long-term ownership. A good frame would be: title such as ADR/NNNN-replace-internal-payment-orchestrator-with-stripe-saas-and-adapter; status Proposed or Accepted; context explaining the maintenance burden of the internal orchestrator and the desire for faster delivery with a retained internal adapter boundary; decision stating the system will integrate directly with Stripe while keeping a small internal adapter; impacted elements including the existing orchestrator, the retained or new payment adapter, checkout or billing services, webhook handling components, and any deployment elements tied to the old orchestrator; alternatives considered such as keeping the orchestrator or removing the adapter entirely; consequences covering benefits, vendor dependence, webhook semantics, migration effort, and explicit ownership boundaries; and follow-up to update model elements and relationships, define failure-handling responsibilities, and review security and compliance assumptions. The ADR should emphasize the rationale and trade-offs of the boundary change, not only the implementation steps."
+    }
+  ]
+}

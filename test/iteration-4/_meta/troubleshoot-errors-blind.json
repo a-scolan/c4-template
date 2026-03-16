@@ -1,0 +1,137 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A better explains the cascade from the invalid kind to the missing element while still covering the likely FQN issue. Both omit the explicit read-project-summary step, but A is more root-cause-first and actionable.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Identifies the invalid kind in shared specs, explains the cascading missing-element error, and advises verifying the full reference."
+        },
+        "B": {
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Covers invalid kind and FQN clearly, but gives less causal explanation and also omits the read-project-summary step."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6666666666666666
+        },
+        "B": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A directly identifies both conceptual errors: a parent calling its own child and rank same being limited to same-parent siblings. B offers a useful level-mixing fix, but it is less precise on the layout-rule cause.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
+          "structure_score": 9,
+          "overall_score": 9,
+          "notes": "Pinpoints the parent-child interaction error, states the sibling constraint for rank same, and gives a targeted correction."
+        },
+        "B": {
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Good abstraction-level correction, but the explanation of rank same is less exact and less diagnostic."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 3,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6666666666666666
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B wins because it explicitly validates relationship taxonomy against the repository specs before addressing the FQN, which matches the expected diagnostic order. A is solid but less grounded in the shared-spec source of truth.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Correctly separates relationship-kind and FQN diagnosis and proposes a targeted fix, but does not anchor taxonomy checking in the shared specs."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 9,
+          "overall_score": 9,
+          "notes": "Checks taxonomy from repository specs first, then separately validates the alias path and narrows the fix cleanly."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B more clearly anchors the fix in repository taxonomy by separating model relationships from deployment links and moving HTTPS to the logical relationship technology field. A is also correct, but B gives the stronger repository-aligned root-cause explanation.",
+      "rubric": {
+        "A": {
+          "content_score": 8,
+          "structure_score": 9,
+          "overall_score": 8,
+          "notes": "Accurately diagnoses wrong-scope relationship use and duplicate deployment traffic, with a direct fix via calls plus technology HTTPS."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 9,
+          "overall_score": 9,
+          "notes": "Equally correct on the fix, and stronger on repository-aligned explanation of model versus deployment relationship taxonomy."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        }
+      }
+    }
+  ]
+}

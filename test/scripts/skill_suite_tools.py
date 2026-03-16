@@ -17,7 +17,30 @@ from typing import Any
 
 
 ITERATION_RE = re.compile(r"^iteration-(\d+)$")
+RUN_DIR_RE = re.compile(r"^run-(\d+)$")
 WORD_RE = re.compile(r"\S+")
+
+EVAL_ARTIFACT_SCHEMA_VERSION = 2
+COMPARATOR_SCHEMA_VERSION = 2
+BENCHMARK_PROTOCOL_VERSION = "benchmark-v2"
+EVALS_PUBLIC_FILENAME = "evals-public.json"
+GRADING_SPEC_FILENAME = "grading-spec.json"
+COMPARATOR_SIDES = ("A", "B")
+COMPARATOR_WINNERS = {"A", "B", "TIE"}
+PROTOCOL_MANIFEST_RELATIVE_PATH = Path("test") / "benchmark-protocol.json"
+PROTOCOL_TRACKED_FILES = (
+    ".github/agents/skill-benchmark-manager.agent.md",
+    ".github/agents/skill-benchmark-baseline.agent.md",
+    ".github/agents/skill-benchmark-baseline-hook-only.agent.md",
+    ".github/agents/skill-benchmark-with-skill.agent.md",
+    ".github/agents/skill-blind-comparator.agent.md",
+    ".github/agents/scripts/enforce-test-access.py",
+    "test/benchmark-agent-workflow.md",
+    "test/skill-suite-eval-prompt.md",
+    "test/scripts/skill_suite_tools.py",
+)
+HIGH_VARIANCE_EXPECTATION_STDDEV = 0.2
+HIGH_VARIANCE_RUBRIC_STDDEV = 1.0
 
 BENCHMARK_AGENTS = {
     "manager": "Skill Benchmark Manager",
@@ -98,6 +121,390 @@ def write_text(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8")
 
 
+def deep_copy_json_like(value: Any) -> Any:
+    return json.loads(json.dumps(value, ensure_ascii=False))
+
+
+def file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(65536), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def normalize_string_list(value: Any) -> list[str]:
+    if not isinstance(value, list):
+        return []
+    normalized: list[str] = []
+    for item in value:
+        if isinstance(item, str) and item.strip():
+            normalized.append(item.strip())
+    return normalized
+
+
+def skill_eval_root(workspace_root: Path, skill_name: str) -> Path:
+    return workspace_root / ".github" / "skills" / skill_name / "evals"
+
+
+def skill_eval_paths(workspace_root: Path, skill_name: str) -> dict[str, Path]:
+    eval_root = skill_eval_root(workspace_root, skill_name)
+    return {
+        "root": eval_root,
+        "public": eval_root / EVALS_PUBLIC_FILENAME,
+        "grading": eval_root / GRADING_SPEC_FILENAME,
+    }
+    return result
+
+
+def workspace_benchmark_skill_names(workspace_root: Path) -> list[str]:
+    skills_root = workspace_skills_root(workspace_root)
+    if not skills_root.exists():
+        return []
+    result: list[str] = []
+    for child in sorted(skills_root.iterdir(), key=lambda path: path.name):
+        if not child.is_dir():
+            continue
+        eval_root = child / "evals"
+        if not eval_root.exists():
+            continue
+        if any((eval_root / name).exists() for name in (EVALS_PUBLIC_FILENAME, GRADING_SPEC_FILENAME)):
+            result.append(child.name)
+    return result
+
+
+def validate_public_eval_definition(skill_name: str, data: dict[str, Any]) -> list[str]:
+    issues: list[str] = []
+    if not isinstance(data, dict):
+        return [f"{skill_name}: evals-public payload must be a JSON object"]
+
+    if data.get("artifact_type") not in {None, "evals-public"}:
+        issues.append(f"{skill_name}: evals-public artifact_type must be 'evals-public'")
+
+    evals = data.get("evals")
+    if not isinstance(evals, list) or not evals:
+        issues.append(f"{skill_name}: evals-public must contain a non-empty 'evals' array")
+        return issues
+
+    seen_ids: set[int] = set()
+    for index, item in enumerate(evals):
+        if not isinstance(item, dict):
+            issues.append(f"{skill_name}: evals-public eval #{index} must be an object")
+            continue
+        eval_id = item.get("id")
+        if not isinstance(eval_id, int):
+            issues.append(f"{skill_name}: evals-public eval #{index} must provide an integer id")
+        elif eval_id in seen_ids:
+            issues.append(f"{skill_name}: duplicate eval id {eval_id} in evals-public")
+        else:
+            seen_ids.add(eval_id)
+        if not isinstance(item.get("prompt"), str) or not item.get("prompt", "").strip():
+            issues.append(f"{skill_name}: eval {eval_id!r} in evals-public must provide a non-empty prompt")
+        if "expected_output" in item or "expectations" in item:
+            issues.append(f"{skill_name}: eval {eval_id!r} in evals-public leaks hidden grading fields")
+        if "files" in item and not isinstance(item.get("files"), list):
+            issues.append(f"{skill_name}: eval {eval_id!r} in evals-public must use a list for files")
+    return issues
+
+
+def validate_grading_spec_definition(skill_name: str, data: dict[str, Any]) -> list[str]:
+    issues: list[str] = []
+    if not isinstance(data, dict):
+        return [f"{skill_name}: grading-spec payload must be a JSON object"]
+
+    if data.get("artifact_type") not in {None, "grading-spec"}:
+        issues.append(f"{skill_name}: grading-spec artifact_type must be 'grading-spec'")
+
+    evals = data.get("evals")
+    if not isinstance(evals, list) or not evals:
+        issues.append(f"{skill_name}: grading-spec must contain a non-empty 'evals' array")
+        return issues
+
+    seen_ids: set[int] = set()
+    for index, item in enumerate(evals):
+        if not isinstance(item, dict):
+            issues.append(f"{skill_name}: grading-spec eval #{index} must be an object")
+            continue
+        eval_id = item.get("id")
+        if not isinstance(eval_id, int):
+            issues.append(f"{skill_name}: grading-spec eval #{index} must provide an integer id")
+        elif eval_id in seen_ids:
+            issues.append(f"{skill_name}: duplicate eval id {eval_id} in grading-spec")
+        else:
+            seen_ids.add(eval_id)
+        if "prompt" in item:
+            issues.append(
+                f"{skill_name}: grading-spec eval {eval_id!r} must not contain prompt; prompts live in evals-public"
+            )
+        if "files" in item and not isinstance(item.get("files"), list):
+            issues.append(f"{skill_name}: grading-spec eval {eval_id!r} must use a list for files")
+        if not isinstance(item.get("expected_output"), str):
+            issues.append(f"{skill_name}: grading-spec eval {eval_id!r} must provide a string expected_output")
+        expectations = item.get("expectations")
+        if not isinstance(expectations, list) or not all(isinstance(entry, str) and entry.strip() for entry in expectations):
+            issues.append(f"{skill_name}: grading-spec eval {eval_id!r} must provide a string-only expectations list")
+    return issues
+
+
+def validate_split_eval_pair(skill_name: str, public: dict[str, Any], grading: dict[str, Any]) -> list[str]:
+    issues = validate_public_eval_definition(skill_name, public)
+    issues.extend(validate_grading_spec_definition(skill_name, grading))
+    if issues:
+        return issues
+
+    public_by_id = {item.get("id"): item for item in public.get("evals", []) if isinstance(item, dict)}
+    grading_by_id = {item.get("id"): item for item in grading.get("evals", []) if isinstance(item, dict)}
+    if set(public_by_id) != set(grading_by_id):
+        issues.append(f"{skill_name}: eval ids differ between evals-public and grading-spec")
+        return issues
+
+    for eval_id in sorted(public_by_id):
+        public_files = normalize_string_list(public_by_id[eval_id].get("files", []))
+        grading_files = normalize_string_list(grading_by_id[eval_id].get("files", []))
+        if public_files != grading_files:
+            issues.append(f"{skill_name}: eval {eval_id} files differ between evals-public and grading-spec")
+    return issues
+
+
+def load_split_eval_artifacts(workspace_root: Path, skill_name: str) -> dict[str, Any]:
+    paths = skill_eval_paths(workspace_root, skill_name)
+    if paths["public"].exists():
+        public = read_json(paths["public"])
+    else:
+        raise FileNotFoundError(f"Missing {EVALS_PUBLIC_FILENAME} for skill '{skill_name}': {paths['public']}")
+
+    if paths["grading"].exists():
+        grading = read_json(paths["grading"])
+    else:
+        raise FileNotFoundError(f"Missing {GRADING_SPEC_FILENAME} for skill '{skill_name}': {paths['grading']}")
+
+    issues = validate_split_eval_pair(skill_name, public, grading)
+    if issues:
+        raise ValueError("; ".join(issues))
+
+    return {
+        "skill_name": skill_name,
+        "public": public,
+        "grading": grading,
+        "paths": paths,
+    }
+
+
+def validate_workspace_eval_artifacts(workspace_root: Path) -> dict[str, Any]:
+    issues: list[dict[str, Any]] = []
+    skills_checked = 0
+    for skill_name in workspace_benchmark_skill_names(workspace_root):
+        skills_checked += 1
+        try:
+            artifacts = load_split_eval_artifacts(workspace_root, skill_name)
+        except Exception as exc:
+            issues.append({"skill": skill_name, "problem": str(exc)})
+            continue
+
+        public_path = artifacts["paths"]["public"]
+        grading_path = artifacts["paths"]["grading"]
+        if not public_path.exists():
+            issues.append({"skill": skill_name, "problem": f"missing {EVALS_PUBLIC_FILENAME}"})
+        if not grading_path.exists():
+            issues.append({"skill": skill_name, "problem": f"missing {GRADING_SPEC_FILENAME}"})
+
+    return {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "skills_checked": skills_checked,
+        "issue_count": len(issues),
+        "issues": issues,
+        "passed": len(issues) == 0,
+    }
+
+
+def protocol_manifest_path(workspace_root: Path, manifest_path: Path | None = None) -> Path:
+    return manifest_path or (workspace_root / PROTOCOL_MANIFEST_RELATIVE_PATH)
+
+
+def build_protocol_manifest(workspace_root: Path, version: str = BENCHMARK_PROTOCOL_VERSION) -> dict[str, Any]:
+    tracked_files: list[dict[str, Any]] = []
+    for rel_path in PROTOCOL_TRACKED_FILES:
+        absolute = workspace_root / rel_path
+        if not absolute.exists():
+            raise FileNotFoundError(f"Missing protocol-tracked file: {absolute}")
+        tracked_files.append(
+            {
+                "path": rel_path,
+                "sha256": file_sha256(absolute),
+            }
+        )
+    return {
+        "protocol_version": version,
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "eval_artifact_schema_version": EVAL_ARTIFACT_SCHEMA_VERSION,
+        "comparator_schema_version": COMPARATOR_SCHEMA_VERSION,
+        "tracked_files": tracked_files,
+    }
+
+
+def validate_protocol_manifest(workspace_root: Path, manifest_path: Path) -> dict[str, Any]:
+    if not manifest_path.exists():
+        raise FileNotFoundError(f"Missing protocol manifest: {manifest_path}")
+
+    manifest = read_json(manifest_path)
+    issues: list[dict[str, Any]] = []
+    for item in manifest.get("tracked_files", []):
+        rel_path = item.get("path")
+        expected_hash = item.get("sha256")
+        if not isinstance(rel_path, str) or not isinstance(expected_hash, str):
+            issues.append({"path": rel_path or "<unknown>", "problem": "invalid manifest entry"})
+            continue
+        absolute = workspace_root / rel_path
+        if not absolute.exists():
+            issues.append({"path": rel_path, "problem": "missing file"})
+            continue
+        actual_hash = file_sha256(absolute)
+        if actual_hash != expected_hash:
+            issues.append(
+                {
+                    "path": rel_path,
+                    "problem": "hash mismatch",
+                    "expected_sha256": expected_hash,
+                    "actual_sha256": actual_hash,
+                }
+            )
+
+    return {
+        "manifest_path": manifest_path.relative_to(workspace_root).as_posix(),
+        "protocol_version": manifest.get("protocol_version"),
+        "tracked_file_count": len(manifest.get("tracked_files", [])),
+        "issue_count": len(issues),
+        "issues": issues,
+        "passed": len(issues) == 0,
+    }
+
+
+def freeze_protocol_for_iteration(iteration_dir: Path, workspace_root: Path, manifest_path: Path) -> dict[str, Any]:
+    manifest_validation = validate_protocol_manifest(workspace_root, manifest_path)
+    if not manifest_validation.get("passed"):
+        raise ValueError(f"Protocol manifest mismatch: {manifest_validation['issue_count']} issue(s)")
+
+    eval_validation = validate_workspace_eval_artifacts(workspace_root)
+    if not eval_validation.get("passed"):
+        raise ValueError(f"Split eval artifact validation failed: {eval_validation['issue_count']} issue(s)")
+
+    skill_hashes: list[dict[str, Any]] = []
+    for skill_name in workspace_benchmark_skill_names(workspace_root):
+        paths = skill_eval_paths(workspace_root, skill_name)
+        skill_hashes.append(
+            {
+                "skill": skill_name,
+                "evals_public_path": paths["public"].relative_to(workspace_root).as_posix(),
+                "evals_public_sha256": file_sha256(paths["public"]),
+                "grading_spec_path": paths["grading"].relative_to(workspace_root).as_posix(),
+                "grading_spec_sha256": file_sha256(paths["grading"]),
+            }
+        )
+
+    manifest = read_json(manifest_path)
+    lock_payload = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "iteration": iteration_dir.name,
+        "protocol_version": manifest.get("protocol_version"),
+        "manifest_path": manifest_path.relative_to(workspace_root).as_posix(),
+        "manifest_sha256": file_sha256(manifest_path),
+        "tracked_files": manifest.get("tracked_files", []),
+        "skill_eval_artifacts": skill_hashes,
+    }
+    output_path = iteration_dir / "_meta" / "protocol-lock.json"
+    write_json(output_path, lock_payload)
+    return {
+        "iteration": iteration_dir.name,
+        "protocol_version": lock_payload["protocol_version"],
+        "manifest_path": lock_payload["manifest_path"],
+        "output_path": output_path.relative_to(workspace_root).as_posix(),
+        "tracked_file_count": len(lock_payload["tracked_files"]),
+        "skill_count": len(skill_hashes),
+    }
+
+
+def run_label(run_number: int) -> str:
+    return f"run-{run_number}"
+
+
+def response_run_dir(skill_dir: Path, eval_id: int, configuration: str, run_number: int) -> Path:
+    return skill_dir / f"eval-{eval_id}" / configuration / run_label(run_number)
+
+
+def response_path_for_run(skill_dir: Path, eval_id: int, configuration: str, run_number: int) -> Path:
+    return response_run_dir(skill_dir, eval_id, configuration, run_number) / "response.md"
+
+
+def legacy_response_path(skill_dir: Path, eval_id: int, configuration: str) -> Path:
+    return skill_dir / f"eval-{eval_id}" / configuration / "response.md"
+
+
+def resolve_response_path(skill_dir: Path, eval_id: int, configuration: str, run_number: int) -> Path | None:
+    run_path = response_path_for_run(skill_dir, eval_id, configuration, run_number)
+    if run_path.exists():
+        return run_path
+    flat_path = legacy_response_path(skill_dir, eval_id, configuration)
+    if run_number == 1 and flat_path.exists():
+        return flat_path
+    return None
+
+
+def blind_dir_for_run(eval_dir: Path, run_number: int) -> Path:
+    return eval_dir / "blind" / run_label(run_number)
+
+
+def legacy_blind_dir(eval_dir: Path) -> Path:
+    return eval_dir / "blind"
+
+
+def blind_map_path(eval_dir: Path, run_number: int) -> Path:
+    if run_number == 1:
+        return eval_dir / "blind-map.json"
+    return eval_dir / f"blind-map.{run_label(run_number)}.json"
+
+
+def resolve_blind_dir(eval_dir: Path, run_number: int) -> Path | None:
+    run_dir = blind_dir_for_run(eval_dir, run_number)
+    if (run_dir / "A.md").exists() and (run_dir / "B.md").exists():
+        return run_dir
+    legacy_dir = legacy_blind_dir(eval_dir)
+    if run_number == 1 and (legacy_dir / "A.md").exists() and (legacy_dir / "B.md").exists():
+        return legacy_dir
+    return None
+
+
+def per_run_metrics_dir(skill_dir: Path, configuration: str) -> Path:
+    return skill_dir / "_runs" / configuration
+
+
+def per_run_metrics_path(skill_dir: Path, configuration: str, run_number: int) -> Path:
+    return per_run_metrics_dir(skill_dir, configuration) / f"{run_label(run_number)}-metrics.json"
+
+
+def discover_run_numbers(skill_dir: Path, configuration: str) -> list[int]:
+    discovered: set[int] = set()
+    metrics_root = per_run_metrics_dir(skill_dir, configuration)
+    if metrics_root.exists():
+        for child in metrics_root.glob("run-*-metrics.json"):
+            match = RUN_DIR_RE.match(child.stem.replace("-metrics", ""))
+            if match:
+                discovered.add(int(match.group(1)))
+
+    for eval_dir in sorted(skill_dir.glob("eval-*"), key=lambda path: path.name):
+        flat_response = legacy_response_path(skill_dir, int(eval_dir.name.split("-", 1)[1]), configuration)
+        if flat_response.exists():
+            discovered.add(1)
+        config_dir = eval_dir / configuration
+        if config_dir.exists():
+            for child in config_dir.iterdir():
+                if not child.is_dir():
+                    continue
+                match = RUN_DIR_RE.match(child.name)
+                if match and (child / "response.md").exists():
+                    discovered.add(int(match.group(1)))
+    return sorted(discovered) or [1]
+
+
 def extract_timestamp_field(payload: dict[str, Any], *keys: str) -> str | None:
     for key in keys:
         value = payload.get(key)
@@ -118,12 +525,166 @@ def extract_files_read_count(payload: dict[str, Any]) -> int:
     return explicit_count if explicit_count is not None else 0
 
 
+def refresh_run_metrics_collection(skill_dir: Path, configuration: str) -> dict[str, Any]:
+    run_metrics_root = per_run_metrics_dir(skill_dir, configuration)
+    run_metrics_root.mkdir(parents=True, exist_ok=True)
+
+    run_paths = sorted(
+        run_metrics_root.glob("run-*-metrics.json"),
+        key=lambda path: int(path.stem.split("-", 2)[1]),
+    )
+    if not run_paths:
+        raise FileNotFoundError(f"No per-run metrics found for {skill_dir.name} {configuration}: {run_metrics_root}")
+
+    runs: list[dict[str, Any]] = []
+    elapsed_values: list[float] = []
+    files_read_values: list[float] = []
+    files_written_values: list[float] = []
+    for index, path in enumerate(run_paths, start=1):
+        metrics, _changes = load_run_metrics(path, write_back=True)
+        run_number = coerce_int(metrics.get("run_number")) or index
+        normalized = dict(metrics)
+        normalized["run_number"] = run_number
+        runs.append(normalized)
+        elapsed = coerce_float(normalized.get("elapsed_seconds_total"))
+        if elapsed is not None:
+            elapsed_values.append(elapsed)
+        files_read = coerce_float(normalized.get("files_read_count"))
+        if files_read is not None:
+            files_read_values.append(files_read)
+        files_written = coerce_float(normalized.get("files_written_count"))
+        if files_written is not None:
+            files_written_values.append(files_written)
+
+    first_run = runs[0]
+    started_candidates = [iso_to_datetime(run.get("started_at")) for run in runs]
+    finished_candidates = [iso_to_datetime(run.get("finished_at")) for run in runs]
+    started_at = min((value for value in started_candidates if value is not None), default=None)
+    finished_at = max((value for value in finished_candidates if value is not None), default=None)
+
+    collection = {
+        "skill_name": first_run.get("skill_name", skill_dir.name),
+        "configuration": first_run.get("configuration", configuration),
+        "language": first_run.get("language", "English"),
+        "mcp_used": any(bool(run.get("mcp_used", False)) for run in runs),
+        "started_at": started_at.strftime("%Y-%m-%dT%H:%M:%SZ") if started_at else first_run.get("started_at"),
+        "finished_at": finished_at.strftime("%Y-%m-%dT%H:%M:%SZ") if finished_at else first_run.get("finished_at"),
+        "elapsed_seconds_total": first_run.get("elapsed_seconds_total"),
+        "files_read_count": first_run.get("files_read_count"),
+        "files_written_count": first_run.get("files_written_count"),
+        "run_count": len(runs),
+        "runs": runs,
+        "aggregate": {
+            "elapsed_seconds_total": calculate_benchmark_stats(elapsed_values) if elapsed_values else None,
+            "files_read_count": calculate_benchmark_stats(files_read_values) if files_read_values else None,
+            "files_written_count": calculate_benchmark_stats(files_written_values) if files_written_values else None,
+        },
+    }
+    output_path = skill_dir / f"{configuration}-run-metrics.json"
+    write_json(output_path, collection)
+    return collection
+
+
+def validate_comparison_side_payload(side_label: str, payload: Any) -> list[str]:
+    issues: list[str] = []
+    if not isinstance(payload, dict):
+        return [f"comparison side {side_label} must be an object"]
+
+    overall_score = coerce_float(payload.get("overall_score"))
+    if overall_score is None:
+        issues.append(f"comparison side {side_label} must provide numeric rubric.{side_label}.overall_score")
+    elif not 0.0 <= overall_score <= 10.0:
+        issues.append(f"comparison side {side_label} overall_score must be on the 0-10 scale")
+
+    content_score = coerce_float(payload.get("content_score"))
+    if content_score is None:
+        issues.append(f"comparison side {side_label} must provide numeric rubric.{side_label}.content_score")
+    elif not 0.0 <= content_score <= 10.0:
+        issues.append(f"comparison side {side_label} content_score must be on the 0-10 scale")
+
+    structure_score = coerce_float(payload.get("structure_score"))
+    if structure_score is None:
+        issues.append(f"comparison side {side_label} must provide numeric rubric.{side_label}.structure_score")
+    elif not 0.0 <= structure_score <= 10.0:
+        issues.append(f"comparison side {side_label} structure_score must be on the 0-10 scale")
+
+    notes = payload.get("notes")
+    if notes is not None and (not isinstance(notes, str) or not notes.strip()):
+        issues.append(f"comparison side {side_label} notes must be a non-empty string when provided")
+    return issues
+
+
+def validate_expectation_side_payload(side_label: str, payload: Any) -> list[str]:
+    issues: list[str] = []
+    if not isinstance(payload, dict):
+        return [f"expectation_results.{side_label} must be an object"]
+
+    passed = coerce_int(payload.get("passed"))
+    total = coerce_int(payload.get("total"))
+    pass_rate = coerce_float(payload.get("pass_rate"))
+    if passed is None or passed < 0:
+        issues.append(f"expectation_results.{side_label}.passed must be a non-negative integer")
+    if total is None or total < 0:
+        issues.append(f"expectation_results.{side_label}.total must be a non-negative integer")
+    if pass_rate is None or not 0.0 <= pass_rate <= 1.0:
+        issues.append(f"expectation_results.{side_label}.pass_rate must be a number between 0 and 1")
+    if passed is not None and total is not None and total < passed:
+        issues.append(f"expectation_results.{side_label}.total must be >= passed")
+    if passed is not None and total is not None and pass_rate is not None:
+        expected_rate = 0.0 if total == 0 else round(passed / total, 4)
+        if abs(expected_rate - round(pass_rate, 4)) > 0.0001:
+            issues.append(f"expectation_results.{side_label}.pass_rate must equal passed / total")
+    return issues
+
+
+def normalize_comparison_entry(raw_entry: Any) -> dict[str, Any]:
+    if not isinstance(raw_entry, dict):
+        raise ValueError("Each comparison entry must be a JSON object")
+
+    normalized = deep_copy_json_like(raw_entry)
+    normalized["schema_version"] = COMPARATOR_SCHEMA_VERSION
+    normalized["run_number"] = coerce_int(normalized.get("run_number")) or 1
+
+    issues: list[str] = []
+    eval_id = normalized.get("eval_id")
+    if not isinstance(eval_id, int):
+        issues.append("comparison entry must provide an integer eval_id")
+
+    winner = normalized.get("winner")
+    if winner not in COMPARATOR_WINNERS:
+        issues.append("comparison winner must be one of A, B, or TIE")
+
+    reasoning = normalized.get("reasoning")
+    if not isinstance(reasoning, str) or not reasoning.strip():
+        issues.append("comparison reasoning must be a non-empty string")
+
+    rubric = normalized.get("rubric")
+    if not isinstance(rubric, dict):
+        issues.append("comparison rubric must be an object")
+    else:
+        for side in COMPARATOR_SIDES:
+            issues.extend(validate_comparison_side_payload(side, rubric.get(side)))
+
+    expectation_results = normalized.get("expectation_results")
+    if not isinstance(expectation_results, dict):
+        issues.append("comparison expectation_results must be an object")
+    else:
+        for side in COMPARATOR_SIDES:
+            issues.extend(validate_expectation_side_payload(side, expectation_results.get(side)))
+
+    if issues:
+        raise ValueError("; ".join(issues))
+
+    return normalized
+
+
 def materialize_run_artifacts(
     iteration_dir: Path,
     skill_name: str,
     configuration: str,
     raw_json_path: Path,
     *,
+    run_number: int = 1,
     started_at: str | None = None,
     finished_at: str | None = None,
 ) -> dict[str, Any]:
@@ -164,9 +725,15 @@ def materialize_run_artifacts(
         if not isinstance(response, str) or not response.strip():
             raise ValueError(f"Eval {eval_id} in {raw_json_path} must contain a non-empty 'response' string")
 
-        output_path = skill_dir / f"eval-{eval_id}" / configuration / "response.md"
+        output_path = response_path_for_run(skill_dir, eval_id, configuration, run_number)
         write_text(output_path, response.rstrip() + "\n")
         written_files.append(output_path.relative_to(iteration_dir).as_posix())
+
+        if run_number == 1:
+            flat_output_path = legacy_response_path(skill_dir, eval_id, configuration)
+            write_text(flat_output_path, response.rstrip() + "\n")
+            if flat_output_path != output_path:
+                written_files.append(flat_output_path.relative_to(iteration_dir).as_posix())
 
     started_value = started_at or extract_timestamp_field(
         raw,
@@ -210,17 +777,23 @@ def materialize_run_artifacts(
         elapsed_seconds_total=elapsed_seconds_total,
         files_read_count=files_read_count,
         files_written_count=len(written_files),
+        run_number=run_number,
     )
-    write_json(skill_dir / f"{configuration}-run-metrics.json", metrics_payload)
+    run_metrics_path = per_run_metrics_path(skill_dir, configuration, run_number)
+    write_json(run_metrics_path, metrics_payload)
+    collection = refresh_run_metrics_collection(skill_dir, configuration)
 
     return {
         "iteration": iteration_dir.name,
         "skill_name": skill_name,
         "configuration": configuration,
+        "run_number": run_number,
         "raw_json": str(raw_json_path),
         "responses_written": len(written_files),
         "written_files": written_files,
         "run_metrics_path": str(skill_dir / f"{configuration}-run-metrics.json"),
+        "per_run_metrics_path": str(run_metrics_path),
+        "run_count": collection.get("run_count", 1),
         "files_read_count": files_read_count,
         "elapsed_seconds_total": elapsed_seconds_total,
     }
@@ -243,19 +816,22 @@ def materialize_blind_comparisons(iteration_dir: Path, skill_name: str, raw_json
     if not isinstance(comparisons, list):
         raise ValueError(f"Raw payload {raw_json_path} must contain a 'comparisons' list")
 
+    normalized_comparisons = [normalize_comparison_entry(item) for item in comparisons]
+
     output_path = iteration_dir / skill_name / "blind-comparisons.json"
     write_json(
         output_path,
         {
+            "schema_version": COMPARATOR_SCHEMA_VERSION,
             "skill_name": skill_name,
-            "comparisons": comparisons,
+            "comparisons": normalized_comparisons,
         },
     )
     return {
         "iteration": iteration_dir.name,
         "skill_name": skill_name,
         "raw_json": str(raw_json_path),
-        "comparison_count": len(comparisons),
+        "comparison_count": len(normalized_comparisons),
         "output_path": str(output_path),
     }
 
@@ -329,8 +905,17 @@ def infer_run_metrics_fields(metrics_path: Path) -> dict[str, str | None]:
         if file_name == f"{candidate}-run-metrics.json":
             configuration = candidate
             break
+        if metrics_path.parent.name == candidate:
+            configuration = candidate
+            break
+
+    skill_name = None
+    if metrics_path.parent.name in {"with_skill", "without_skill"} and metrics_path.parent.parent.name == "_runs":
+        skill_name = metrics_path.parent.parent.parent.name
+    elif metrics_path.parent != metrics_path:
+        skill_name = metrics_path.parent.name
     return {
-        "skill_name": metrics_path.parent.name if metrics_path.parent != metrics_path else None,
+        "skill_name": skill_name,
         "configuration": configuration,
     }
 
@@ -346,8 +931,9 @@ def build_run_metrics_payload(
     elapsed_seconds_total: float,
     files_read_count: int,
     files_written_count: int,
+    run_number: int | None = None,
 ) -> dict[str, Any]:
-    return {
+    payload = {
         "skill_name": skill_name,
         "configuration": configuration,
         "language": language,
@@ -358,6 +944,9 @@ def build_run_metrics_payload(
         "files_read_count": files_read_count,
         "files_written_count": files_written_count,
     }
+    if run_number is not None:
+        payload["run_number"] = run_number
+    return payload
 
 
 def canonicalize_run_metrics(metrics: dict[str, Any], metrics_path: Path | None = None) -> tuple[dict[str, Any], list[str]]:
@@ -571,11 +1160,16 @@ def skill_dirs(iteration_dir: Path) -> list[Path]:
     )
 
 
-def load_skill_eval_definition(workspace_root: Path, skill_name: str) -> dict[str, Any]:
-    evals_path = workspace_root / ".github" / "skills" / skill_name / "evals" / "evals.json"
-    if not evals_path.exists():
-        raise FileNotFoundError(f"Missing eval definition for skill '{skill_name}': {evals_path}")
-    return read_json(evals_path)
+def load_skill_eval_public_definition(workspace_root: Path, skill_name: str) -> dict[str, Any]:
+    return load_split_eval_artifacts(workspace_root, skill_name)["public"]
+
+
+def load_skill_grading_spec_definition(workspace_root: Path, skill_name: str) -> dict[str, Any]:
+    return load_split_eval_artifacts(workspace_root, skill_name)["grading"]
+
+
+def load_skill_eval_bundle(workspace_root: Path, skill_name: str) -> dict[str, Any]:
+    return load_split_eval_artifacts(workspace_root, skill_name)
 
 
 def get_eval_entry(eval_definition: dict[str, Any], eval_id: int) -> dict[str, Any]:
@@ -585,13 +1179,25 @@ def get_eval_entry(eval_definition: dict[str, Any], eval_id: int) -> dict[str, A
     raise KeyError(f"No eval with id={eval_id}")
 
 
-def build_blind_compare_bundle(iteration_dir: Path, workspace_root: Path, skill_name: str, eval_id: int) -> dict[str, Any]:
+def build_blind_compare_bundle(
+    iteration_dir: Path,
+    workspace_root: Path,
+    skill_name: str,
+    eval_id: int,
+    run_number: int = 1,
+) -> dict[str, Any]:
     eval_dir = iteration_dir / skill_name / f"eval-{eval_id}"
-    blind_dir = eval_dir / "blind"
+    bundle = load_skill_eval_bundle(workspace_root, skill_name)
+    public_entry = get_eval_entry(bundle["public"], eval_id)
+    grading_entry = get_eval_entry(bundle["grading"], eval_id)
+
+    blind_dir = blind_dir_for_run(eval_dir, run_number)
     a_path = blind_dir / "A.md"
     b_path = blind_dir / "B.md"
-    eval_definition = load_skill_eval_definition(workspace_root, skill_name)
-    eval_entry = get_eval_entry(eval_definition, eval_id)
+    if run_number == 1 and (not a_path.exists() or not b_path.exists()):
+        blind_dir = legacy_blind_dir(eval_dir)
+        a_path = blind_dir / "A.md"
+        b_path = blind_dir / "B.md"
 
     if not a_path.exists() or not b_path.exists():
         raise FileNotFoundError(
@@ -602,13 +1208,18 @@ def build_blind_compare_bundle(iteration_dir: Path, workspace_root: Path, skill_
         "iteration": iteration_dir.name,
         "skill_name": skill_name,
         "eval_id": eval_id,
+        "run_number": run_number,
         "blind_artifacts": {
             "A": a_path.relative_to(workspace_root).as_posix(),
             "B": b_path.relative_to(workspace_root).as_posix(),
         },
-        "eval_prompt": eval_entry.get("prompt"),
-        "expected_output": eval_entry.get("expected_output"),
-        "expectations": eval_entry.get("expectations", []),
+        "eval_artifacts": {
+            "evals_public_path": bundle["paths"]["public"].relative_to(workspace_root).as_posix(),
+            "grading_spec_path": bundle["paths"]["grading"].relative_to(workspace_root).as_posix(),
+        },
+        "eval_prompt": public_entry.get("prompt"),
+        "expected_output": grading_entry.get("expected_output"),
+        "expectations": grading_entry.get("expectations", []),
         "comparator_method": {
             "primary_signal": "task-specific rubric score",
             "secondary_signal": "expectation pass rate",
@@ -619,15 +1230,28 @@ def build_blind_compare_bundle(iteration_dir: Path, workspace_root: Path, skill_
             },
         },
         "output_schema_hint": {
+            "schema_version": COMPARATOR_SCHEMA_VERSION,
+            "eval_id": "integer",
+            "run_number": run_number,
             "winner": "A | B | TIE",
             "reasoning": "string",
             "rubric": {
-                "A": {"overall_score": "number"},
-                "B": {"overall_score": "number"},
+                "A": {
+                    "content_score": "0-10 number",
+                    "structure_score": "0-10 number",
+                    "overall_score": "0-10 number",
+                    "notes": "string (optional)",
+                },
+                "B": {
+                    "content_score": "0-10 number",
+                    "structure_score": "0-10 number",
+                    "overall_score": "0-10 number",
+                    "notes": "string (optional)",
+                },
             },
             "expectation_results": {
-                "A": {"pass_rate": "number"},
-                "B": {"pass_rate": "number"},
+                "A": {"passed": "integer", "total": "integer", "pass_rate": "0-1 number"},
+                "B": {"passed": "integer", "total": "integer", "pass_rate": "0-1 number"},
             },
         },
     }
@@ -651,23 +1275,25 @@ def calculate_benchmark_stats(values: list[float]) -> dict[str, float]:
     }
 
 
-def load_comparison_index(skill_dir: Path) -> dict[int, dict[str, Any]]:
+def load_comparison_index(skill_dir: Path) -> dict[tuple[int, int], dict[str, Any]]:
     comparisons_path = skill_dir / "blind-comparisons.json"
     if not comparisons_path.exists():
         return {}
     items = load_comparisons(comparisons_path)
     return {
-        int(item.get("eval_id")): item
+        (int(item.get("eval_id")), coerce_int(item.get("run_number")) or 1): item
         for item in items
         if item.get("eval_id") is not None
     }
 
 
-def configuration_side_for_eval(skill_dir: Path, eval_id: int) -> dict[str, str]:
-    blind_map_path = skill_dir / f"eval-{eval_id}" / "blind-map.json"
-    if not blind_map_path.exists():
+def configuration_side_for_eval(skill_dir: Path, eval_id: int, run_number: int = 1) -> dict[str, str]:
+    mapping_path = blind_map_path(skill_dir / f"eval-{eval_id}", run_number)
+    if not mapping_path.exists() and run_number == 1:
+        mapping_path = skill_dir / f"eval-{eval_id}" / "blind-map.json"
+    if not mapping_path.exists():
         return {}
-    mapping = read_json(blind_map_path)
+    mapping = read_json(mapping_path)
     return {config: side for side, config in mapping.items()}
 
 
@@ -676,7 +1302,8 @@ def build_skill_creator_benchmark(iteration_dir: Path, workspace_root: Path, ski
     if not skill_dir.exists():
         raise FileNotFoundError(f"Missing skill results directory for '{skill_name}': {skill_dir}")
 
-    eval_definition = load_skill_eval_definition(workspace_root, skill_name)
+    eval_bundle = load_skill_eval_bundle(workspace_root, skill_name)
+    eval_definition = eval_bundle["grading"]
     comparison_index = load_comparison_index(skill_dir)
     summaries = {
         config: read_json(skill_dir / f"{config}-summary.json")
@@ -696,8 +1323,6 @@ def build_skill_creator_benchmark(iteration_dir: Path, workspace_root: Path, ski
         if eval_id is None:
             continue
         expectation_count = len(eval_item.get("expectations", []))
-        comparison_item = comparison_index.get(int(eval_id))
-        side_by_config = configuration_side_for_eval(skill_dir, int(eval_id))
 
         for configuration in ("with_skill", "without_skill"):
             summary = summaries.get(configuration)
@@ -705,49 +1330,61 @@ def build_skill_creator_benchmark(iteration_dir: Path, workspace_root: Path, ski
                 missing_runs.append(f"{skill_name} {configuration}: missing summary JSON")
                 continue
 
-            eval_row = next((row for row in summary.get("evals", []) if row.get("id") == eval_id), None)
-            if not eval_row:
-                missing_runs.append(f"{skill_name} eval-{eval_id} {configuration}: missing response summary row")
-                continue
-
-            response_path = skill_dir / eval_row["response_path"]
-            if not response_path.exists():
-                missing_runs.append(f"{skill_name} eval-{eval_id} {configuration}: missing response file")
-                continue
-
-            pass_rate = None
-            if comparison_item and side_by_config.get(configuration):
-                expectation_results = comparison_item.get("expectation_results", {})
-                side = side_by_config[configuration]
-                pass_rate = expectation_results.get(side, {}).get("pass_rate")
-
-            if pass_rate is None:
-                missing_runs.append(f"{skill_name} eval-{eval_id} {configuration}: missing blind expectation pass rate")
-                continue
-
-            passed = int(round(float(pass_rate) * expectation_count)) if expectation_count else 0
-            passed = max(0, min(expectation_count, passed))
-            failed = max(0, expectation_count - passed)
-            time_seconds = summary.get("summary", {}).get("elapsed_seconds_per_eval")
-
-            runs.append(
+            summary_runs = summary.get("runs") if isinstance(summary.get("runs"), list) and summary.get("runs") else [
                 {
-                    "eval_id": int(eval_id),
-                    "eval_name": f"eval-{eval_id}",
-                    "configuration": configuration,
                     "run_number": 1,
-                    "result": {
-                        "pass_rate": float(pass_rate),
-                        "passed": passed,
-                        "failed": failed,
-                        "total": expectation_count,
-                        "time_seconds": float(time_seconds) if time_seconds is not None else None,
-                        "errors": 0,
-                    },
-                    "expectations": [],
-                    "notes": [],
+                    "summary": summary.get("summary", {}),
+                    "evals": summary.get("evals", []),
                 }
-            )
+            ]
+
+            for run_entry in summary_runs:
+                run_number = coerce_int(run_entry.get("run_number")) or 1
+                eval_row = next((row for row in run_entry.get("evals", []) if row.get("id") == eval_id), None)
+                if not eval_row:
+                    missing_runs.append(f"{skill_name} eval-{eval_id} {configuration} run-{run_number}: missing response summary row")
+                    continue
+
+                response_path = skill_dir / eval_row["response_path"]
+                if not response_path.exists():
+                    missing_runs.append(f"{skill_name} eval-{eval_id} {configuration} run-{run_number}: missing response file")
+                    continue
+
+                comparison_item = comparison_index.get((int(eval_id), run_number))
+                side_by_config = configuration_side_for_eval(skill_dir, int(eval_id), run_number)
+                pass_rate = None
+                if comparison_item and side_by_config.get(configuration):
+                    expectation_results = comparison_item.get("expectation_results", {})
+                    side = side_by_config[configuration]
+                    pass_rate = expectation_results.get(side, {}).get("pass_rate")
+
+                if pass_rate is None:
+                    missing_runs.append(f"{skill_name} eval-{eval_id} {configuration} run-{run_number}: missing blind expectation pass rate")
+                    continue
+
+                passed = int(round(float(pass_rate) * expectation_count)) if expectation_count else 0
+                passed = max(0, min(expectation_count, passed))
+                failed = max(0, expectation_count - passed)
+                time_seconds = run_entry.get("summary", {}).get("elapsed_seconds_per_eval")
+
+                runs.append(
+                    {
+                        "eval_id": int(eval_id),
+                        "eval_name": f"eval-{eval_id}",
+                        "configuration": configuration,
+                        "run_number": run_number,
+                        "result": {
+                            "pass_rate": float(pass_rate),
+                            "passed": passed,
+                            "failed": failed,
+                            "total": expectation_count,
+                            "time_seconds": float(time_seconds) if time_seconds is not None else None,
+                            "errors": 0,
+                        },
+                        "expectations": [],
+                        "notes": [],
+                    }
+                )
 
     if missing_runs:
         notes.append("Missing or incomplete runs were omitted from the exported benchmark:")
@@ -785,7 +1422,7 @@ def build_skill_creator_benchmark(iteration_dir: Path, workspace_root: Path, ski
             "analyzer_model": "benchmark-suite-export",
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "evals_run": included_eval_ids,
-            "runs_per_configuration": 1,
+            "runs_per_configuration": max((run.get("run_number", 1) for run in runs), default=1),
         },
         "runs": runs,
         "run_summary": summary_by_config,
@@ -832,7 +1469,9 @@ def export_review_workspace(iteration_dir: Path, workspace_root: Path, skill_nam
     if not skill_dir.exists():
         raise FileNotFoundError(f"Missing skill results directory for '{skill_name}': {skill_dir}")
 
-    eval_definition = load_skill_eval_definition(workspace_root, skill_name)
+    eval_bundle = load_skill_eval_bundle(workspace_root, skill_name)
+    eval_definition = eval_bundle["public"]
+    grading_definition = eval_bundle["grading"]
 
     if output_dir.exists():
         shutil.rmtree(output_dir)
@@ -844,8 +1483,9 @@ def export_review_workspace(iteration_dir: Path, workspace_root: Path, skill_nam
         eval_id = eval_item.get("id")
         if eval_id is None:
             continue
+        grading_item = get_eval_entry(grading_definition, int(eval_id))
         for configuration in ("with_skill", "without_skill"):
-            response_path = skill_dir / f"eval-{eval_id}" / configuration / "response.md"
+            response_path = legacy_response_path(skill_dir, int(eval_id), configuration)
             if not response_path.exists():
                 missing_runs.append(
                     {
@@ -868,8 +1508,8 @@ def export_review_workspace(iteration_dir: Path, workspace_root: Path, skill_nam
                     "skill_name": skill_name,
                     "configuration": configuration,
                     "prompt": eval_item.get("prompt", ""),
-                    "expected_output": eval_item.get("expected_output", ""),
-                    "assertions": eval_item.get("expectations", []),
+                    "expected_output": grading_item.get("expected_output", ""),
+                    "assertions": grading_item.get("expectations", []),
                 },
             )
             exported_runs.append(
@@ -905,8 +1545,9 @@ def build_grader_bundle(
     output_dir = export_dir or (iteration_dir / skill_name / "_skill-creator-review-workspace")
     export_review_workspace(iteration_dir, workspace_root, skill_name, output_dir)
 
-    eval_definition = load_skill_eval_definition(workspace_root, skill_name)
-    eval_entry = get_eval_entry(eval_definition, eval_id)
+    eval_bundle = load_skill_eval_bundle(workspace_root, skill_name)
+    public_entry = get_eval_entry(eval_bundle["public"], eval_id)
+    grading_entry = get_eval_entry(eval_bundle["grading"], eval_id)
     run_dir = output_dir / f"eval-{eval_id}" / configuration
     outputs_dir = run_dir / "outputs"
     if not outputs_dir.exists():
@@ -930,9 +1571,13 @@ def build_grader_bundle(
         "eval_id": eval_id,
         "configuration": configuration,
         "grader_playbook": "skill-creator/agents/grader.md",
-        "prompt": eval_entry.get("prompt"),
-        "expected_output": eval_entry.get("expected_output"),
-        "expectations": eval_entry.get("expectations", []),
+        "prompt": public_entry.get("prompt"),
+        "expected_output": grading_entry.get("expected_output"),
+        "expectations": grading_entry.get("expectations", []),
+        "eval_artifacts": {
+            "evals_public_path": eval_bundle["paths"]["public"].relative_to(workspace_root).as_posix(),
+            "grading_spec_path": eval_bundle["paths"]["grading"].relative_to(workspace_root).as_posix(),
+        },
         "inputs": {
             "outputs_dir": outputs_dir.relative_to(workspace_root).as_posix(),
             "transcript_path": transcript_path,
@@ -946,6 +1591,8 @@ def build_benchmark_analysis_bundle(iteration_dir: Path, workspace_root: Path, s
     skill_dir = iteration_dir / skill_name
     if not skill_dir.exists():
         raise FileNotFoundError(f"Missing skill results directory for '{skill_name}': {skill_dir}")
+
+    eval_bundle = load_skill_eval_bundle(workspace_root, skill_name)
 
     previous_iteration = find_previous_iteration(iteration_dir.parent, iteration_dir)
     previous_paths = None
@@ -964,7 +1611,8 @@ def build_benchmark_analysis_bundle(iteration_dir: Path, workspace_root: Path, s
         "analyzer_playbook": "skill-creator/agents/analyzer.md",
         "inputs": {
             "skill_dir": skill_dir.relative_to(workspace_root).as_posix(),
-            "evals_path": (workspace_root / ".github" / "skills" / skill_name / "evals" / "evals.json").relative_to(workspace_root).as_posix(),
+            "evals_public_path": eval_bundle["paths"]["public"].relative_to(workspace_root).as_posix(),
+            "grading_spec_path": eval_bundle["paths"]["grading"].relative_to(workspace_root).as_posix(),
             "blind_comparisons_path": (skill_dir / "blind-comparisons.json").relative_to(workspace_root).as_posix(),
             "with_skill_summary_path": (skill_dir / "with_skill-summary.json").relative_to(workspace_root).as_posix(),
             "without_skill_summary_path": (skill_dir / "without_skill-summary.json").relative_to(workspace_root).as_posix(),
@@ -1047,7 +1695,7 @@ def benchmark_agent_plan(
         f"Automation entrypoint: use '{AUTOMATION_ENTRYPOINT}' for offline checks.",
         "The benchmark manager may delegate only to the constrained benchmark worker agents.",
         "Benchmark worker agents are read-only and set agents: [] so they cannot chain into unconstrained subagents.",
-        "MCP tools remain disabled for every benchmark agent.",
+        "All LikeC4 MCP tools (likec4/*) are allowed only in baseline, hook-only baseline, and with-skill workers; benchmark_manager and blind_compare keep MCP disabled.",
     ]
     if baseline_isolation == "hook-only":
         notes.append(
@@ -1061,22 +1709,40 @@ def benchmark_agent_plan(
         notes.append(
             f"For with_skill runs, open a fresh session with {BENCHMARK_AGENTS['with_skill']} and read only the target skill '{skill}'."
         )
+    notes.append(
+        "Default execution mode is parallel within each phase: launch independent worker sessions concurrently, then wait for all of them to finish before advancing the phase."
+    )
+    notes.append(
+        "Never overlap without_skill and with_skill phases; keep phase boundaries sequential even when workers inside a phase run in parallel."
+    )
 
     return {
         "iteration": iteration_dir.name,
+        "protocol_version": BENCHMARK_PROTOCOL_VERSION,
         "required_setting": {
             "chat.useCustomAgentHooks": True,
         },
         "agents": BENCHMARK_AGENTS,
         "baseline_isolation": baseline_isolation,
+        "parallelism": {
+            "default_policy": "parallel-within-phase",
+            "cross_phase_parallelism": "forbidden",
+            "unit_of_parallelism": "<skill, configuration, run_number>",
+            "phase_barrier": "wait for all tasks in the current phase before starting the next one",
+            "safe_parallel_condition": "parallelize only tasks whose output directories do not overlap",
+            "fallback_policy": "if runtime or platform limits are hit, reduce concurrency before falling back to serial execution",
+        },
         "entrypoints": {
             "interactive": INTERACTIVE_ENTRYPOINT,
             "automation": AUTOMATION_ENTRYPOINT,
+            "preflight": f"python test/scripts/skill_suite_tools.py protocol-preflight --iteration {iteration_dir.as_posix()} --workspace-root .",
         },
         "phases": [
             {
                 "phase": "without_skill",
                 "agent": baseline_agent,
+                "dispatch_mode": "parallel",
+                "parallel_scope": "<skill, run_number>",
                 "precondition": (
                     "Workspace skills were physically moved out of .github/skills/ and fresh workers were started afterwards."
                     if baseline_isolation != "hook-only"
@@ -1086,12 +1752,16 @@ def benchmark_agent_plan(
             {
                 "phase": "with_skill",
                 "agent": BENCHMARK_AGENTS["with_skill"],
+                "dispatch_mode": "parallel",
+                "parallel_scope": "<skill, run_number>",
                 "precondition": "Workspace skills were restored and each fresh worker stays inside one target skill directory.",
                 "target_skill": skill,
             },
             {
                 "phase": "blind_compare",
                 "agent": BENCHMARK_AGENTS["blind_compare"],
+                "dispatch_mode": "parallel",
+                "parallel_scope": "<skill, eval_id, run_number>",
                 "precondition": "Only blind A/B artifacts and the target eval definitions are exposed to the comparator.",
             },
         ],
@@ -1120,52 +1790,73 @@ def validate_blind_isolation(iteration_dir: Path) -> dict[str, Any]:
                     )
 
         for eval_dir in sorted(skill_dir.glob("eval-*"), key=lambda path: path.name):
-            blind_dir = eval_dir / "blind"
-            if not blind_dir.exists():
+            blind_root = eval_dir / "blind"
+            if not blind_root.exists():
                 continue
             checked_evals += 1
 
-            for required_name in ("A.md", "B.md"):
-                if not (blind_dir / required_name).exists():
+            run_dirs: list[Path] = []
+            if (blind_root / "A.md").exists() or (blind_root / "B.md").exists():
+                run_dirs.append(blind_root)
+            run_dirs.extend(
+                sorted(
+                    [child for child in blind_root.iterdir() if child.is_dir() and RUN_DIR_RE.match(child.name)],
+                    key=lambda path: int(path.name.split("-", 1)[1]),
+                )
+            )
+            if not run_dirs:
+                run_dirs = [blind_root]
+
+            for run_dir in run_dirs:
+                if run_dir != blind_root and run_dir.parent != blind_root:
+                    continue
+
+                run_number = 1
+                if run_dir != blind_root:
+                    run_number = int(run_dir.name.split("-", 1)[1])
+
+                for required_name in ("A.md", "B.md"):
+                    if not (run_dir / required_name).exists():
+                        issues.append(
+                            {
+                                "skill": skill_dir.name,
+                                "path": run_dir.relative_to(iteration_dir).as_posix(),
+                                "issue": f"missing {required_name}",
+                            }
+                        )
+
+                extra_files = sorted(
+                    child.name
+                    for child in run_dir.iterdir()
+                    if child.is_file() and child.name not in {"A.md", "B.md"}
+                )
+                if extra_files:
                     issues.append(
                         {
                             "skill": skill_dir.name,
-                            "path": blind_dir.relative_to(iteration_dir).as_posix(),
-                            "issue": f"missing {required_name}",
+                            "path": run_dir.relative_to(iteration_dir).as_posix(),
+                            "issue": f"unexpected files in blind directory: {', '.join(extra_files)}",
                         }
                     )
 
-            extra_files = sorted(
-                child.name
-                for child in blind_dir.iterdir()
-                if child.is_file() and child.name not in {"A.md", "B.md"}
-            )
-            if extra_files:
-                issues.append(
-                    {
-                        "skill": skill_dir.name,
-                        "path": blind_dir.relative_to(iteration_dir).as_posix(),
-                        "issue": f"unexpected files in blind directory: {', '.join(extra_files)}",
-                    }
-                )
+                if (run_dir / "blind-map.json").exists():
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "path": run_dir.relative_to(iteration_dir).as_posix(),
+                            "issue": "blind-map.json must stay outside the blind/ directory",
+                        }
+                    )
 
-            if (blind_dir / "blind-map.json").exists():
-                issues.append(
-                    {
-                        "skill": skill_dir.name,
-                        "path": blind_dir.relative_to(iteration_dir).as_posix(),
-                        "issue": "blind-map.json must stay outside the blind/ directory",
-                    }
-                )
-
-            if not (eval_dir / "blind-map.json").exists():
-                issues.append(
-                    {
-                        "skill": skill_dir.name,
-                        "path": eval_dir.relative_to(iteration_dir).as_posix(),
-                        "issue": "missing blind-map.json beside the eval directory",
-                    }
-                )
+                expected_map_path = blind_map_path(eval_dir, run_number)
+                if not expected_map_path.exists():
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "path": eval_dir.relative_to(iteration_dir).as_posix(),
+                            "issue": f"missing {expected_map_path.name} beside the eval directory",
+                        }
+                    )
 
     return {
         "iteration": iteration_dir.name,
@@ -1190,8 +1881,17 @@ def run_command(command: list[str], workspace_root: Path) -> dict[str, Any]:
 
 def run_self_test(iteration_dir: Path, workspace_root: Path, baseline_isolation: str) -> dict[str, Any]:
     policy_test = run_command([sys.executable, "test/scripts/test_benchmark_agent_policy.py"], workspace_root)
+    harness_test = run_command([sys.executable, "test/scripts/test_skill_suite_tools.py"], workspace_root)
     blind_isolation = validate_blind_isolation(iteration_dir)
     viewer_script = locate_skill_creator_viewer_script(workspace_root)
+    eval_artifacts = validate_workspace_eval_artifacts(workspace_root)
+    manifest_path = protocol_manifest_path(workspace_root)
+    protocol_check = validate_protocol_manifest(workspace_root, manifest_path) if manifest_path.exists() else {
+        "manifest_path": manifest_path.relative_to(workspace_root).as_posix(),
+        "issue_count": 1,
+        "issues": [{"path": manifest_path.relative_to(workspace_root).as_posix(), "problem": "missing file"}],
+        "passed": False,
+    }
     plan = benchmark_agent_plan(iteration_dir, baseline_isolation=baseline_isolation)
 
     checks = [
@@ -1203,6 +1903,20 @@ def run_self_test(iteration_dir: Path, workspace_root: Path, baseline_isolation:
             "name": "blind_isolation",
             "passed": bool(blind_isolation.get("passed")),
             "issue_count": blind_isolation.get("issue_count", 0),
+        },
+        {
+            "name": "harness_tests",
+            **harness_test,
+        },
+        {
+            "name": "eval_artifacts",
+            "passed": bool(eval_artifacts.get("passed")),
+            "issue_count": eval_artifacts.get("issue_count", 0),
+        },
+        {
+            "name": "protocol_manifest",
+            "passed": bool(protocol_check.get("passed")),
+            "issue_count": protocol_check.get("issue_count", 0),
         },
         {
             "name": "workspace_skill_creator",
@@ -1218,7 +1932,10 @@ def run_self_test(iteration_dir: Path, workspace_root: Path, baseline_isolation:
         "automation_entrypoint": AUTOMATION_ENTRYPOINT,
         "checks": checks,
         "policy_test": policy_test,
+        "harness_test": harness_test,
         "blind_isolation": blind_isolation,
+        "eval_artifacts": eval_artifacts,
+        "protocol_manifest": protocol_check,
         "agent_plan": plan,
         "passed": all(check.get("passed") for check in checks),
     }
@@ -1271,6 +1988,29 @@ def validate_iteration_metrics(iteration_dir: Path) -> dict[str, Any]:
                         "missing_keys": missing_keys,
                     }
                 )
+            for run_entry in metrics.get("runs", []) if isinstance(metrics.get("runs"), list) else []:
+                if not isinstance(run_entry, dict):
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "configuration": config,
+                            "path": relative_path,
+                            "problem": "invalid-run-entry",
+                        }
+                    )
+                    continue
+                run_missing_keys = validate_run_metrics_payload(run_entry)
+                if run_missing_keys:
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "configuration": config,
+                            "path": relative_path,
+                            "problem": "missing-or-null-run-keys",
+                            "run_number": run_entry.get("run_number"),
+                            "missing_keys": run_missing_keys,
+                        }
+                    )
 
     summary = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -1324,36 +2064,52 @@ def prepare_blind(iteration_dir: Path) -> dict[str, Any]:
     prepared: list[dict[str, Any]] = []
     for skill_dir in skill_dirs(iteration_dir):
         for eval_dir in sorted(skill_dir.glob("eval-*"), key=lambda path: path.name):
-            with_response = eval_dir / "with_skill" / "response.md"
-            without_response = eval_dir / "without_skill" / "response.md"
-            if not with_response.exists() or not without_response.exists():
-                continue
-
-            blind_dir = eval_dir / "blind"
-            blind_dir.mkdir(parents=True, exist_ok=True)
-
-            seed = hashlib.sha256(f"{iteration_dir.name}:{skill_dir.name}:{eval_dir.name}".encode("utf-8")).hexdigest()
-            swap = int(seed[:2], 16) % 2 == 1
-            mapping = {
-                "A": "without_skill" if swap else "with_skill",
-                "B": "with_skill" if swap else "without_skill",
-            }
-            source_by_config = {
-                "with_skill": with_response,
-                "without_skill": without_response,
-            }
-
-            write_text(blind_dir / "A.md", source_by_config[mapping["A"]].read_text(encoding="utf-8"))
-            write_text(blind_dir / "B.md", source_by_config[mapping["B"]].read_text(encoding="utf-8"))
-            write_json(eval_dir / "blind-map.json", mapping)
-
-            prepared.append(
-                {
-                    "skill": skill_dir.name,
-                    "eval": eval_dir.name,
-                    "mapping": mapping,
-                }
+            eval_id = int(eval_dir.name.split("-", 1)[1])
+            run_numbers = sorted(
+                set(discover_run_numbers(skill_dir, "with_skill"))
+                & set(discover_run_numbers(skill_dir, "without_skill"))
             )
+            for run_number in run_numbers:
+                with_response = resolve_response_path(skill_dir, eval_id, "with_skill", run_number)
+                without_response = resolve_response_path(skill_dir, eval_id, "without_skill", run_number)
+                if with_response is None or without_response is None:
+                    continue
+
+                blind_dir = blind_dir_for_run(eval_dir, run_number)
+                blind_dir.mkdir(parents=True, exist_ok=True)
+
+                seed = hashlib.sha256(
+                    f"{iteration_dir.name}:{skill_dir.name}:{eval_dir.name}:{run_label(run_number)}".encode("utf-8")
+                ).hexdigest()
+                swap = int(seed[:2], 16) % 2 == 1
+                mapping = {
+                    "A": "without_skill" if swap else "with_skill",
+                    "B": "with_skill" if swap else "without_skill",
+                }
+                source_by_config = {
+                    "with_skill": with_response,
+                    "without_skill": without_response,
+                }
+
+                write_text(blind_dir / "A.md", source_by_config[mapping["A"]].read_text(encoding="utf-8"))
+                write_text(blind_dir / "B.md", source_by_config[mapping["B"]].read_text(encoding="utf-8"))
+                write_json(blind_map_path(eval_dir, run_number), mapping)
+
+                if run_number == 1:
+                    legacy_dir = legacy_blind_dir(eval_dir)
+                    legacy_dir.mkdir(parents=True, exist_ok=True)
+                    write_text(legacy_dir / "A.md", source_by_config[mapping["A"]].read_text(encoding="utf-8"))
+                    write_text(legacy_dir / "B.md", source_by_config[mapping["B"]].read_text(encoding="utf-8"))
+                    write_json(eval_dir / "blind-map.json", mapping)
+
+                prepared.append(
+                    {
+                        "skill": skill_dir.name,
+                        "eval": eval_dir.name,
+                        "run_number": run_number,
+                        "mapping": mapping,
+                    }
+                )
 
     summary = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -1374,6 +2130,232 @@ def load_comparisons(path: Path) -> list[dict[str, Any]]:
     raise ValueError(f"Unsupported comparison format in {path}")
 
 
+def load_likec4_reference_data(workspace_root: Path) -> dict[str, Any]:
+    spec_paths = [
+        workspace_root / "projects" / "shared" / name
+        for name in (
+            "spec-global.c4",
+            "spec-context.c4",
+            "spec-containers.c4",
+            "spec-components.c4",
+            "spec-deployment.c4",
+        )
+    ]
+    kinds: set[str] = set()
+    relationships: set[str] = set()
+    for path in spec_paths:
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        kinds.update(re.findall(r"^\s*element\s+([A-Za-z_][\w]*)\s*\{", text, flags=re.MULTILINE))
+        kinds.update(re.findall(r"^\s*deploymentNode\s+([A-Za-z_][\w]*)\s*\{", text, flags=re.MULTILINE))
+        relationships.update(re.findall(r"^\s*relationship\s+([A-Za-z_][\w]*)\s*\{", text, flags=re.MULTILINE))
+    return {
+        "known_kinds": sorted(kinds),
+        "known_relationships": sorted(relationships),
+    }
+
+
+def extract_likec4_snippets(response_text: str) -> list[str]:
+    snippets: list[str] = []
+    fence_pattern = re.compile(r"```(?:likec4|c4|txt|text)?\n(.*?)```", re.IGNORECASE | re.DOTALL)
+    for match in fence_pattern.finditer(response_text):
+        snippet = match.group(1).strip()
+        if snippet and any(marker in snippet for marker in ("=", "->", "view", "views", "deployment", "{")):
+            snippets.append(snippet)
+
+    if snippets:
+        return snippets
+
+    inline_candidates: list[list[str]] = []
+    current: list[str] = []
+    inline_pattern = re.compile(
+        r"(^\s*[A-Za-z_][\w.]*\s*=\s*[A-Za-z_][\w]*\b)|(^\s*[A-Za-z_][\w.]*\s*->\s*[A-Za-z_][\w.]*\b)|(^\s*(views?|deployment|model)\b)|(^\s*[{}]\s*$)",
+        re.IGNORECASE,
+    )
+    for line in response_text.splitlines():
+        if inline_pattern.search(line):
+            current.append(line)
+            continue
+        if current:
+            inline_candidates.append(current)
+            current = []
+    if current:
+        inline_candidates.append(current)
+
+    for block in inline_candidates:
+        snippet = "\n".join(block).strip()
+        if snippet:
+            snippets.append(snippet)
+    return snippets
+
+
+def analyze_likec4_snippet(snippet: str, reference_data: dict[str, Any]) -> dict[str, Any]:
+    known_kinds = set(reference_data.get("known_kinds", []))
+    known_relationships = set(reference_data.get("known_relationships", []))
+    errors: list[str] = []
+    warnings: list[str] = []
+    declared_symbols: set[str] = set()
+
+    brace_balance = 0
+    for character in snippet:
+        if character == "{":
+            brace_balance += 1
+        elif character == "}":
+            brace_balance -= 1
+        if brace_balance < 0:
+            errors.append("Closing brace appears before a matching opening brace.")
+            break
+    if brace_balance != 0:
+        errors.append("Braces are not balanced.")
+
+    declaration_pattern = re.compile(r"^\s*([A-Za-z_][\w.]*)\s*=\s*([A-Za-z_][\w]*)\b", re.MULTILINE)
+    for match in declaration_pattern.finditer(snippet):
+        symbol = match.group(1)
+        kind = match.group(2)
+        declared_symbols.add(symbol.split(".")[-1])
+        if kind not in known_kinds:
+            errors.append(f"Unknown LikeC4 kind '{kind}'.")
+
+    relationship_pattern = re.compile(r"^\s*([A-Za-z_][\w.]*)\s*->\s*([A-Za-z_][\w.]*)(.*)$", re.MULTILINE)
+    for match in relationship_pattern.finditer(snippet):
+        source = match.group(1)
+        target = match.group(2)
+        tail = match.group(3).strip()
+
+        for endpoint in (source, target):
+            leaf = endpoint.split(".")[-1]
+            if "." not in endpoint and leaf not in declared_symbols:
+                warnings.append(f"Reference '{endpoint}' is not declared inside the snippet (may rely on surrounding model context).")
+
+        if tail and not tail.startswith('"') and not tail.startswith("{") and not tail.startswith("//"):
+            relationship_kind = tail.split()[0]
+            if relationship_kind not in known_relationships:
+                errors.append(f"Unknown relationship kind '{relationship_kind}'.")
+
+    return {
+        "snippet": snippet,
+        "valid": len(errors) == 0,
+        "error_count": len(errors),
+        "warning_count": len(warnings),
+        "errors": errors,
+        "warnings": warnings,
+    }
+
+
+def analyze_likec4_response(response_text: str, reference_data: dict[str, Any]) -> dict[str, Any]:
+    snippets = extract_likec4_snippets(response_text)
+    if not snippets:
+        return {
+            "status": "not_applicable",
+            "snippet_count": 0,
+            "valid_snippet_count": 0,
+            "error_count": 0,
+            "warning_count": 0,
+            "snippets": [],
+        }
+
+    analyses = [analyze_likec4_snippet(snippet, reference_data) for snippet in snippets]
+    return {
+        "status": "checked",
+        "snippet_count": len(analyses),
+        "valid_snippet_count": sum(1 for item in analyses if item["valid"]),
+        "error_count": sum(item["error_count"] for item in analyses),
+        "warning_count": sum(item["warning_count"] for item in analyses),
+        "snippets": analyses,
+    }
+
+
+def validate_executable_checks(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]:
+    reference_data = load_likec4_reference_data(workspace_root)
+    summaries: list[dict[str, Any]] = []
+
+    for skill_dir in skill_dirs(iteration_dir):
+        eval_definition = load_skill_eval_public_definition(workspace_root, skill_dir.name)
+        eval_ids = [item.get("id") for item in eval_definition.get("evals", []) if isinstance(item.get("id"), int)]
+        for configuration in ("with_skill", "without_skill"):
+            run_numbers = discover_run_numbers(skill_dir, configuration)
+            eval_results: list[dict[str, Any]] = []
+            applicable_eval_count = 0
+            valid_eval_count = 0
+            snippet_count_total = 0
+            error_count_total = 0
+            warning_count_total = 0
+
+            for run_number in run_numbers:
+                for eval_id in eval_ids:
+                    response_path = resolve_response_path(skill_dir, int(eval_id), configuration, run_number)
+                    if response_path is None:
+                        continue
+                    analysis = analyze_likec4_response(response_path.read_text(encoding="utf-8"), reference_data)
+                    if analysis["status"] == "checked":
+                        applicable_eval_count += 1
+                        if analysis["error_count"] == 0:
+                            valid_eval_count += 1
+                    snippet_count_total += analysis["snippet_count"]
+                    error_count_total += analysis["error_count"]
+                    warning_count_total += analysis["warning_count"]
+                    eval_results.append(
+                        {
+                            "id": eval_id,
+                            "run_number": run_number,
+                            "response_path": response_path.relative_to(skill_dir).as_posix(),
+                            **analysis,
+                        }
+                    )
+
+            summary = {
+                "iteration": iteration_dir.name,
+                "skill_name": skill_dir.name,
+                "configuration": configuration,
+                "checked_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "run_count": len(run_numbers),
+                "summary": {
+                    "applicable_eval_count": applicable_eval_count,
+                    "valid_eval_count": valid_eval_count,
+                    "valid_eval_rate": round(valid_eval_count / applicable_eval_count, 4) if applicable_eval_count else None,
+                    "snippet_count_total": snippet_count_total,
+                    "error_count_total": error_count_total,
+                    "warning_count_total": warning_count_total,
+                },
+                "evals": eval_results,
+            }
+            output_path = skill_dir / f"{configuration}-executable-checks.json"
+            write_json(output_path, summary)
+            summaries.append(
+                {
+                    "skill": skill_dir.name,
+                    "configuration": configuration,
+                    "output_path": output_path.relative_to(workspace_root).as_posix(),
+                    "applicable_eval_count": applicable_eval_count,
+                    "valid_eval_rate": summary["summary"]["valid_eval_rate"],
+                }
+            )
+
+    report = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "iteration": iteration_dir.name,
+        "summary_count": len(summaries),
+        "summaries": summaries,
+    }
+    write_json(iteration_dir / "_meta" / "executable-checks-summary.json", report)
+    return report
+
+
+def load_executable_check_metrics(path: Path) -> dict[str, Any] | None:
+    if not path.exists():
+        return None
+    data = read_json(path)
+    return {
+        "applicable_eval_count": data.get("summary", {}).get("applicable_eval_count"),
+        "valid_eval_count": data.get("summary", {}).get("valid_eval_count"),
+        "valid_eval_rate": data.get("summary", {}).get("valid_eval_rate"),
+        "snippet_count_total": data.get("summary", {}).get("snippet_count_total"),
+        "error_count_total": data.get("summary", {}).get("error_count_total"),
+        "warning_count_total": data.get("summary", {}).get("warning_count_total"),
+    }
+
+
 def load_summary_metrics(path: Path) -> dict[str, Any]:
     data = read_json(path)
     summary = data.get("summary", {})
@@ -1385,6 +2367,9 @@ def load_summary_metrics(path: Path) -> dict[str, Any]:
         "files_read_count": summary.get("files_read_count"),
         "files_written_count": summary.get("files_written_count"),
         "eval_count": len(data.get("evals", [])),
+        "run_count": data.get("run_count", len(data.get("runs", [])) or 1),
+        "variance": data.get("variance", {}),
+        "high_variance_evals": data.get("high_variance_evals", []),
     }
 
 
@@ -1392,27 +2377,46 @@ def comparison_metrics(skill_dir: Path, comparison_items: list[dict[str, Any]]) 
     with_win_count = 0
     without_win_count = 0
     ties = 0
+    with_win_indicators: list[float] = []
+    without_win_indicators: list[float] = []
     with_expectation_rates: list[float] = []
     without_expectation_rates: list[float] = []
+    expectation_deltas: list[float] = []
     with_rubric_scores: list[float] = []
     without_rubric_scores: list[float] = []
+    rubric_deltas: list[float] = []
+    per_eval_records: dict[int, list[dict[str, Any]]] = {}
 
     for item in comparison_items:
         eval_id = item.get("eval_id")
-        eval_dir = skill_dir / f"eval-{eval_id}"
-        blind_map_path = eval_dir / "blind-map.json"
-        if not blind_map_path.exists():
+        if not isinstance(eval_id, int):
             continue
-        mapping = read_json(blind_map_path)
+        run_number = coerce_int(item.get("run_number")) or 1
+        eval_dir = skill_dir / f"eval-{eval_id}"
+        mapping_path = blind_map_path(eval_dir, run_number)
+        if not mapping_path.exists() and run_number == 1:
+            mapping_path = eval_dir / "blind-map.json"
+        if not mapping_path.exists():
+            continue
+        mapping = read_json(mapping_path)
         reverse_mapping = {config: side for side, config in mapping.items()}
 
         winner = item.get("winner")
+        winner_outcome = "TIE"
         if winner == "TIE":
             ties += 1
+            with_win_indicators.append(0.0)
+            without_win_indicators.append(0.0)
         elif mapping.get(winner) == "with_skill":
             with_win_count += 1
+            with_win_indicators.append(1.0)
+            without_win_indicators.append(0.0)
+            winner_outcome = "with_skill"
         elif mapping.get(winner) == "without_skill":
             without_win_count += 1
+            with_win_indicators.append(0.0)
+            without_win_indicators.append(1.0)
+            winner_outcome = "without_skill"
 
         expectation_results = item.get("expectation_results", {})
         rubric = item.get("rubric", {})
@@ -1420,15 +2424,46 @@ def comparison_metrics(skill_dir: Path, comparison_items: list[dict[str, Any]]) 
         with_side = reverse_mapping.get("with_skill")
         without_side = reverse_mapping.get("without_skill")
 
+        with_expectation_rate = None
+        without_expectation_rate = None
         if with_side and with_side in expectation_results:
-            with_expectation_rates.append(expectation_results[with_side].get("pass_rate", 0.0))
+            with_expectation_rate = expectation_results[with_side].get("pass_rate", 0.0)
+            with_expectation_rates.append(with_expectation_rate)
         if without_side and without_side in expectation_results:
-            without_expectation_rates.append(expectation_results[without_side].get("pass_rate", 0.0))
+            without_expectation_rate = expectation_results[without_side].get("pass_rate", 0.0)
+            without_expectation_rates.append(without_expectation_rate)
 
+        with_rubric_score = None
+        without_rubric_score = None
         if with_side and with_side in rubric:
-            with_rubric_scores.append(rubric[with_side].get("overall_score", 0.0))
+            with_rubric_score = rubric[with_side].get("overall_score", 0.0)
+            with_rubric_scores.append(with_rubric_score)
         if without_side and without_side in rubric:
-            without_rubric_scores.append(rubric[without_side].get("overall_score", 0.0))
+            without_rubric_score = rubric[without_side].get("overall_score", 0.0)
+            without_rubric_scores.append(without_rubric_score)
+
+        expectation_delta = None
+        if with_expectation_rate is not None and without_expectation_rate is not None:
+            expectation_delta = round(float(with_expectation_rate) - float(without_expectation_rate), 4)
+            expectation_deltas.append(expectation_delta)
+
+        rubric_delta = None
+        if with_rubric_score is not None and without_rubric_score is not None:
+            rubric_delta = round(float(with_rubric_score) - float(without_rubric_score), 4)
+            rubric_deltas.append(rubric_delta)
+
+        per_eval_records.setdefault(eval_id, []).append(
+            {
+                "run_number": run_number,
+                "winner_outcome": winner_outcome,
+                "with_expectation_rate": with_expectation_rate,
+                "without_expectation_rate": without_expectation_rate,
+                "expectation_delta": expectation_delta,
+                "with_rubric_score": with_rubric_score,
+                "without_rubric_score": without_rubric_score,
+                "rubric_delta": rubric_delta,
+            }
+        )
 
     total_resolved = with_win_count + without_win_count + ties
     with_win_rate = (with_win_count / total_resolved) if total_resolved else None
@@ -1439,6 +2474,26 @@ def comparison_metrics(skill_dir: Path, comparison_items: list[dict[str, Any]]) 
     with_rubric_mean = safe_mean(with_rubric_scores)
     without_rubric_mean = safe_mean(without_rubric_scores)
 
+    per_eval_variance: list[dict[str, Any]] = []
+    high_variance_evals: list[dict[str, Any]] = []
+    for eval_id, records in sorted(per_eval_records.items()):
+        expectation_delta_values = [value["expectation_delta"] for value in records if value.get("expectation_delta") is not None]
+        rubric_delta_values = [value["rubric_delta"] for value in records if value.get("rubric_delta") is not None]
+        winner_outcomes = sorted({value["winner_outcome"] for value in records})
+        entry = {
+            "id": eval_id,
+            "run_count": len(records),
+            "winner_outcomes": winner_outcomes,
+            "winner_flips": len(winner_outcomes) > 1,
+            "expectation_delta_stats": calculate_benchmark_stats(expectation_delta_values) if expectation_delta_values else None,
+            "rubric_delta_stats": calculate_benchmark_stats(rubric_delta_values) if rubric_delta_values else None,
+        }
+        per_eval_variance.append(entry)
+        expectation_stddev = entry["expectation_delta_stats"]["stddev"] if entry["expectation_delta_stats"] else 0.0
+        rubric_stddev = entry["rubric_delta_stats"]["stddev"] if entry["rubric_delta_stats"] else 0.0
+        if entry["winner_flips"] or expectation_stddev >= HIGH_VARIANCE_EXPECTATION_STDDEV or rubric_stddev >= HIGH_VARIANCE_RUBRIC_STDDEV:
+            high_variance_evals.append(entry)
+
     return {
         "blind": {
             "with_skill_wins": with_win_count,
@@ -1446,18 +2501,34 @@ def comparison_metrics(skill_dir: Path, comparison_items: list[dict[str, Any]]) 
             "ties": ties,
             "with_skill_win_rate": round_or_none(with_win_rate),
             "without_skill_win_rate": round_or_none(without_win_rate),
+            "variance": {
+                "with_skill_win_rate": calculate_benchmark_stats(with_win_indicators) if with_win_indicators else None,
+                "without_skill_win_rate": calculate_benchmark_stats(without_win_indicators) if without_win_indicators else None,
+            },
         },
         "expectation_pass_rate": {
             "with_skill": with_expectation_mean,
             "without_skill": without_expectation_mean,
             "delta": delta_or_none(with_expectation_mean, without_expectation_mean),
+            "variance": {
+                "with_skill": calculate_benchmark_stats(with_expectation_rates) if with_expectation_rates else None,
+                "without_skill": calculate_benchmark_stats(without_expectation_rates) if without_expectation_rates else None,
+                "delta": calculate_benchmark_stats(expectation_deltas) if expectation_deltas else None,
+            },
         },
         "rubric_score": {
             "with_skill": with_rubric_mean,
             "without_skill": without_rubric_mean,
             "delta": delta_or_none(with_rubric_mean, without_rubric_mean),
+            "variance": {
+                "with_skill": calculate_benchmark_stats(with_rubric_scores) if with_rubric_scores else None,
+                "without_skill": calculate_benchmark_stats(without_rubric_scores) if without_rubric_scores else None,
+                "delta": calculate_benchmark_stats(rubric_deltas) if rubric_deltas else None,
+            },
         },
         "comparison_count": total_resolved,
+        "per_eval_variance": per_eval_variance,
+        "high_variance_evals": high_variance_evals,
     }
 
 
@@ -1465,32 +2536,55 @@ def build_skill_row(skill_dir: Path, workspace_root: Path) -> dict[str, Any] | N
     with_summary_path = skill_dir / "with_skill-summary.json"
     without_summary_path = skill_dir / "without_skill-summary.json"
     comparisons_path = skill_dir / "blind-comparisons.json"
-    skill_eval_path = workspace_root / ".github" / "skills" / skill_dir.name / "evals" / "evals.json"
+    eval_bundle = load_skill_eval_bundle(workspace_root, skill_dir.name)
 
-    if not with_summary_path.exists() or not without_summary_path.exists() or not comparisons_path.exists() or not skill_eval_path.exists():
+    if not with_summary_path.exists() or not without_summary_path.exists() or not comparisons_path.exists():
         return None
 
     with_metrics = load_summary_metrics(with_summary_path)
     without_metrics = load_summary_metrics(without_summary_path)
     comparison_items = load_comparisons(comparisons_path)
     capability = comparison_metrics(skill_dir, comparison_items)
-    eval_def = read_json(skill_eval_path)
+    eval_def = eval_bundle["public"]
     eval_count = len(eval_def.get("evals", []))
+    with_executable = load_executable_check_metrics(skill_dir / "with_skill-executable-checks.json")
+    without_executable = load_executable_check_metrics(skill_dir / "without_skill-executable-checks.json")
+
+    high_variance_evals = []
+    seen_variance_keys: set[tuple[str, int]] = set()
+    for source, metrics in (("with_skill", with_metrics), ("without_skill", without_metrics)):
+        for item in metrics.get("high_variance_evals", []):
+            eval_id = coerce_int(item.get("id"))
+            if eval_id is None:
+                continue
+            key = (source, eval_id)
+            if key not in seen_variance_keys:
+                seen_variance_keys.add(key)
+                high_variance_evals.append({"source": source, **item})
+    for item in capability.get("high_variance_evals", []):
+        eval_id = coerce_int(item.get("id"))
+        key = ("blind", eval_id or -1)
+        if key not in seen_variance_keys:
+            seen_variance_keys.add(key)
+            high_variance_evals.append({"source": "blind", **item})
 
     return {
         "skill": skill_dir.name,
         "eval_count": eval_count,
+        "run_count": max(with_metrics.get("run_count", 1), without_metrics.get("run_count", 1)),
         "capability": capability,
         "consumption": {
             "with_skill": {
                 "response_words_per_eval": with_metrics.get("response_words_per_eval"),
                 "files_read_count": with_metrics.get("files_read_count"),
                 "files_written_count": with_metrics.get("files_written_count"),
+                "variance": with_metrics.get("variance", {}),
             },
             "without_skill": {
                 "response_words_per_eval": without_metrics.get("response_words_per_eval"),
                 "files_read_count": without_metrics.get("files_read_count"),
                 "files_written_count": without_metrics.get("files_written_count"),
+                "variance": without_metrics.get("variance", {}),
             },
             "delta": {
                 "response_words_per_eval": delta_or_none(with_metrics.get("response_words_per_eval"), without_metrics.get("response_words_per_eval")),
@@ -1502,16 +2596,29 @@ def build_skill_row(skill_dir: Path, workspace_root: Path) -> dict[str, Any] | N
             "with_skill": {
                 "elapsed_seconds_total": with_metrics.get("elapsed_seconds_total"),
                 "elapsed_seconds_per_eval": with_metrics.get("elapsed_seconds_per_eval"),
+                "variance": with_metrics.get("variance", {}),
             },
             "without_skill": {
                 "elapsed_seconds_total": without_metrics.get("elapsed_seconds_total"),
                 "elapsed_seconds_per_eval": without_metrics.get("elapsed_seconds_per_eval"),
+                "variance": without_metrics.get("variance", {}),
             },
             "delta": {
                 "elapsed_seconds_total": delta_or_none(with_metrics.get("elapsed_seconds_total"), without_metrics.get("elapsed_seconds_total")),
                 "elapsed_seconds_per_eval": delta_or_none(with_metrics.get("elapsed_seconds_per_eval"), without_metrics.get("elapsed_seconds_per_eval")),
             },
         },
+        "executable_validity": {
+            "with_skill": with_executable,
+            "without_skill": without_executable,
+            "delta": {
+                "valid_eval_rate": delta_or_none(
+                    with_executable.get("valid_eval_rate") if with_executable else None,
+                    without_executable.get("valid_eval_rate") if without_executable else None,
+                ),
+            },
+        },
+        "high_variance_evals": high_variance_evals,
     }
 
 
@@ -1528,6 +2635,9 @@ def suite_overview_rows(skill_rows: list[dict[str, Any]]) -> list[dict[str, Any]
                 "time_delta_per_eval": row["time"]["delta"]["elapsed_seconds_per_eval"],
                 "words_delta_per_eval": row["consumption"]["delta"]["response_words_per_eval"],
                 "files_read_delta": row["consumption"]["delta"]["files_read_count"],
+                "executable_delta": row["executable_validity"]["delta"]["valid_eval_rate"],
+                "run_count": row.get("run_count", 1),
+                "high_variance_eval_count": len(row.get("high_variance_evals", [])),
             }
         )
     return rows
@@ -1546,46 +2656,110 @@ def summarize_config(skill_dir: Path, config: str, evals_path: Path, metrics_pat
             f"Incomplete run metrics for {skill_dir.name} {config}: missing/null keys {missing_metric_keys} in {metrics_file}"
         )
 
-    eval_rows: list[dict[str, Any]] = []
-    total_words = 0
+    run_entries = metrics.get("runs") if isinstance(metrics.get("runs"), list) and metrics.get("runs") else [metrics]
+    run_summaries: list[dict[str, Any]] = []
+    response_word_samples: dict[int, list[float]] = {}
 
-    for eval_item in eval_definition.get("evals", []):
-        eval_id = eval_item.get("id")
-        response_path = skill_dir / f"eval-{eval_id}" / config / "response.md"
-        if not response_path.exists():
-            raise FileNotFoundError(f"Missing response for {skill_dir.name} {config} eval-{eval_id}: {response_path}")
+    for index, run_metrics in enumerate(run_entries, start=1):
+        run_number = coerce_int(run_metrics.get("run_number")) or index
+        eval_rows: list[dict[str, Any]] = []
+        total_words = 0
 
-        response_text = response_path.read_text(encoding="utf-8")
-        response_words = count_words(response_text)
-        total_words += response_words
-        eval_rows.append(
+        for eval_item in eval_definition.get("evals", []):
+            eval_id = eval_item.get("id")
+            response_path = resolve_response_path(skill_dir, int(eval_id), config, run_number) if eval_id is not None else None
+            if response_path is None:
+                raise FileNotFoundError(
+                    f"Missing response for {skill_dir.name} {config} eval-{eval_id} run-{run_number}"
+                )
+
+            response_text = response_path.read_text(encoding="utf-8")
+            response_words = count_words(response_text)
+            total_words += response_words
+            response_word_samples.setdefault(int(eval_id), []).append(float(response_words))
+            eval_rows.append(
+                {
+                    "id": eval_id,
+                    "run_number": run_number,
+                    "response_path": response_path.relative_to(skill_dir).as_posix(),
+                    "response_words": response_words,
+                }
+            )
+
+        eval_count = len(eval_rows)
+        elapsed_seconds_total = coerce_float(run_metrics.get("elapsed_seconds_total"))
+        elapsed_seconds_per_eval = None
+        if elapsed_seconds_total is not None and eval_count:
+            elapsed_seconds_per_eval = round(float(elapsed_seconds_total) / eval_count, 4)
+
+        run_summaries.append(
             {
-                "id": eval_id,
-                "response_path": response_path.relative_to(skill_dir).as_posix(),
-                "response_words": response_words,
+                "run_number": run_number,
+                "summary": {
+                    "elapsed_seconds_total": round_or_none(elapsed_seconds_total),
+                    "elapsed_seconds_per_eval": elapsed_seconds_per_eval,
+                    "response_words_total": total_words,
+                    "response_words_per_eval": round_or_none(total_words / eval_count) if eval_count else None,
+                    "files_read_count": run_metrics.get("files_read_count"),
+                    "files_written_count": run_metrics.get("files_written_count"),
+                },
+                "evals": eval_rows,
             }
         )
 
-    eval_count = len(eval_rows)
-    elapsed_seconds_total = metrics.get("elapsed_seconds_total")
-    elapsed_seconds_per_eval = None
-    if elapsed_seconds_total is not None and eval_count:
-        elapsed_seconds_per_eval = round(float(elapsed_seconds_total) / eval_count, 4)
+    def collect_summary_metric(metric_name: str) -> list[float]:
+        values: list[float] = []
+        for run in run_summaries:
+            value = coerce_float(run.get("summary", {}).get(metric_name))
+            if value is not None:
+                values.append(value)
+        return values
+
+    aggregate_summary = {
+        "elapsed_seconds_total": safe_mean(collect_summary_metric("elapsed_seconds_total")),
+        "elapsed_seconds_per_eval": safe_mean(collect_summary_metric("elapsed_seconds_per_eval")),
+        "response_words_total": safe_mean(collect_summary_metric("response_words_total")),
+        "response_words_per_eval": safe_mean(collect_summary_metric("response_words_per_eval")),
+        "files_read_count": safe_mean(collect_summary_metric("files_read_count")),
+        "files_written_count": safe_mean(collect_summary_metric("files_written_count")),
+    }
+    variance = {
+        metric_name: calculate_benchmark_stats(values)
+        for metric_name, values in (
+            ("elapsed_seconds_total", collect_summary_metric("elapsed_seconds_total")),
+            ("elapsed_seconds_per_eval", collect_summary_metric("elapsed_seconds_per_eval")),
+            ("response_words_total", collect_summary_metric("response_words_total")),
+            ("response_words_per_eval", collect_summary_metric("response_words_per_eval")),
+            ("files_read_count", collect_summary_metric("files_read_count")),
+            ("files_written_count", collect_summary_metric("files_written_count")),
+        )
+        if values
+    }
+    high_variance_evals = []
+    for eval_id, values in sorted(response_word_samples.items()):
+        if len(values) < 2:
+            continue
+        stats = calculate_benchmark_stats(values)
+        if stats["stddev"] >= 20.0:
+            high_variance_evals.append(
+                {
+                    "id": eval_id,
+                    "metric": "response_words",
+                    "stats": stats,
+                }
+            )
 
     summary = {
         "skill_name": metrics.get("skill_name", skill_dir.name),
         "configuration": metrics.get("configuration", config),
         "language": metrics.get("language", "English"),
         "mcp_used": bool(metrics.get("mcp_used", False)),
-        "summary": {
-            "elapsed_seconds_total": round_or_none(elapsed_seconds_total),
-            "elapsed_seconds_per_eval": elapsed_seconds_per_eval,
-            "response_words_total": total_words,
-            "response_words_per_eval": round_or_none(total_words / eval_count) if eval_count else None,
-            "files_read_count": metrics.get("files_read_count"),
-            "files_written_count": metrics.get("files_written_count"),
-        },
-        "evals": eval_rows,
+        "run_count": len(run_summaries),
+        "summary": aggregate_summary,
+        "variance": variance,
+        "runs": run_summaries,
+        "evals": run_summaries[0]["evals"] if run_summaries else [],
+        "high_variance_evals": high_variance_evals,
     }
 
     write_json(skill_dir / f"{config}-summary.json", summary)
@@ -1598,6 +2772,9 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
     previous_summary_path = previous_iteration / "suite-summary.json" if previous_iteration else None
     previous_summary = read_json(previous_summary_path) if previous_summary_path and previous_summary_path.exists() else None
     metric_validation = validate_iteration_metrics(iteration_dir)
+    executable_validation = validate_executable_checks(iteration_dir, workspace_root)
+    protocol_lock_path = iteration_dir / "_meta" / "protocol-lock.json"
+    protocol_lock = read_json(protocol_lock_path) if protocol_lock_path.exists() else None
 
     skill_rows = [row for row in (build_skill_row(skill_dir, workspace_root) for skill_dir in skill_dirs(iteration_dir)) if row]
     overview_rows = suite_overview_rows(skill_rows)
@@ -1606,6 +2783,8 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "iteration": iteration_dir.name,
         "previous_iteration": previous_iteration.name if previous_iteration else None,
+        "protocol_version": protocol_lock.get("protocol_version") if protocol_lock else None,
+        "protocol_lock_path": protocol_lock_path.relative_to(workspace_root).as_posix() if protocol_lock else None,
         "skill_count": len(skill_rows),
         "suite_averages": {
             "with_skill_win_rate": safe_mean([row["capability"]["blind"]["with_skill_win_rate"] for row in skill_rows]),
@@ -1614,10 +2793,24 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
             "time_delta_per_eval": safe_mean([row["time"]["delta"]["elapsed_seconds_per_eval"] for row in skill_rows]),
             "words_delta_per_eval": safe_mean([row["consumption"]["delta"]["response_words_per_eval"] for row in skill_rows]),
             "files_read_delta": safe_mean([row["consumption"]["delta"]["files_read_count"] for row in skill_rows]),
+            "executable_delta": safe_mean([row["executable_validity"]["delta"]["valid_eval_rate"] for row in skill_rows]),
+        },
+        "suite_variance": {
+            "with_skill_win_rate": calculate_benchmark_stats([row["capability"]["blind"]["with_skill_win_rate"] for row in skill_rows if row["capability"]["blind"]["with_skill_win_rate"] is not None]) if [row["capability"]["blind"]["with_skill_win_rate"] for row in skill_rows if row["capability"]["blind"]["with_skill_win_rate"] is not None] else None,
+            "expectation_delta": calculate_benchmark_stats([row["capability"]["expectation_pass_rate"]["delta"] for row in skill_rows if row["capability"]["expectation_pass_rate"]["delta"] is not None]) if [row["capability"]["expectation_pass_rate"]["delta"] for row in skill_rows if row["capability"]["expectation_pass_rate"]["delta"] is not None] else None,
+            "rubric_delta": calculate_benchmark_stats([row["capability"]["rubric_score"]["delta"] for row in skill_rows if row["capability"]["rubric_score"]["delta"] is not None]) if [row["capability"]["rubric_score"]["delta"] for row in skill_rows if row["capability"]["rubric_score"]["delta"] is not None] else None,
+            "time_delta_per_eval": calculate_benchmark_stats([row["time"]["delta"]["elapsed_seconds_per_eval"] for row in skill_rows if row["time"]["delta"]["elapsed_seconds_per_eval"] is not None]) if [row["time"]["delta"]["elapsed_seconds_per_eval"] for row in skill_rows if row["time"]["delta"]["elapsed_seconds_per_eval"] is not None] else None,
+            "executable_delta": calculate_benchmark_stats([row["executable_validity"]["delta"]["valid_eval_rate"] for row in skill_rows if row["executable_validity"]["delta"]["valid_eval_rate"] is not None]) if [row["executable_validity"]["delta"]["valid_eval_rate"] for row in skill_rows if row["executable_validity"]["delta"]["valid_eval_rate"] is not None] else None,
         },
         "metric_validation": metric_validation,
+        "executable_checks": executable_validation,
         "overview": overview_rows,
         "skills": skill_rows,
+        "high_variance_evals": [
+            {"skill": row["skill"], **item}
+            for row in skill_rows
+            for item in row.get("high_variance_evals", [])
+        ],
         "previous_iteration_comparison": None,
     }
 
@@ -1672,11 +2865,13 @@ def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
 
 def render_markdown(summary: dict[str, Any]) -> str:
     metric_validation = summary.get("metric_validation") or {}
+    suite_variance = summary.get("suite_variance") or {}
     lines = [
         f"# Skill Suite Summary — {summary['iteration']}",
         "",
         f"Generated at: {summary['generated_at']}",
         f"Previous iteration: {summary['previous_iteration'] or 'None found'}",
+        f"Protocol version: {summary.get('protocol_version') or 'unlocked'}",
         f"Skill count: {summary['skill_count']}",
         "",
         "## Metric validation",
@@ -1695,6 +2890,7 @@ def render_markdown(summary: dict[str, Any]) -> str:
         "| Time per eval | Average wall-clock seconds spent per eval. | Lower is faster. `Time Δ = with_skill - without_skill`, so a negative delta means the skill was faster. |",
         "| Words per eval | Average response length in words. | Lower means more concise, but not automatically better unless quality stays strong. |",
         "| Files read count | Count of repository files intentionally read during a run. | Proxy for context consumption. Higher means more repository context was consumed. |",
+        "| Executable validity | Share of snippet-bearing eval runs whose LikeC4 snippets passed automated structural checks. | Higher is better. `Executable Δ = with_skill - without_skill`. |",
         "",
         "### Reading deltas",
         "",
@@ -1703,10 +2899,47 @@ def render_markdown(summary: dict[str, Any]) -> str:
         "- `Time Δ < 0`: the skill was faster.",
         "- `Words Δ < 0`: the skill was more concise.",
         "- `Files read Δ > 0`: the skill consumed more repository context.",
+        "- `Executable Δ > 0`: the skill produced more structurally valid LikeC4 snippets.",
+        "",
+        "## Suite variance",
+        "",
+    ]
+
+    variance_rows = []
+    for metric_name, stats in (
+        ("With-skill win rate", suite_variance.get("with_skill_win_rate")),
+        ("Expectation Δ", suite_variance.get("expectation_delta")),
+        ("Rubric Δ", suite_variance.get("rubric_delta")),
+        ("Time Δ / eval", suite_variance.get("time_delta_per_eval")),
+        ("Executable Δ", suite_variance.get("executable_delta")),
+    ):
+        if not stats:
+            continue
+        variance_rows.append(
+            [
+                metric_name,
+                format_number(stats.get("mean"), digits=3),
+                format_number(stats.get("stddev"), digits=3),
+                format_number(stats.get("min"), digits=3),
+                format_number(stats.get("max"), digits=3),
+            ]
+        )
+    if variance_rows:
+        lines.extend([
+            markdown_table(["Metric", "Mean", "Stddev", "Min", "Max"], variance_rows),
+            "",
+        ])
+    else:
+        lines.extend([
+            "Variance metrics are not available yet.",
+            "",
+        ])
+
+    lines.extend([
         "",
         "## Suite overview",
         "",
-    ]
+    ])
 
     if metric_validation.get("issues"):
         issue_headers = ["Skill", "Config", "Path", "Problem", "Missing keys"]
@@ -1734,12 +2967,15 @@ def render_markdown(summary: dict[str, Any]) -> str:
     overview_headers = [
         "Skill",
         "Evals",
+        "Runs",
         "With-skill win rate",
         "Expectation Δ",
         "Rubric Δ",
         "Time Δ / eval (s)",
+        "Executable Δ",
         "Words Δ / eval",
         "Files read Δ",
+        "High-var evals",
     ]
     overview_rows = []
     for row in summary["overview"]:
@@ -1747,12 +2983,15 @@ def render_markdown(summary: dict[str, Any]) -> str:
             [
                 row["skill"],
                 str(row["eval_count"]),
+                str(row.get("run_count", 1)),
                 format_number(row["with_skill_win_rate"], percentage=True),
                 format_number(row["expectation_delta"], digits=3),
                 format_number(row["rubric_delta"], digits=3),
                 format_number(row["time_delta_per_eval"], digits=3),
+                format_number(row.get("executable_delta"), digits=3),
                 format_number(row["words_delta_per_eval"], digits=1),
                 format_number(row["files_read_delta"], digits=1),
+                str(row.get("high_variance_eval_count", 0)),
             ]
         )
     lines.append(markdown_table(overview_headers, overview_rows))
@@ -1765,12 +3004,15 @@ def render_markdown(summary: dict[str, Any]) -> str:
 
     detail_headers = [
         "Skill",
+        "Runs",
         "Exp pass with",
         "Exp pass without",
         "Rubric with",
         "Rubric without",
         "Sec/eval with",
         "Sec/eval without",
+        "Exec with",
+        "Exec without",
         "Words/eval with",
         "Words/eval without",
         "Files read with",
@@ -1781,12 +3023,15 @@ def render_markdown(summary: dict[str, Any]) -> str:
         detail_rows.append(
             [
                 skill["skill"],
+                str(skill.get("run_count", 1)),
                 format_number(skill["capability"]["expectation_pass_rate"]["with_skill"], digits=3),
                 format_number(skill["capability"]["expectation_pass_rate"]["without_skill"], digits=3),
                 format_number(skill["capability"]["rubric_score"]["with_skill"], digits=3),
                 format_number(skill["capability"]["rubric_score"]["without_skill"], digits=3),
                 format_number(skill["time"]["with_skill"]["elapsed_seconds_per_eval"], digits=3),
                 format_number(skill["time"]["without_skill"]["elapsed_seconds_per_eval"], digits=3),
+                format_number(skill["executable_validity"]["with_skill"].get("valid_eval_rate") if skill["executable_validity"]["with_skill"] else None, digits=3),
+                format_number(skill["executable_validity"]["without_skill"].get("valid_eval_rate") if skill["executable_validity"]["without_skill"] else None, digits=3),
                 format_number(skill["consumption"]["with_skill"]["response_words_per_eval"], digits=1),
                 format_number(skill["consumption"]["without_skill"]["response_words_per_eval"], digits=1),
                 format_number(skill["consumption"]["with_skill"]["files_read_count"], digits=1),
@@ -1794,6 +3039,32 @@ def render_markdown(summary: dict[str, Any]) -> str:
             ]
         )
     lines.append(markdown_table(detail_headers, detail_rows))
+
+    lines.extend([
+        "",
+        "## High-variance evals",
+        "",
+    ])
+
+    high_variance_evals = summary.get("high_variance_evals") or []
+    if high_variance_evals:
+        variance_headers = ["Skill", "Source", "Eval", "Run count", "Winner flips", "Expectation stddev", "Rubric stddev"]
+        variance_rows = []
+        for item in high_variance_evals:
+            variance_rows.append(
+                [
+                    item.get("skill", "-"),
+                    item.get("source", "-"),
+                    str(item.get("id", "-")),
+                    str(item.get("run_count", "-")),
+                    "yes" if item.get("winner_flips") else "no",
+                    format_number((item.get("expectation_delta_stats") or {}).get("stddev"), digits=3),
+                    format_number((item.get("rubric_delta_stats") or {}).get("stddev"), digits=3),
+                ]
+            )
+        lines.append(markdown_table(variance_headers, variance_rows))
+    else:
+        lines.append("No high-variance evals were flagged.")
 
     lines.extend([
         "",
@@ -1853,6 +3124,55 @@ def cmd_restore_workspace_skills(args: argparse.Namespace) -> None:
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
+def cmd_reset_debug_log(args: argparse.Namespace) -> None:
+    args.path.parent.mkdir(parents=True, exist_ok=True)
+    args.path.write_text("", encoding="utf-8")
+    print(json.dumps({
+        "path": str(args.path),
+        "cleared": True,
+    }, indent=2, ensure_ascii=False))
+
+def cmd_debug_log_window(args: argparse.Namespace) -> None:
+    if not args.path.exists():
+        raise FileNotFoundError(f"Missing debug log: {args.path}")
+
+    entries: list[dict[str, Any]] = []
+    for raw_line in args.path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+        entries.append(json.loads(line))
+
+    worker_modes = {"baseline", "with_skill_targeted", "blind_compare", "baseline_hook_only"}
+    filtered_entries = [entry for entry in entries if entry.get("mode") in worker_modes]
+    timestamps = [entry.get("timestamp") for entry in filtered_entries if isinstance(entry.get("timestamp"), str) and entry.get("timestamp", "").strip()]
+    print(json.dumps({
+        "path": str(args.path),
+        "entry_count": len(filtered_entries),
+        "first_timestamp": timestamps[0] if timestamps else None,
+        "last_timestamp": timestamps[-1] if timestamps else None,
+        "tool_names": [entry.get("tool_name") for entry in filtered_entries],
+        "paths": [entry.get("tool_paths", []) for entry in filtered_entries],
+    }, indent=2, ensure_ascii=False))
+
+
+def cmd_write_protocol_manifest(args: argparse.Namespace) -> None:
+    manifest = build_protocol_manifest(args.workspace_root, args.version)
+    output_path = protocol_manifest_path(args.workspace_root, args.output)
+    write_json(output_path, manifest)
+    print(json.dumps({
+        "protocol_version": manifest["protocol_version"],
+        "output_path": output_path.relative_to(args.workspace_root).as_posix(),
+        "tracked_file_count": len(manifest.get("tracked_files", [])),
+    }, indent=2, ensure_ascii=False))
+
+
+def cmd_protocol_preflight(args: argparse.Namespace) -> None:
+    manifest_path = protocol_manifest_path(args.workspace_root, args.manifest)
+    summary = freeze_protocol_for_iteration(args.iteration, args.workspace_root, manifest_path)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
 def cmd_summarize_config(args: argparse.Namespace) -> None:
     summary = summarize_config(args.skill_dir, args.config, args.evals, args.metrics)
     print(json.dumps({
@@ -1892,8 +3212,13 @@ def cmd_validate_blind_isolation(args: argparse.Namespace) -> None:
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
+def cmd_validate_executable_checks(args: argparse.Namespace) -> None:
+    summary = validate_executable_checks(args.iteration, args.workspace_root)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
 def cmd_blind_compare_bundle(args: argparse.Namespace) -> None:
-    bundle = build_blind_compare_bundle(args.iteration, args.workspace_root, args.skill, args.eval_id)
+    bundle = build_blind_compare_bundle(args.iteration, args.workspace_root, args.skill, args.eval_id, args.run_number)
     print(json.dumps(bundle, indent=2, ensure_ascii=False))
 
 
@@ -1972,6 +3297,7 @@ def cmd_write_run_metrics(args: argparse.Namespace) -> None:
         elapsed_seconds_total=elapsed_seconds_total,
         files_read_count=args.files_read_count,
         files_written_count=args.files_written_count,
+        run_number=args.run_number,
     )
     write_json(args.output, payload)
     print(json.dumps({
@@ -1988,6 +3314,26 @@ def cmd_materialize_run(args: argparse.Namespace) -> None:
         args.skill,
         args.configuration,
         args.raw_json,
+        run_number=args.run_number,
+        started_at=args.started_at,
+        finished_at=args.finished_at,
+    )
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_materialize_run_stdin(args: argparse.Namespace) -> None:
+    raw_text = sys.stdin.read().strip()
+    if not raw_text:
+        raise ValueError("materialize-run-stdin requires a JSON payload on stdin")
+    payload = json.loads(raw_text)
+    raw_output = args.raw_json or (args.iteration / "_meta" / f"{args.skill}-{args.configuration}.json")
+    write_json(raw_output, payload)
+    summary = materialize_run_artifacts(
+        args.iteration,
+        args.skill,
+        args.configuration,
+        raw_output,
+        run_number=args.run_number,
         started_at=args.started_at,
         finished_at=args.finished_at,
     )
@@ -1999,9 +3345,82 @@ def cmd_materialize_comparisons(args: argparse.Namespace) -> None:
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
+def cmd_materialize_comparisons_stdin(args: argparse.Namespace) -> None:
+    raw_text = sys.stdin.read().strip()
+    if not raw_text:
+        raise ValueError("materialize-comparisons-stdin requires a JSON payload on stdin")
+    payload = json.loads(raw_text)
+    raw_output = args.raw_json or (args.iteration / "_meta" / f"{args.skill}-blind.json")
+    write_json(raw_output, payload)
+    summary = materialize_blind_comparisons(args.iteration, args.skill, raw_output)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def completed_skill_names_for_config(iteration_dir: Path, config: str) -> list[str]:
+    result: list[str] = []
+    for skill_dir in skill_dirs(iteration_dir):
+        if (skill_dir / f"{config}-run-metrics.json").exists():
+            result.append(skill_dir.name)
+    return sorted(result)
+
+
+def resolve_public_evals_for_config(iteration_dir: Path, workspace_root: Path, skill_name: str, config: str) -> Path:
+    workspace_path = skill_eval_paths(workspace_root, skill_name)["public"]
+    disabled_path = disabled_skills_root(iteration_dir) / skill_name / "evals" / EVALS_PUBLIC_FILENAME
+    candidates = [workspace_path, disabled_path] if config == "with_skill" else [disabled_path, workspace_path]
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    raise FileNotFoundError(f"Missing {EVALS_PUBLIC_FILENAME} for skill '{skill_name}' while summarizing {config}")
+
+
+def cmd_summarize_phase(args: argparse.Namespace) -> None:
+    skill_names = [args.skill] if args.skill else completed_skill_names_for_config(args.iteration, args.config)
+    summaries = []
+    for skill_name in skill_names:
+        skill_dir = args.iteration / skill_name
+        evals_path = resolve_public_evals_for_config(args.iteration, args.workspace_root, skill_name, args.config)
+        summary = summarize_config(skill_dir, args.config, evals_path)
+        summaries.append(
+            {
+                "skill_name": skill_name,
+                "configuration": args.config,
+                "eval_count": len(summary.get("evals", [])),
+                "run_count": summary.get("run_count", 1),
+                "output_json": (skill_dir / f"{args.config}-summary.json").relative_to(args.workspace_root).as_posix(),
+            }
+        )
+    print(json.dumps({
+        "iteration": args.iteration.name,
+        "configuration": args.config,
+        "skill_count": len(summaries),
+        "skills": summaries,
+    }, indent=2, ensure_ascii=False))
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Utility helpers for the skill evaluation suite")
     subparsers = parser.add_subparsers(dest="command", required=True)
+
+    reset_debug_log_parser = subparsers.add_parser("reset-debug-log", help="Create or clear a hook debug JSONL log file")
+    reset_debug_log_parser.add_argument("--path", type=Path, required=True, help="Path to the debug log file")
+    reset_debug_log_parser.set_defaults(func=cmd_reset_debug_log)
+
+    debug_log_window_parser = subparsers.add_parser("debug-log-window", help="Report the first and last timestamps captured in a hook debug JSONL log")
+    debug_log_window_parser.add_argument("--path", type=Path, required=True, help="Path to the debug log file")
+    debug_log_window_parser.set_defaults(func=cmd_debug_log_window)
+
+    protocol_manifest_parser = subparsers.add_parser("write-protocol-manifest", help="Write the benchmark protocol manifest with hashes for tracked prompts, schemas, and hooks")
+    protocol_manifest_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    protocol_manifest_parser.add_argument("--output", type=Path, help="Optional output path for the manifest JSON")
+    protocol_manifest_parser.add_argument("--version", default=BENCHMARK_PROTOCOL_VERSION, help=f"Protocol version label (default: {BENCHMARK_PROTOCOL_VERSION})")
+    protocol_manifest_parser.set_defaults(func=cmd_write_protocol_manifest)
+
+    protocol_preflight_parser = subparsers.add_parser("protocol-preflight", help="Validate the frozen protocol manifest and lock the current protocol version into an iteration")
+    protocol_preflight_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    protocol_preflight_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    protocol_preflight_parser.add_argument("--manifest", type=Path, help="Optional path to the benchmark protocol manifest JSON")
+    protocol_preflight_parser.set_defaults(func=cmd_protocol_preflight)
 
     disable_parser = subparsers.add_parser("disable-workspace-skills", help="Move workspace skills out of .github/skills for baseline runs")
     disable_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
@@ -2020,9 +3439,16 @@ def build_parser() -> argparse.ArgumentParser:
     summarize_parser = subparsers.add_parser("summarize-config", help="Build a per-skill per-configuration summary JSON")
     summarize_parser.add_argument("--skill-dir", type=Path, required=True, help="Path to /test/iteration-N/<skill-name>")
     summarize_parser.add_argument("--config", choices=["with_skill", "without_skill"], required=True, help="Configuration name")
-    summarize_parser.add_argument("--evals", type=Path, required=True, help="Path to the skill evals.json file")
+    summarize_parser.add_argument("--evals", type=Path, required=True, help="Path to the skill evals-public.json file")
     summarize_parser.add_argument("--metrics", type=Path, help="Optional path to the run-metrics JSON file")
     summarize_parser.set_defaults(func=cmd_summarize_config)
+
+    summarize_phase_parser = subparsers.add_parser("summarize-phase", help="Write per-skill summary JSON files for every completed skill in one benchmark phase")
+    summarize_phase_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    summarize_phase_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    summarize_phase_parser.add_argument("--config", choices=["with_skill", "without_skill"], required=True, help="Configuration name")
+    summarize_phase_parser.add_argument("--skill", help="Optional single skill to summarize")
+    summarize_phase_parser.set_defaults(func=cmd_summarize_phase)
 
     write_metrics_parser = subparsers.add_parser("write-run-metrics", help="Write a canonical run-metrics JSON file using the required benchmark schema")
     write_metrics_parser.add_argument("--output", type=Path, required=True, help="Path to the target *-run-metrics.json file")
@@ -2035,6 +3461,7 @@ def build_parser() -> argparse.ArgumentParser:
     write_metrics_parser.add_argument("--elapsed-seconds-total", type=float, help="Optional explicit elapsed time; otherwise derived from timestamps")
     write_metrics_parser.add_argument("--files-read-count", type=int, required=True, help="Repository files intentionally read during the run")
     write_metrics_parser.add_argument("--files-written-count", type=int, required=True, help="Files written under /test during the run")
+    write_metrics_parser.add_argument("--run-number", type=int, default=1, help="Repeated-run index for this metrics payload (default: 1)")
     write_metrics_parser.set_defaults(func=cmd_write_run_metrics)
 
     materialize_run_parser = subparsers.add_parser(
@@ -2045,9 +3472,23 @@ def build_parser() -> argparse.ArgumentParser:
     materialize_run_parser.add_argument("--skill", required=True, help="Target skill name")
     materialize_run_parser.add_argument("--configuration", choices=["with_skill", "without_skill"], required=True, help="Configuration name")
     materialize_run_parser.add_argument("--raw-json", type=Path, required=True, help="Path to the raw worker JSON payload")
+    materialize_run_parser.add_argument("--run-number", type=int, default=1, help="Repeated-run index for this worker payload (default: 1)")
     materialize_run_parser.add_argument("--started-at", help="Optional ISO-8601 UTC timestamp to override the raw payload start time")
     materialize_run_parser.add_argument("--finished-at", help="Optional ISO-8601 UTC timestamp to override the raw payload finish time")
     materialize_run_parser.set_defaults(func=cmd_materialize_run)
+
+    materialize_run_stdin_parser = subparsers.add_parser(
+        "materialize-run-stdin",
+        help="Read one raw benchmark worker JSON payload from stdin, persist it under test/iteration-N/_meta, and materialize run artifacts",
+    )
+    materialize_run_stdin_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    materialize_run_stdin_parser.add_argument("--skill", required=True, help="Target skill name")
+    materialize_run_stdin_parser.add_argument("--configuration", choices=["with_skill", "without_skill"], required=True, help="Configuration name")
+    materialize_run_stdin_parser.add_argument("--raw-json", type=Path, help="Optional output path for the persisted raw JSON payload")
+    materialize_run_stdin_parser.add_argument("--run-number", type=int, default=1, help="Repeated-run index for this worker payload (default: 1)")
+    materialize_run_stdin_parser.add_argument("--started-at", help="Optional ISO-8601 UTC timestamp to override the raw payload start time")
+    materialize_run_stdin_parser.add_argument("--finished-at", help="Optional ISO-8601 UTC timestamp to override the raw payload finish time")
+    materialize_run_stdin_parser.set_defaults(func=cmd_materialize_run_stdin)
 
     materialize_comparisons_parser = subparsers.add_parser(
         "materialize-comparisons",
@@ -2057,6 +3498,15 @@ def build_parser() -> argparse.ArgumentParser:
     materialize_comparisons_parser.add_argument("--skill", required=True, help="Target skill name")
     materialize_comparisons_parser.add_argument("--raw-json", type=Path, required=True, help="Path to the raw comparator JSON payload")
     materialize_comparisons_parser.set_defaults(func=cmd_materialize_comparisons)
+
+    materialize_comparisons_stdin_parser = subparsers.add_parser(
+        "materialize-comparisons-stdin",
+        help="Read one raw blind comparator JSON payload from stdin, persist it under test/iteration-N/_meta, and materialize blind-comparisons.json",
+    )
+    materialize_comparisons_stdin_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    materialize_comparisons_stdin_parser.add_argument("--skill", required=True, help="Target skill name")
+    materialize_comparisons_stdin_parser.add_argument("--raw-json", type=Path, help="Optional output path for the persisted raw comparator JSON payload")
+    materialize_comparisons_stdin_parser.set_defaults(func=cmd_materialize_comparisons_stdin)
 
     validate_parser = subparsers.add_parser("validate-metrics", help="Validate that every run-metrics file exists and contains all required non-null keys")
     validate_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
@@ -2087,11 +3537,17 @@ def build_parser() -> argparse.ArgumentParser:
     validate_blind_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     validate_blind_parser.set_defaults(func=cmd_validate_blind_isolation)
 
+    executable_parser = subparsers.add_parser("validate-executable-checks", help="Run automated LikeC4 snippet validation across benchmark responses")
+    executable_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    executable_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    executable_parser.set_defaults(func=cmd_validate_executable_checks)
+
     blind_bundle_parser = subparsers.add_parser("blind-compare-bundle", help="Build the blind-comparison input bundle for one skill eval using the benchmark comparator playbook")
     blind_bundle_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     blind_bundle_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
     blind_bundle_parser.add_argument("--skill", required=True, help="Target skill name")
-    blind_bundle_parser.add_argument("--eval-id", type=int, required=True, help="Eval id inside the skill evals.json")
+    blind_bundle_parser.add_argument("--eval-id", type=int, required=True, help="Eval id inside the split eval artifacts")
+    blind_bundle_parser.add_argument("--run-number", type=int, default=1, help="Repeated-run index to bundle for blind comparison (default: 1)")
     blind_bundle_parser.set_defaults(func=cmd_blind_compare_bundle)
 
     export_review_parser = subparsers.add_parser("export-review-workspace", help="Export one skill iteration into a skill-creator-compatible review workspace layout")
@@ -2111,7 +3567,7 @@ def build_parser() -> argparse.ArgumentParser:
     grader_bundle_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     grader_bundle_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
     grader_bundle_parser.add_argument("--skill", required=True, help="Target skill name")
-    grader_bundle_parser.add_argument("--eval-id", type=int, required=True, help="Eval id inside the skill evals.json")
+    grader_bundle_parser.add_argument("--eval-id", type=int, required=True, help="Eval id inside the split eval artifacts")
     grader_bundle_parser.add_argument("--configuration", choices=["with_skill", "without_skill"], required=True, help="Configuration to grade")
     grader_bundle_parser.add_argument("--export-dir", type=Path, help="Optional exported review workspace directory")
     grader_bundle_parser.set_defaults(func=cmd_grader_bundle)

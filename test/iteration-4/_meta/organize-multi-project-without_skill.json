@@ -1,0 +1,30 @@
+{
+  "skill_name": "organize-multi-project",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-containers.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Based on the visible repo layout, bootstrap the new project as a sibling under projects/, for example projects/payments/. The clean minimum is: projects/payments/likec4.config.json, projects/payments/system-model.c4, and projects/payments/system-views.c4; an ADR/ folder is optional. Keep the project-specific model and views local, and reuse the shared specifications instead of redefining them. In practice, the config should include the shared spec files from projects/shared/ so the payments project inherits the existing element kinds, tags, colors, and relationship types, and it should preserve the image alias roots used by those shared specs because they reference icon paths such as @/custom, @/lucide-static, and @/affinity-naked. A clean bootstrap is to mirror the existing template-style project shape rather than inventing a different folder pattern."
+    },
+    {
+      "id": 1,
+      "response": "Not in the shared specifications files. The readable shared files define reusable specifications: element kinds like Actor_Person, System_New, and Container_Api, plus shared tags, colors, and relationship types. That makes projects/shared/ a good place for modeling conventions, not for concrete business instances such as paymentsCore or backOfficeUser. If those two are truly canonical concepts reused by multiple projects, place them in a separate shared business-model layer and let each project reference that canonical definition. If they belong only to payments, keep them inside the payments project. Cross-project references should point to shared canonical business elements when they exist; project-local containers, components, and views should remain local."
+    },
+    {
+      "id": 2,
+      "response": "Not by itself. It is enough for the structural part of the job: deciding where the new project lives, what belongs in shared conventions, and what stays project-local. But include paths and image aliases are configuration details, and the readable shared specs clearly depend on them because they use shared icon aliases. So treat this as a two-part job: first organize the new project cleanly, then do a configuration-focused follow-up to wire the new project include list to the shared spec files and to preserve the alias roots used by those specs. Otherwise the folder layout may look right while the project still fails to resolve shared definitions or icons."
+    },
+    {
+      "id": 3,
+      "response": "Do not put everything into one shared bucket. The current shared files already point to a sensible split: keep technical conventions together in shared specifications, because that is where reusable element kinds, tags, colors, and relationships belong. Reusable business models should be separated from those specs, but kept shallow and simple so the repo does not turn into a maze. A practical structure is: one shared specs area for technical conventions, one small shared domain area for canonical actors and systems that several projects truly reuse, and per-project model and view files for everything project-specific. That gives you reuse without mixing DSL conventions and business domain content in the same files."
+    }
+  ]
+}

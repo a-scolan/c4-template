@@ -1,0 +1,170 @@
+{
+  "skill_name": "create-element",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B better matches the expected declaration content because it includes the parent placement, correct reused kind, technology, and description. A is more paste-ready syntactically, but it omits two required fields.",
+      "rubric": {
+        "A": {
+          "content_score": 7,
+          "structure_score": 9,
+          "overall_score": 7,
+          "notes": "Exact minimal snippet under the system, but it omits technology and description required by the eval."
+        },
+        "B": {
+          "content_score": 9,
+          "structure_score": 7,
+          "overall_score": 8,
+          "notes": "Covers kind, placement, technology, and description, though it is less paste-ready than literal LikeC4 syntax."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "Both answers reject the one-off kind and direct the user back to shared kinds first, but B is more actionable and closer to the expected governance rule by framing a new kind as something to propose rather than directly add. Neither explicitly mentions approval, yet B lands slightly closer overall.",
+      "rubric": {
+        "A": {
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Clear explanation of reusable kinds and shared-spec reuse, but it does not include the expected approval gate."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8,
+          "notes": "Rejects the one-off kind, points to shared specs, and gives a concrete fallback, though it still stops short of explicitly asking for approval."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A names the exact shared kinds and the exact follow-on skills, which is what the eval asks for. B stays too generic and misses the explicit create-relationship and design-view routing.",
+      "rubric": {
+        "A": {
+          "content_score": 10,
+          "structure_score": 9,
+          "overall_score": 10,
+          "notes": "Names the exact kinds, gives immediately usable element guidance first, and routes arrows and the C2 view to the correct skills."
+        },
+        "B": {
+          "content_score": 5,
+          "structure_score": 6,
+          "overall_score": 5,
+          "notes": "Reasonable high-level guidance, but it avoids the exact kind names and does not explicitly name create-relationship or design-view."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 2,
+          "total": 5,
+          "pass_rate": 0.4
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A answers both halves of the question: use two elements rather than two kinds, and distinguish mock vs prod with tags and views instead of a special kind. B is concrete about the elements but omits the skill and context guidance for handling the environment difference.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9,
+          "notes": "Rejects new kinds, recommends two elements, and correctly uses tags and views to separate mock from prod with follow-on view handling."
+        },
+        "B": {
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7,
+          "notes": "Concrete about two elements and shared kinds, but it omits the tag or view guidance and never routes environment differences to the proper follow-on area."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 4,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A better matches the expected declarations because it includes both correct kinds plus technology and description without drifting into relationships. B is cleaner as raw syntax, but it drops the metadata the eval expects.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
+          "structure_score": 7,
+          "overall_score": 8,
+          "notes": "Includes both correct kinds plus technology and description and stays on declarations, though it is phrased as prose rather than literal LikeC4 syntax."
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 9,
+          "overall_score": 7,
+          "notes": "Very direct and paste-ready, but it omits the technology and description details called for by the eval."
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        }
+      }
+    }
+  ]
+}

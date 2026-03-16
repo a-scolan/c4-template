@@ -4,9 +4,11 @@ This guide documents the custom benchmark agents and the shared hook policy used
 
 ## Required setup
 
-- Enable `chat.useCustomAgentHooks = true` in VS Code.
+- Keep `.vscode/settings.json` committed with `chat.useCustomAgentHooks = true` so the workspace enables benchmark hooks by default.
 - Use the strict relocated baseline by default for the full `without_skill` batch.
+- Run independent workers in parallel by default **within** each phase.
 - Treat the hook-only baseline worker as an explicit probe mode, not as a replacement for relocation.
+- Before the first scored worker of a campaign, run a live isolation probe against a clearly forbidden file (for example `README.md` or a prior-iteration artifact) and confirm the worker is truly blocked.
 
 ## Entry points
 
@@ -14,6 +16,17 @@ This guide documents the custom benchmark agents and the shared hook policy used
 - **Automation / offline entrypoint**: run `python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-N --workspace-root .`.
 
 The other `skill_suite_tools.py` subcommands are low-level harness helpers. They remain useful for reproducibility and automation, but they are not the day-to-day starting point for humans.
+
+## Default parallel dispatch policy
+
+Use this scheduler unless a run-specific constraint forces a narrower scope:
+
+1. Build a task matrix for the current phase (`without_skill`, `with_skill`, or `blind_compare`).
+2. Launch the whole matrix in parallel waves, as long as output directories do not overlap.
+3. Wait for all workers in the phase to finish (phase barrier).
+4. Start the next phase only after the previous one is fully complete.
+
+This means the benchmark is **parallel by default inside a phase** and **strictly sequential across phase boundaries**.
 
 ## Agent inventory
 
@@ -37,10 +50,12 @@ The other `skill_suite_tools.py` subcommands are low-level harness helpers. They
 | Mode | Purpose | Main guardrails |
 | --- | --- | --- |
 | `benchmark_manager` | Orchestrate benchmark work and benchmark-specific docs | Can delegate only to allowlisted benchmark workers; edits are limited to `README.md`, `test/`, and `.github/agents/*.agent.md`; no shell escape; no MCP |
-| `baseline` | Strict relocated `without_skill` worker | Requires `.github/skills/` to be empty before tool use; no `SKILL.md`, no `test/` artefacts, no edits, no terminal, no subagents |
-| `baseline_hook_only` | Hook-only `without_skill` isolation probe | Workspace skills may remain in place, but no `.github` path, no `_disabled-skills` backup, and no `SKILL.md` may be read; no edits, no terminal, no subagents |
-| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; no unrelated `test/` artefacts, no edits, no terminal, no subagents |
-| `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `evals.json`; no `blind-map.json`, no raw outputs, no `SKILL.md` |
+| `baseline` | Strict relocated `without_skill` worker | Requires `.github/skills/` to be empty before tool use; worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no `SKILL.md`, no `README.md`, no project-local examples, no `test/` artefacts, no edits, no terminal, no subagents |
+| `baseline_hook_only` | Hook-only `without_skill` isolation probe | Workspace skills may remain in place, but worker reads are still limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no `.github` path, no `_disabled-skills` backup, no `SKILL.md`, no `README.md`, no project-local examples, no edits, no terminal, no subagents |
+| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; inside that skill, benchmark prompts must come from `evals/evals-public.json` only; outside that skill, worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no unrelated `test/` artefacts, no edits, no terminal, no subagents |
+| `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `grading-spec.json`; no `blind-map.json`, no raw outputs, no `SKILL.md`; no MCP, including LikeC4 MCP |
+
+LikeC4 MCP is intentionally allowed only for the scored answer-generation workers (`baseline`, `baseline_hook_only`, and `with_skill_targeted`) because some LikeC4 tasks need model and relationship grounding even in `without_skill`. It remains blocked for `benchmark_manager` and `blind_compare`, and the grader/analyzer support playbooks are not part of this MCP allowance.
 
 ## Critical subagent rule
 
@@ -74,6 +89,10 @@ This is intentional.
 
 The benchmark manager may consult the workspace skill `skill-creator`, but the measured benchmark workers remain isolated repo custom agents.
 
+Outside the locked skill, benchmark workers are intentionally allowed to read only `projects/shared/` because those files act as reusable specification examples. They may not consult `README.md`, `projects/template/`, or `projects/spec-showcase/` during scored runs.
+
+The scored protocol is now versioned. Before a campaign, freeze the active agent prompts, hook rules, and split eval artifacts into `test/iteration-N/_meta/protocol-lock.json` with `skill_suite_tools.py protocol-preflight`.
+
 ## Support playbook mapping
 
 | Support playbook | Used by | Purpose |
@@ -90,6 +109,8 @@ Recommended starting points:
 
 ```bash
 python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-2 --workspace-root .
+python test/scripts/skill_suite_tools.py write-protocol-manifest --workspace-root .
+python test/scripts/skill_suite_tools.py protocol-preflight --iteration test/iteration-2 --workspace-root .
 python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --baseline-isolation relocation
 python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --baseline-isolation hook-only
 ```
@@ -99,10 +120,12 @@ Low-level helper commands remain available when you need them:
 ```bash
 python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --skill create-element
 python test/scripts/skill_suite_tools.py blind-compare-bundle --iteration test/iteration-2 --workspace-root . --skill create-element --eval-id 0
+python test/scripts/skill_suite_tools.py blind-compare-bundle --iteration test/iteration-2 --workspace-root . --skill create-element --eval-id 0 --run-number 2
 python test/scripts/skill_suite_tools.py analyzer-bundle --iteration test/iteration-2 --workspace-root . --skill create-element
 python test/scripts/skill_suite_tools.py grader-bundle --iteration test/iteration-2 --workspace-root . --skill create-element --eval-id 0 --configuration with_skill
-python test/scripts/skill_suite_tools.py materialize-run --iteration test/iteration-2 --skill create-element --configuration with_skill --raw-json test/iteration-2/_meta/create-element-with_skill.json
+python test/scripts/skill_suite_tools.py materialize-run --iteration test/iteration-2 --skill create-element --configuration with_skill --raw-json test/iteration-2/_meta/create-element-with_skill.json --run-number 2
 python test/scripts/skill_suite_tools.py materialize-comparisons --iteration test/iteration-2 --skill create-element --raw-json test/iteration-2/_meta/create-element-blind.json
+python test/scripts/skill_suite_tools.py validate-executable-checks --iteration test/iteration-2 --workspace-root .
 python test/scripts/skill_suite_tools.py export-review-workspace --iteration test/iteration-2 --workspace-root . --skill create-element
 python test/scripts/skill_suite_tools.py write-skill-creator-benchmark --iteration test/iteration-2 --workspace-root . --skill create-element
 python test/scripts/skill_suite_tools.py write-static-review --iteration test/iteration-2 --workspace-root . --skill create-element

@@ -1,0 +1,79 @@
+{
+  "iteration": "iteration-3",
+  "skill_name": "implement-pattern",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-13T11:29:01Z",
+  "run_count": 1,
+  "summary": {
+    "applicable_eval_count": 2,
+    "valid_eval_count": 2,
+    "valid_eval_rate": 1.0,
+    "snippet_count_total": 2,
+    "error_count_total": 0,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Model Redis as a separate cache container in front of, but not instead of, Postgres. A consistent choice here is `redisCache = Container_DataServer 'Redis Cache' { technology 'Redis' }` plus `postgres = Container_Database 'Postgres' { technology 'PostgreSQL' }`, with the API talking to both: `api -[reads]-> redisCache 'Reads cached data'`, `api -[reads]-> postgres 'Reads on cache miss / source of truth'`, `api -[writes]-> postgres 'Persists data'`, and optionally `api -[writes]-> redisCache 'Warms or invalidates cache'`. What keeps the meaning clear is leaving Postgres explicitly in the model as the source of truth and not drawing Redis as the only data target. Also avoid inventing a `Redis -> Postgres` sync arrow unless that replication actually exists.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Model Stripe as a request/callback pattern with two separate one-way relationships: `paymentsApi = Container_Api 'Payments API'`, `stripe = System_External 'Stripe'`, then `paymentsApi -[calls]-> stripe 'Creates payment' { technology 'HTTPS' }` and separately `stripe -[calls]-> paymentsApi` (or a dedicated webhook handler component/endpoint) `'Sends payment confirmation webhook' { technology 'HTTPS' }`. If you want more detail inside the API, the inbound endpoint can be a `Component` such as `Stripe Webhook Handler`. The key is not to draw the webhook as a return from the first call and not to collapse both steps into one bidirectional line; they are two distinct HTTP calls with different initiators, so the overall business flow is asynchronous even though each hop is modeled as `calls`/`HTTPS`.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

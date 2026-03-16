@@ -1,0 +1,27 @@
+{
+  "skill_name": "create-sequence-view",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I want to document the login journey between a user, a web application, an API, a primary database, and an external notification service. Give me a LikeC4 skeleton for a dynamic view.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I was planning to write `api_container -> api_container.auth_component` in a dynamic view to show authentication. Correct this approach.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to illustrate the async flow `externalUser` -> `webApp` -> `api` -> `jobQueue` -> `processingWorker` -> `database`. Propose the LikeC4 view.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "In an async upload, the user immediately gets a tracking URL, then validation runs in the background with retries on failure. How do I show both immediate success and retry behavior without breaking the dynamic view?",
+      "files": []
+    }
+  ]
+}

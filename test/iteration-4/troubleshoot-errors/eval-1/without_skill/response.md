@@ -1,0 +1,3 @@
+The real cause is the mixed level, not the `rank same` line by itself. `system.api` is a child container inside `system`, so `system -> system.api` is trying to model containment as if it were a runtime interaction. Then `rank same user, system.api` tries to lay out that child element as a peer in the same dynamic interaction set.
+
+Fix it by choosing one abstraction level per dynamic view. At system level, use `user -> system`. At container level, use `user -> system.api` and other container-to-container steps, but do not also use the parent `system` as one end of the interaction. After that, apply `rank same` only to elements you actually keep at that same level.

@@ -48,6 +48,12 @@ AGENT_TOOL_NAMES = {
 SAFE_META_TOOL_NAMES = {
     "manage_todo_list",
 }
+ALLOWED_LIKEC4_MCP_MODES = {
+    "baseline",
+    "baseline_hook_only",
+    "with_skill_targeted",
+}
+ALLOWED_LIKEC4_MCP_PREFIX = "mcplikec4"
 EXTERNAL_PATH_TAG = "@external/"
 FORBIDDEN_NON_WORKER_PREFIXES = (
     ".github/prompts/",
@@ -55,8 +61,7 @@ FORBIDDEN_NON_WORKER_PREFIXES = (
     ".github/hooks/",
 )
 ROOT_READ_ALLOWLIST = (
-    "README.md",
-    "projects/",
+    "projects/shared/",
 )
 MANAGER_READ_ALLOWLIST = (
     "README.md",
@@ -100,8 +105,10 @@ def main() -> None:
     try:
         raw = sys.stdin.read().strip()
         payload = json.loads(raw) if raw else {}
-        event_name = payload.get("hookEventName", "")
+        event_name = infer_hook_event_name(payload)
         mode = os.environ.get("BENCH_MODE", "").strip()
+
+        maybe_write_debug(payload, mode)
 
         if event_name == "SessionStart":
             emit(session_start_output(mode))
@@ -123,6 +130,48 @@ def emit(data: dict[str, Any]) -> None:
     print(json.dumps(data, ensure_ascii=False))
 
 
+def infer_hook_event_name(payload: dict[str, Any]) -> str:
+    direct = payload.get("hookEventName") or payload.get("hook_event_name")
+    if isinstance(direct, str) and direct.strip():
+        return direct.strip()
+    if payload.get("tool_name"):
+        return "PreToolUse"
+    return ""
+
+
+def maybe_write_debug(payload: dict[str, Any], mode: str) -> None:
+    enabled = os.environ.get("BENCH_DEBUG_HOOKS", "").strip().lower()
+    if enabled not in {"1", "true", "yes", "on"}:
+        return
+    log_target = os.environ.get("BENCH_DEBUG_LOG", "").strip()
+    if not log_target:
+        return
+
+    cwd = payload.get("cwd") or "."
+    try:
+        workspace_root = Path(cwd).resolve()
+    except Exception:
+        workspace_root = Path(".").resolve()
+
+    log_path = Path(log_target)
+    if not log_path.is_absolute():
+        log_path = workspace_root / log_target
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+
+    tool_name = str(payload.get("tool_name", ""))
+    tool_input = payload.get("tool_input") if isinstance(payload, dict) else None
+    record = {
+        "timestamp": payload.get("timestamp"),
+        "hookEventName": payload.get("hookEventName"),
+        "mode": mode,
+        "sessionId": payload.get("sessionId"),
+        "tool_name": tool_name,
+        "tool_paths": extract_paths(tool_name, tool_input, workspace_root) if tool_input is not None else [],
+    }
+    with log_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
 def common_allow() -> dict[str, Any]:
     return {"continue": True}
 
@@ -132,25 +181,34 @@ def session_start_output(mode: str) -> dict[str, Any]:
         "benchmark_manager": (
             "Benchmark manager mode is active. Use the workspace skill 'skill-creator' "
             "when revising benchmark customizations, and delegate "
-            "only to the constrained benchmark worker agents."
+            "only to the constrained benchmark worker agents. MCP tools remain disabled in this mode."
         ),
         "baseline": (
             "Strict baseline benchmark worker mode is active. Workspace skills must have been "
             "relocated out of .github/skills/ before the session started, and no SKILL.md file "
-            "may be read in this session."
+            "may be read in this session. Outside the target prompt and benchmark artefacts, "
+            "only shared specification examples under projects/shared/ may be read. All LikeC4 MCP "
+            "tools are allowed in this mode; other MCP servers remain blocked."
         ),
         "baseline_hook_only": (
             "Hook-only baseline probe mode is active. Workspace skills may remain in place, "
-            "but no .github path or SKILL.md file may be read in this session. Treat this as "
-            "an experiment, not the default trust boundary."
+            "but no .github path or SKILL.md file may be read in this session. Outside the "
+            "target prompt and benchmark artefacts, only shared specification examples under "
+            "projects/shared/ may be read. All LikeC4 MCP tools are allowed in this mode; all other "
+            "MCP servers remain blocked. Treat this as an experiment, not the default trust boundary."
         ),
         "with_skill_targeted": (
             "Targeted with-skill worker mode is active. The first skill directory you read "
-            "becomes the only workspace skill allowed for the rest of the session."
+            "becomes the only workspace skill allowed for the rest of the session. Outside that "
+            "skill, only shared specification examples under projects/shared/ may be read. "
+            "Within the target skill, read eval prompts only from evals/evals-public.json; "
+            "grading-spec.json stays hidden from workers. All LikeC4 MCP tools are allowed in this "
+            "mode; all other MCP servers remain blocked."
         ),
         "blind_compare": (
             "Blind comparator mode is active. Stay blind to mapping and raw non-blind outputs; "
-            "read only blind A/B artifacts plus the target eval definitions."
+            "read only blind A/B artifacts from the active iteration plus the target grading-spec.json. "
+            "MCP tools remain blocked in this mode."
         ),
     }
     additional = messages.get(mode)
@@ -190,7 +248,17 @@ def handle_pre_tool_use(payload: dict[str, Any], mode: str) -> dict[str, Any]:
         return deny(baseline_precondition_failure)
 
     if tool_name.startswith("mcp_"):
-        return deny("MCP tools are disabled for benchmark agents.")
+        if is_allowed_likec4_mcp(tool_name, mode):
+            return allow(
+                additional_context=(
+                    "LikeC4 MCP is allowed in this benchmark worker for repository grounding and "
+                    "validation. Manager and blind-comparator modes still keep MCP disabled."
+                )
+            )
+        return deny(
+            "MCP tools are disabled in this benchmark mode. Only LikeC4 MCP tools "
+            "(mcp_likec4_*) are allowed in baseline, hook-only baseline, and with-skill workers."
+        )
 
     category = classify_tool(tool_name)
 
@@ -235,6 +303,17 @@ def strict_baseline_precondition_failure(mode: str, workspace_root: Path) -> str
         f"before the session starts. Active skill directories are still present ({preview}). "
         "Use the hook-only baseline worker only for explicit isolation probes."
     )
+
+
+def normalize_tool_name(tool_name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", tool_name.lower())
+
+
+def is_allowed_likec4_mcp(tool_name: str, mode: str) -> bool:
+    if mode not in ALLOWED_LIKEC4_MCP_MODES:
+        return False
+    normalized = normalize_tool_name(tool_name)
+    return normalized.startswith(ALLOWED_LIKEC4_MCP_PREFIX) and normalized != ALLOWED_LIKEC4_MCP_PREFIX
 
 
 def classify_tool(tool_name: str) -> str:
@@ -364,7 +443,7 @@ def handle_search(
     for pattern in include_patterns:
         prefix = normalize_glob_prefix(pattern)
         if prefix is None:
-            return deny(f"Search scope '{pattern}' is too broad. Scope searches to a concrete allowed subtree such as test/** or projects/**.")
+            return deny(f"Search scope '{pattern}' is too broad. Scope searches to a concrete allowed subtree such as test/**, .github/agents/**, or projects/shared/** depending on mode.")
         if not is_read_allowed(prefix, mode, state, workspace_root, is_prefix=True):
             return deny(f"Search scope '{pattern}' is outside the allowed benchmark area for mode '{mode}'.")
     return allow()
@@ -450,12 +529,9 @@ def is_read_allowed(
             locked_skill = state.get("locked_skill")
             if skill_name != locked_skill:
                 return False
+            if "/evals/" in rel_path:
+                return rel_path.endswith("/evals/evals-public.json")
             return True
-        skill_name = extract_skill_from_iteration_path(rel_path)
-        if skill_name:
-            if not lock_skill(state, skill_name, workspace_root):
-                return False
-            return skill_name == state.get("locked_skill")
         return any(path_matches_allowlist(rel_path, allowed, is_prefix=is_prefix) for allowed in ROOT_READ_ALLOWLIST)
 
     if mode == "blind_compare":
@@ -467,8 +543,10 @@ def is_read_allowed(
             return False
         if rel_path.endswith("-summary.json") or rel_path.endswith("-run-metrics.json"):
             return False
+        if rel_path.endswith("blind-comparisons.json"):
+            return False
         if rel_path.startswith(".github/skills/"):
-            if not rel_path.endswith("/evals/evals.json"):
+            if not rel_path.endswith("/evals/grading-spec.json"):
                 return False
             skill_name = extract_skill_from_skills_path(rel_path)
             if not skill_name:
@@ -476,18 +554,17 @@ def is_read_allowed(
             if not lock_skill(state, skill_name, workspace_root):
                 return False
             return skill_name == state.get("locked_skill")
-        if rel_path.endswith("/blind/A.md") or rel_path.endswith("/blind/B.md"):
+        if rel_path.endswith("/blind/A.md") or rel_path.endswith("/blind/B.md") or re.search(r"/blind/run-\d+/(A|B)\.md$", rel_path):
             skill_name = extract_skill_from_iteration_path(rel_path)
-            if not skill_name:
+            iteration_name = extract_iteration_from_iteration_path(rel_path)
+            current_iteration = latest_iteration_name(workspace_root)
+            if not skill_name or not iteration_name or not current_iteration:
+                return False
+            if iteration_name != current_iteration:
                 return False
             if not lock_skill(state, skill_name, workspace_root):
                 return False
-            return skill_name == state.get("locked_skill")
-        if rel_path.startswith("test/") and rel_path.endswith("blind-comparisons.json"):
-            skill_name = extract_skill_from_iteration_path(rel_path)
-            if not skill_name:
-                return False
-            if not lock_skill(state, skill_name, workspace_root):
+            if not lock_iteration(state, iteration_name, workspace_root):
                 return False
             return skill_name == state.get("locked_skill")
         return False
@@ -507,6 +584,16 @@ def lock_skill(state: dict[str, Any], skill_name: str, workspace_root: Path) -> 
         return False
     if not existing:
         state["locked_skill"] = skill_name
+        save_state(workspace_root, state)
+    return True
+
+
+def lock_iteration(state: dict[str, Any], iteration_name: str, workspace_root: Path) -> bool:
+    existing = state.get("locked_iteration")
+    if existing and existing != iteration_name:
+        return False
+    if not existing:
+        state["locked_iteration"] = iteration_name
         save_state(workspace_root, state)
     return True
 
@@ -651,6 +738,35 @@ def extract_skill_from_iteration_path(rel_path: str) -> str | None:
             return None
         return candidate
     return None
+
+
+def extract_iteration_from_iteration_path(rel_path: str) -> str | None:
+    parts = normalize_rel_path(rel_path).split("/")
+    if len(parts) >= 2 and parts[0] == "test" and ITERATION_RE.match(parts[1]):
+        return parts[1]
+    return None
+
+
+def latest_iteration_name(workspace_root: Path) -> str | None:
+    test_root = workspace_root / "test"
+    if not test_root.exists():
+        return None
+    candidates: list[tuple[int, str]] = []
+    for child in test_root.iterdir():
+        if not child.is_dir():
+            continue
+        match = ITERATION_RE.match(child.name)
+        if not match:
+            continue
+        try:
+            number = int(child.name.split("-", 1)[1])
+        except (IndexError, ValueError):
+            continue
+        candidates.append((number, child.name))
+    if not candidates:
+        return None
+    candidates.sort()
+    return candidates[-1][1]
 
 
 def dedupe(values: list[str]) -> list[str]:

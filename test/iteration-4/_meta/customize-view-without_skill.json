@@ -1,0 +1,37 @@
+{
+  "skill_name": "customize-view",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-code.c4",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-deployment.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "view c2_left_to_right_flow extends c2 {\n  autoLayout LeftRight\n}"
+    },
+    {
+      "id": 1,
+      "response": "view c2_api_focus extends c2 {\n  style * {\n    opacity 30%\n  }\n\n  style * where tag is #Api {\n    color modern\n    opacity 100%\n  }\n}"
+    },
+    {
+      "id": 2,
+      "response": "view c2_with_docs extends c2 {\n  link https://intranet.example/specs/c2\n}"
+    },
+    {
+      "id": 3,
+      "response": "view c2_api_docs extends c2 {\n  link https://intranet.example/specs/c2\n\n  style * {\n    opacity 30%\n  }\n\n  style * where tag is #Api {\n    color modern\n    opacity 100%\n  }\n}\n\nThis stops at view-level customization: layout, emphasis, and links on top of the existing view. Creating or changing model elements, relationships, tags, or the target detail view itself is outside scope."
+    },
+    {
+      "id": 4,
+      "response": "view c2_left_to_right extends c2 {\n  autoLayout LeftRight\n}"
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Use the external integration pattern. Add one external system for the payment provider and one outbound call from your internal API to it. The important shape is: internal API to external provider, with the provider modeled outside your internal boundary.

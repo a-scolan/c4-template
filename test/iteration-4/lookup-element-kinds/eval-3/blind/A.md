@@ -1,0 +1,1 @@
+For an HTTP API, the exact container kind is Container_Api. For a message queue, it is Container_Queue. For an async worker, do not guess Container_Worker because it is not declared; the closest worker-like subtype is Container_ProcessingServer, and if that still does not fit, use the base Container rather than inventing a new kind.

@@ -1,0 +1,22 @@
+{
+  "skill_name": "name-deployment-nodes",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I need to name the environment, zones, and VMs of a production setup with API gateway, upload, worker, MongoDB, and monitoring. Propose consistent names and also fix these candidates: `ProdApiVM`, `prod_upload_vm`, `AppServers`, `MonitoringTier`.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I don’t only want names: I also want full Environment→Zone→VM→Node_App hierarchy, Markdown descriptions with IP/CPU/RAM, and `instanceOf` links to containers. Is this the right skill?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I have a multi-region EU/US production setup with API, worker, and database. For VMs and zones, should it be `ProdEuApiVm` or `EuProdApiVm`? And how do I keep one readable convention across all names?",
+      "files": []
+    }
+  ]
+}

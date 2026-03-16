@@ -1,0 +1,27 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "After editing my system model, LikeC4 reports `Unknown kind Container_WebUi` and `Element not found: api`. How do I diagnose this properly?",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "In a dynamic view, I wrote `system -> system.api` and then `rank same user, system.api`, and it breaks. What is the real cause and what should I fix?",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "LikeC4 reports `Unknown relationship type: sends` and `Element not found: dataLayer.cache`. I don’t know whether this is a wrong relationship name, a broken FQN, or both. How do you diagnose this properly?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I wrote `webapp -[https]-> api` inside `model {}` and then copied the same traffic again between deployed apps in deployment because I wanted protocols on the diagram. Now the model is confusing. What is the root cause and the clean fix?",
+      "files": []
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Safe sequence: commit the generic skill improvement locally if needed, fetch the upstream reference branch, create a sync branch from c4-template/main, bring over only the generic skill file, do a confidentiality and genericity review, commit only that file, then push the sync branch and open a PR to c4-template/main. Do not push directly from main.
