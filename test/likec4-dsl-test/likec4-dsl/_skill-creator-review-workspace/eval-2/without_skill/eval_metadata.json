@@ -1,0 +1,15 @@
+{
+  "eval_id": 2,
+  "eval_name": "eval-2-without_skill",
+  "skill_name": "likec4-dsl",
+  "configuration": "without_skill",
+  "prompt": "I want to export only views matching `overview*` as dark PNGs into `./images`, flattened, for the current project. What exact LikeC4 CLI command should I run?",
+  "expected_output": "The response gives the `export png` CLI command with dark theme, flat output, a filter for `overview*`, an output directory, and the project path placeholder or path.",
+  "assertions": [
+    "The response uses `npx likec4 export png`.",
+    "The command includes `--theme dark`.",
+    "The command includes `--flat`.",
+    "The command includes a filter option equivalent to `-f \"overview*\"`.",
+    "The command includes an output directory option equivalent to `-o ./images` and keeps a project path argument."
+  ]
+}

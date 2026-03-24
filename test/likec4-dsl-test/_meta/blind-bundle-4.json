@@ -1,0 +1,73 @@
+{
+  "iteration": "likec4-dsl-test",
+  "skill_name": "likec4-dsl",
+  "eval_id": 4,
+  "run_number": 1,
+  "blind_artifacts": {
+    "A": "test/likec4-dsl-test/likec4-dsl/eval-4/blind/run-1/A.md",
+    "B": "test/likec4-dsl-test/likec4-dsl/eval-4/blind/run-1/B.md"
+  },
+  "eval_artifacts": {
+    "evals_public_path": ".github/skills/likec4-dsl/evals/evals-public.json",
+    "grading_spec_path": ".github/skills/likec4-dsl/evals/grading-spec.json"
+  },
+  "eval_prompt": "I only want `cloud.backend.*` highlighted in one view while everything else stays muted. Should that styling live in the model/spec or in the view? Give me a minimal LikeC4 view snippet.",
+  "expected_output": "The response keeps the styling in the view, not the model or specification, and provides a minimal view snippet that mutes everything then highlights `cloud.backend.*`.",
+  "expectations": [
+    "The response explicitly says the styling should live in the view rather than in the model or specification for this one-view customization.",
+    "The response uses a `view` block.",
+    "The snippet includes `include *` or an equivalent rule that gives the view context.",
+    "The snippet includes a style rule that mutes the broader set, such as `style * { color muted }`.",
+    "The snippet includes a style rule that highlights `cloud.backend.*`."
+  ],
+  "comparator_method": {
+    "primary_signal": "task-specific rubric score",
+    "secondary_signal": "expectation pass rate",
+    "tie_policy": "Use TIE only when outputs are genuinely equivalent after rubric and expectation review.",
+    "recommended_rubric_dimensions": {
+      "content": [
+        "correctness",
+        "completeness",
+        "accuracy"
+      ],
+      "structure": [
+        "organization",
+        "formatting",
+        "usability"
+      ]
+    }
+  },
+  "output_schema_hint": {
+    "schema_version": 2,
+    "eval_id": "integer",
+    "run_number": 1,
+    "winner": "A | B | TIE",
+    "reasoning": "string",
+    "rubric": {
+      "A": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      },
+      "B": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      }
+    },
+    "expectation_results": {
+      "A": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      },
+      "B": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      }
+    }
+  }
+}

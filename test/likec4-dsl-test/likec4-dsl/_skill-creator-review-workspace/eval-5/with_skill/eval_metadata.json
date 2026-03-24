@@ -1,0 +1,15 @@
+{
+  "eval_id": 5,
+  "eval_name": "eval-5-with_skill",
+  "skill_name": "likec4-dsl",
+  "configuration": "with_skill",
+  "prompt": "Assume `deploymentNode vm` already exists and `cloud.api` already exists in the logical model. Show a minimal deployment snippet that creates two named instances of `cloud.api` inside one VM node.",
+  "expected_output": "A minimal `deployment` snippet with one VM node that contains two named `instanceOf cloud.api` declarations.",
+  "assertions": [
+    "The response uses a `deployment` block.",
+    "The snippet includes a `vm` deployment node.",
+    "The snippet creates two named instances rather than one anonymous instance.",
+    "Each named instance uses `instanceOf cloud.api`.",
+    "The response stays focused on deployment DSL rather than drifting into unrelated view or relationship advice."
+  ]
+}

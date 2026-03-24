@@ -1,0 +1,37 @@
+{
+  "skill_name": "likec4-dsl",
+  "artifact_type": "evals-public",
+  "schema_version": 2,
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "I just edited `projects/template/system-model.c4` and I only want syntax and semantic validation for that file, not layout drift. What exact LikeC4 CLI command should I run from the repo root, and which JSON fields tell me whether only my file failed versus the whole project being broken?",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "I’m creating `projects/template/likec4.config.json` and I want that project to reuse shared specs from `projects/shared/`. Show a minimal JSON config snippet and explain how LikeC4 decides which project a `.c4` file belongs to when multiple config files exist in the workspace.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "I want to export only views matching `overview*` as dark PNGs into `./images`, flattened, for the current project. What exact LikeC4 CLI command should I run?",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Give me a minimal LikeC4 dynamic view snippet that renders as a UML-style sequence for `client -> gateway -> orders -> db`, and includes response arrows back out to the client.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "I only want `cloud.backend.*` highlighted in one view while everything else stays muted. Should that styling live in the model/spec or in the view? Give me a minimal LikeC4 view snippet.",
+      "files": []
+    },
+    {
+      "id": 5,
+      "prompt": "Assume `deploymentNode vm` already exists and `cloud.api` already exists in the logical model. Show a minimal deployment snippet that creates two named instances of `cloud.api` inside one VM node.",
+      "files": []
+    }
+  ]
+}

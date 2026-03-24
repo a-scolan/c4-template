@@ -1,0 +1,42 @@
+{
+  "skill_name": "likec4-dsl",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-24T14:50:48Z",
+  "finished_at": "2026-03-24T14:54:55Z",
+  "files_read": [
+    ".github/skills/likec4-dsl/SKILL.md",
+    ".github/skills/likec4-dsl/evals/evals-public.json",
+    ".github/skills/likec4-dsl/references/cli.md",
+    ".github/skills/likec4-dsl/references/views.md",
+    ".github/skills/likec4-dsl/references/configuration.md",
+    ".github/skills/likec4-dsl/references/predicates.md"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Run from the repo root:\n\n```bash\nnpx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template 2>/dev/null\n```\n\n`--no-layout` skips layout drift and runs only syntax + semantic validation. `--file` restricts error reporting to the specified file.\n\nKey JSON fields in the output:\n- `filteredFiles`: should be 1 — self-check that your file was found and evaluated.\n- `filteredErrors`: number of errors in your file. If 0, your file is clean.\n- `totalErrors`: total errors across the whole project. If `filteredErrors` is 0 but `totalErrors` is high, the rest of the project is broken — not your file's problem.\n- `valid`: overall project validity; `false` whenever any error exists anywhere in the project.\n\nDiagnosis rule: `filteredErrors == 0 && totalErrors > 0` → only your file is clean; `filteredErrors > 0` → your file has issues."
+    },
+    {
+      "id": 1,
+      "response": "Minimal `projects/template/likec4.config.json`:\n\n```json\n{\n  \"$schema\": \"https://likec4.dev/schemas/config.json\",\n  \"name\": \"template\",\n  \"include\": {\n    \"paths\": [\"../shared\"]\n  }\n}\n```\n\nProject assignment rule: LikeC4 assigns each `.c4` file to the project whose config file is **nearest** in the directory hierarchy, walking upward from the file's location. When multiple config files exist in the workspace, the closest ancestor config wins — a file inside `projects/template/` belongs to `template`, not to any config sitting higher up. Files in `projects/shared/` have no config file of their own, so they are unowned by default; the `include.paths` directive explicitly pulls them into the `template` project regardless of their physical location."
+    },
+    {
+      "id": 2,
+      "response": "```bash\nnpx likec4 export png --theme dark --flat -f \"overview*\" -o ./images projects/template\n```\n\n- `--theme dark`: dark background PNGs\n- `--flat`: all files output to the same `./images` directory (no subdirectories)\n- `-f \"overview*\"`: glob filter — only views whose ID matches `overview*`\n- `-o ./images`: output directory\n- `projects/template`: path to the project"
+    },
+    {
+      "id": 3,
+      "response": "```likec4\ndynamic view client-to-db {\n  title \"Client to DB flow\"\n  variant sequence\n\n  client -> gateway \"request\"\n  gateway -> orders \"forward\"\n  orders -> db \"query\"\n  orders <- db \"result\"\n  gateway <- orders \"response\"\n  client <- gateway \"response\"\n}\n```\n\n`variant sequence` renders the view as a UML sequence diagram instead of the default animated box-and-line diagram. Backward arrows (`SOURCE <- TARGET`) model response/return steps. The six steps produce the full round-trip: request downstream to `db`, responses back out to `client`."
+    },
+    {
+      "id": 4,
+      "response": "The styling should live in the **view**, not in the model or spec. Model/spec styles are global and affect every view; per-view highlighting belongs inside the `view { }` block using `style` rules. Rules are applied in order, so mute everything first, then override `cloud.backend.*`:\n\n```likec4\nviews {\n  view backend-focus {\n    include *\n\n    style * {\n      color muted\n    }\n    style cloud.backend.* {\n      color primary\n    }\n  }\n}\n```\n\n`cloud.backend.*` selects direct children of `cloud.backend`. Use `cloud.backend.**` instead if you also want all deeper descendants highlighted."
+    },
+    {
+      "id": 5,
+      "response": "```likec4\ndeployment {\n  vm myVm {\n    api1 = instanceOf cloud.api\n    api2 = instanceOf cloud.api\n  }\n}\n```\n\nTwo named instances (`api1`, `api2`) of the same logical element `cloud.api` are placed inside a single `vm` node. Named instance syntax (`IDENTIFIER = instanceOf ELEMENT`) is required when deploying the same element more than once in the same parent node; unnamed `instanceOf` would conflict."
+    }
+  ]
+}

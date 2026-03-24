@@ -1,0 +1,79 @@
+{
+  "skill_name": "likec4-dsl",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "The response gives the focused `likec4 validate` command with `--json`, `--no-layout`, `--file`, and the correct project path, then explains how to interpret `filteredFiles` and `filteredErrors` versus `totalErrors`.",
+      "files": [],
+      "expectations": [
+        "The response uses `npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template 2>/dev/null` or an equivalent command with the same flags and project path.",
+        "The response explains that `--no-layout` skips layout drift checks.",
+        "The response explains that `--file` scopes reported errors to the edited file.",
+        "The response mentions `filteredFiles` and `filteredErrors` as the key fields for the targeted file check.",
+        "The response distinguishes those filtered fields from `totalErrors` or other project-wide counts."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "A minimal JSON config with `$schema`, `name`, and `include.paths` for `../shared`, plus a correct explanation that the nearest config file in the directory hierarchy determines project scope.",
+      "files": [],
+      "expectations": [
+        "The response includes a JSON config snippet, not just prose.",
+        "The snippet includes `$schema` pointing to the LikeC4 config schema.",
+        "The snippet includes a valid `name` field.",
+        "The snippet uses `include.paths` with `../shared` or an equivalent relative path to the shared folder.",
+        "The explanation says that `.c4` files belong to the project defined by the nearest config file in the directory hierarchy."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response gives the `export png` CLI command with dark theme, flat output, a filter for `overview*`, an output directory, and the project path placeholder or path.",
+      "files": [],
+      "expectations": [
+        "The response uses `npx likec4 export png`.",
+        "The command includes `--theme dark`.",
+        "The command includes `--flat`.",
+        "The command includes a filter option equivalent to `-f \"overview*\"`.",
+        "The command includes an output directory option equivalent to `-o ./images` and keeps a project path argument."
+      ]
+    },
+    {
+      "id": 3,
+      "expected_output": "A paste-ready `dynamic view` snippet that uses `variant sequence`, forward steps from `client` to `db`, and backward response arrows back toward `client`.",
+      "files": [],
+      "expectations": [
+        "The response uses a `dynamic view` block.",
+        "The snippet includes `variant sequence`.",
+        "The snippet models the forward flow across `client`, `gateway`, `orders`, and `db`.",
+        "The snippet includes at least one backward arrow using `<-` for responses.",
+        "The response is primarily a usable DSL snippet, not only an explanation."
+      ]
+    },
+    {
+      "id": 4,
+      "expected_output": "The response keeps the styling in the view, not the model or specification, and provides a minimal view snippet that mutes everything then highlights `cloud.backend.*`.",
+      "files": [],
+      "expectations": [
+        "The response explicitly says the styling should live in the view rather than in the model or specification for this one-view customization.",
+        "The response uses a `view` block.",
+        "The snippet includes `include *` or an equivalent rule that gives the view context.",
+        "The snippet includes a style rule that mutes the broader set, such as `style * { color muted }`.",
+        "The snippet includes a style rule that highlights `cloud.backend.*`."
+      ]
+    },
+    {
+      "id": 5,
+      "expected_output": "A minimal `deployment` snippet with one VM node that contains two named `instanceOf cloud.api` declarations.",
+      "files": [],
+      "expectations": [
+        "The response uses a `deployment` block.",
+        "The snippet includes a `vm` deployment node.",
+        "The snippet creates two named instances rather than one anonymous instance.",
+        "Each named instance uses `instanceOf cloud.api`.",
+        "The response stays focused on deployment DSL rather than drifting into unrelated view or relationship advice."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

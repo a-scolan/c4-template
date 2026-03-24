@@ -1,0 +1,73 @@
+{
+  "iteration": "likec4-dsl-test",
+  "skill_name": "likec4-dsl",
+  "eval_id": 2,
+  "run_number": 1,
+  "blind_artifacts": {
+    "A": "test/likec4-dsl-test/likec4-dsl/eval-2/blind/run-1/A.md",
+    "B": "test/likec4-dsl-test/likec4-dsl/eval-2/blind/run-1/B.md"
+  },
+  "eval_artifacts": {
+    "evals_public_path": ".github/skills/likec4-dsl/evals/evals-public.json",
+    "grading_spec_path": ".github/skills/likec4-dsl/evals/grading-spec.json"
+  },
+  "eval_prompt": "I want to export only views matching `overview*` as dark PNGs into `./images`, flattened, for the current project. What exact LikeC4 CLI command should I run?",
+  "expected_output": "The response gives the `export png` CLI command with dark theme, flat output, a filter for `overview*`, an output directory, and the project path placeholder or path.",
+  "expectations": [
+    "The response uses `npx likec4 export png`.",
+    "The command includes `--theme dark`.",
+    "The command includes `--flat`.",
+    "The command includes a filter option equivalent to `-f \"overview*\"`.",
+    "The command includes an output directory option equivalent to `-o ./images` and keeps a project path argument."
+  ],
+  "comparator_method": {
+    "primary_signal": "task-specific rubric score",
+    "secondary_signal": "expectation pass rate",
+    "tie_policy": "Use TIE only when outputs are genuinely equivalent after rubric and expectation review.",
+    "recommended_rubric_dimensions": {
+      "content": [
+        "correctness",
+        "completeness",
+        "accuracy"
+      ],
+      "structure": [
+        "organization",
+        "formatting",
+        "usability"
+      ]
+    }
+  },
+  "output_schema_hint": {
+    "schema_version": 2,
+    "eval_id": "integer",
+    "run_number": 1,
+    "winner": "A | B | TIE",
+    "reasoning": "string",
+    "rubric": {
+      "A": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      },
+      "B": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      }
+    },
+    "expectation_results": {
+      "A": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      },
+      "B": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      }
+    }
+  }
+}

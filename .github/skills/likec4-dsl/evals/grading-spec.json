@@ -1,0 +1,259 @@
+{
+  "skill_name": "likec4-dsl",
+  "evals": [
+    {
+      "id": 0,
+      "expected_output": "The response gives the focused `likec4 validate` command with `--json`, `--no-layout`, `--file`, and the correct project path, then explains how to interpret `filteredFiles` and `filteredErrors` versus `totalErrors`.",
+      "files": [],
+      "expectations": [
+        "The response uses `npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template 2>/dev/null` or an equivalent command with the same flags and project path.",
+        "The response explains that `--no-layout` skips layout drift checks.",
+        "The response explains that `--file` scopes reported errors to the edited file.",
+        "The response mentions `filteredFiles` and `filteredErrors` as the key fields for the targeted file check.",
+        "The response distinguishes those filtered fields from `totalErrors` or other project-wide counts."
+      ]
+    },
+    {
+      "id": 1,
+      "expected_output": "A minimal JSON config with `$schema`, `name`, and `include.paths` for `../shared`, plus a correct explanation that the nearest config file in the directory hierarchy determines project scope.",
+      "files": [],
+      "expectations": [
+        "The response includes a JSON config snippet, not just prose.",
+        "The snippet includes `$schema` pointing to the LikeC4 config schema.",
+        "The snippet includes a valid `name` field.",
+        "The snippet uses `include.paths` with `../shared` or an equivalent relative path to the shared folder.",
+        "The explanation says that `.c4` files belong to the project defined by the nearest config file in the directory hierarchy."
+      ]
+    },
+    {
+      "id": 2,
+      "expected_output": "The response gives the `export png` CLI command with dark theme, flat output, a filter for `overview*`, an output directory, and the project path placeholder or path.",
+      "files": [],
+      "expectations": [
+        "The response uses `npx likec4 export png`.",
+        "The command includes `--theme dark`.",
+        "The command includes `--flat`.",
+        "The command includes a filter option equivalent to `-f \"overview*\"`.",
+        "The command includes an output directory option equivalent to `-o ./images` and keeps a project path argument."
+      ]
+    },
+    {
+      "id": 3,
+      "expected_output": "A paste-ready `dynamic view` snippet that uses `variant sequence`, forward steps from `client` to `db`, and backward response arrows back toward `client`.",
+      "files": [],
+      "expectations": [
+        "The response uses a `dynamic view` block.",
+        "The snippet includes `variant sequence`.",
+        "The snippet models the forward flow across `client`, `gateway`, `orders`, and `db`.",
+        "The snippet includes at least one backward arrow using `<-` for responses.",
+        "The response is primarily a usable DSL snippet, not only an explanation."
+      ]
+    },
+    {
+      "id": 4,
+      "expected_output": "The response keeps the styling in the view, not the model or specification, and provides a minimal view snippet that mutes everything then highlights `cloud.backend.*`.",
+      "files": [],
+      "expectations": [
+        "The response explicitly says the styling should live in the view rather than in the model or specification for this one-view customization.",
+        "The response uses a `view` block.",
+        "The snippet includes `include *` or an equivalent rule that gives the view context.",
+        "The snippet includes a style rule that mutes the broader set, such as `style * { color muted }`.",
+        "The snippet includes a style rule that highlights `cloud.backend.*`."
+      ]
+    },
+    {
+      "id": 5,
+      "expected_output": "A minimal `deployment` snippet with one VM node that contains two named `instanceOf cloud.api` declarations.",
+      "files": [],
+      "expectations": [
+        "The response uses a `deployment` block.",
+        "The snippet includes a `vm` deployment node.",
+        "The snippet creates two named instances rather than one anonymous instance.",
+        "Each named instance uses `instanceOf cloud.api`.",
+        "The response stays focused on deployment DSL rather than drifting into unrelated view or relationship advice."
+      ]
+    },
+    {
+      "id": 6,
+      "expected_output": "The response selects `cloud.backend._` (underscore) as the correct predicate, provides a minimal scoped view snippet using it, and explains that `*` selects all direct children unconditionally and `**` selects all recursive descendants that have relationships.",
+      "files": [],
+      "expectations": [
+        "The response identifies `cloud.backend._` (underscore) as the correct predicate for children with relationships to accumulated result.",
+        "The response explains that `cloud.backend.*` selects ALL direct children regardless of whether they have relationships.",
+        "The response explains that `cloud.backend.**` selects all recursive descendants (not just direct children) that have relationships.",
+        "The response provides a minimal view snippet using `cloud.backend._` inside a scoped `view ... of cloud.backend { ... }` block.",
+        "The response does not confuse `_` with a wildcard or treat it as selecting no elements."
+      ]
+    },
+    {
+      "id": 7,
+      "expected_output": "A `detail` view using `extends backend-overview`, with a bare `include api` (not full FQN) that resolves to `cloud.backend.api` due to inherited scope, and a relationship predicate for incoming relationships such as `include -> cloud.backend`.",
+      "files": [],
+      "expectations": [
+        "The response uses `view detail extends backend-overview { ... }` syntax.",
+        "The snippet uses `include api` without the full FQN `cloud.backend.api`, relying on scope inheritance.",
+        "The response explains that extended views inherit the `of` scope from the parent view.",
+        "The snippet includes an inbound relationship predicate such as `include -> cloud.backend` or `include -> cloud.backend ->` to pull in incoming relationships.",
+        "The response does not require the user to redeclare the `of cloud.backend` scope on the child view."
+      ]
+    },
+    {
+      "id": 8,
+      "expected_output": "A `global { predicateGroup core-services { ... } }` block with include/exclude rules for service kind and #deprecated tag, then two views using `global predicate core-services` each with a distinct additional rule.",
+      "files": [],
+      "expectations": [
+        "The response uses a `global { predicateGroup core-services { ... } }` block at the top level.",
+        "The predicate group contains `include cloud.* where kind is service` (or equivalent).",
+        "The predicate group excludes deprecated elements using `exclude * where tag is #deprecated` or a combined `and tag is not #deprecated` filter.",
+        "Both views use `global predicate core-services` to apply the shared group.",
+        "Each view demonstrates an additional distinct rule: one adds a `style` rule and the other adds an `include` rule."
+      ]
+    },
+    {
+      "id": 9,
+      "expected_output": "A `dynamic view checkout-flow` using chained arrow syntax for the three-step chain, a body block on the `frontend -> api` step with `technology` and `navigateTo`, and a `parallel { ... }` block for the fan-out from `api`.",
+      "files": [],
+      "expectations": [
+        "The response uses a `dynamic view checkout-flow { ... }` block.",
+        "The chain `customer -> frontend -> api` is written as a single chained expression (arrows on the same or continuation lines), not as three separate standalone `->` lines.",
+        "The `frontend -> api` step includes a body block `{ technology 'HTTPS'  navigateTo payment-detail }` (or equivalent).",
+        "The snippet includes a `parallel { ... }` (or `par { ... }`) block containing three concurrent steps: `api -> payments`, `api -> inventory`, `api -> notifications`.",
+        "The response is primarily a usable DSL snippet, not only explanation."
+      ]
+    },
+    {
+      "id": 10,
+      "expected_output": "The response confirms that both `where source.tag is #next` and `where source.tag is #gamma` match the `prod.eu.frontend` instance, explains that instances inherit all tags from the logical model element plus any tags added directly on the `instanceOf` block.",
+      "files": [],
+      "expectations": [
+        "The response states that `where source.tag is #next` WILL match the relation from `prod.eu.frontend` (inherited from the logical model).",
+        "The response states that `where source.tag is #gamma` WILL also match (tag added directly on the `instanceOf` block).",
+        "The response explains that deployment instances inherit tags from the corresponding logical model element.",
+        "The response explains that additional tags declared on an `instanceOf` block are also visible for tag filtering.",
+        "The response does not suggest that deployment tags override or replace model tags."
+      ]
+    },
+    {
+      "id": 11,
+      "expected_output": "The correct `ops.c4` snippet uses `extend cloud.api { metadata { port '9090'; region 'us-east-1' } health = component 'Health Check' }`, and the response states that `port` becomes the array `['8080', '9090']` because duplicate metadata keys are merged into arrays.",
+      "files": [],
+      "expectations": [
+        "The response shows a correct `extend cloud.api { ... }` block (not a re-declaration of `cloud.api`).",
+        "The `extend` block contains `metadata { port '9090'; region 'us-east-1' }` inside it.",
+        "The `extend` block also declares the nested `health = component 'Health Check'`.",
+        "The response explicitly states that `port` ends up as an array `['8080', '9090']` (or equivalent notation).",
+        "The response explains WHY: duplicate metadata keys are merged into arrays rather than overwriting."
+      ]
+    },
+    {
+      "id": 12,
+      "expected_output": "The response states that deployment views do not support customize predicates (`with { ... }`) and do not support `global style ...`, then provides a minimal valid deployment view snippet using supported include/filter rules.",
+      "files": [],
+      "expectations": [
+        "The response explicitly says `include * with { ... }` is not supported in deployment views.",
+        "The response explicitly says `global style ...` is not supported in deployment views.",
+        "The response still provides a valid `deployment view` snippet.",
+        "The snippet uses supported rules (for example `include *` and/or `include * -> * where ...`).",
+        "The response distinguishes deployment-view limitations from element-view capabilities."
+      ]
+    },
+    {
+      "id": 13,
+      "expected_output": "The response fixes ordering in the element body by placing tags before properties, then explains that tags must precede properties in block bodies.",
+      "files": [],
+      "expectations": [
+        "The corrected snippet keeps the same element intent (`api = service 'API'`).",
+        "The corrected snippet places `#critical` before `technology 'Node.js'`.",
+        "The response explicitly explains the ordering rule: tags come before properties.",
+        "The response does not remove the tag or technology field as a workaround.",
+        "The corrected snippet remains minimal and syntactically valid LikeC4 DSL."
+      ]
+    },
+    {
+      "id": 14,
+      "expected_output": "The response says `styles { ... }` is not an allowed top-level block and replaces it with valid top-level statements, typically using `global { styleGroup ... }` and/or `views { ... }`.",
+      "files": [],
+      "expectations": [
+        "The response identifies that `styles` is an invalid top-level statement.",
+        "The response mentions allowed top-level statements (`import`, `specification`, `model`, `deployment`, `views`, `global`).",
+        "The corrected file uses only allowed top-level statements.",
+        "The corrected DSL demonstrates styling intent via valid constructs (e.g., `global styleGroup` and applying in `views`).",
+        "The output is a minimal valid LikeC4 file, not only prose."
+      ]
+    },
+    {
+      "id": 15,
+      "expected_output": "The response marks `payment.api` and `1backend` invalid, marks `payment_api` and `payment-api` valid, and rewrites invalid identifiers into valid forms without dots or leading digits.",
+      "files": [],
+      "expectations": [
+        "The response states `payment.api` is invalid because dots are reserved for FQNs.",
+        "The response states `1backend` is invalid because identifiers cannot start with a digit.",
+        "The response states `payment_api` is valid.",
+        "The response states `payment-api` is valid.",
+        "The response provides corrected alternatives for invalid identifiers preserving meaning (e.g., `payment_api`, `backend1`)."
+      ]
+    },
+    {
+      "id": 16,
+      "expected_output": "The response says parent-child relationships are invalid, removes `cloud -> backend` relationship, and provides a corrected pattern that preserves hierarchy and adds a valid relationship between non-parent/child elements.",
+      "files": [],
+      "expectations": [
+        "The response explicitly identifies `cloud -> backend` as invalid parent-child relationship.",
+        "The corrected snippet preserves the hierarchical nesting of `backend` inside `cloud`.",
+        "The corrected snippet demonstrates a valid relationship between non-parent-child elements.",
+        "The response does not claim the original relation is valid with a different label.",
+        "The corrected output is a minimal, usable DSL snippet."
+      ]
+    },
+    {
+      "id": 17,
+      "expected_output": "The response explains that cross-file references to nested elements require FQNs and rewrites the relationship using full element paths.",
+      "files": [],
+      "expectations": [
+        "The response explains why `backend.api` fails across files (lexical scope and unresolved local reference).",
+        "The response states that cross-file nested references must use FQNs.",
+        "The corrected relationship uses full FQNs (e.g., `cloud.backend.api -> cloud.db`).",
+        "The response does not suggest importing symbols as a substitute for FQNs in this case.",
+        "The answer remains focused on reference resolution and corrected DSL."
+      ]
+    },
+    {
+      "id": 18,
+      "expected_output": "The response explains that relationship extension must match source, target, title, and kind; it rejects extending kinded relation with non-kinded matcher and provides the correct `extend frontend -[async]-> api 'streams' { ... }` (or equivalent) snippet.",
+      "files": [],
+      "expectations": [
+        "The response states that `extend` for relationships must match source and target.",
+        "The response states that matching also includes title and kind for disambiguation.",
+        "The response identifies `extend frontend -> api 'streams'` as incorrect for a relation originally declared with kind `async`.",
+        "The corrected snippet includes the relationship kind in the `extend` matcher.",
+        "The corrected snippet adds metadata within the `extend` block."
+      ]
+    },
+    {
+      "id": 19,
+      "expected_output": "The response explains scoped wildcard semantics (`*` in `view ... of cloud.backend` means scoped element + direct children + relationships among included elements), clarifies it is not whole-model include, and shows predicates for incoming/outgoing relationships around `cloud.backend`.",
+      "files": [],
+      "expectations": [
+        "The response explicitly says scoped `*` does NOT include the whole model.",
+        "The response explains that in a scoped view it includes the scoped element and direct children.",
+        "The snippet uses `view ... of cloud.backend` with `include *`.",
+        "The snippet adds relationship predicates for incoming/outgoing around `cloud.backend` (e.g., `include -> cloud.backend ->`).",
+        "The output includes a minimal usable DSL snippet, not prose-only explanation."
+      ]
+    },
+    {
+      "id": 20,
+      "expected_output": "The response provides a `likec4 validate` command with `--json`, `--no-layout`, and repeated `--file` for both edited files, then explains checking `filteredFiles` and `filteredErrors` to confirm filter scope.",
+      "files": [],
+      "expectations": [
+        "The command uses `npx likec4 validate --json --no-layout`.",
+        "The command passes two `--file` arguments, one for each edited file.",
+        "The command includes the project path argument (e.g., `projects/template`).",
+        "The response explains that `filteredFiles` should equal 2 to confirm both files were filtered.",
+        "The response explains interpreting `filteredErrors` versus project-wide counts like `totalErrors`."
+      ]
+    }
+  ],
+  "artifact_type": "grading-spec",
+  "schema_version": 2
+}

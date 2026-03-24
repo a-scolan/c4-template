@@ -1,0 +1,15 @@
+{
+  "eval_id": 3,
+  "eval_name": "eval-3-without_skill",
+  "skill_name": "likec4-dsl",
+  "configuration": "without_skill",
+  "prompt": "Give me a minimal LikeC4 dynamic view snippet that renders as a UML-style sequence for `client -> gateway -> orders -> db`, and includes response arrows back out to the client.",
+  "expected_output": "A paste-ready `dynamic view` snippet that uses `variant sequence`, forward steps from `client` to `db`, and backward response arrows back toward `client`.",
+  "assertions": [
+    "The response uses a `dynamic view` block.",
+    "The snippet includes `variant sequence`.",
+    "The snippet models the forward flow across `client`, `gateway`, `orders`, and `db`.",
+    "The snippet includes at least one backward arrow using `<-` for responses.",
+    "The response is primarily a usable DSL snippet, not only an explanation."
+  ]
+}

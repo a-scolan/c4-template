@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-03-24T15:18:09Z",
+  "iteration": "likec4-dsl-test",
+  "summary_count": 2,
+  "summaries": [
+    {
+      "skill": "likec4-dsl",
+      "configuration": "with_skill",
+      "output_path": "test/likec4-dsl-test/likec4-dsl/with_skill-executable-checks.json",
+      "applicable_eval_count": 4,
+      "valid_eval_rate": 0.5
+    },
+    {
+      "skill": "likec4-dsl",
+      "configuration": "without_skill",
+      "output_path": "test/likec4-dsl-test/likec4-dsl/without_skill-executable-checks.json",
+      "applicable_eval_count": 5,
+      "valid_eval_rate": 0.6
+    }
+  ]
+}

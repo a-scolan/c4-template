@@ -1,0 +1,15 @@
+{
+  "eval_id": 4,
+  "eval_name": "eval-4-without_skill",
+  "skill_name": "likec4-dsl",
+  "configuration": "without_skill",
+  "prompt": "I only want `cloud.backend.*` highlighted in one view while everything else stays muted. Should that styling live in the model/spec or in the view? Give me a minimal LikeC4 view snippet.",
+  "expected_output": "The response keeps the styling in the view, not the model or specification, and provides a minimal view snippet that mutes everything then highlights `cloud.backend.*`.",
+  "assertions": [
+    "The response explicitly says the styling should live in the view rather than in the model or specification for this one-view customization.",
+    "The response uses a `view` block.",
+    "The snippet includes `include *` or an equivalent rule that gives the view context.",
+    "The snippet includes a style rule that mutes the broader set, such as `style * { color muted }`.",
+    "The snippet includes a style rule that highlights `cloud.backend.*`."
+  ]
+}

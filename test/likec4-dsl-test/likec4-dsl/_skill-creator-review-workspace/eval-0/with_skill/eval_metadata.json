@@ -1,0 +1,15 @@
+{
+  "eval_id": 0,
+  "eval_name": "eval-0-with_skill",
+  "skill_name": "likec4-dsl",
+  "configuration": "with_skill",
+  "prompt": "I just edited `projects/template/system-model.c4` and I only want syntax and semantic validation for that file, not layout drift. What exact LikeC4 CLI command should I run from the repo root, and which JSON fields tell me whether only my file failed versus the whole project being broken?",
+  "expected_output": "The response gives the focused `likec4 validate` command with `--json`, `--no-layout`, `--file`, and the correct project path, then explains how to interpret `filteredFiles` and `filteredErrors` versus `totalErrors`.",
+  "assertions": [
+    "The response uses `npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template 2>/dev/null` or an equivalent command with the same flags and project path.",
+    "The response explains that `--no-layout` skips layout drift checks.",
+    "The response explains that `--file` scopes reported errors to the edited file.",
+    "The response mentions `filteredFiles` and `filteredErrors` as the key fields for the targeted file check.",
+    "The response distinguishes those filtered fields from `totalErrors` or other project-wide counts."
+  ]
+}

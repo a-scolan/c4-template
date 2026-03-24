@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "skill": "likec4-dsl",
+  "generated_at": "2026-03-24T15:10:00Z",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "winner": "B",
+      "reasoning": "Response B provides the exact command with all required flags (--json, --no-layout, --file) and explains their purposes. Response A uses a different command (check vs validate), omits critical flags, and does not reference the specific expected JSON fields (filteredFiles, filteredErrors, totalErrors). Response B fully satisfies all five expectations; Response A satisfies none.",
+      "rubric": {
+        "A": {
+          "overall_score": 1.0,
+          "content_score": 1.0,
+          "structure_score": 5.0,
+          "notes": "Uses fictional npx likec4 check --reporter json command. Does not mention --no-layout, --file flags, or filteredFiles/filteredErrors fields. Describes correct diagnostic reasoning pattern but with wrong command and field names."
+        },
+        "B": {
+          "overall_score": 10.0,
+          "content_score": 10.0,
+          "structure_score": 10.0,
+          "notes": "Exact command with all required flags, precise explanations of each flag, all expected JSON fields named with correct semantics and a clear diagnosis rule."
+        }
+      },
+      "expectation_results": {
+        "A": {"passed": 0, "total": 5, "pass_rate": 0.0},
+        "B": {"passed": 5, "total": 5, "pass_rate": 1.0}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "winner": "A",
+      "reasoning": "Response A meets all 5 expectations including the critical $schema field. Response B omits $schema, failing expectation 2. Both explain the nearest-config-wins principle correctly, but A's simpler include pattern and complete JSON structure make it the clear winner.",
+      "rubric": {
+        "A": {
+          "overall_score": 10.0,
+          "content_score": 10.0,
+          "structure_score": 10.0,
+          "notes": "Complete JSON snippet with $schema, name, and correct include.paths. Clear rule about nearest-ancestor config winning. Simple and minimal as requested."
+        },
+        "B": {
+          "overall_score": 6.0,
+          "content_score": 6.0,
+          "structure_score": 7.0,
+          "notes": "Missing $schema in the JSON snippet. Uses overly verbose include.paths with **/*.c4 glob that was not asked for."
+        }
+      },
+      "expectation_results": {
+        "A": {"passed": 5, "total": 5, "pass_rate": 1.0},
+        "B": {"passed": 4, "total": 5, "pass_rate": 0.8}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "winner": "A",
+      "reasoning": "Response A satisfies all five expectations including both the output directory and the required project path argument. Response B includes all required flags but omits the project path argument at the end, which is required to specify which project to export.",
+      "rubric": {
+        "A": {
+          "overall_score": 10.0,
+          "content_score": 10.0,
+          "structure_score": 10.0,
+          "notes": "Complete command with all required flags (-f, -o, --flat, --theme dark) plus project path. Concise explanations for each flag."
+        },
+        "B": {
+          "overall_score": 7.0,
+          "content_score": 7.0,
+          "structure_score": 8.0,
+          "notes": "Missing project path argument at end of command. Uses --views and --output instead of -f and -o (which may or may not be valid depending on CLI version)."
+        }
+      },
+      "expectation_results": {
+        "A": {"passed": 5, "total": 5, "pass_rate": 1.0},
+        "B": {"passed": 4, "total": 5, "pass_rate": 0.8}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "winner": "B",
+      "reasoning": "Response B satisfies all five expectations including the critical variant sequence directive and <- backward arrow syntax for responses. Response A omits variant sequence entirely and models return steps using separate forward arrows instead of the required <- syntax.",
+      "rubric": {
+        "A": {
+          "overall_score": 5.0,
+          "content_score": 5.0,
+          "structure_score": 7.0,
+          "notes": "Uses dynamic view correctly with forward flow, but omits required variant sequence and uses forward arrows for returns instead of <- syntax."
+        },
+        "B": {
+          "overall_score": 10.0,
+          "content_score": 10.0,
+          "structure_score": 10.0,
+          "notes": "Complete snippet with variant sequence, full forward flow client->db, backward <- arrows for all responses."
+        }
+      },
+      "expectation_results": {
+        "A": {"passed": 3, "total": 5, "pass_rate": 0.6},
+        "B": {"passed": 5, "total": 5, "pass_rate": 1.0}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 4,
+      "winner": "A",
+      "reasoning": "Both responses pass all five expectations. Response A provides accurate selector guidance distinguishing * (direct children) from ** (all descendants), while Response B contains a factual error claiming cloud.backend.* matches every direct and nested descendant. Response A is more concise and educationally accurate.",
+      "rubric": {
+        "A": {
+          "overall_score": 9.0,
+          "content_score": 9.0,
+          "structure_score": 9.0,
+          "notes": "All five expectations met. Correctly explains * vs ** selector distinction. Minimal and focused snippet."
+        },
+        "B": {
+          "overall_score": 8.0,
+          "content_score": 7.0,
+          "structure_score": 8.0,
+          "notes": "All five expectations met technically but contains factual error: claims cloud.backend.* matches every direct and nested descendant when * only matches direct children. Adds opacity which was not requested."
+        }
+      },
+      "expectation_results": {
+        "A": {"passed": 5, "total": 5, "pass_rate": 1.0},
+        "B": {"passed": 5, "total": 5, "pass_rate": 1.0}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 5,
+      "winner": "B",
+      "reasoning": "Both responses satisfy all five expectations. Response B is more self-contained with explicit runnable vm node declaration using vm myVm syntax and clearer IDENTIFIER = instanceOf ELEMENT pattern. Response A assumes an already-declared node without showing it, creating incomplete context.",
+      "rubric": {
+        "A": {
+          "overall_score": 8.0,
+          "content_score": 8.0,
+          "structure_score": 8.0,
+          "notes": "Uses deploymentNode vm referencing a node assumed to be pre-declared, which creates incomplete context for DSL learners."
+        },
+        "B": {
+          "overall_score": 9.0,
+          "content_score": 9.0,
+          "structure_score": 9.0,
+          "notes": "Self-contained example with vm myVm syntax and clear IDENTIFIER = instanceOf assignment. Concise and focused on deployment DSL."
+        }
+      },
+      "expectation_results": {
+        "A": {"passed": 5, "total": 5, "pass_rate": 1.0},
+        "B": {"passed": 5, "total": 5, "pass_rate": 1.0}
+      }
+    }
+  ]
+}

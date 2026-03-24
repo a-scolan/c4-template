@@ -1,0 +1,73 @@
+{
+  "iteration": "likec4-dsl-test",
+  "skill_name": "likec4-dsl",
+  "eval_id": 1,
+  "run_number": 1,
+  "blind_artifacts": {
+    "A": "test/likec4-dsl-test/likec4-dsl/eval-1/blind/run-1/A.md",
+    "B": "test/likec4-dsl-test/likec4-dsl/eval-1/blind/run-1/B.md"
+  },
+  "eval_artifacts": {
+    "evals_public_path": ".github/skills/likec4-dsl/evals/evals-public.json",
+    "grading_spec_path": ".github/skills/likec4-dsl/evals/grading-spec.json"
+  },
+  "eval_prompt": "I’m creating `projects/template/likec4.config.json` and I want that project to reuse shared specs from `projects/shared/`. Show a minimal JSON config snippet and explain how LikeC4 decides which project a `.c4` file belongs to when multiple config files exist in the workspace.",
+  "expected_output": "A minimal JSON config with `$schema`, `name`, and `include.paths` for `../shared`, plus a correct explanation that the nearest config file in the directory hierarchy determines project scope.",
+  "expectations": [
+    "The response includes a JSON config snippet, not just prose.",
+    "The snippet includes `$schema` pointing to the LikeC4 config schema.",
+    "The snippet includes a valid `name` field.",
+    "The snippet uses `include.paths` with `../shared` or an equivalent relative path to the shared folder.",
+    "The explanation says that `.c4` files belong to the project defined by the nearest config file in the directory hierarchy."
+  ],
+  "comparator_method": {
+    "primary_signal": "task-specific rubric score",
+    "secondary_signal": "expectation pass rate",
+    "tie_policy": "Use TIE only when outputs are genuinely equivalent after rubric and expectation review.",
+    "recommended_rubric_dimensions": {
+      "content": [
+        "correctness",
+        "completeness",
+        "accuracy"
+      ],
+      "structure": [
+        "organization",
+        "formatting",
+        "usability"
+      ]
+    }
+  },
+  "output_schema_hint": {
+    "schema_version": 2,
+    "eval_id": "integer",
+    "run_number": 1,
+    "winner": "A | B | TIE",
+    "reasoning": "string",
+    "rubric": {
+      "A": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      },
+      "B": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      }
+    },
+    "expectation_results": {
+      "A": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      },
+      "B": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      }
+    }
+  }
+}

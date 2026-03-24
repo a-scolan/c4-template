@@ -1,0 +1,73 @@
+{
+  "iteration": "likec4-dsl-test",
+  "skill_name": "likec4-dsl",
+  "eval_id": 0,
+  "run_number": 1,
+  "blind_artifacts": {
+    "A": "test/likec4-dsl-test/likec4-dsl/eval-0/blind/run-1/A.md",
+    "B": "test/likec4-dsl-test/likec4-dsl/eval-0/blind/run-1/B.md"
+  },
+  "eval_artifacts": {
+    "evals_public_path": ".github/skills/likec4-dsl/evals/evals-public.json",
+    "grading_spec_path": ".github/skills/likec4-dsl/evals/grading-spec.json"
+  },
+  "eval_prompt": "I just edited `projects/template/system-model.c4` and I only want syntax and semantic validation for that file, not layout drift. What exact LikeC4 CLI command should I run from the repo root, and which JSON fields tell me whether only my file failed versus the whole project being broken?",
+  "expected_output": "The response gives the focused `likec4 validate` command with `--json`, `--no-layout`, `--file`, and the correct project path, then explains how to interpret `filteredFiles` and `filteredErrors` versus `totalErrors`.",
+  "expectations": [
+    "The response uses `npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template 2>/dev/null` or an equivalent command with the same flags and project path.",
+    "The response explains that `--no-layout` skips layout drift checks.",
+    "The response explains that `--file` scopes reported errors to the edited file.",
+    "The response mentions `filteredFiles` and `filteredErrors` as the key fields for the targeted file check.",
+    "The response distinguishes those filtered fields from `totalErrors` or other project-wide counts."
+  ],
+  "comparator_method": {
+    "primary_signal": "task-specific rubric score",
+    "secondary_signal": "expectation pass rate",
+    "tie_policy": "Use TIE only when outputs are genuinely equivalent after rubric and expectation review.",
+    "recommended_rubric_dimensions": {
+      "content": [
+        "correctness",
+        "completeness",
+        "accuracy"
+      ],
+      "structure": [
+        "organization",
+        "formatting",
+        "usability"
+      ]
+    }
+  },
+  "output_schema_hint": {
+    "schema_version": 2,
+    "eval_id": "integer",
+    "run_number": 1,
+    "winner": "A | B | TIE",
+    "reasoning": "string",
+    "rubric": {
+      "A": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      },
+      "B": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      }
+    },
+    "expectation_results": {
+      "A": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      },
+      "B": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      }
+    }
+  }
+}

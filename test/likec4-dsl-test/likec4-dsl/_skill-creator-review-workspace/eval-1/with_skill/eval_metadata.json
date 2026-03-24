@@ -1,0 +1,15 @@
+{
+  "eval_id": 1,
+  "eval_name": "eval-1-with_skill",
+  "skill_name": "likec4-dsl",
+  "configuration": "with_skill",
+  "prompt": "I’m creating `projects/template/likec4.config.json` and I want that project to reuse shared specs from `projects/shared/`. Show a minimal JSON config snippet and explain how LikeC4 decides which project a `.c4` file belongs to when multiple config files exist in the workspace.",
+  "expected_output": "A minimal JSON config with `$schema`, `name`, and `include.paths` for `../shared`, plus a correct explanation that the nearest config file in the directory hierarchy determines project scope.",
+  "assertions": [
+    "The response includes a JSON config snippet, not just prose.",
+    "The snippet includes `$schema` pointing to the LikeC4 config schema.",
+    "The snippet includes a valid `name` field.",
+    "The snippet uses `include.paths` with `../shared` or an equivalent relative path to the shared folder.",
+    "The explanation says that `.c4` files belong to the project defined by the nearest config file in the directory hierarchy."
+  ]
+}

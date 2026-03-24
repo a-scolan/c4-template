@@ -1,0 +1,42 @@
+{
+  "skill_name": "likec4-dsl",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-24T14:44:52Z",
+  "finished_at": "2026-03-24T14:49:48Z",
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-code.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Run from repo root:\n\n```\nnpx likec4 check projects/template/\n```\n\nThe `check` command validates syntax and semantics for the whole project without rendering or computing layouts, so no layout drift is triggered.\n\nTo get machine-readable output, add `--reporter json` if your CLI version supports it:\n```\nnpx likec4 check --reporter json projects/template/\n```\n\nJSON fields to scope the failure:\n- Each diagnostic object has a `file` (or `uri`) field containing the absolute/relative path of the offending source file.\n- If every entry in the `errors` array has `file` pointing only to `projects/template/system-model.c4` → only that file is broken (syntax or local semantic error).\n- If any entries reference other files (e.g. shared spec files, other model files) → the project as a whole is broken and the root cause is wider than your edit.\n- The top-level `hasErrors` boolean (or a zero vs non-zero exit code) tells you whether any error exists at all; the per-diagnostic `file` field tells you *where*."
+    },
+    {
+      "id": 1,
+      "response": "Minimal `projects/template/likec4.config.json`:\n\n```json\n{\n  \"name\": \"template\",\n  \"include\": {\n    \"paths\": [\n      \"**/*.c4\",\n      \"../shared/**/*.c4\"\n    ]\n  }\n}\n```\n\nHow LikeC4 assigns project membership when multiple config files exist:\nLikeC4 walks up the directory tree from each `.c4` file and assigns that file to the project whose `likec4.config.json` is the **nearest ancestor**. The config whose directory is closest to the file wins. Files referenced via relative `include.paths` (such as `../shared/**/*.c4`) are explicitly claimed by the config that declares the include, even though they live outside that config's own directory subtree. A shared file will therefore belong to whichever project explicitly includes it; if two projects include the same shared file, it is part of both (LikeC4 supports multi-project workspaces and each project builds its own model graph)."
+    },
+    {
+      "id": 2,
+      "response": "```\nnpx likec4 export png --theme dark --output ./images --views \"overview*\" --flat\n```\n\n- `--theme dark` — renders with the dark colour scheme.\n- `--output ./images` — destination directory.\n- `--views \"overview*\"` (or `--filter \"overview*\"` depending on CLI version) — glob filter applied against view IDs; only views whose ID starts with `overview` are exported.\n- `--flat` — writes all PNG files directly into `./images` with no subdirectory per view."
+    },
+    {
+      "id": 3,
+      "response": "```likec4\ndynamic view orderSequence {\n  title 'Order Processing Sequence'\n\n  client -> gateway  'Send request'\n  gateway -> orders  'Route to orders service'\n  orders -> db       'Persist order'\n  db -> orders       'Ack write'\n  orders -> gateway  'Return order result'\n  gateway -> client  'Return response'\n\n  autoLayout TopBottom\n}\n```\n\nNotes:\n- `dynamic view` is the LikeC4 construct for step-by-step flow / sequence diagrams.\n- Steps are numbered implicitly in declaration order.\n- Response arrows (db→orders, orders→gateway, gateway→client) are modelled as explicit return steps in reverse direction.\n- `autoLayout TopBottom` produces a vertical sequence-like layout. For a strict left-to-right swim-lane appearance use `autoLayout LeftRight`."
+    },
+    {
+      "id": 4,
+      "response": "Styling belongs in the **view**, not in the model or spec. Model/spec `style` blocks set element-kind defaults globally; per-view highlight overrides must live inside the view definition so they do not affect other views.\n\n```likec4\nview backendFocus of cloud {\n  title 'Backend Highlighted'\n\n  include *\n\n  // Mute everything first\n  style * {\n    color muted\n    opacity 30%\n  }\n\n  // Re-highlight only cloud.backend subtree\n  style cloud.backend.* {\n    color primary\n    opacity 100%\n  }\n}\n```\n\n`style *` with `color muted` / low opacity greys out all visible elements; the second `style cloud.backend.*` block overrides only those elements back to full colour. The selector `cloud.backend.*` matches every direct and nested descendant of `cloud.backend`."
+    },
+    {
+      "id": 5,
+      "response": "```likec4\ndeployment {\n  deploymentNode vm {\n    instanceOf cloud.api as api1 'API – Primary'\n    instanceOf cloud.api as api2 'API – Secondary'\n  }\n}\n```\n\n- `deploymentNode vm` references the already-declared node (the keyword echoes its existing kind/name; omit the body-level re-declaration of the node itself if it was already given a title elsewhere).\n- `instanceOf cloud.api as api1` / `as api2` creates two distinct named deployed instances of the same logical element `cloud.api` inside that single VM node.\n- The `as <identifier>` alias is required when the same element is instantiated more than once in the same scope, so each instance has a unique handle for relationship declarations."
+    }
+  ]
+}

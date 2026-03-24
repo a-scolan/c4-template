@@ -1,0 +1,71 @@
+{
+  "iteration": "likec4-dsl-test",
+  "skill_name": "likec4-dsl",
+  "output_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace",
+  "expected_run_count": 12,
+  "run_count": 12,
+  "missing_run_count": 0,
+  "missing_runs": [],
+  "runs": [
+    {
+      "eval_id": 0,
+      "configuration": "with_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-0/with_skill"
+    },
+    {
+      "eval_id": 0,
+      "configuration": "without_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-0/without_skill"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-1/with_skill"
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-1/without_skill"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-2/with_skill"
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-2/without_skill"
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-3/with_skill"
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-3/without_skill"
+    },
+    {
+      "eval_id": 4,
+      "configuration": "with_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-4/with_skill"
+    },
+    {
+      "eval_id": 4,
+      "configuration": "without_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-4/without_skill"
+    },
+    {
+      "eval_id": 5,
+      "configuration": "with_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-5/with_skill"
+    },
+    {
+      "eval_id": 5,
+      "configuration": "without_skill",
+      "run_dir": "test/likec4-dsl-test/likec4-dsl/_skill-creator-review-workspace/eval-5/without_skill"
+    }
+  ]
+}

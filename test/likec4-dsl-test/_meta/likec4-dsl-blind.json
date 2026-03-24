@@ -1,0 +1,104 @@
+{
+  "schema_version": 2,
+  "artifact_type": "blind-comparisons-raw",
+  "skill": "likec4-dsl",
+  "generated_at": "2026-03-24T15:05:00Z",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "artifact_type": "blind-comparisons",
+      "skill": "likec4-dsl",
+      "eval_id": 0,
+      "winner": "B",
+      "confidence": "high",
+      "overall_rationale": "Response B provides the exact command with all required flags (`--json`, `--no-layout`, `--file`) and explains their purposes. Response A uses a different command (`check` vs `validate`), omits critical flags, and does not reference the specific expected JSON fields (`filteredFiles`, `filteredErrors`, `totalErrors`). Response B fully satisfies all five expectations; Response A satisfies none.",
+      "expectation_scores": [
+        {"expectation_id": "0", "a_pass": false, "b_pass": true, "note": "A uses `npx likec4 check` with `--reporter json`, not `validate --json --no-layout --file`. B matches the spec exactly."},
+        {"expectation_id": "1", "a_pass": false, "b_pass": true, "note": "A does not mention `--no-layout` at all. B explicitly explains: '`--no-layout` skips layout drift and runs only syntax + semantic validation.'"},
+        {"expectation_id": "2", "a_pass": false, "b_pass": true, "note": "A does not mention a `--file` flag or its scoping behavior. B explicitly explains: '`--file` restricts error reporting to the specified file.'"},
+        {"expectation_id": "3", "a_pass": false, "b_pass": true, "note": "A mentions generic `file` and `errors` fields; does not name `filteredFiles` or `filteredErrors`. B explicitly lists both with descriptions."},
+        {"expectation_id": "4", "a_pass": false, "b_pass": true, "note": "A does not distinguish filtered fields from project-wide counts. B clearly distinguishes: `filteredErrors` vs `totalErrors` with diagnosis rule showing their relationship."}
+      ]
+    },
+    {
+      "schema_version": 2,
+      "artifact_type": "blind-comparisons",
+      "skill": "likec4-dsl",
+      "eval_id": 1,
+      "winner": "A",
+      "confidence": "high",
+      "overall_rationale": "Response A meets all 5 expectations including the critical $schema field. Response B omits $schema, failing expectation 1. Both explain the nearest-config-wins principle correctly, but A's simpler include pattern and complete JSON structure make it the clear winner.",
+      "expectation_scores": [
+        {"expectation_id": "0", "a_pass": true, "b_pass": true, "note": "Both include JSON config snippets"},
+        {"expectation_id": "1", "a_pass": true, "b_pass": false, "note": "A includes $schema; B omits it despite the expectation requiring it"},
+        {"expectation_id": "2", "a_pass": true, "b_pass": true, "note": "Both include valid name field"},
+        {"expectation_id": "3", "a_pass": true, "b_pass": true, "note": "A uses ['../shared'], B uses ['**/*.c4', '../shared/**/*.c4']; both satisfy the requirement"},
+        {"expectation_id": "4", "a_pass": true, "b_pass": true, "note": "Both explain the nearest-config-file rule correctly"}
+      ]
+    },
+    {
+      "schema_version": 2,
+      "artifact_type": "blind-comparisons",
+      "skill": "likec4-dsl",
+      "eval_id": 2,
+      "winner": "A",
+      "confidence": "high",
+      "overall_rationale": "Response A satisfies all five expectations: it includes the base command, --theme dark, --flat, the filter option -f 'overview*', and critically, both the output directory and the project path. Response B includes all required flags but omits the project path argument at the end, failing expectation 4.",
+      "expectation_scores": [
+        {"expectation_id": "0", "a_pass": true, "b_pass": true, "note": "Both use `npx likec4 export png` as the base command."},
+        {"expectation_id": "1", "a_pass": true, "b_pass": true, "note": "Both include `--theme dark` for dark background rendering."},
+        {"expectation_id": "2", "a_pass": true, "b_pass": true, "note": "Both include `--flat` to output files to the same directory."},
+        {"expectation_id": "3", "a_pass": true, "b_pass": true, "note": "A uses `-f 'overview*'`; B uses `--views 'overview*'` which is documented as equivalent (or version-dependent `--filter`)."},
+        {"expectation_id": "4", "a_pass": true, "b_pass": false, "note": "A includes `-o ./images` AND `projects/template` project path. B includes `--output ./images` but is missing the project path argument at the end, which is required to specify which project to export."}
+      ]
+    },
+    {
+      "schema_version": 2,
+      "artifact_type": "blind-comparisons",
+      "skill": "likec4-dsl",
+      "eval_id": 3,
+      "winner": "B",
+      "confidence": "high",
+      "overall_rationale": "Response B satisfies all five expectations, including required `variant sequence` and `<-` backward arrow syntax for responses. Response A omits `variant sequence` entirely and models returns using separate forward arrows instead of the required `<-` syntax.",
+      "expectation_scores": [
+        {"expectation_id": "0", "a_pass": true, "b_pass": true, "note": "Both use `dynamic view` block"},
+        {"expectation_id": "1", "a_pass": false, "b_pass": true, "note": "A omits `variant sequence`; B includes it explicitly"},
+        {"expectation_id": "2", "a_pass": true, "b_pass": true, "note": "Both model forward flow: client→gateway→orders→db"},
+        {"expectation_id": "3", "a_pass": false, "b_pass": true, "note": "A uses forward arrows (db → orders) for returns, not `<-` syntax; B uses explicit `<-` backward arrows"},
+        {"expectation_id": "4", "a_pass": true, "b_pass": true, "note": "Both are primarily usable DSL snippets with brief accompanying notes"}
+      ]
+    },
+    {
+      "schema_version": 2,
+      "artifact_type": "blind-comparisons",
+      "skill": "likec4-dsl",
+      "eval_id": 4,
+      "winner": "A",
+      "confidence": "high",
+      "overall_rationale": "Both responses pass all expectations and correctly explain that styling belongs in views. However, Response A provides accurate selector guidance (`*` vs `**`), while Response B contains a factual error claiming `cloud.backend.*` matches 'every direct and nested descendant' when it only matches direct children. Response A is also more concise while providing more educational value.",
+      "expectation_scores": [
+        {"expectation_id": "0", "a_pass": true, "b_pass": true, "note": "Both explicitly state styling belongs in views, not in model/spec."},
+        {"expectation_id": "1", "a_pass": true, "b_pass": true, "note": "Both use view blocks: A uses 'view backend-focus', B uses 'view backendFocus of cloud'."},
+        {"expectation_id": "2", "a_pass": true, "b_pass": true, "note": "Both include 'include *' to provide view context."},
+        {"expectation_id": "3", "a_pass": true, "b_pass": true, "note": "Both include 'style * { color muted }'. Response B adds opacity (30%) for more effective muting."},
+        {"expectation_id": "4", "a_pass": true, "b_pass": true, "note": "Both include 'style cloud.backend.*' to highlight backend elements. A notes the distinction between * and **; B incorrectly claims * matches 'every direct and nested descendant' when it only matches direct children."}
+      ]
+    },
+    {
+      "schema_version": 2,
+      "artifact_type": "blind-comparisons",
+      "skill": "likec4-dsl",
+      "eval_id": 5,
+      "winner": "B",
+      "confidence": "medium",
+      "overall_rationale": "Both responses satisfy all five expectations and remain focused on deployment DSL. Response B is self-contained with an explicit, runnable example (`vm myVm { ... }`); Response A assumes external node declaration without showing it, creating incomplete context. Response B's `IDENTIFIER = instanceOf` syntax is clearer and more explicit.",
+      "expectation_scores": [
+        {"expectation_id": "0", "a_pass": true, "b_pass": true, "note": "Both use `deployment { ... }` block at top level."},
+        {"expectation_id": "1", "a_pass": true, "b_pass": true, "note": "A uses `deploymentNode vm`; B uses `vm myVm`. Both establish a VM deployment node."},
+        {"expectation_id": "2", "a_pass": true, "b_pass": true, "note": "A creates `api1` and `api2` with `as` aliasing; B creates `api1` and `api2` with `=` assignment. Both are explicitly named, not anonymous."},
+        {"expectation_id": "3", "a_pass": true, "b_pass": true, "note": "Both instances in A use `instanceOf cloud.api`; both instances in B use `instanceOf cloud.api`."},
+        {"expectation_id": "4", "a_pass": true, "b_pass": true, "note": "A focuses on deployment node kinds and instanceOf aliasing; B focuses on named instance syntax. Both remain entirely within deployment DSL scope."}
+      ]
+    }
+  ]
+}
