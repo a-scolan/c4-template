@@ -1,17 +1,1 @@
-Use `ProdEuApiVm`, not `EuProdApiVm`.
-
-A clean extension of the base convention is:
-
-- VMs: `{Environment}{Region}{Service}Vm`
-- Tier zones: `{Environment}{Region}{Tier}Tier`
-- Functional zones: `{Environment}{Region}{Function}Zone`
-
-Example set:
-
-- Environments: `ProdEu`, `ProdUs`
-- Zones: `ProdEuAppTier`, `ProdEuProcTier`, `ProdEuDataTier`, `ProdUsAppTier`, `ProdUsProcTier`, `ProdUsDataTier`
-- VMs: `ProdEuApiVm`, `ProdEuWorkerVm`, `ProdEuDatabaseVm`, `ProdUsApiVm`, `ProdUsWorkerVm`, `ProdUsDatabaseVm`
-
-The key is not whether region comes first in isolation; it is that you extend the original `{Environment}{Service}Vm` pattern in one consistent direction. If you choose environment first, keep it everywhere.
-
-So do not mix variants like `ProdEuApiVm` in one place and `EuProdDatabaseVm` in another. Stick to one scan-friendly PascalCase order with the expected suffixes: `Vm`, `Tier`, and `Zone`.
+Prefer `ProdEuApiVm`, not `EuProdApiVm`. The convention starts with the environment, so extend it consistently as `{Environment}{Region}{Service}Vm`: `ProdEuApiVm`, `ProdEuWorkerVm`, `ProdEuDatabaseVm`, `ProdUsApiVm`, `ProdUsWorkerVm`, `ProdUsDatabaseVm`. For zones, keep the standard suffix-based names and let the parent scope carry region/environment when possible: under `ProdEu` use `Dmz`, `AppTier`, `ProcTier`, and `DataTier`; under `ProdUs` reuse the same zone names. Only add region to a zone name if flat uniqueness truly requires it, and then stay consistent, for example `EuAppTier` and `UsDataTier`. The key is to choose one slot order and never mix both `ProdEu...` and `EuProd...`.

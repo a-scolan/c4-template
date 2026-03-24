@@ -1,11 +1,1 @@
-Partly: this is the right skill for naming, but not for the full deployment model.
-
-This skill mainly gives you consistent identifiers such as:
-
-- Environments: `Prod`, `Staging`, `Dev`, `Test`
-- VMs: `{Env}{Service}Vm` → `ProdApigwVm`, `ProdWorkerVm`
-- Zones: `{Tier}Tier` or `{Function}Zone` → `AppTier`, `ProcTier`, `DataTier`, `SecZone`
-
-If you also want the full `Environment → Zone → VM → Node_App` hierarchy, Markdown infrastructure descriptions with IP/CPU/RAM, and `instanceOf` links to containers, hand that off to `model-deployment-infrastructure`.
-
-So: use this skill to standardize names, then use `model-deployment-infrastructure` for the full deployment structure.
+Not on its own. This skill is specifically for consistent deployment node names such as `Prod`, `AppTier`, and `ProdUploadVm`. It explicitly points to `model-deployment-infrastructure` as the required background for full hierarchy, descriptions, and infrastructure requirements. For the full `Environment -> Zone -> VM -> Node_App` hierarchy, Markdown descriptions with IP/CPU/RAM, and `instanceOf` links to containers, use `model-deployment-infrastructure` as the primary skill, keep `name-deployment-nodes` for the identifiers, and optionally add `write-rich-descriptions` for richer Markdown tables.

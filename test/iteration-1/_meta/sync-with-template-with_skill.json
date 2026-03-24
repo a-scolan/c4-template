@@ -1,0 +1,32 @@
+{
+  "skill_name": "sync-with-template",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/sync-with-template/SKILL.md",
+    ".github/skills/sync-with-template/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Candidates for upstream sync:\n- `.github/skills/create-relationship/SKILL.md` — yes, if the improvement is reusable across derived repositories and contains no local/private context.\n- `projects/shared/spec-context.c4` — yes, if it is a genuinely shared spec improvement rather than a workaround for one repo.\n\nMust stay local:\n- `projects/payments/system-model.c4` — no; anything under `projects/<project>/` is project-local.\n- `README.md` — no; repository-level docs are usually local to this repo.\n\nBefore pushing the first two upstream, apply the decision test: would another derived repo use them without knowing your local domain, do they avoid project names/internal systems/private architecture, and can you explain them as reusable workspace improvements rather than one-off fixes?"
+    },
+    {
+      "id": 1,
+      "response": "Safe sequence:\n1. Commit the local fix on your normal local branch:\n   - `git add .github/skills/create-relationship/SKILL.md`\n   - `git commit -m 'fix: improve create-relationship skill guidance'`\n2. Branch from the upstream reference repo, not from `main`:\n   - `git fetch c4-template main`\n   - `git checkout -b sync/create-relationship-skill c4-template/main`\n3. Bring over only the generic file:\n   - `git checkout main -- .github/skills/create-relationship/SKILL.md`\n4. Review the staged diff and do the confidentiality review before creating the sync commit:\n   - `git diff --cached`\n   - Verify the file does **not** contain project-specific paths, internal API details, confidential architecture notes, security credentials, or employee/team names.\n5. Commit only that generic change on the sync branch:\n   - `git commit -m 'sync: update create-relationship skill'`\n6. Push the sync branch and open a PR to the upstream repo:\n   - `git push c4-template sync/create-relationship-skill --set-upstream`\n\nDo not push directly from `main`. If the audit fails, keep the change local or remove it from the sync branch before pushing."
+    },
+    {
+      "id": 2,
+      "response": "Run:\n- `git fetch c4-template main`\n- `git subtree pull --prefix=.github c4-template main --squash`\n- `git subtree pull --prefix=projects/shared c4-template main --squash`\n- `git push origin main`\n\nUse `--squash` so each subtree update lands as a compact single change instead of importing the full upstream commit history into this derived repo. That keeps sync history readable, reduces noise, and makes it clear that you pulled shared workspace assets rather than mirroring the whole upstream graph."
+    },
+    {
+      "id": 3,
+      "response": "Verify it with a genericity and confidentiality review before you sync anything upstream:\n1. Reusability test: would another derived repository benefit from this change without knowing your local domain?\n2. Local-context test: does it mention project names, internal systems, customer details, private architecture, or one-off assumptions from this repo?\n3. Scope test: is it truly a workspace-level improvement to `projects/shared`, not a hidden fix for one project?\n4. Explanation test: can you describe it as a reusable improvement to shared container modeling guidance rather than a local workaround?\n5. Confidentiality audit: remove secrets, internal architecture notes, employee/team names, and other private context.\n6. Separation check: keep this file in its own commit and do not mix it with project-local files.\n\nIf it passes those checks, branch from `c4-template/main`, bring over only `projects/shared/spec-containers.c4`, review the diff, and open a PR. If any answer points to local context, keep the change in the current repo."
+    },
+    {
+      "id": 4,
+      "response": "Recover by cleaning the sync branch so it contains only the generic skill change.\n\nPreferred recovery:\n1. Inspect what differs from upstream:\n   - `git fetch c4-template main`\n   - `git diff --name-only c4-template/main...HEAD`\n2. Remove the local-only files from the sync branch by restoring them from upstream:\n   - `git checkout c4-template/main -- projects/acme/system-model.c4 README.md`\n3. Commit that cleanup:\n   - `git add projects/acme/system-model.c4 README.md`\n   - `git commit -m 'chore: remove local-only files from sync branch'`\n4. Verify the branch now contains only the generic file intended for upstream:\n   - `git diff --name-only c4-template/main...HEAD`\n5. Run the confidentiality review on `.github/skills/create-element/SKILL.md`, then push/update the PR:\n   - `git push c4-template sync/spec-hardening --force-with-lease`\n\nIf the branch is too messy, the safer fallback is to recreate it from `c4-template/main` and bring over only `.github/skills/create-element/SKILL.md`. Any local edits to `projects/acme/system-model.c4` or `README.md` should live on a normal local branch, not on the upstream sync branch."
+    }
+  ]
+}

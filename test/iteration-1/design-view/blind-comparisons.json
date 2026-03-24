@@ -1,87 +1,128 @@
 {
+  "schema_version": 2,
   "skill_name": "design-view",
   "comparisons": [
     {
+      "schema_version": 2,
       "eval_id": 0,
+      "run_number": 1,
       "winner": "B",
-      "reasoning": "B is the better fit for this repository because it stays tightly scoped to the requested C2 skeleton inside the existing view folder and reuses the current drill-down pattern. A is strong on parent, focus, and neighbor coverage, but it adds an extra C3 view and a new target name that feel less aligned with the template's current conventions.",
+      "reasoning": "B est le seul à placer la vue sous views 'C2', à inclure explicitement le système parent et le voisinage, puis à ajouter un navigateTo depuis la web app; A reste trop générique et rate ces points clés.",
       "rubric": {
         "A": {
-          "overall_score": 8.4
+          "content_score": 4,
+          "structure_score": 5,
+          "overall_score": 4
         },
         "B": {
-          "overall_score": 9.1
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 1.0
+          "passed": 0,
+          "total": 3,
+          "pass_rate": 0.0
         },
         "B": {
+          "passed": 3,
+          "total": 3,
           "pass_rate": 1.0
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 1,
-      "winner": "B",
-      "reasoning": "B is stronger because it mirrors the repository's deployment naming and hierarchy conventions more closely while still keeping the view explicit, parent-aware, and limited to the VM level. A is correct in structure, but its naming is more generic and slightly less anchored to the examples already present in the template.",
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A colle nettement mieux à la convention attendue: catégorie Deployment, deployment view explicite, inclusions détaillées sans wildcard et arrêt au niveau VM. B propose un include * et ne suit pas la hiérarchie demandée jusqu'aux VMs.",
       "rubric": {
         "A": {
-          "overall_score": 8.6
+          "content_score": 9,
+          "structure_score": 8,
+          "overall_score": 9
         },
         "B": {
-          "overall_score": 9.3
+          "content_score": 3,
+          "structure_score": 5,
+          "overall_score": 4
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         },
         "B": {
-          "pass_rate": 1.0
+          "passed": 1,
+          "total": 4,
+          "pass_rate": 0.25
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 2,
-      "winner": "B",
-      "reasoning": "B is clearly better because it makes the required handoffs explicit: temporal flow goes to create-sequence-view, styling goes to customize-view, and design-view is limited to a companion structural view. A has the right high-level separation, but it stays generic and does not name the required follow-on skills explicitly.",
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A sépare mieux structure, comportement et mise en évidence visuelle en gardant une vue structurelle compagnon; B est proprement formulé mais écarte à tort la vue statique d'accompagnement. Aucun des deux ne fait les handoffs explicites attendus.",
       "rubric": {
         "A": {
-          "overall_score": 6.2
+          "content_score": 6,
+          "structure_score": 6,
+          "overall_score": 6
         },
         "B": {
-          "overall_score": 9.6
+          "content_score": 4,
+          "structure_score": 7,
+          "overall_score": 5
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 0.33
+          "passed": 1,
+          "total": 3,
+          "pass_rate": 0.3333
         },
         "B": {
-          "pass_rate": 1.0
+          "passed": 0,
+          "total": 3,
+          "pass_rate": 0.0
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 3,
+      "run_number": 1,
       "winner": "B",
-      "reasoning": "B gives the clean repository-aligned answer: deployment view first, C2 only if a distinct logical concern appears, delegation to structure-deployment-tiers for zone organization, and a separate handoff to customize-view for styling. A gets the deployment-first recommendation right, but it misses the repository-specific delegation and leaves the styling handoff too implicit.",
+      "reasoning": "B donne la recommandation la plus nette: commencer par une vue de déploiement et ne créer un C2 que si des services logiques distincts doivent être expliqués. A garde une bonne séparation, mais ouvre trop vite sur 'les deux', ce qui affaiblit la priorité Deployment-first.",
       "rubric": {
         "A": {
-          "overall_score": 7.1
+          "content_score": 5,
+          "structure_score": 6,
+          "overall_score": 5
         },
         "B": {
-          "overall_score": 9.7
+          "content_score": 7,
+          "structure_score": 8,
+          "overall_score": 7
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 0.5
+          "passed": 1,
+          "total": 4,
+          "pass_rate": 0.25
         },
         "B": {
-          "pass_rate": 1.0
+          "passed": 2,
+          "total": 4,
+          "pass_rate": 0.5
         }
       }
     }

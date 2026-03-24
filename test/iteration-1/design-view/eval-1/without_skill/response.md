@@ -1,28 +1,3 @@
-Use a deployment view and enumerate each level explicitly:
-
-```likec4
-views 'Deployment' {
-  deployment view prod_infrastructure {
-    title 'Production Infrastructure'
-
-    include Prod
-
-    include Prod.Dmz
-    include Prod.Dmz.firewallVm
-    include Prod.Dmz.bastionVm
-    include Prod.Dmz.reverseProxyVm
-
-    include Prod.AppTier
-    include Prod.AppTier.webVm
-    include Prod.AppTier.apiVm
-
-    include Prod.DataTier
-    include Prod.DataTier.dbVm
-    include Prod.DataTier.cacheVm
-
-    autoLayout TopBottom
-  }
-}
-```
-
-Model the hierarchy as `Node_Environment -> Zone -> Node_Vm`, keep the parent hierarchy visible in the view, avoid `*` or `**`, and stop at VM level unless you want a separate deeper deployment view.
+Aligned with the visible repo layout, keep the deployment model beside the template system: add the production environment and nodes in `projects/template/system-model.c4`, and add the deployment view in `projects/template/system-views.c4`.
+A clean example shape is: `deployment { prod = environment 'Production' { dmz = node 'DMZ' { ingress = node 'Ingress / Reverse proxy'; web = instance of platform.webApp } appTier = node 'App tier' { api = instance of platform.api } dataTier = node 'Data tier' { db = instance of platform.db } } }` and `views { deployment view prod_infra of prod { include *; autoLayout tb } }`.
+The key convention is to keep DMZ/app/data as deployment nodes or zones, while `webApp`, `api`, and `db` remain the logical containers from the model.

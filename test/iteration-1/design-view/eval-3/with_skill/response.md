@@ -1,27 +1,24 @@
-The cleanest approach is to start with a **Deployment** view for `SecZone`, and add a C2 view only if you later discover a separate logical application concern that cannot be explained well in the infrastructure view.
+Default to **one deployment-style view**, not a new C2. A production `SecZone` with bastion, firewall, and security services is primarily infrastructure, so the cleanest approach is a focused view under `views 'Operations'` (or `views 'Deployment'` if you keep all infra together). Add a C2 **only** if those dedicated services are also real logical containers that need structural explanation outside their placement.
 
 ```likec4
-views 'Deployment' {
+views 'Operations' {
   deployment view secZone_overview {
-    title 'Production SecZone'
+    title 'Production Security Zone'
+    description 'Bastion, firewall, and dedicated security services in production'
 
     include production
     include production.secZone
 
     include production.secZone.bastionVm
     include production.secZone.firewallVm
-    include production.secZone.secretsVm
     include production.secZone.monitoringVm
-
-    autoLayout LeftRight
+    include production.secZone.loggingVm
   }
 }
 ```
 
-Use that first when the goal is to document the zone, its security boundary, and the dedicated hosts inside it.
+Use **both** only when there are two distinct concerns to document:
+- C2 for logical responsibilities such as `auditService` or `vaultService`
+- Deployment/Operations view for where those services run and how the zone is structured
 
-Add a `views 'C2'` container view only if you also need to explain a distinct logical system structure, such as which services on those hosts interact with `mySystem`, shared platform APIs, or external systems. Do **not** create a C2 view just because the zone exists.
-
-If the harder problem is how to organize `SecZone` relative to DMZ, app, and data layers or how to structure zone/security-rule boundaries, hand that off to `structure-deployment-tiers`.
-
-If you later want special colors, highlighting, or visual emphasis for the bastion or firewall, hand that off separately to `customize-view`; keep this decision about view type and scope independent from styling.
+Do not create a C2 just to redraw bastions, firewalls, or zone boundaries.

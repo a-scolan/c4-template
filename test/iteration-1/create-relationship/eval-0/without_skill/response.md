@@ -1,13 +1,1 @@
-Use the typed arrow exactly like this in `projects/template/system-model.c4`:
-
-```likec4
-mySystem.webapp -[calls]-> mySystem.api 'Makes API requests' {
-  technology 'HTTPS'
-}
-```
-
-The relationship type belongs in the arrow itself: `-[calls]->`.
-
-Keep the human-readable label inline after the target, and put protocol details such as `technology 'HTTPS'` in the properties block.
-
-Do not use invalid forms such as `-> { calls ... }` or move `calls` into the block.
+Use a normal container-to-container relationship in the system model, not in deployment. This workspace already shows the pattern in `projects/template/system-model.c4`: `mySystem.webapp` connects to `mySystem.api` with kind `calls` and technology `HTTPS`. So model your web application container -> API container the same way: source = web app, target = API, kind = `calls`, optional title like `Makes API requests`, technology = `HTTPS`. The relationship type/kind (`calls`) belongs in the project specification/shared spec; the system model only uses that predefined kind between elements.

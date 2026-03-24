@@ -1,0 +1,33 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Preflight before editing: (1) Active project: set it explicitly first; narrow grounding confirmed at least `spec-showcase` and `template-project`, so do not assume the showcase project is the active one. (2) Available taxonomy already observed in this workspace: element kinds `Container_Api`, `Container_Queue`, `Container_Database`, `Container_Webapp`, `Container_ProcessingServer`, `Component`, `System_External`; relationship kinds `calls`, `reads`, `writes`, `async`; tags `Container`, `Api`, `Queue`, `Component`, `Geo`. (3) Source-of-truth files: project config in `projects/spec-showcase/likec4.config.json` or `projects/template/likec4.config.json`; shared taxonomy under `projects/shared/spec-*.c4`; concrete model definitions in `projects/template/system-model.c4` and `projects/spec-showcase/containers.c4` / `projects/spec-showcase/components.c4`; views in `projects/template/system-views.c4` and `projects/spec-showcase/*-views.c4` are projections, not the taxonomy. (4) C1→C2→C3 plan: C1 place the new API in the target system boundary and confirm which people/external systems interact with it; C2 add the container with a valid kind such as `Container_Api`, then connect it with only valid local relationships like `calls`, `reads`, `writes`, or `async`; C3 only after the container is accepted, decide whether it needs internal components like the `api_container.*` pattern in `spec-showcase`, then update the corresponding component view."
+    },
+    {
+      "id": 1,
+      "response": "To avoid context errors after switching projects, re-anchor the session to the new project before touching the C3 view: first re-run a narrow `search-element` for a known container or component in the target project and confirm the project id; then re-run `read-element` on the target container to confirm its kind, children, and `defaultView`; then re-run `query-graph` with `children` to confirm the exact C3 boundary; finally re-run `find-relationships` for the edges you plan to show. In this repo, the safe mental model is that model definitions live in files such as `projects/spec-showcase/components.c4`, `projects/spec-showcase/containers.c4`, or `projects/template/system-model.c4`, while the actual C3 view edit belongs in the target project's view file such as `projects/spec-showcase/component-views.c4` or `projects/template/system-views.c4`. Do not reuse ids across projects just because the names look similar: `api_container.*` in `spec-showcase` and `mySystem.api` in `template-project` are different contexts."
+    },
+    {
+      "id": 2,
+      "response": "Diagnosis order: first confirm the active project and its includes; in this repo that means the target project's `likec4.config.json` plus the shared specs under `projects/shared/`. Second, compare the failing token exactly against working tokens already present in the workspace: observed element kinds include `Container_Api`, `Container_Queue`, `Component`, `Container_Database`, `Container_Webapp`, `Container_ProcessingServer`, `System_External`; observed relationship kinds include `calls`, `reads`, `writes`, and `async`. Third, compare spelling, case, and underscore style against the project you are actually editing, not against a random view file. Fourth, confirm the taxonomy with narrow MCP checks: resolve an existing element that uses the suspected kind, read that element to verify the kind, and for relationships inspect a known edge such as `api` -> `queue` in `spec-showcase` (`async`) or `mySystem.webapp` -> `mySystem.api` in `template-project` (`calls`). Fix only after the token matches the active project's declared taxonomy and naming style."
+    },
+    {
+      "id": 3,
+      "response": "After project context is established, the next handoff should be to `c4-modeling-process`, because that is the sequence-oriented modeling skill present in this workspace. Before handoff, this first skill must lock in four things: the exact active project id; the source-of-truth files and includes for that project (`likec4.config.json`, shared specs, model files, and view files); the valid local taxonomy available to that project (kinds, relationship kinds, tags, and id naming style); and the intended modeling scope from C1 to C2 to C3 so the next skill does not start designing components inside the wrong system or project."
+    },
+    {
+      "id": 4,
+      "response": "If you come from UML or ArchiMate, learn the repo's local conventions before drawing anything: project boundary first, then exact LikeC4 taxonomy, then id naming. In this workspace, real examples show that kinds are explicit repo-defined tokens such as `Container_Api`, `Container_Queue`, and `Component`; relationships are short controlled verbs such as `calls`, `reads`, `writes`, and `async`; tags echo category or layer markers like `Container`, `Api`, `Queue`, `Component`, and `Geo`; and C3 structure is modeled as children under a container, for example `api_container.*`. The real sources of truth are the target project's `likec4.config.json`, the shared specs under `projects/shared/spec-*.c4`, and the model files such as `projects/template/system-model.c4`, `projects/spec-showcase/containers.c4`, and `projects/spec-showcase/components.c4`; view files are downstream projections. After that orientation, hand off to `c4-modeling-process` to sequence the actual modeling work safely."
+    },
+    {
+      "id": 5,
+      "response": "No: `projects/spec-showcase/container-views.c4` is a useful pattern source for layout and narrative, but it is not the authoritative taxonomy by itself. Validate three things first: (1) the active target project and its includes, because `spec-showcase` and `template-project` are separate contexts; (2) that the target project actually resolves the needed kinds and tags (`Container_Api`, `Container_Queue`, `Container`, `Api`, `Queue`) and the relationship kind you need; and (3) that the naming and FQN style matches the target project (`api` and `queue` in `spec-showcase` versus `mySystem.api` in `template-project`). Narrow grounding already confirms the authoritative model pattern exists in `projects/spec-showcase/containers.c4`: `api` (`Container_Api`) connects to `queue` (`Container_Queue`) with an `async` relationship. Use the view file as a rendering example only after the target project's taxonomy is confirmed."
+    }
+  ]
+}

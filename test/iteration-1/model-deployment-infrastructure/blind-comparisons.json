@@ -1,86 +1,158 @@
 {
+  "schema_version": 2,
   "skill_name": "model-deployment-infrastructure",
   "comparisons": [
     {
+      "schema_version": 2,
       "eval_id": 0,
-      "winner": "A",
-      "reasoning": "A is slightly better because it matches the repository's deployment-block convention, answers the requested hierarchy directly, and gives clear guidance on `instanceOf`, inherited relationships, and operational descriptions. B is also strong and more example-heavy, but the `model {}` wrapper makes it less aligned with this template's deployment syntax.",
-      "rubric": {
-        "A": {
-          "overall_score": 9.4
-        },
-        "B": {
-          "overall_score": 8.9
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "pass_rate": 1.0
-        },
-        "B": {
-          "pass_rate": 1.0
-        }
-      }
-    },
-    {
-      "eval_id": 1,
-      "winner": "A",
-      "reasoning": "A is clearly better because it explicitly hands tier organization and firewall design to `structure-deployment-tiers` while still restating the base deployment hierarchy and the scope of this skill. B keeps the separation of concerns, but it never names the companion skill, which is the key repository-specific handoff this eval is testing.",
-      "rubric": {
-        "A": {
-          "overall_score": 9.7
-        },
-        "B": {
-          "overall_score": 7.6
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "pass_rate": 1.0
-        },
-        "B": {
-          "pass_rate": 0.67
-        }
-      }
-    },
-    {
-      "eval_id": 2,
+      "run_number": 1,
       "winner": "B",
-      "reasoning": "B is better overall because it fully addresses the managed-platform case: it avoids invented VMs, preserves a clear hierarchy, explains how to model managed services, keeps `instanceOf` explicit, and names the repository's companion skill for any tier or firewall detour. A is good and syntax-aligned, but its handoff is generic and the guidance is less complete.",
+      "reasoning": "B is more complete and repository-aligned: it names the exact deployment kinds, shows concrete VM naming and placement, explains inheritance through `instanceOf`, and includes the rich VM/zone description guidance that A misses.",
       "rubric": {
         "A": {
-          "overall_score": 8.7
+          "content_score": 6.5,
+          "structure_score": 7.0,
+          "overall_score": 6.7
         },
         "B": {
-          "overall_score": 9.0
+          "content_score": 9.5,
+          "structure_score": 9.0,
+          "overall_score": 9.3
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 2,
+          "total": 4,
+          "pass_rate": 0.5
+        },
+        "B": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B directly routes tier and firewall design to `structure-deployment-tiers` while still restating the base Environment -> Zone -> VM -> Node_App scope of this skill; A is directionally right but less explicit.",
+      "rubric": {
+        "A": {
+          "content_score": 7.0,
+          "structure_score": 8.0,
+          "overall_score": 7.4
+        },
+        "B": {
+          "content_score": 9.5,
+          "structure_score": 9.0,
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
           "pass_rate": 0.75
         },
         "B": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         }
       }
     },
     {
-      "eval_id": 3,
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
       "winner": "A",
-      "reasoning": "A is slightly better because it not only rejects duplicated deployment edges and moves protocol details back to the system model, but also shows the `instanceOf` wiring explicitly and gives a fuller set of infrastructure-only exceptions. B is correct and concise, but A is more complete for someone working in this template.",
+      "reasoning": "Both avoid inventing hosts and explain `instanceOf`, but A gives a crisper LikeC4 hierarchy and explicitly preserves inherited logical relationships, making it slightly more actionable.",
       "rubric": {
         "A": {
-          "overall_score": 9.5
+          "content_score": 8.5,
+          "structure_score": 8.5,
+          "overall_score": 8.5
         },
         "B": {
-          "overall_score": 9.1
+          "content_score": 8.0,
+          "structure_score": 8.0,
+          "overall_score": 8.0
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B matches the expected guidance end to end: do not duplicate normal app traffic in deployment, keep protocol and port on logical relationships, inherit via `instanceOf`, and reserve deployment edges for infra-only cases.",
+      "rubric": {
+        "A": {
+          "content_score": 7.0,
+          "structure_score": 8.0,
+          "overall_score": 7.4
+        },
+        "B": {
+          "content_score": 10.0,
+          "structure_score": 9.0,
+          "overall_score": 9.5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 4,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "Both answers are correct, but B more clearly separates logical vs deployment concerns, states inheritance through `instanceOf` explicitly, and leaves a cleaner rule for when deployment edges are justified.",
+      "rubric": {
+        "A": {
+          "content_score": 9.0,
+          "structure_score": 8.0,
+          "overall_score": 8.6
+        },
+        "B": {
+          "content_score": 9.5,
+          "structure_score": 9.0,
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         },
         "B": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         }
       }

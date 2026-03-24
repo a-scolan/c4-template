@@ -1,13 +1,9 @@
-Run these commands:
-
-- `git fetch c4-template main`
-- `git subtree pull --prefix=.github c4-template main --squash`
-- `git subtree pull --prefix=projects/shared c4-template main --squash`
-
-Why `--squash`:
-
-- It collapses the imported template history into one commit per pull.
-- That keeps your local history cleaner and easier to review.
-- It avoids dragging the full upstream commit graph into everyday project history.
-
-Keep this limited to `.github` and `projects/shared`; do not use the same pull for project-specific files.
+Run:
+`git fetch c4-template`
+`git switch -c sync/github-shared`
+`git merge --squash --no-commit c4-template/main`
+`git restore --source=HEAD --staged --worktree -- . ':(exclude).github' ':(exclude)projects/shared'`
+`git diff -- .github projects/shared`
+`git add .github projects/shared`
+`git commit -m "sync: import upstream .github and shared updates"`
+Use `--squash` because you usually want one curated sync commit, not a real merge commit that drags upstream history into the derived repo. It makes review easier, keeps rollback simple, and lets you accept only the reusable paths while dropping everything else.

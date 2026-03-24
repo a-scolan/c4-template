@@ -1,0 +1,33 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/model-deployment-infrastructure/SKILL.md",
+    ".github/skills/model-deployment-infrastructure/evals/evals-public.json",
+    "projects/shared/spec-deployment.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use the shared deployment kinds from the repository spec: `Node_Environment` -> `Zone` -> `Node_Vm` -> `Node_App`. For your production setup, a clean structure is: `Prod = Node_Environment`, then zones such as `Dmz`, `AppTier`, `ProcTier`, and `DataTier`, then VMs like `ProdApigwVm`, `ProdUploadVm`, `ProdWorkerVm`, and `ProdMongoVm`, and inside each VM a `Node_App` such as `apiApp`, `uploadApp`, `workerApp`, and `mongoApp`. VM names should follow `{Environment}{Service}Vm`, so `ProdUploadVm` is correct.\n\nEach `Node_App` should link to the logical model with `instanceOf <container FQN>`, for example the API app points to the API gateway container, the upload app points to the upload service container, and so on. Use the container FQNs from the system model, not ad-hoc names.\n\nDo not copy normal application deployment relationships manually. The default rule in this skill is that relationships are inherited automatically through `instanceOf`. Put the business traffic and its technology on the logical model relationships, then let the deployment instances inherit them. Only add deployment relationships when they are truly infrastructure-specific, such as monitoring, backups, bastion access, or replication.\n\nAlso keep the VM and zone descriptions rich and operational: zones should document VLAN/CIDR and firewall intent, and VMs should document `eth0` first, then OS, CPU, RAM, disk, port, monitoring, and RTO."
+    },
+    {
+      "id": 1,
+      "response": "For the basic environment -> zone -> VM -> app hierarchy, this skill is the right starting point. But if your main concern is the detailed split into `Dmz`, `AppTier`, `ProcTier`, and `DataTier`, plus firewall rules between those tiers, you should switch to the related `structure-deployment-tiers` skill for that part.\n\nIn short: use this skill to keep the deployment hierarchy honest and to place VMs and `Node_App` instances correctly; use `structure-deployment-tiers` when the real task is tier design and inter-zone policy."
+    },
+    {
+      "id": 2,
+      "response": "Do not invent physical hosts you do not actually own or observe. If production runs on managed Kubernetes, keep the model honest by showing only the layers that are real in your operating model: `Node_Environment` for `Prod`, optionally a meaningful `Zone` if network segmentation matters, then a `Node_Cluster` for the managed Kubernetes cluster, and under that the deployed `Node_App` instances for the workloads you operate.\n\nSo the hierarchy can become `Prod -> AppTier/ProdCluster -> Node_App` instead of forcing fake `Node_Vm` entries. Honesty is better than invented infrastructure.\n\nWire `instanceOf` exactly the same way: each `Node_App` points to the corresponding logical container FQN. That preserves inherited relationships from the logical model. If one deployed runtime unit genuinely serves multiple logical containers as one managed unit, multiple `instanceOf` links are acceptable, but otherwise keep one `Node_App` per logical container."
+    },
+    {
+      "id": 3,
+      "response": "That is not the right default place for those relationships. `Prod.Web.webApp -[https]-> Prod.App.apiApp` and `Prod.App.apiApp -[tcp]-> Prod.Data.dbApp` should usually not be added manually in `deployment.c4` just to show protocols or ports.\n\nThe skill’s rule is: put normal application traffic on the logical model relationships and put the technology there as well, for example `HTTPS`, `HTTP/8080`, `MongoDB`, or `TCP/27017`. Then let the deployment instances inherit those relationships automatically through `instanceOf`.\n\nOnly add deployment relationships when they are infrastructure-specific and not already part of the logical model, such as monitoring scrapes, backup traffic, bastion access, log shipping, or replication. If you really need one of those infra-only deployment links, then using deployment relationship kinds like `https` or `tcp` is fine, but use them sparingly."
+    },
+    {
+      "id": 4,
+      "response": "Add the Prometheus scrape relationship, because that is an operational infrastructure concern and usually does not belong in the logical business/application model. Model it against the real scrape target: if Prometheus hits the app metrics endpoint, relate Prometheus to the relevant `Node_App`; if it hits a node exporter or VM-level exporter, relate Prometheus to that VM-side deployment node instead.\n\nAvoid duplicating the browser -> API traffic and the API -> database traffic if those already exist in the logical model. Those flows should stay defined once in the system model and be inherited automatically through `instanceOf` in deployment views.\n\nA simple rule: add deployment relationships for monitoring, backups, bastion/admin access, replication, and other ops-only links; do not re-add normal user or service traffic just to show protocols or ports a second time."
+    }
+  ]
+}

@@ -1,18 +1,1 @@
-Use `calls` for the logical model relationship kind.
-
-In this repository, `https` is not the logical model relationship kind for `mySystem.webapp -> mySystem.api`. The logical relationship taxonomy comes from `projects/shared/spec-global.c4`, and the template example in `projects/template/system-model.c4` shows:
-
-- `mySystem.webapp -[calls]-> mySystem.api`
-- with `technology 'HTTPS'`
-
-So the pattern is:
-
-- relationship kind: `calls`
-- relationship technology: `HTTPS`
-
-`https` becomes valid as a relationship kind only in deployment/infrastructure modeling, because it is declared in `projects/shared/spec-deployment.c4` alongside other deployment-side relationships such as `http`, `tcp`, and `sql`.
-
-So for this repository:
-
-- logical model: use `calls` and put `HTTPS` in the `technology` field
-- deployment model: `https` is valid as a deployment relationship kind
+For a web application talking to an API in the logical model, use `calls`, not `https`. I verified both `webapp` -> `api` and `mySystem.webapp` -> `mySystem.api`, and in both cases the relationship `kind` is `calls` while `technology` is `HTTPS`. So in the active workspace, `HTTPS` is directly confirmed as a transport/technology value attached to `calls`, not as the logical relationship kind. If you need `https` as a relation kind, that would only make sense once you move from logical/application semantics to deployment/runtime transport modeling, and I did not surface a concrete deployment example of that kind in the allowed baseline scope.

@@ -1,0 +1,29 @@
+{
+  "skill_name": "lookup-element-kinds",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "In the active workspace, the canonical API/backend kind I could confirm is `Container_Api` (returned by matched elements in both `template-project` and `spec-showcase`). I did not surface any canonical `Container_API`, and a generic search for `Container` did not return a concrete backend kind for this case. The nearby backend taxonomy I could verify is role-specific: `Container_Api`, `Container_ApplicationServer`, and `Container_ProcessingServer`. For a database target, the directly confirmed logical relationship kinds are `reads` and `writes`; the DB/protocol detail is carried in `technology` (`PostgreSQL` or `SQL`). To verify in this workspace, inspect matched elements such as `mySystem.api`, `mySystem.database`, `api`, and `database`, then read the returned canonical `kind` and relationship `kind` values backed by `projects/template/system-model.c4` and `projects/spec-showcase/containers.c4`."
+    },
+    {
+      "id": 1,
+      "response": "I could not surface a live deployment VM example in the allowed narrow grounding, so I will separate verified facts from deployment guidance. Verified facts: in the logical model, `calls` is used for app/service interactions, and database access is modeled as `reads`/`writes` with `technology` `SQL` or `PostgreSQL` (confirmed by `mySystem.api` -> `mySystem.database` and `api` -> `database`). So in the logical application model, keep `reads`/`writes` toward the database. For a deployment relation between an app VM and a database VM, do not use `calls`; among `calls`, `tcp`, and `sql`, the deployment-layer choice is `tcp`, while `sql` is evidenced here as a technology detail rather than the logical relation kind."
+    },
+    {
+      "id": 2,
+      "response": "I could not directly confirm an instantiated firewall node from the allowed narrow searches, so I will not claim `Infra_Fw`; it does not fit the observed naming style. The workspace consistently uses full words in canonical kind names (`Container_ReverseProxy`, `Container_ProcessingServer`, `Container_ApplicationServer`, `Container_IamServer`), so if the deployment firewall kind exists, `Infra_Firewall` is the only plausible one of your two candidates, but it was not directly surfaced in this baseline run. Two nearby, truly confirmed kinds in the active workspace are `Container_ReverseProxy` and `Container_IamServer` (both confirmed workspace kinds, though they are logical/security-side examples rather than deployment `Infra_*` examples)."
+    },
+    {
+      "id": 3,
+      "response": "The exact kinds I could confirm are `Container_Api` for an HTTP API, `Container_ProcessingServer` for the async-worker role, and `Container_Queue` for a message queue. I found the API and queue directly from `api` and `queue` matches, and the worker role by following the queue’s `async` delivery to `processing_server`; a plain `worker` search did not surface a canonical kind, so `Container_ProcessingServer` is the verified name here. To resolve similar names, do not trust the spelling you typed; use the returned canonical `kind` field on the matched element. That matters because the search is case-insensitive: even a query like `Container_API` can still land on elements whose actual canonical kind is `Container_Api`."
+    },
+    {
+      "id": 4,
+      "response": "For a web application talking to an API in the logical model, use `calls`, not `https`. I verified both `webapp` -> `api` and `mySystem.webapp` -> `mySystem.api`, and in both cases the relationship `kind` is `calls` while `technology` is `HTTPS`. So in the active workspace, `HTTPS` is directly confirmed as a transport/technology value attached to `calls`, not as the logical relationship kind. If you need `https` as a relation kind, that would only make sense once you move from logical/application semantics to deployment/runtime transport modeling, and I did not surface a concrete deployment example of that kind in the allowed baseline scope."
+    }
+  ]
+}

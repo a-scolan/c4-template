@@ -1,22 +1,8 @@
-Diagnose this in two separate passes: relationship taxonomy first, element identity second.
-
-1. Verify whether `sends` is a valid relationship kind.
-   In the shared model relationship spec, the declared kinds are `uses`, `calls`, `async`, `reads`, and `writes`. `sends` is not part of that taxonomy, so it should not be accepted as-is.
-   - If the intent is message or event delivery, `async` is the likely replacement.
-   - If it is a normal request, use `calls`.
-   - If it is data access, use `reads` or `writes`.
-
-2. Verify whether `dataLayer.cache` is a real declared FQN.
-   `Element not found: dataLayer.cache` means that exact ID must be checked against the model declaration.
-   - It may need a fuller path such as `mySystem.dataLayer.cache`.
-   - It may belong under a different parent.
-   - Or it may not exist at all, in which case the reference is simply wrong.
-
-3. Correct each root cause independently.
-   Start with `read-project-summary` if available, or inspect the shared specs and the model declarations directly. Confirm the valid relationship kinds and the exact element IDs before editing.
-
-So the proper diagnosis is: this may be both issues at once.
-- `sends` is not a valid relationship kind in this project
-- `dataLayer.cache` must be verified as an actual declared FQN before you rename anything
-
-That gives you a targeted correction instead of a random rename-and-retry loop.
+1. Probable error category: both taxonomy and FQN.
+2. Root cause: `sends` is not one of the declared model relationship kinds in this workspace. The valid model kinds are `uses`, `calls`, `async`, `reads`, and `writes`. `dataLayer.cache` may also be a broken FQN because `cache` is not actually nested under `dataLayer`, or `dataLayer` itself is not the full path from the model root.
+3. Verification step: first check the relationship table in `projects/shared/SPEC_CHEATSHEET.md` to choose the correct interaction kind. Then inspect the cache declaration and copy its full FQN exactly as declared.
+4. Minimal fix: replace `sends` with the correct model relationship kind, and replace `dataLayer.cache` with the actual full FQN.
+Examples:
+- If this is asynchronous messaging: `producer -[async]-> <full.cache.fqn> 'Publishes event'`
+- If this is cache access: `api -[reads]-> <full.cache.fqn> 'Reads cached data'`
+The clean diagnosis is: do not guess either piece—validate the relationship kind from the shared spec, then validate the element path from the declaration hierarchy.

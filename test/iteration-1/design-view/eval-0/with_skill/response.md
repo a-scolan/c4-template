@@ -1,41 +1,22 @@
-Place the overview inside `views 'C2'` and let the web application drill down to a dedicated detail view.
+Put it in `system-views.c4` under `views 'C2'`. The clean include strategy is: actor + external system, then the parent system, then its direct containers, and add drill-down on the web application.
 
 ```likec4
 views 'C2' {
-  view c2_containers {
-    title 'Containers'
+  view c2_corePlatform {
+    title 'Core Platform - Containers'
+    description 'System boundary, containers, user, and email integration'
 
-    // Parent context
-    include mySystem
-
-    // Focus
-    include mySystem.*
-
-    // Neighboring context
     include user
-    include emailService
-    include -> mySystem.*
-    include mySystem.* ->
+    include externalEmailService
 
-    // Drill-down from the webapp
-    include mySystem.webapp with {
-      navigateTo c3_webapp
+    include corePlatform
+    include corePlatform.*
+
+    include corePlatform.webApp with {
+      navigateTo c3_webApp
     }
-
-    rank source { user }
-    rank sink { mySystem.database, emailService }
-  }
-}
-
-views 'C3' {
-  view c3_webapp {
-    title 'Web Application'
-
-    include mySystem.webapp
-    include -> mySystem.webapp
-    include mySystem.webapp ->
   }
 }
 ```
 
-This keeps the C2 view in the right folder, shows the parent `mySystem`, includes the focused containers via `mySystem.*`, and preserves interaction context with the user, `emailService`, and relationship-based neighbors.
+If you want the full neighbor context later, add directed includes such as `include -> corePlatform.*` and `include corePlatform.* ->`, but the skeleton above is the right starting shape and the right category.

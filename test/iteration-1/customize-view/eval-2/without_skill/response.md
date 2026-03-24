@@ -1,6 +1,7 @@
-view c2_containers {
-  include mySystem.webapp with {
+view c2_containers of mySystem {
+  link "Internal spec" "https://internal.example/specs/containers"
+
+  mySystem.webapp {
     navigateTo c2_webapp_details
-    link https://intranet.example.com/specs/webapp 'Internal spec docs'
   }
 }

@@ -1,38 +1,17 @@
-Use three separate steps, each with a clear responsibility.
+For a step-by-step upload journey, do **not** use a C1/C2/C3 static view. The right LikeC4 approach is a `dynamic view` in `views 'Use Cases'`, because order matters more than structure here.
 
-1. **Use `design-view` for the companion structural view only.**
-   Create a C2 or C3 view that shows the upload area in context: parent boundary, focused elements, and neighbors.
+```likec4
+views 'Use Cases' {
+  dynamic view uploadJourney {
+    title 'Upload Journey'
 
-   ```likec4
-   views 'C3' {
-     view c3_uploadService {
-       title 'Upload Service'
+    user -> browser 'Select file'
+    browser -> corePlatform.webApp 'Open upload page'
+    corePlatform.webApp -> corePlatform.api 'POST /uploads'
+    corePlatform.api -> corePlatform.uploadService 'Validate request'
+    corePlatform.uploadService -> corePlatform.objectStorage 'Store file'
+  }
+}
+```
 
-       include mySystem.uploadService
-       include mySystem.uploadService.*
-       include -> mySystem.uploadService
-       include mySystem.uploadService ->
-     }
-   }
-   ```
-
-2. **Use `create-sequence-view` for the step-by-step upload journey.**
-   Temporal behavior belongs in `views 'Use Cases'`, not in a structural folder.
-
-   ```likec4
-   views 'Use Cases' {
-     dynamic view uploadFlow {
-       title 'Upload Journey'
-
-       user -> mySystem.webapp 'Select file'
-       mySystem.webapp -> mySystem.api 'POST /upload'
-       mySystem.api -> mySystem.uploadService 'Validate and queue'
-       mySystem.uploadService -> mySystem.storage 'Store file'
-     }
-   }
-   ```
-
-3. **Use `customize-view` for colors and visual emphasis.**
-   After the structural and dynamic views exist, hand styling off to `customize-view` to highlight critical elements. `design-view` should frame the structure, not own the visual treatment.
-
-That split keeps structure, temporal flow, and styling cleanly separated.
+For color highlighting, keep that as a second pass: tag the critical elements and style that tag, rather than forcing the sequence into a static view. In short: dynamic view for the journey, styling/tags for the emphasis.

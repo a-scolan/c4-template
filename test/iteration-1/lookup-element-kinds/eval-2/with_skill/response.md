@@ -1,14 +1,1 @@
-The exact kind is `Infra_Fw`.
-
-- `Infra_Fw` is declared in `projects/shared/spec-deployment.c4`.
-- `Infra_Firewall` is not declared, so do not use it.
-
-Two nearby valid infrastructure kinds in this repository are:
-
-- `Infra_F5`
-- `Infra_Router`
-
-How to verify it:
-
-1. Check `projects/shared/spec-deployment.c4` for the declared `deploymentNode` kinds.
-2. If MCP is available, `read-project-summary` can confirm the active deployment taxonomy.
+The exact deployment kind for a firewall in this workspace is `Infra_Fw`. `Infra_Firewall` is not declared in the shared deployment spec. Two nearby deployment kinds that are truly valid are `Infra_Router` and `Infra_F5`. You can verify all three directly in `projects/shared/spec-deployment.c4`, where the deployment node identifiers are declared exactly; when two names look similar, keep the repository spelling and reject the natural-language expansion.

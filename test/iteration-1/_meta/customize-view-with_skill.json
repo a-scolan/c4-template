@@ -1,0 +1,32 @@
+{
+  "skill_name": "customize-view",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/customize-view/SKILL.md",
+    ".github/skills/customize-view/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "views 'C2' {\n  view containers_overview {\n    include *\n\n    autoLayout LeftRight\n\n    include user with { rank source }\n    include database with { rank sink }\n    include mailService with { rank sink }\n\n    include webApp with {\n      navigateTo webApp_details\n    }\n  }\n}"
+    },
+    {
+      "id": 1,
+      "response": "views 'C2' {\n  view containers_overview {\n    include *\n\n    style * { color muted; opacity 20% }\n    style api.*, gateway.* { color primary; opacity 100% }\n  }\n}"
+    },
+    {
+      "id": 2,
+      "response": "views 'C2' {\n  view containers_overview {\n    include *\n\n    include webApp with {\n      navigateTo webApp_details\n    }\n\n    link https://docs.internal/spec 'System specification'\n  }\n}"
+    },
+    {
+      "id": 3,
+      "response": "views 'C2' {\n  view containers_overview {\n    include *\n\n    style * { color muted; opacity 20% }\n    style api.*, gateway.* { color primary; opacity 100% }\n\n    include webApp with {\n      navigateTo webApp_details\n    }\n\n    link https://docs.internal/spec 'System specification'\n  }\n}\n\nThis skill stops at styling, lightweight layout hints, `navigateTo`, and external links. If you need to change included elements, parent context, or create a new/detail view, hand off to `design-view`."
+    },
+    {
+      "id": 4,
+      "response": "views 'C2' {\n  view containers_overview {\n    include *\n    include user with { rank source }\n  }\n}\n\nThis keeps the customization minimal: one obvious anchor, no pile of `rank` directives, and no unnecessary structural changes."
+    }
+  ]
+}

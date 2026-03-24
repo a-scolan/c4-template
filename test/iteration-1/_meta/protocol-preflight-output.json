@@ -1,0 +1,8 @@
+{
+  "iteration": "iteration-1",
+  "protocol_version": "benchmark-v2",
+  "manifest_path": "test/benchmark-protocol.json",
+  "output_path": "test/iteration-1/_meta/protocol-lock.json",
+  "tracked_file_count": 9,
+  "skill_count": 19
+}

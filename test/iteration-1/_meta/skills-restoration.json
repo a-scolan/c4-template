@@ -1,10 +1,15 @@
 {
-  "generated_at": "2026-03-12T14:13:22Z",
+  "generated_at": "2026-03-17T05:52:56Z",
   "operation": "restore-workspace-skills",
   "skills_root": ".github/skills",
   "disabled_root": "test/iteration-1/_disabled-skills",
-  "restored_count": 18,
+  "restored_count": 20,
   "restored": [
+    {
+      "skill": "c4-modeling-process",
+      "from": "test/iteration-1/_disabled-skills/c4-modeling-process",
+      "to": ".github/skills/c4-modeling-process"
+    },
     {
       "skill": "configure-project-includes",
       "from": "test/iteration-1/_disabled-skills/configure-project-includes",
@@ -64,6 +69,11 @@
       "skill": "organize-multi-project",
       "from": "test/iteration-1/_disabled-skills/organize-multi-project",
       "to": ".github/skills/organize-multi-project"
+    },
+    {
+      "skill": "skill-creator",
+      "from": "test/iteration-1/_disabled-skills/skill-creator",
+      "to": ".github/skills/skill-creator"
     },
     {
       "skill": "structure-deployment-tiers",

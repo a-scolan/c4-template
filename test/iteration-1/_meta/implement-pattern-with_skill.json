@@ -1,0 +1,28 @@
+{
+  "skill_name": "implement-pattern",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [
+    ".github/skills/implement-pattern/SKILL.md",
+    ".github/skills/implement-pattern/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Pattern: External integration.\n\nMinimal scaffold:\npaymentProvider = System_External 'Payment Provider' {\n  technology 'HTTPS API'\n  description 'External payment service used by the platform.'\n}\n\napi -[calls]-> paymentProvider 'Creates payment / checks status' {\n  technology 'HTTPS'\n}\n\nSubstitute before finalizing:\n- parent: place `paymentProvider` at the correct external/system level next to your internal `api`\n- exact kinds: replace `System_External` or `calls` if your workspace declares different names\n- names: use the real provider name, for example `stripe`\n- tech: keep the element technology as the provider API and the relationship technology as the transport, usually `HTTPS`\n\nKeep the provider modeled as external, not as an internal container."
+    },
+    {
+      "id": 1,
+      "response": "Pattern: Async queue/worker.\n\nMinimal scaffold:\nqueue = Container_Queue 'Job Queue' {\n  technology 'RabbitMQ'\n  description 'Buffers asynchronous work.'\n}\n\napi -[async]-> queue 'Publishes job' {\n  technology 'AMQP'\n}\n\nworker -[async]-> queue 'Consumes job' {\n  technology 'AMQP'\n}\n\nMistake to avoid:\n- Do not add a synchronous return call from `worker` back to `api`; async flows are one-way.\n\nSubstitute before finalizing:\n- parent: place `queue` and `worker` under the correct system/container boundary\n- exact kinds: swap `Container_Queue`, `Container`, or `async` for the exact declared workspace kinds and relationship types\n- names: use your real queue and worker names\n- tech: keep `RabbitMQ` on the queue and `AMQP` on the arrows"
+    },
+    {
+      "id": 2,
+      "response": "Pattern: Cache plus source of truth.\n\nMinimal scaffold:\ncache = Container 'Redis Cache' {\n  technology 'Redis'\n  description 'Hot-data cache.'\n}\n\napi -[reads]-> cache 'Checks cache'\napi -[reads]-> database 'Fetches on cache miss'\napi -[writes]-> cache 'Refreshes cache'\napi -[writes]-> database 'Persists source-of-truth changes'\n\nHow to keep the model accurate:\n- Keep Postgres as the source of truth.\n- Show both cache access and database access so the diagram does not imply Redis replaces the database.\n- If your workspace provides a more specific cache/container kind, use that instead of the generic `Container`.\n\nSubstitute before finalizing:\n- parent: place `cache` under the same service boundary as the API\n- exact kinds: use the declared cache/database kinds and `reads`/`writes` relationship names from your workspace\n- names: replace `cache` and `database` with your real Redis/Postgres element names\n- tech: `Redis` for the cache and `PostgreSQL` for the database"
+    },
+    {
+      "id": 3,
+      "response": "Pattern: External integration plus webhook callback, modeled as two separate one-way relationships.\n\nMinimal scaffold:\nstripe = System_External 'Stripe' {\n  technology 'HTTPS API'\n  description 'External payment provider.'\n}\n\napi -[calls]-> stripe 'Creates payment' {\n  technology 'HTTPS'\n}\n\nstripe -[calls]-> api 'Sends payment confirmation webhook' {\n  technology 'HTTPS webhook'\n}\n\nHow to keep it accurate:\n- Treat the webhook as a second independent inbound call, not as a return arrow on the create-payment request.\n- If the receiving endpoint deserves its own element, split it out under `api` using the exact declared kind from your workspace.\n\nSubstitute before finalizing:\n- parent: place `stripe` as an external system and the receiving endpoint under your internal API boundary\n- exact kinds: replace `System_External`, `api`, or `calls` with the exact declared names if needed\n- names: use the real payment API and webhook endpoint names\n- tech: typically `HTTPS` for the outbound payment call and `HTTPS webhook` for the callback\n\nIf you need to show the order explicitly, move that temporal story to a dynamic or sequence view instead of turning the first call into a synchronous round trip."
+    }
+  ]
+}

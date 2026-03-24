@@ -1,26 +1,8 @@
-For the `mySystem.worker` change in `projects/template/system-model.c4` and `projects/template/system-views.c4`, use this pre-commit validation plan:
+Because this is a before-commit structural change, do a full validation:
+1. Confirm the active project and shared taxonomy: the new worker uses a declared element kind, and every new edge uses a declared relationship kind.
+2. Verify references: every FQN for the worker and its neighbors resolves in both the model and the C2 view; if any deployment `instanceOf` points to the worker, confirm that target is real.
+3. Validate relationships: new traffic to or from the worker should use logical kinds such as `calls`, `async`, `reads`, `writes`, or `uses`; keep protocols like HTTP or Kafka in `technology`, not in the edge type; do not move normal application traffic into deployment relationships.
+4. Validate rendering: preview only the impacted C2 view and confirm it shows the parent system boundary, the worker container, and the expected neighbors, with no unrelated elements pulled in by an over-broad include.
+5. Do a final sanity pass in the Problems panel or compile output: no unknown kinds, no broken FQNs, no missing labels, and no unexpected extra nodes or edges.
 
-1. **Validate structure and kinds first**
-   - Run `read-project-summary` for the template project.
-   - Confirm the container kind used for `mySystem.worker` is declared in the shared spec files.
-   - Check that any tags or metadata used by the new container are valid and that no orphaned elements were introduced.
-
-2. **Verify references and FQNs**
-   - Use `search-element` for `mySystem`, `mySystem.worker`, and any nested references used in views.
-   - Confirm the new dedicated C2 view points at the correct FQN and that any `navigateTo` target resolves.
-   - Make sure the container is still nested under `mySystem`, not accidentally modeled as a sibling system.
-
-3. **Validate relationships semantically**
-   - Use `find-relationships` between `mySystem.worker` and every element it connects to, especially `mySystem.api`, `mySystem.database`, `mySystem.webapp`, or `emailService` if applicable.
-   - Check that each relationship uses a valid typed kind, keeps the correct direction, has a descriptive label, and does not duplicate an existing edge.
-   - Verify there are no leftover reverse/return relationships that should not exist.
-
-4. **Validate rendering and view scope**
-   - Preview the new dedicated C2 view and the broader `c2_containers` view.
-   - Confirm `mySystem.worker` renders inside the `mySystem` boundary and that the view includes are scoped tightly enough to avoid unrelated elements leaking in.
-   - Recheck rank hints if the new worker changes the layout flow.
-
-5. **Do final editor and renderer checks**
-   - Review the VS Code Problems panel for compile or reference errors.
-   - Run `likec4 start` locally and confirm the diagrams render cleanly.
-   - Before commit, compare the affected views once more to ensure the worker appears only where intended.
+A good before-commit checklist is: kinds valid, FQNs resolve, relationships semantically correct, parent context visible, and the dedicated C2 view renders only what you intended.

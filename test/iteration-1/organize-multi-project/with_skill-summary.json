@@ -3,34 +3,117 @@
   "configuration": "with_skill",
   "language": "English",
   "mcp_used": false,
+  "run_count": 1,
   "summary": {
-    "elapsed_seconds_total": 126,
-    "elapsed_seconds_per_eval": 31.5,
-    "response_words_total": 549,
-    "response_words_per_eval": 137.25,
-    "files_read_count": 5,
-    "files_written_count": 5
+    "elapsed_seconds_total": 98.0,
+    "elapsed_seconds_per_eval": 24.5,
+    "response_words_total": 459.0,
+    "response_words_per_eval": 114.75,
+    "files_read_count": 2.0,
+    "files_written_count": 8.0
   },
+  "variance": {
+    "elapsed_seconds_total": {
+      "mean": 98.0,
+      "stddev": 0.0,
+      "min": 98.0,
+      "max": 98.0
+    },
+    "elapsed_seconds_per_eval": {
+      "mean": 24.5,
+      "stddev": 0.0,
+      "min": 24.5,
+      "max": 24.5
+    },
+    "response_words_total": {
+      "mean": 459.0,
+      "stddev": 0.0,
+      "min": 459.0,
+      "max": 459.0
+    },
+    "response_words_per_eval": {
+      "mean": 114.75,
+      "stddev": 0.0,
+      "min": 114.75,
+      "max": 114.75
+    },
+    "files_read_count": {
+      "mean": 2.0,
+      "stddev": 0.0,
+      "min": 2.0,
+      "max": 2.0
+    },
+    "files_written_count": {
+      "mean": 8.0,
+      "stddev": 0.0,
+      "min": 8.0,
+      "max": 8.0
+    }
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "summary": {
+        "elapsed_seconds_total": 98.0,
+        "elapsed_seconds_per_eval": 24.5,
+        "response_words_total": 459,
+        "response_words_per_eval": 114.75,
+        "files_read_count": 2,
+        "files_written_count": 8
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 1,
+          "response_path": "eval-0/with_skill/run-1/response.md",
+          "response_words": 128
+        },
+        {
+          "id": 1,
+          "run_number": 1,
+          "response_path": "eval-1/with_skill/run-1/response.md",
+          "response_words": 145
+        },
+        {
+          "id": 2,
+          "run_number": 1,
+          "response_path": "eval-2/with_skill/run-1/response.md",
+          "response_words": 53
+        },
+        {
+          "id": 3,
+          "run_number": 1,
+          "response_path": "eval-3/with_skill/run-1/response.md",
+          "response_words": 133
+        }
+      ]
+    }
+  ],
   "evals": [
     {
       "id": 0,
-      "response_path": "eval-0/with_skill/response.md",
-      "response_words": 142
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "response_words": 128
     },
     {
       "id": 1,
-      "response_path": "eval-1/with_skill/response.md",
-      "response_words": 141
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "response_words": 145
     },
     {
       "id": 2,
-      "response_path": "eval-2/with_skill/response.md",
-      "response_words": 118
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "response_words": 53
     },
     {
       "id": 3,
-      "response_path": "eval-3/with_skill/response.md",
-      "response_words": 148
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/run-1/response.md",
+      "response_words": 133
     }
-  ]
+  ],
+  "high_variance_evals": []
 }

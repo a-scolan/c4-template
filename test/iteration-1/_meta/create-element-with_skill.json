@@ -1,0 +1,35 @@
+{
+  "skill_name": "create-element",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [
+    ".github/skills/create-element/SKILL.md",
+    ".github/skills/create-element/evals/evals-public.json",
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use `Container_Api` under the existing system, not a custom kind. Paste this inside the existing system block:\n\ningestionApi = Container_Api 'File Ingestion API' {\n  technology 'Node.js, Fastify'\n  description 'Receives uploaded files and starts the file ingestion workflow.'\n}\n\nThat reuses the shared container kind and keeps the placement correct at C2."
+    },
+    {
+      "id": 1,
+      "response": "No. In this workspace, new kinds are a last resort, so `Container_UploadOrchestrator` is not a good idea for one service. Reuse an existing shared kind first—most likely `Container_Api` for an upload/orchestration API.\n\nBefore adding any new kind, check in this order: 1) the active project summary or model when available, 2) `projects/shared/SPEC_CHEATSHEET.md`, 3) the shared spec files such as `projects/shared/spec-context.c4` and `projects/shared/spec-containers.c4`, and 4) existing project model files for naming and placement.\n\nOnly introduce a new kind if none of the shared kinds fits, and ask before adding it. A better start here is:\n\ningestionApi = Container_Api 'Upload Orchestrator API' {\n  technology 'Node.js, Fastify'\n  description 'Coordinates upload requests and starts the ingestion workflow.'\n}"
+    },
+    {
+      "id": 2,
+      "response": "Use `create-element` for both declarations, `create-relationship` for the arrows, and `design-view` for the C2 view.\n\nStart the elements like this:\n\nvirusScanProvider = System_External 'Virus Scan Provider' {\n  technology 'HTTPS API'\n  description 'Third-party malware scanning service.'\n}\n\nThen, inside the owning system:\n\nscanApi = Container_Api 'Scan API' {\n  technology 'Node.js, Fastify'\n  description 'Submits files for scanning and returns scan results.'\n}\n\nSo the split is: elements -> `create-element`, arrows -> `create-relationship`, C2 view -> `design-view`."
+    },
+    {
+      "id": 3,
+      "response": "Use two elements of the same existing kind, not two new kinds. The workspace rule is to reuse shared kinds and distinguish mock vs. prod with element names, titles, and descriptions.\n\nFor a vendor payment integration, that usually means two `System_External` elements:\n\npaymentProvider = System_External 'Payment Provider' {\n  technology 'HTTPS API'\n  description 'Production payment provider used for real transactions.'\n}\n\nmockPaymentProvider = System_External 'Mock Payment Provider' {\n  technology 'HTTP test double'\n  description 'Integration-test stub that mimics the production payment provider.'\n}\n\nIf both live inside your own system boundary instead, use two `Container_Api` elements rather than inventing kinds like `Container_MockApi`. `create-element` handles choosing the correct kind and declaring both elements; if you later need to show who calls mock vs. prod, that becomes a `create-relationship` task."
+    },
+    {
+      "id": 4,
+      "response": "Start with one external system and one internal API container:\n\nidentityProvider = System_External 'Identity Provider' {\n  technology 'OIDC / SAML'\n  description 'Third-party identity provider used for authentication.'\n}\n\nThen, inside your portal system:\n\nportalApi = Container_Api 'Portal API' {\n  technology 'Node.js, Fastify'\n  description 'Internal API that serves the portal application and portal backend workflows.'\n}\n\nThat keeps the identity provider outside the system boundary and the portal API inside it, which is the right placement in this workspace."
+    }
+  ]
+}

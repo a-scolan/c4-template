@@ -1,15 +1,13 @@
-view c2_containers {
-  title 'Containers'
-
-  autoLayout LeftRight
-
+view c2_containers of mySystem {
   include user
-  include mySystem.*
-  include mySystem.webapp with {
-    navigateTo c2_webapp_details
-  }
+  include mySystem.webapp
+  include mySystem.api
+  include mySystem.database
   include emailService
 
-  rank source { user }
-  rank sink { mySystem.database, emailService }
+  autoLayout lr
+
+  mySystem.webapp {
+    navigateTo c2_webapp_details
+  }
 }

@@ -1,1 +1,0 @@
-Use calls. In this repository, the relationship type belongs in the arrow itself, not inside the block. Minimal example: webApp -[calls]-> api Sends request with technology HTTPS. Put protocol detail in technology, not in the relationship kind.

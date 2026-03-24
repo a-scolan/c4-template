@@ -1,1 +1,0 @@
-Append ../platform-shared after ../shared in include.paths, but keep the current shared image alias stable so existing icons still resolve. Keep @ pointing to ../shared/images/ and do not let the new source overwrite it. If you also need platform-specific images, add them under a separate non-colliding alias key instead of reusing @.

@@ -1,9 +1,15 @@
-No — keep the flow one-way and do **not** draw a return relationship from `worker` back to `uploadService`.
-
-```likec4
-uploadService -[async]-> jobQueue 'Queue upload job'
-jobQueue -[async]-> worker 'Deliver job'
-worker -[writes]-> database 'Persist processing result'
-```
-
-Use `-[async]->` for producer → queue and queue → worker. Use `-[writes]->` for the database update rather than `-[calls]->`. If you have acknowledgements or retries, do not model them as a callback relationship from the worker to the producer.
+Relationship choice: `async` for the queue flow, then `writes` for persistence.
+Rule: Model the async flow explicitly and do not invent a fake return path to the producer unless there is a real callback or notification.
+Example:
+uploadService -[async]-> jobQueue 'Publishes job' {
+  technology 'AMQP'
+}
+worker -[async]-> jobQueue 'Consumes job' {
+  technology 'AMQP'
+}
+worker -[writes]-> primaryDatabase 'Stores result' {
+  technology 'PostgreSQL'
+}
+Anti-pattern:
+worker -[calls]-> uploadService 'Send completion'
+Handoff: If completion timing, retries, or callback order matter, move that story to `create-sequence-view`.

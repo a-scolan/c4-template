@@ -16,7 +16,7 @@ All logs and reports must stay **anonymous**: never expose the absolute workspac
 ## Hard constraints
 
 - Do **not** use any MCP tool outside the scored `with_skill` / `without_skill` worker phases.
-- In scored `with_skill` and `without_skill` workers only, all LikeC4 MCP tools (`likec4/*`) are allowed.
+- In scored `with_skill` and `without_skill` workers only, narrow LikeC4 MCP grounding is allowed: use element/relationship lookup only, not project listing, project summaries, or view browsing.
 - The benchmark manager, blind comparator, and grader/analyzer-style review tasks must keep MCP disabled.
 - Keep the runs isolated per skill.
 - Do not edit repository source files while evaluating.
@@ -28,7 +28,7 @@ All logs and reports must stay **anonymous**: never expose the absolute workspac
 - Use a **fresh session or fresh worker** for each `<skill, configuration>` pair.
 - In `with_skill`, enable only the single target skill.
 - In `without_skill`, read **no** `SKILL.md` file at all.
-- In `without_skill`, “without skill” means “do not read any `SKILL.md` file”; it does **not** mean “without allowed LikeC4 MCP tools”.
+- In `without_skill`, “without skill” means “do not read any `SKILL.md` file”; it does **not** mean “without all LikeC4 MCP help”, but any LikeC4 MCP use must stay limited to narrow element/relationship grounding.
 - A run is invalid if its `*-run-metrics.json` file is missing required keys or contains `null` for required metric values.
 - Do **not** hand-author `*-run-metrics.json` files; write them with `python test/scripts/skill_suite_tools.py write-run-metrics ...`.
 - **Critically important:** prompt-level instructions are **not enough** to guarantee a clean `without_skill` baseline.
@@ -38,6 +38,7 @@ All logs and reports must stay **anonymous**: never expose the absolute workspac
 - Run `with_skill` scenarios **only after** restoration, in fresh workers created after the restore step.
 - Default scheduler: execute independent workers in parallel within a phase; use serial fallback only when output paths would collide or runtime limits force it.
 - If you intentionally run a hook-only baseline probe, label it as experimental and keep it separate from the strict relocated baseline results.
+- In raw worker JSON payloads, `files_read` must list only successful direct `read_file` accesses. Do not include blocked attempts, MCP lookups, inferred references, or files mentioned only in the prose response; hook audit remains the source of truth for isolation checks.
 
 ## Workspace scope
 
@@ -139,7 +140,7 @@ The manager may delegate only to those constrained benchmark workers.
 - You may read repository files needed to answer accurately.
 - Do not read unrelated skill files unless the target skill explicitly requires a handoff reference.
 - Do not use non-LikeC4 MCP tools.
-- All LikeC4 MCP tools (`likec4/*`) are allowed for project grounding and repository validation.
+- Only narrow LikeC4 MCP grounding is allowed for scored workers; do not browse projects or views.
 - Answer in English only.
 - Save outputs only under the assigned `/test/iteration-N/<skill-name>/...` directory.
 
@@ -148,7 +149,7 @@ The manager may delegate only to those constrained benchmark workers.
 - Do **not** read any `SKILL.md` file.
 - You may read repository files needed to answer accurately.
 - Do not use non-LikeC4 MCP tools.
-- All LikeC4 MCP tools (`likec4/*`) are allowed for project grounding and repository validation.
+- Only narrow LikeC4 MCP grounding is allowed for scored workers; do not browse projects or views.
 - Answer in English only.
 - Save outputs only under the assigned `/test/iteration-N/<skill-name>/...` directory.
 

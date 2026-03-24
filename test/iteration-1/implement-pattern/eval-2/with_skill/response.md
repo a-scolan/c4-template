@@ -1,17 +1,23 @@
-Model this as a **caching layer** in front of Postgres, not as a database replacement.
+Pattern: Cache plus source of truth.
 
-Add an explicit Redis cache, for example:
+Minimal scaffold:
+cache = Container 'Redis Cache' {
+  technology 'Redis'
+  description 'Hot-data cache.'
+}
 
-`cache = Container_Cache 'Cache' { technology 'Redis'; description 'Low-latency cache for hot reads' }`
+api -[reads]-> cache 'Checks cache'
+api -[reads]-> database 'Fetches on cache miss'
+api -[writes]-> cache 'Refreshes cache'
+api -[writes]-> database 'Persists source-of-truth changes'
 
-Then use typed data-access relationships from `vault.api`:
+How to keep the model accurate:
+- Keep Postgres as the source of truth.
+- Show both cache access and database access so the diagram does not imply Redis replaces the database.
+- If your workspace provides a more specific cache/container kind, use that instead of the generic `Container`.
 
-- `vault.api -[reads]-> cache 'Read-through cache'`
-- `vault.api -[writes]-> cache 'Cache updates'`
-- `vault.api -[reads]-> vault.database 'Fetch on cache miss'`
-
-This keeps the meaning clear:
-
-- Redis accelerates hot reads.
-- Postgres remains the **source of truth**.
-- The cache is not the primary store; it only supports faster access.
+Substitute before finalizing:
+- parent: place `cache` under the same service boundary as the API
+- exact kinds: use the declared cache/database kinds and `reads`/`writes` relationship names from your workspace
+- names: replace `cache` and `database` with your real Redis/Postgres element names
+- tech: `Redis` for the cache and `PostgreSQL` for the database

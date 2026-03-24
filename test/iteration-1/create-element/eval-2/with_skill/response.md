@@ -1,9 +1,17 @@
-Use the skills like this:
+Use `create-element` for both declarations, `create-relationship` for the arrows, and `design-view` for the C2 view.
 
-- **`create-element`** for the element declarations:
-  - `virusTotal` as `System_External`
-  - `scanApi` as an internal API element such as `Container_Api`
-- **`create-relationship`** for the arrows between them
-- **`design-view`** for the C2 view
+Start the elements like this:
 
-So `create-element` stays focused on declaring the elements, while arrows and the C2 diagram are handled by the dedicated skills.
+virusScanProvider = System_External 'Virus Scan Provider' {
+  technology 'HTTPS API'
+  description 'Third-party malware scanning service.'
+}
+
+Then, inside the owning system:
+
+scanApi = Container_Api 'Scan API' {
+  technology 'Node.js, Fastify'
+  description 'Submits files for scanning and returns scan results.'
+}
+
+So the split is: elements -> `create-element`, arrows -> `create-relationship`, C2 view -> `design-view`.

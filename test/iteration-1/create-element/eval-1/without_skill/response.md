@@ -1,5 +1,1 @@
-No—creating `Container_UploadOrchestrator` just for one service is not a good fit here.
-
-In this repo, kinds are shared, reusable building blocks defined in the shared specifications. Before adding any new kind, first check whether an existing one already covers the need. For an upload service, `Container_Api` is the obvious fit.
-
-Only introduce a new kind if you have a reusable pattern that cannot be expressed with the existing shared kinds, and get approval before adding it to the shared specs.
+No. A one-off `Container_UploadOrchestrator` kind is not a good idea here. The workspace already uses reusable container kinds such as `Container_Api`, `Container_Webapp`, and `Container_Database`, and even specialized kinds like `Container_Api_Geo` only make sense when the distinction is reusable. For one upload service, keep an existing kind and express the difference in the element name, title, technology, description, tags, or metadata. Before adding a new kind, first check the existing kind catalog; if you need help with that, use `lookup-element-kinds` before defining anything new.

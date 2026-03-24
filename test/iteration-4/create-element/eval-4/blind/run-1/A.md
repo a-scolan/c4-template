@@ -1,1 +1,0 @@
-Start with these declarations: identityProvider as System_External named Identity Provider with technology OIDC or SAML and a description for third-party authentication; and inside your existing system block portalApi as Container_Api named Portal API with a technology such as Node.js and Fastify and a description for internal portal business operations.

@@ -1,0 +1,24 @@
+{
+  "skill_name": "test-model",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/test-model/SKILL.md",
+    ".github/skills/test-model/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Because this is a before-commit structural change, do a full validation:\n1. Confirm the active project and shared taxonomy: the new worker uses a declared element kind, and every new edge uses a declared relationship kind.\n2. Verify references: every FQN for the worker and its neighbors resolves in both the model and the C2 view; if any deployment `instanceOf` points to the worker, confirm that target is real.\n3. Validate relationships: new traffic to or from the worker should use logical kinds such as `calls`, `async`, `reads`, `writes`, or `uses`; keep protocols like HTTP or Kafka in `technology`, not in the edge type; do not move normal application traffic into deployment relationships.\n4. Validate rendering: preview only the impacted C2 view and confirm it shows the parent system boundary, the worker container, and the expected neighbors, with no unrelated elements pulled in by an over-broad include.\n5. Do a final sanity pass in the Problems panel or compile output: no unknown kinds, no broken FQNs, no missing labels, and no unexpected extra nodes or edges.\n\nA good before-commit checklist is: kinds valid, FQNs resolve, relationships semantically correct, parent context visible, and the dedicated C2 view renders only what you intended."
+    },
+    {
+      "id": 1,
+      "response": "Use a quick validation focused on view scope and context:\n1. Check parent context first: a C2 view must show the parent system boundary around the web application and API, plus the external neighbor such as `user`. If the containers render without the containing system, the view is incomplete even if the syntax is valid.\n2. Check include scope: prefer explicit FQNs or a pattern scoped to the parent system. Avoid `include **`; that is the classic over-broad include.\n3. Preview the view and look for symptoms of a broad include: unrelated sibling containers, extra external actors, or elements from outside the intended system.\n4. Tighten the include until only the system boundary, the web app, the API, and the relevant actor remain.\n5. Recheck that the web app and API FQNs still resolve after any include change.\n\nRule of thumb: for C2, keep the parent system visible and make the include as narrow as possible."
+    },
+    {
+      "id": 2,
+      "response": "Treat this as a semantic validation, not just a parser check:\n1. Confirm both container FQNs still resolve and that the `async` relationship is the only intended edge between them; remove any leftover `calls` edge that would make the flow ambiguous.\n2. Check the meaning of the relationship: `async` should represent fire-and-forget, queued, or event-driven behavior. Do not add a fake return path that makes the interaction look synchronous.\n3. Keep protocol details in `technology`, not in the edge type, and give the edge a clear label so the message or event is obvious in the C2 view.\n4. Preview the impacted C2 view and confirm the parent system boundary and expected neighbors are still present; if the view looks odd, inspect include scope and any layout hints before assuming the model is wrong.\n5. Make sure normal application traffic still lives in the logical model and has not been redrawn in deployment just to compensate for the visual change.\n\nIf those checks pass, the model is probably truly correct, not merely syntactically acceptable."
+    }
+  ]
+}

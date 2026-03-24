@@ -1,0 +1,24 @@
+{
+  "skill_name": "structure-deployment-tiers",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/structure-deployment-tiers/SKILL.md",
+    ".github/skills/structure-deployment-tiers/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Model it as one parent `Production` environment with explicit sibling zones so the hierarchy stays `Environment -> Zone -> VM -> Node_App`.\n\n- `Dmz`: Internet-facing edge tier. Put the API gateway here. Allow `Internet -> Dmz` on HTTPS 443 only, then route internal traffic from `Dmz -> AppTier` on internal HTTP/HTTPS.\n- `AppTier`: Synchronous business services only. Put the document platform services here. This tier is internal-only; it receives traffic from `Dmz`, queries `DataTier`, and publishes async work to `ProcTier`.\n- `ProcTier`: Async processing tier. Put RabbitMQ and the worker here. `AppTier` publishes jobs/events to RabbitMQ on AMQP 5672; the worker consumes from the queue and persists results. Do not model the worker as directly called from `AppTier`.\n- `DataTier`: Persistent storage only. Put MongoDB and MinIO here. This tier is never Internet-facing; allow inbound only from `AppTier` and `ProcTier` on the required data ports.\n- `SecZone`: Optional but strongly recommended for monitoring. Put Prometheus/Grafana and log tooling here. Let it scrape metrics from the other tiers and receive logs.\n\nKey network rules:\n- Only `Dmz` is Internet-facing.\n- `Dmz -> AppTier`: internal request routing.\n- `AppTier -> ProcTier`: publish events/jobs, not synchronous worker calls.\n- `AppTier -> DataTier`: MongoDB and object-storage access only.\n- `ProcTier -> DataTier`: write job results/status.\n- `SecZone -> all tiers`: metrics scrape; `AppTier/ProcTier -> SecZone`: log shipping.\n\nKeep each zone single-purpose, document firewall rules in the zone descriptions, and keep every zone explicitly nested under `Production` for clear parent context."
+    },
+    {
+      "id": 1,
+      "response": "Not as the main job of this skill.\n\nThis skill should primarily decide the tier layout, the purpose of each zone, and the firewall/network boundaries between them. It can show small examples, but exact VM names, detailed Markdown property tables, and full `Node_App` + `instanceOf` wiring are deployment-detail concerns rather than tier-structure concerns.\n\nA clean handoff is:\n- tier split, zone purpose, and allowed traffic: this skill\n- exact VM naming: `name-deployment-nodes`\n- full environment/zone/VM/`Node_App` hierarchy and `instanceOf` wiring: `model-deployment-infrastructure`\n- rich Markdown spec tables in descriptions: `write-rich-descriptions`\n\nSo the right boundary is: use this skill to decide where `Dmz`, `AppTier`, `ProcTier`, `DataTier`, `SecZone`, and `InfraZone` belong; then switch to the more detailed deployment skills to name, table, and wire the nodes precisely."
+    },
+    {
+      "id": 2,
+      "response": "Add them as separate, explicit concerns instead of folding them into existing tiers.\n\n- `SecZone`: place it as a sibling zone under the same production environment, alongside `Dmz`, `AppTier`, `ProcTier`, and `DataTier`. Use it for audit, security monitoring, SIEM/log aggregation, metrics, dashboards, and alerting. It stays internal-only.\n- DR capability:\n  - If you only need backup/replication tooling inside the primary environment, add an `InfraZone` as another sibling zone under `Production`.\n  - If this is a true standby site or second region, model it as a separate environment such as `Dr` or `Standby`, with its own tier hierarchy, rather than hiding standby nodes inside primary `DataTier`.\n\nThis preserves readability because the main runtime flow still reads cleanly as `Dmz -> AppTier -> ProcTier -> DataTier`, while cross-cutting security/observability and DR remain visible but separate. Avoid mixing audit tools into `DataTier` or putting DR hosts into `Dmz`/`AppTier`."
+    }
+  ]
+}

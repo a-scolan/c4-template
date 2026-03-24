@@ -1,1 +1,0 @@
-Use the smallest safe edit on the relevant sections and leave your existing schema, name, and title unchanged: include.paths should contain ../shared and ../platform-shared, and imageAliases should keep @ for ../shared/images/ plus a separate @platform alias for ../platform-shared/images/. This preserves current resolution while avoiding collisions.

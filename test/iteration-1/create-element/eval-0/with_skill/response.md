@@ -1,8 +1,8 @@
-Under `mySystem`, add:
+Use `Container_Api` under the existing system, not a custom kind. Paste this inside the existing system block:
 
-```likec4
 ingestionApi = Container_Api 'File Ingestion API' {
   technology 'Node.js, Fastify'
-  description 'Receives file uploads and starts the ingestion workflow'
+  description 'Receives uploaded files and starts the file ingestion workflow.'
 }
-```
+
+That reuses the shared container kind and keeps the placement correct at C2.

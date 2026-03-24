@@ -1,0 +1,27 @@
+{
+  "iteration": "iteration-1",
+  "skill_name": "configure-project-includes",
+  "configuration": "with_skill",
+  "run_number": 1,
+  "raw_json": "test\\iteration-1\\_meta\\configure-project-includes-with_skill.json",
+  "responses_written": 12,
+  "written_files": [
+    "configure-project-includes/eval-0/with_skill/run-1/response.md",
+    "configure-project-includes/eval-0/with_skill/response.md",
+    "configure-project-includes/eval-1/with_skill/run-1/response.md",
+    "configure-project-includes/eval-1/with_skill/response.md",
+    "configure-project-includes/eval-2/with_skill/run-1/response.md",
+    "configure-project-includes/eval-2/with_skill/response.md",
+    "configure-project-includes/eval-3/with_skill/run-1/response.md",
+    "configure-project-includes/eval-3/with_skill/response.md",
+    "configure-project-includes/eval-4/with_skill/run-1/response.md",
+    "configure-project-includes/eval-4/with_skill/response.md",
+    "configure-project-includes/eval-5/with_skill/run-1/response.md",
+    "configure-project-includes/eval-5/with_skill/response.md"
+  ],
+  "run_metrics_path": "test\\iteration-1\\configure-project-includes\\with_skill-run-metrics.json",
+  "per_run_metrics_path": "test\\iteration-1\\configure-project-includes\\_runs\\with_skill\\run-1-metrics.json",
+  "run_count": 1,
+  "files_read_count": 2,
+  "elapsed_seconds_total": 146.0
+}

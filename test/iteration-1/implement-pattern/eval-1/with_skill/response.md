@@ -1,12 +1,24 @@
-Apply the **async queue + worker** pattern.
+Pattern: Async queue/worker.
 
-Add a dedicated queue for RabbitMQ, for example:
+Minimal scaffold:
+queue = Container_Queue 'Job Queue' {
+  technology 'RabbitMQ'
+  description 'Buffers asynchronous work.'
+}
 
-`jobQueue = Container_Queue 'Job Queue' { technology 'RabbitMQ'; description 'Async job processing' }`
+api -[async]-> queue 'Publishes job' {
+  technology 'AMQP'
+}
 
-Model the flow as two one-way async relationships:
+worker -[async]-> queue 'Consumes job' {
+  technology 'AMQP'
+}
 
-- `vault.api -[async]-> jobQueue 'Publishes jobs'`
-- `vault.worker -[async]-> jobQueue 'Consumes jobs'`
+Mistake to avoid:
+- Do not add a synchronous return call from `worker` back to `api`; async flows are one-way.
 
-The key mistake to avoid is adding a fake synchronous return path such as `vault.worker -[calls]-> vault.api` or any similar “response” relationship. In this pattern, the async flow is **one-way**: the API publishes work, and the worker consumes it from the queue.
+Substitute before finalizing:
+- parent: place `queue` and `worker` under the correct system/container boundary
+- exact kinds: swap `Container_Queue`, `Container`, or `async` for the exact declared workspace kinds and relationship types
+- names: use your real queue and worker names
+- tech: keep `RabbitMQ` on the queue and `AMQP` on the arrows

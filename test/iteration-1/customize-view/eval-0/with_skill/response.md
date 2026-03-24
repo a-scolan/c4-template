@@ -1,9 +1,15 @@
-view c2_containers {
-  include mySystem.webapp with {
-    navigateTo c2_webapp_details
-  }
+views 'C2' {
+  view containers_overview {
+    include *
 
-  rank source { user }
-  rank sink { mySystem.database, emailService }
-  autoLayout LeftRight
+    autoLayout LeftRight
+
+    include user with { rank source }
+    include database with { rank sink }
+    include mailService with { rank sink }
+
+    include webApp with {
+      navigateTo webApp_details
+    }
+  }
 }

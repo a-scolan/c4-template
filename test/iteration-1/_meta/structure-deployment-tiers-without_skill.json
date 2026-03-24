@@ -1,0 +1,21 @@
+{
+  "skill_name": "structure-deployment-tiers",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use five logical deployment tiers: `Dmz` for internet-facing ingress such as the API gateway/WAF, `AppTier` for synchronous business services, `ProcTier` for `RabbitMQ` plus the async worker path, `DataTier` for persistent stores (`MongoDB`, `MinIO`), and `OpsTier` for monitoring. Key rules: the Internet reaches only `Dmz`; `Dmz` may call `AppTier` over HTTPS; `AppTier` may use `ProcTier` for async handoff and may reach `DataTier` only where the request path truly needs it; `ProcTier` may talk to `DataTier` but should have no public ingress; `OpsTier` may collect or scrape telemetry from all tiers but should not sit on the user request path. Deny direct `Dmz -> DataTier`, `Dmz -> ProcTier`, and broad east-west traffic by default; open only explicit least-privilege ports between adjacent tiers."
+    },
+    {
+      "id": 1,
+      "response": "No. The tier-structuring guidance should stop at the tier set, what belongs in each tier, and the allowed flows between tiers. Exact VM names, Markdown inventory/spec tables, and concrete `instanceOf` wiring for `Node_App` are downstream deployment-model details. A tiny illustrative example is fine, but a full naming scheme and per-node wiring spec would be beyond the right scope for tier-structure guidance."
+    },
+    {
+      "id": 2,
+      "response": "Keep the main runtime tiers readable by leaving `Dmz`, `AppTier`, and `DataTier` intact. Add audit/security as a separate cross-cutting `SecurityTier` or `AuditTier` placed beside the main stack, with explicit control or telemetry links from the other tiers rather than nesting it inside each tier. Model the standby disaster-recovery site as a second site or environment root, such as `ProdPrimary` and `ProdDr`, that mirrors the tier layout instead of adding DR as another peer tier in the same stack. Then show only the necessary replication and failover links between sites so the primary tier diagram stays clean."
+    }
+  ]
+}

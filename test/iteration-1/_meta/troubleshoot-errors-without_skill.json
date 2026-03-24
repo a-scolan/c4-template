@@ -1,0 +1,31 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-code.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Diagnose the first error first. In this workspace, `projects/shared/spec-containers.c4` defines `Container_Webapp`, `Container_Spa`, and `Container_Api`, but not `Container_WebUi`, so that kind name is definitely invalid. Because an element declared with an unknown kind does not resolve correctly, `Element not found: api` is often a cascade from the failed declaration. Clean sequence: fix or define the kind first, then re-check `api`; if it still fails, verify that `api` is the real alias and that you are using the correct scope/FQN, for example `system.api` when you are outside the parent block."
+    },
+    {
+      "id": 1,
+      "response": "The real cause is the view scope, not `rank same` by itself. `system -> system.api` treats a parent and its child as if they were peers in a dynamic interaction, which is really containment, not a proper scenario step. Then `rank same user, system.api` tries to align an external peer with a nested child, exposing the same hierarchy problem. Fix the view by choosing one abstraction level: either keep it at system level (`user -> system`) or switch to container level and model peer interactions such as `user -> system.webapp` and `system.webapp -> system.api`; use `rank same` only for peers in that chosen level."
+    },
+    {
+      "id": 2,
+      "response": "Diagnose the two errors separately, in order. `sends` is definitely wrong for this workspace: `projects/shared/spec-global.c4` defines model relationships `uses`, `calls`, `async`, `reads`, and `writes`, while `projects/shared/spec-deployment.c4` defines deployment relationships like `http`, `https`, `tcp`, `amqp`, `redis`, and `sql`; `sends` exists in neither set. `dataLayer.cache` may also be wrong, but that is a separate check: confirm the exact alias chain used in the model, because FQNs must match the declared aliases and scope exactly. So the proper diagnosis is: first replace `sends` with the intended defined relationship, then verify whether `dataLayer.cache` is the real FQN or whether you need a different path such as a fuller parent-qualified name."
+    },
+    {
+      "id": 3,
+      "response": "The root cause is that the same traffic was modeled twice at two different abstraction levels, and the protocol name was put in the wrong vocabulary once. In this workspace, `https` is a deployment/infrastructure relationship from `projects/shared/spec-deployment.c4`, while model relationships are `uses/calls/async/reads/writes` from `projects/shared/spec-global.c4`. The cheat sheet also says to put interaction technology on the system-model relationship and to use deployment relationships only for infrastructure-specific connections. Clean fix: keep the logical app-to-app interaction once in `model {}` with a model relationship such as `calls` plus `technology 'HTTPS'`, let deployed instances inherit that via `instanceOf`, and only add a separate deployment `https` edge when it represents a distinct infrastructure hop rather than the same application traffic repeated."
+    }
+  ]
+}

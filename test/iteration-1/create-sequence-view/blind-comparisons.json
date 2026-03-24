@@ -1,86 +1,127 @@
 {
+  "schema_version": 2,
   "skill_name": "create-sequence-view",
   "comparisons": [
     {
+      "schema_version": 2,
       "eval_id": 0,
+      "run_number": 1,
       "winner": "A",
-      "reasoning": "Both responses satisfy the required dynamic-view rules, but A is the cleaner skeleton for the prompt. It stays tightly scoped to the requested participants and sequence without adding extra scoping or include boilerplate that was not needed for this repository-level ask.",
+      "reasoning": "A wins because it is the only response that places the sequence in `views 'Use Cases'` while meeting all other constraints.",
       "rubric": {
         "A": {
-          "overall_score": 9.2
+          "content_score": 9.8,
+          "structure_score": 9.5,
+          "overall_score": 9.7
         },
         "B": {
-          "overall_score": 8.9
+          "content_score": 7.5,
+          "structure_score": 8.0,
+          "overall_score": 7.7
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 3,
+          "total": 3,
           "pass_rate": 1.0
         },
         "B": {
-          "pass_rate": 1.0
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6667
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 1,
-      "winner": "A",
-      "reasoning": "A explains the parent-to-own-child restriction directly and fixes it with the smallest valid correction: the actor targets the component. B is still strong, but it adds extra routing behavior that goes beyond the requested correction and slightly dilutes the central guidance.",
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B wins because it explains the parent-to-child anti-pattern and shows the corrected `views 'Use Cases'` dynamic view.",
       "rubric": {
         "A": {
-          "overall_score": 9.3
+          "content_score": 7.6,
+          "structure_score": 7.4,
+          "overall_score": 7.5
         },
         "B": {
-          "overall_score": 8.7
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "pass_rate": 1.0
-        },
-        "B": {
-          "pass_rate": 1.0
-        }
-      }
-    },
-    {
-      "eval_id": 2,
-      "winner": "A",
-      "reasoning": "A tracks the requested async chain exactly and keeps the temporal story clean. B preserves the core queue segment, but it adds extra response steps after background processing, which muddies the intended ordering and makes the scenario less faithful to the prompt.",
-      "rubric": {
-        "A": {
-          "overall_score": 9.5
-        },
-        "B": {
-          "overall_score": 8.0
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "pass_rate": 1.0
-        },
-        "B": {
-          "pass_rate": 1.0
-        }
-      }
-    },
-    {
-      "eval_id": 3,
-      "winner": "A",
-      "reasoning": "A cleanly separates the immediate user-facing path from the retry path and gives each slice an explicit initiator, including the background scheduler. B also splits the flows well and explains the pseudo-if/else problem, but its retry view does not start from an initiating actor, which is a meaningful miss for this skill and repository guidance.",
-      "rubric": {
-        "A": {
+          "content_score": 9.7,
+          "structure_score": 9.4,
           "overall_score": 9.6
-        },
-        "B": {
-          "overall_score": 8.3
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6667
+        },
+        "B": {
+          "passed": 3,
+          "total": 3,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A wins because it includes `views 'Use Cases'` and preserves the required `externalUser -> ... -> processingWorker` order.",
+      "rubric": {
+        "A": {
+          "content_score": 9.8,
+          "structure_score": 9.5,
+          "overall_score": 9.7
+        },
+        "B": {
+          "content_score": 7.7,
+          "structure_score": 8.2,
+          "overall_score": 7.9
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 3,
           "pass_rate": 1.0
         },
         "B": {
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6667
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A wins because it cleanly separates acknowledgment and retry into two dynamic views instead of mixing them.",
+      "rubric": {
+        "A": {
+          "content_score": 10.0,
+          "structure_score": 9.7,
+          "overall_score": 9.9
+        },
+        "B": {
+          "content_score": 8.0,
+          "structure_score": 8.2,
+          "overall_score": 8.1
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 4,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
           "pass_rate": 0.75
         }
       }

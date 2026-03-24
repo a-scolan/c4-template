@@ -1,0 +1,32 @@
+{
+  "skill_name": "create-relationship",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/create-relationship/SKILL.md",
+    ".github/skills/create-relationship/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Relationship choice: `calls`.\nRule: In the system model, the relationship kind belongs in the arrow itself (`-[calls]->`). Protocol or medium details belong in the block as `technology '...'`, not as the relationship kind.\nExample:\nwebApp -[calls]-> api 'Sends request' {\n  technology 'HTTPS'\n}\nAnti-pattern:\nwebApp -> api {\n  calls 'Sends request'\n  technology 'HTTPS'\n}"
+    },
+    {
+      "id": 1,
+      "response": "Relationship choice: `async` for the queue flow, then `writes` for persistence.\nRule: Model the async flow explicitly and do not invent a fake return path to the producer unless there is a real callback or notification.\nExample:\nuploadService -[async]-> jobQueue 'Publishes job' {\n  technology 'AMQP'\n}\nworker -[async]-> jobQueue 'Consumes job' {\n  technology 'AMQP'\n}\nworker -[writes]-> primaryDatabase 'Stores result' {\n  technology 'PostgreSQL'\n}\nAnti-pattern:\nworker -[calls]-> uploadService 'Send completion'\nHandoff: If completion timing, retries, or callback order matter, move that story to `create-sequence-view`."
+    },
+    {
+      "id": 2,
+      "response": "Relationship choice: use `reads` for both Redis and PostgreSQL.\nRule: Use `calls` for service behavior, but use `reads` when a service is reading from a cache, database, or directory.\nExample:\nretrievalService -[reads]-> redisCache 'Checks cache'\nretrievalService -[reads]-> primaryDatabase 'Fetches on cache miss'\nAnti-pattern:\nretrievalService -[calls]-> primaryDatabase 'Fetch data'"
+    },
+    {
+      "id": 3,
+      "response": "Relationship choice: model it with two explicit `reads`, and usually one `writes` back to cache if the API refreshes it.\nRule: Do not invent one smart composite relationship for cache fallback. Keep the structural facts explicit in the model.\nExample:\napi -[reads]-> redisCache 'Checks cache'\napi -[reads]-> primaryDatabase 'Fetches on cache miss'\napi -[writes]-> redisCache 'Refreshes cached value'\nAnti-pattern:\napi -[reads_with_fallback]-> primaryDatabase\nHandoff: If fallback timing, retries, or miss-handling order matter, capture that in `create-sequence-view`."
+    },
+    {
+      "id": 4,
+      "response": "Relationship choice: do not keep `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment just to show normal browser traffic.\nRule: Normal application traffic belongs in the logical system model with a model relationship kind such as `calls`, plus `technology '...'`. Deployment relationships are for infrastructure-only exceptions that the logical model does not already express.\nExample:\nuser -[calls]-> webApp 'Uses UI' {\n  technology 'Manual'\n}\nwebApp -[calls]-> api 'Sends request' {\n  technology 'HTTPS'\n}\napi -[calls]-> internalService 'Routes request' {\n  technology 'HTTP/8080'\n}\nAnti-pattern:\nProd.Web.webApp -[https]-> Prod.App.apiApp 'Browser traffic'\n`Manual`, `HTTPS`, and `HTTP/8080` should live as `technology` values on those logical-model relationships, not as the primary reason to duplicate normal app traffic in deployment."
+    }
+  ]
+}

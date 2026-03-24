@@ -1,1 +1,0 @@
-That is not correct for C1. A C1 view must stay static and show the system boundary, actors, and external dependencies; it is not for step-by-step or temporal flow. Put the user journey in `views 'Use Cases'` as a dynamic view instead, because dynamic views are the right place to show ordered interactions between the user, web app, and API over time.

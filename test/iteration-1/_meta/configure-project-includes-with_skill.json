@@ -1,0 +1,36 @@
+{
+  "skill_name": "configure-project-includes",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/configure-project-includes/SKILL.md",
+    ".github/skills/configure-project-includes/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Keep the standard config fields: `$schema`, `name`, `title`, `include.paths`, and `imageAliases`. Use paths relative to `projects/payments/`, not absolute paths. The safe baseline is `include.paths: [\"../shared\"]` and `imageAliases: { \"@\": \"../shared/images/\" }`. That preserves shared specs and shared icons without breaking imports. Do not rename or remove the `@` alias unless you are intentionally migrating every icon reference."
+    },
+    {
+      "id": 1,
+      "response": "Split it progressively, not all at once. Start with the smallest clean baseline:\n- `likec4.config.json`\n- `system-model.c4` for elements and relationships\n- `system-views.c4` for static views\n\nThen add focused files only when the project actually needs them:\n- `system-sequences.c4` for dynamic views in `Use Cases`\n- `deployment.c4` for deployment nodes and `instanceOf`\n- `deployment-views.c4` for `Deployment` views\n- `operations.c4` for operational topology\n- `operations-views.c4` for `Operations` views\n\nKeep C1/C2/C3 views in `system-views.c4`, grouped under `views 'C1'`, `views 'C2'`, and `views 'C3'`. Every view should be inside a category folder except the root `index` view, which stays directly under `views { }`. Also keep model files separate from view files once the project is larger than a small single-file setup."
+    },
+    {
+      "id": 2,
+      "response": "Edit surgically:\n- Append the new source to `include.paths`; do not replace existing entries.\n- Keep all paths relative to the project folder.\n- Preserve the working image alias, especially `\"@\": \"../shared/images/\"`, so current icons keep resolving.\n- Avoid unrelated refactors or alias renames while changing includes.\n- Do not switch to absolute paths.\n\nIn practice, turn `[\"../shared\", \"../platform-shared\"]` into `[\"../shared\", \"../platform-shared\", \"../new-common-source\"]` and leave the existing shared image alias intact unless you are deliberately migrating icon references."
+    },
+    {
+      "id": 3,
+      "response": "This skill is enough only for the project-local part: creating or adjusting the new project's `likec4.config.json`, relative `include.paths`, image aliases, and a small internal file split. If you are deciding overall workspace structure, shared-folder boundaries, or how multiple LikeC4 projects should be organized together, it should be combined with `organize-multi-project`. Short version: use this skill for the local config; use `organize-multi-project` for the bigger multi-project design."
+    },
+    {
+      "id": 4,
+      "response": "Keep the current shared include and alias stable, then add the new source beside it:\n- `include.paths` should become `[\"../shared\", \"../platform-shared\"]`.\n- Leave the existing shared alias unchanged, for example `\"@\": \"../shared/images/\"`, so all current icon references keep working.\n- Do not repoint `\"@\"` at `../platform-shared/images/` if that would change existing resolution.\n- If the platform source needs its own icons, give it a separate alias such as `\"@platform\": \"../platform-shared/images/\"` instead of redefining `\"@\"`.\n\nThat preserves current behavior and avoids alias collisions."
+    },
+    {
+      "id": 5,
+      "response": "Keep every unrelated field as-is and make the smallest safe edit to the include and alias sections:\n\n`{\n  \"include\": {\n    \"paths\": [\"../shared\", \"../platform-shared\"]\n  },\n  \"imageAliases\": {\n    \"@\": \"../shared/images/\",\n    \"@platform\": \"../platform-shared/images/\"\n  }\n}`\n\nThis appends `../platform-shared` after `../shared`, keeps the existing shared icon alias working, and avoids collisions by giving the platform image source its own alias."
+    }
+  ]
+}

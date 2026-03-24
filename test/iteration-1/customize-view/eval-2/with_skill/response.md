@@ -1,7 +1,11 @@
-view c2_containers {
-  link https://docs.internal/specs/containers 'Internal Spec Docs'
+views 'C2' {
+  view containers_overview {
+    include *
 
-  include mySystem.webapp with {
-    navigateTo c2_webapp_details
+    include webApp with {
+      navigateTo webApp_details
+    }
+
+    link https://docs.internal/spec 'System specification'
   }
 }

@@ -1,0 +1,28 @@
+{
+  "skill_name": "create-sequence-view",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/create-sequence-view/SKILL.md",
+    ".github/skills/create-sequence-view/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Yes — this belongs in `views 'Use Cases'`.\n\nviews 'Use Cases' {\n  dynamic view loginJourney {\n    title 'Login Journey'\n    user -> webApp 'Opens login'\n    webApp -> api 'POST /login'\n    api -> primaryDatabase 'Checks credentials'\n    api -> externalNotificationService 'Sends login alert'\n    api -> webApp 'Returns session'\n  }\n}\n\nKeep labels short and action-focused. One anti-pattern to avoid: `webApp -> webApp.someChild` inside the dynamic view."
+    },
+    {
+      "id": 1,
+      "response": "Do not use `api_container -> api_container.auth_component` in a dynamic view. That is a parent -> own-child interaction, which is the main anti-pattern here.\n\nUse the real caller to target the child directly, or stay at container level if component detail is not needed:\n\nviews 'Use Cases' {\n  dynamic view authenticationFlow {\n    title 'Authentication Flow'\n    user -> webApp 'Starts login'\n    webApp -> api_container.auth_component 'POST /login'\n    api_container.auth_component -> primaryDatabase 'Reads user'\n  }\n}\n\nIf you do not need component-level detail, simplify it further to `webApp -> api_container 'POST /login'`."
+    },
+    {
+      "id": 2,
+      "response": "Yes — place it in `views 'Use Cases'` and keep the async sequence explicit with plain `->` arrows.\n\nviews 'Use Cases' {\n  dynamic view asyncProcessingFlow {\n    title 'Async Processing Flow'\n    externalUser -> webApp 'Submits request'\n    webApp -> api 'POST /process'\n    api -> jobQueue 'Queues job'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> database 'Stores result'\n  }\n}\n\nCritical reminder: even for async behavior, use plain `->`, not decorated relationship syntax."
+    },
+    {
+      "id": 3,
+      "response": "The cleanest way is to use two short dynamic views in `views 'Use Cases'`: one for the immediate acknowledgement, and one for the background retry loop. That keeps each sequence linear and readable instead of forcing branching into one oversized view.\n\nAssuming IDs such as `externalUser`, `webApp`, `api`, `objectStorage`, `jobQueue`, `validationWorker`, and `primaryDatabase` exist:\n\nviews 'Use Cases' {\n  dynamic view uploadAccepted {\n    title 'Upload Accepted'\n    externalUser -> webApp 'Uploads file'\n    webApp -> api 'POST /upload'\n    api -> objectStorage 'Stores file'\n    api -> primaryDatabase 'Creates tracking record'\n    api -> webApp 'Returns tracking URL'\n  }\n\n  dynamic view uploadValidationRetry {\n    title 'Upload Validation Retry'\n    api -> jobQueue 'Queues validation'\n    jobQueue -> validationWorker 'Delivers job'\n    validationWorker -> primaryDatabase 'Marks validating'\n    validationWorker -> jobQueue 'Requeues job'\n    jobQueue -> validationWorker 'Redelivers job'\n    validationWorker -> primaryDatabase 'Updates final status'\n  }\n}\n\nCritical anti-pattern: do not try to encode retries, branching, and parent -> own-child hops in one dynamic view. Keep each view action-focused and ordered."
+    }
+  ]
+}

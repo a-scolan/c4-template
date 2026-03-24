@@ -1,10 +1,15 @@
-Use **two elements, not two kinds**.
+Use two elements of the same existing kind, not two new kinds. The workspace rule is to reuse shared kinds and distinguish mock vs. prod with element names, titles, and descriptions.
 
-Reuse the same existing repository kind for both, for example `Container_Api`, and model them as separate elements if they have distinct responsibilities or endpoints:
+For a vendor payment integration, that usually means two `System_External` elements:
 
-- `paymentApi` → real payment integration
-- `mockPaymentApi` → test/mock variant
+paymentProvider = System_External 'Payment Provider' {
+  technology 'HTTPS API'
+  description 'Production payment provider used for real transactions.'
+}
 
-Do **not** introduce a special kind such as `Container_MockApi` just to represent the mock.
+mockPaymentProvider = System_External 'Mock Payment Provider' {
+  technology 'HTTP test double'
+  description 'Integration-test stub that mimics the production payment provider.'
+}
 
-If you need to distinguish mock vs prod in documentation, use **tags and/or view context**, not a dedicated kind. If the difference is mainly about environment or runtime placement, handle that with **`model-deployment-infrastructure`**. If the difference is mainly about what to show to readers, handle it with **`design-view`**.
+If both live inside your own system boundary instead, use two `Container_Api` elements rather than inventing kinds like `Container_MockApi`. `create-element` handles choosing the correct kind and declaring both elements; if you later need to show who calls mock vs. prod, that becomes a `create-relationship` task.

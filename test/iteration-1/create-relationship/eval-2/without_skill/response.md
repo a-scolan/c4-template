@@ -1,15 +1,1 @@
-Use `reads` for both Redis and PostgreSQL here.
-
-Rule:
-- Use `-[calls]->` for service-to-service interactions
-- Use `-[reads]->` when a service fetches data from a cache, database, or store
-- Use `-[writes]->` when a service persists or mutates data
-
-Short example:
-
-```likec4
-retrievalService -[reads]-> redisCache 'Checks cache'
-retrievalService -[reads]-> postgresDb 'Loads fallback data'
-```
-
-If `retrievalService` was invoking another application service, that would be `-[calls]->` instead.
+Rule: use `reads` when the target is a data store or cache you query for data; use `calls` when the target is another service/API that performs behavior for you. Redis and PostgreSQL are data stores, so `retrievalService` should use `reads` to both. Short example: `retrievalService` reads Redis for the fast path, then reads PostgreSQL on cache miss. If it repopulates Redis afterward, add a separate `writes` relationship for that.

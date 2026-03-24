@@ -1,9 +1,1 @@
-Not for the full modeling scope.
-
-This guidance is mainly for naming deployment environments, zones, and VMs. If you only need naming, keep patterns like:
-
-- VMs: `{Env}{Service}Vm`
-- Tier names: `AppTier`, `ProcTier`, `DataTier`
-- Functional zones: `SecZone`, `InfraZone`
-
-For the full Environment → Zone → VM → Node_App hierarchy, Markdown descriptions with IP/CPU/RAM, and `instanceOf` links, use a separate deployment-modeling workflow rather than trying to solve all of that in the naming step.
+No, not by itself. `name-deployment-nodes` is a fit for the naming part, but your request also includes modeling the full `Environment -> Zone -> VM -> Node_App` hierarchy, writing Markdown descriptions with IP/CPU/RAM, and adding `instanceOf` links to containers. That goes beyond naming alone. So this is only a partial match: good for choosing clear deployment-node names, but not sufficient for the whole task.

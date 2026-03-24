@@ -1,17 +1,15 @@
-No — remove `Prod.Web.webApp -[https]-> Prod.App.apiApp` from deployment. Normal application traffic should be modeled once in the logical system model, and deployment instances should inherit it via `instanceOf`.
-
-```likec4
-user -[calls]-> mySystem.webapp 'Uses UI' {
+Relationship choice: do not keep `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment just to show normal browser traffic.
+Rule: Normal application traffic belongs in the logical system model with a model relationship kind such as `calls`, plus `technology '...'`. Deployment relationships are for infrastructure-only exceptions that the logical model does not already express.
+Example:
+user -[calls]-> webApp 'Uses UI' {
   technology 'Manual'
 }
-
-mySystem.webapp -[calls]-> mySystem.api 'Makes API requests' {
+webApp -[calls]-> api 'Sends request' {
   technology 'HTTPS'
 }
-
-mySystem.api -[calls]-> internalBackend 'Routes uploads' {
+api -[calls]-> internalService 'Routes request' {
   technology 'HTTP/8080'
 }
-```
-
-Use `calls`, `reads`, `writes`, or `async` in the arrow. Put `Manual`, `HTTPS`, and `HTTP/8080` in the `technology` field on the system-model relationship. `HTTPS` is a technology value, not a relationship kind, so `-[https]->` is the wrong form. Keep deployment relationships only for rare infrastructure-specific facts that are not already expressed by the logical model.
+Anti-pattern:
+Prod.Web.webApp -[https]-> Prod.App.apiApp 'Browser traffic'
+`Manual`, `HTTPS`, and `HTTP/8080` should live as `technology` values on those logical-model relationships, not as the primary reason to duplicate normal app traffic in deployment.

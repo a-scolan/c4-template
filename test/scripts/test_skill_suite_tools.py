@@ -225,6 +225,256 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertEqual(checks["summary"]["valid_eval_rate"], 0.0)
         self.assertIn("Unknown LikeC4 kind 'Container_Imaginary'.", checks["evals"][0]["snippets"][0]["errors"])
 
+    def test_iteration_caveats_flag_provisional_comparison(self) -> None:
+        validity = tools.derive_iteration_comparison_validity(
+            {
+                "reused_blind_comparisons_from_iteration": "iteration-4",
+                "synthetic_timing": True,
+                "with_skill_guidance_injected": True,
+                "notes": ["documented fallback"],
+            }
+        )
+
+        self.assertTrue(validity["provisional"])
+        self.assertFalse(validity["blind_metrics_trustworthy"])
+        self.assertFalse(validity["time_metrics_trustworthy"])
+        self.assertFalse(validity["previous_iteration_comparison_trustworthy"])
+        self.assertTrue(validity["reasons"])
+        self.assertTrue(validity["protocol_deviations"])
+
+    def test_apply_iteration_comparison_validity_masks_untrustworthy_metrics(self) -> None:
+        skill_rows = [
+            {
+                "skill": "create-element",
+                "capability": {
+                    "blind": {
+                        "with_skill_win_rate": 0.8,
+                        "without_skill_win_rate": 0.2,
+                        "variance": {
+                            "with_skill_win_rate": {"mean": 0.8},
+                            "without_skill_win_rate": {"mean": 0.2},
+                        },
+                    },
+                    "expectation_pass_rate": {
+                        "with_skill": 0.9,
+                        "without_skill": 0.7,
+                        "delta": 0.2,
+                        "variance": {
+                            "with_skill": {"mean": 0.9},
+                            "without_skill": {"mean": 0.7},
+                            "delta": {"mean": 0.2},
+                        },
+                    },
+                    "rubric_score": {
+                        "with_skill": 8.5,
+                        "without_skill": 7.0,
+                        "delta": 1.5,
+                        "variance": {
+                            "with_skill": {"mean": 8.5},
+                            "without_skill": {"mean": 7.0},
+                            "delta": {"mean": 1.5},
+                        },
+                    },
+                    "high_variance_evals": [{"id": 0, "source": "blind"}],
+                },
+                "time": {
+                    "with_skill": {
+                        "elapsed_seconds_total": 12.0,
+                        "elapsed_seconds_per_eval": 3.0,
+                        "variance": {
+                            "elapsed_seconds_total": {"mean": 12.0},
+                            "elapsed_seconds_per_eval": {"mean": 3.0},
+                            "response_words_total": {"mean": 120.0},
+                            "response_words_per_eval": {"mean": 30.0},
+                            "files_read_count": {"mean": 2.0},
+                            "files_written_count": {"mean": 4.0},
+                        },
+                    },
+                    "without_skill": {
+                        "elapsed_seconds_total": 20.0,
+                        "elapsed_seconds_per_eval": 5.0,
+                        "variance": {
+                            "elapsed_seconds_total": {"mean": 20.0},
+                            "elapsed_seconds_per_eval": {"mean": 5.0},
+                            "response_words_total": {"mean": 150.0},
+                            "response_words_per_eval": {"mean": 37.5},
+                            "files_read_count": {"mean": 1.0},
+                            "files_written_count": {"mean": 4.0},
+                        },
+                    },
+                    "delta": {
+                        "elapsed_seconds_total": -8.0,
+                        "elapsed_seconds_per_eval": -2.0,
+                    },
+                },
+                "high_variance_evals": [{"source": "blind", "id": 0}, {"source": "with_skill", "id": 1}],
+            }
+        ]
+
+        tools.apply_iteration_comparison_validity(
+            skill_rows,
+            {
+                "blind_metrics_trustworthy": False,
+                "time_metrics_trustworthy": False,
+            },
+        )
+
+        masked = skill_rows[0]
+        self.assertIsNone(masked["capability"]["blind"]["with_skill_win_rate"])
+        self.assertIsNone(masked["capability"]["expectation_pass_rate"]["delta"])
+        self.assertIsNone(masked["capability"]["rubric_score"]["with_skill"])
+        self.assertEqual(masked["capability"]["high_variance_evals"], [])
+        self.assertEqual(masked["high_variance_evals"], [{"source": "with_skill", "id": 1}])
+        self.assertIsNone(masked["time"]["with_skill"]["elapsed_seconds_total"])
+        self.assertIsNone(masked["time"]["delta"]["elapsed_seconds_per_eval"])
+
+    def test_clean_benchmark_artifacts_removes_iterations_and_disposables(self) -> None:
+        (self.workspace_root / "test" / "iteration-1" / "foo").mkdir(parents=True, exist_ok=True)
+        (self.workspace_root / "test" / "iteration-2" / "bar").mkdir(parents=True, exist_ok=True)
+        (self.workspace_root / "test" / "_agent-hooks").mkdir(parents=True, exist_ok=True)
+        (self.workspace_root / "test" / "_live-mcp-probe").mkdir(parents=True, exist_ok=True)
+        (self.workspace_root / "test" / "scripts" / "__pycache__").mkdir(parents=True, exist_ok=True)
+
+        summary = tools.clean_benchmark_artifacts(self.workspace_root)
+
+        self.assertEqual(summary["removed_count"], 6)
+        self.assertFalse((self.workspace_root / "test" / "iteration-1").exists())
+        self.assertFalse((self.workspace_root / "test" / "iteration-2").exists())
+        self.assertFalse((self.workspace_root / "test" / "iteration-9").exists())
+        self.assertFalse((self.workspace_root / "test" / "_agent-hooks").exists())
+        self.assertFalse((self.workspace_root / "test" / "_live-mcp-probe").exists())
+        self.assertFalse((self.workspace_root / "test" / "scripts" / "__pycache__").exists())
+        self.assertTrue((self.workspace_root / "test" / "_meta" / "clean-benchmark-artifacts.json").exists())
+
+    def test_snapshot_public_evals_writes_iteration_meta_copy(self) -> None:
+        summary = tools.snapshot_public_evals(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(summary["skill_count"], 1)
+        self.assertEqual(summary["skills"][0]["skill_name"], "create-element")
+        self.assertEqual(summary["skills"][0]["evals"][0]["prompt"], "Add an API container.")
+        snapshot_path = self.iteration_dir / "_meta" / "evals-public-snapshot.json"
+        self.assertTrue(snapshot_path.exists())
+
+    def test_current_utc_timestamp_returns_iso8601_utc_string(self) -> None:
+        payload = tools.current_utc_timestamp()
+
+        self.assertIn("timestamp", payload)
+        self.assertIsNotNone(tools.iso_to_datetime(payload["timestamp"]))
+        self.assertTrue(payload["timestamp"].endswith("Z"))
+
+    def test_validate_hook_audit_accepts_denied_broad_mcp_and_shared_reads(self) -> None:
+        audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        audit_path.write_text(
+            "\n".join(
+                [
+                    json.dumps(
+                        {
+                            "timestamp": "2026-03-16T21:00:00Z",
+                            "mode": "baseline",
+                            "tool_name": "read_file",
+                            "tool_paths": ["projects/shared/spec-context.c4"],
+                            "permissionDecision": "allow",
+                        }
+                    ),
+                    json.dumps(
+                        {
+                            "timestamp": "2026-03-16T21:00:01Z",
+                            "mode": "baseline",
+                            "tool_name": "mcp_likec4_list-projects",
+                            "tool_paths": [],
+                            "permissionDecision": "deny",
+                        }
+                    ),
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        summary = tools.validate_hook_audit(audit_path, mode="baseline")
+
+        self.assertTrue(summary["passed"])
+        self.assertEqual(summary["issue_count"], 0)
+
+    def test_validate_hook_audit_flags_allowed_read_outside_baseline_scope(self) -> None:
+        audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        audit_path.write_text(
+            json.dumps(
+                {
+                    "timestamp": "2026-03-16T21:00:00Z",
+                    "mode": "baseline",
+                    "tool_name": "read_file",
+                    "tool_paths": ["projects/template/system-model.c4"],
+                    "permissionDecision": "allow",
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        summary = tools.validate_hook_audit(audit_path, mode="baseline")
+
+        self.assertFalse(summary["passed"])
+        self.assertEqual(summary["issue_count"], 1)
+        self.assertEqual(summary["issues"][0]["problem"], "allowed-read-outside-mode-scope")
+
+    def test_validate_hook_audit_reports_malformed_jsonl_lines_without_crashing(self) -> None:
+        audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        audit_path.write_text(
+            "\n".join(
+                [
+                    json.dumps(
+                        {
+                            "timestamp": "2026-03-16T21:00:00Z",
+                            "mode": "with_skill_targeted",
+                            "tool_name": "read_file",
+                            "tool_paths": [".github/skills/create-element/SKILL.md"],
+                            "permissionDecision": "allow",
+                        }
+                    ),
+                    "}",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        summary = tools.validate_hook_audit(audit_path, mode="with_skill_targeted")
+
+        self.assertFalse(summary["passed"])
+        self.assertEqual(summary["entry_count"], 1)
+        self.assertEqual(summary["malformed_line_count"], 1)
+        self.assertEqual(summary["issue_count"], 1)
+        self.assertEqual(summary["issues"][0]["problem"], "malformed-jsonl-line")
+        self.assertEqual(summary["issues"][0]["line_number"], 2)
+        self.assertEqual(summary["issues"][0]["raw_preview"], "}")
+
+    def test_load_jsonl_records_stays_strict_for_malformed_jsonl_lines(self) -> None:
+        audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        audit_path.write_text("}\n", encoding="utf-8")
+
+        with self.assertRaises(ValueError):
+            tools.load_jsonl_records(audit_path)
+
+    def test_reset_hook_state_removes_anonymous_targeted_and_legacy_default_files(self) -> None:
+        hook_root = self.workspace_root / "test" / "_agent-hooks"
+        hook_root.mkdir(parents=True, exist_ok=True)
+        (hook_root / "anonymous-with_skill_targeted.json").write_text("{}\n", encoding="utf-8")
+        (hook_root / "default.json").write_text("{}\n", encoding="utf-8")
+
+        summary = tools.reset_hook_state(self.workspace_root, mode="with_skill_targeted")
+
+        self.assertEqual(summary["resolved_session_ids"], ["anonymous-with_skill_targeted", "default"])
+        self.assertEqual(summary["removed_count"], 2)
+        self.assertIn("test/_agent-hooks/anonymous-with_skill_targeted.json", summary["removed"])
+        self.assertIn("test/_agent-hooks/default.json", summary["removed"])
+        self.assertFalse((hook_root / "anonymous-with_skill_targeted.json").exists())
+        self.assertFalse((hook_root / "default.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()

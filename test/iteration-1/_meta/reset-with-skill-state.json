@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-03-17T06:28:36Z",
+  "workspace_root": ".",
+  "mode": "with_skill_targeted",
+  "session_id": null,
+  "resolved_session_ids": [
+    "anonymous-with_skill_targeted",
+    "default"
+  ],
+  "removed_count": 1,
+  "removed": [
+    "test/_agent-hooks/default.json"
+  ],
+  "missing_count": 1,
+  "missing": [
+    "test/_agent-hooks/anonymous-with_skill_targeted.json"
+  ]
+}

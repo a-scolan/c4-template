@@ -1,0 +1,21 @@
+{
+  "skill_name": "document-decision",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Yes. This is a classic ADR. Frame it around why the primary operational data store should be relational for this system. Suggested title: Choose PostgreSQL as the primary database instead of MongoDB. Context: describe the workload, data relationships, transaction needs, query patterns, reporting needs, operational constraints, and team expertise. Decision: adopt PostgreSQL for the main database container and reject MongoDB for this core workload. Consequences: pros include ACID transactions, referential integrity, mature migrations, SQL reporting, and a strong tooling ecosystem; cons include less schema flexibility and more upfront data modeling. Alternatives to record: MongoDB as the primary store, polyglot persistence, or PostgreSQL plus JSONB for selective document-style data. Also capture backup, HA, migration, and the conditions that would justify revisiting MongoDB later."
+    },
+    {
+      "id": 1,
+      "response": "Usually no. A GitHub Actions workflow change is normally an implementation or delivery-process change, not an architecture decision. Write an ADR only if the workflow change establishes a durable cross-cutting policy or operating model, such as mandatory release gates, deployment promotion strategy, compliance controls, artifact provenance rules, or a standard platform contract that affects multiple systems or teams. Otherwise, document it in the PR, changelog, or engineering docs instead."
+    },
+    {
+      "id": 2,
+      "response": "Yes. This is a real ADR because it changes system boundaries, ownership, operational risk, and vendor dependency. Suggested title: Replace the internal payment orchestration service with a direct Stripe integration behind a thin internal adapter. Context: explain why the current orchestration layer is being removed, what complexity or latency it adds, which payment capabilities are truly needed, and the business drivers such as speed, reliability, cost, or maintainability. Decision: integrate directly with Stripe from the relevant service or services while preserving a small internal adapter boundary for domain isolation, webhook handling, idempotency, and future replaceability. Consequences: pros include less internal complexity, faster feature delivery, and use of Stripe-managed capabilities; cons include tighter vendor coupling, Stripe-specific failure modes, API limit concerns, webhook/retry design work, compliance considerations, and a clearer exit strategy requirement. Alternatives to record: keep the internal orchestrator, adopt another PSP abstraction layer, or use a hybrid model. Also capture guardrails for what remains behind the adapter and what would trigger revisiting the decision."
+    }
+  ]
+}

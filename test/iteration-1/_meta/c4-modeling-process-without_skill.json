@@ -1,0 +1,33 @@
+{
+  "skill_name": "c4-modeling-process",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use a structure-first order: first place the work in the right project and shared-spec setup if the workspace is multi-project; then define the system scope, users, and external systems; then model the C1 context; then model the C2 containers and their main relationships; then decide whether any container truly needs a C3 decomposition; then create the views that expose those structures; then validate the model. Optional steps are C3 for simple containers, deployment/infrastructure modeling, dynamic or sequence views for scenarios, view customization, rich descriptions, and decision records. The rule is to add the next layer only when it answers a real question for the audience."
+    },
+    {
+      "id": 1,
+      "response": "No, not by default. Create a C3 only when the API container has internal structure that matters to readers: multiple meaningful components, important internal dependencies, team or ownership boundaries, security or compliance concerns, or design choices that are not obvious from C2. If the API is simple enough to explain as one container without hiding important decisions, stop at C2. The decision rule is: add C3 only when it reduces ambiguity more than it adds maintenance cost."
+    },
+    {
+      "id": 2,
+      "response": "No. That is not a good C1 diagram for two reasons: C1 is a static context view, and `webapp` plus `API` are container-level details rather than system-context-level nodes. Temporal arrows belong in a dynamic or sequence view, usually at C2 or C3 scope depending the detail you need. Put the user journey there because runtime order belongs in a scenario view, while C1 should stay focused on structural context."
+    },
+    {
+      "id": 3,
+      "response": "Take it in this order: start with `understand-project-structure` to learn the target project, shared specs, and conventions; if the workspace is multi-project or shared, use `organize-multi-project` and/or `configure-project-includes`; then use `lookup-element-kinds` to choose valid kinds; add or refine containers with `create-element`; connect them with `create-relationship`; create the C2 with `design-view`; optionally polish it with `customize-view` and `write-rich-descriptions`; finally run `test-model`, and use `troubleshoot-errors` only if validation fails. The key rule is to understand the workspace before drawing the new view."
+    },
+    {
+      "id": 4,
+      "response": "It should rely on other skills rather than trying to detail everything itself. Once the C2 is stable, production infrastructure should be handled by `model-deployment-infrastructure`, with `structure-deployment-tiers` and `name-deployment-nodes` when needed, and the nominal user scenario should be handled by `create-sequence-view`. `customize-view` is optional for presentation, and `test-model` should validate the result. In short, this skill should orchestrate the order and hand off detailed work to the specialized skills."
+    },
+    {
+      "id": 5,
+      "response": "Do not skip the workspace re-alignment step. In this order: first run `sync-with-template` because shared specs changed; then re-ground the workspace with `understand-project-structure`; then verify project boundaries and imports with `organize-multi-project` and/or `configure-project-includes`; then confirm available kinds with `lookup-element-kinds`; add missing component-level elements with `create-element`; add missing internal relationships with `create-relationship`; then create the C3 with `design-view`; if the view is sensitive, apply the needed presentation or filtering choices with `customize-view`; validate with `test-model`, using `troubleshoot-errors` if needed; only after that should `create-sequence-view` take over for the nominal user scenario, with another optional `customize-view` pass at the end. If the shared-spec change or sensitivity policy needs rationale, `document-decision` is an optional final step."
+    }
+  ]
+}

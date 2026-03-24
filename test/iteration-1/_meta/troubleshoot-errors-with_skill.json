@@ -1,0 +1,29 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/troubleshoot-errors/SKILL.md",
+    ".github/skills/troubleshoot-errors/evals/evals-public.json",
+    "projects/shared/SPEC_CHEATSHEET.md"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "1. Probable error category: taxonomy + FQN.\n2. Root cause: `Container_WebUi` is not a declared container kind in this workspace. The shared spec defines kinds such as `Container_Webapp`, `Container_Spa`, `Container_Browser`, and `Container_Api`. Separately, `api` is probably being referenced by short name instead of its full FQN, or the declared element name is different.\n3. Verification step: check `projects/shared/SPEC_CHEATSHEET.md` for the exact container kinds, then inspect where the API element is declared and copy its full hierarchy path.\n4. Minimal fix: replace `Container_WebUi` with the exact declared kind you mean, and reference the API by its full FQN.\nExample:\n`web = Container_Webapp 'Web UI'`\n`web -[calls]-> corePlatform.api 'Calls API' { technology 'HTTPS' }`\nIf the UI is really a SPA, use `Container_Spa` instead."
+    },
+    {
+      "id": 1,
+      "response": "1. Probable error category: dynamic-view containment + invalid layout hint.\n2. Root cause: `system -> system.api` models a parent calling its own child, which is usually just containment expressed as an interaction. Then `rank same user, system.api` is invalid because `rank same` should only be used for siblings in the same parent context; `user` and `system.api` do not share one.\n3. Verification step: confirm that `system.api` is nested under `system` from its FQN, and confirm that `user` and `system.api` are not siblings.\n4. Minimal fix: remove the parent-to-child interaction and show the real caller targeting the child directly. Only keep `rank same` for true siblings.\nExample:\n`user -> system.api 'Starts request'`\nIf you need a rank hint, use siblings such as `rank same system.web, system.api`."
+    },
+    {
+      "id": 2,
+      "response": "1. Probable error category: both taxonomy and FQN.\n2. Root cause: `sends` is not one of the declared model relationship kinds in this workspace. The valid model kinds are `uses`, `calls`, `async`, `reads`, and `writes`. `dataLayer.cache` may also be a broken FQN because `cache` is not actually nested under `dataLayer`, or `dataLayer` itself is not the full path from the model root.\n3. Verification step: first check the relationship table in `projects/shared/SPEC_CHEATSHEET.md` to choose the correct interaction kind. Then inspect the cache declaration and copy its full FQN exactly as declared.\n4. Minimal fix: replace `sends` with the correct model relationship kind, and replace `dataLayer.cache` with the actual full FQN.\nExamples:\n- If this is asynchronous messaging: `producer -[async]-> <full.cache.fqn> 'Publishes event'`\n- If this is cache access: `api -[reads]-> <full.cache.fqn> 'Reads cached data'`\nThe clean diagnosis is: do not guess either piece—validate the relationship kind from the shared spec, then validate the element path from the declaration hierarchy."
+    },
+    {
+      "id": 3,
+      "response": "1. Probable error category: wrong relationship scope + duplicate deployment modeling.\n2. Root cause: inside `model {}`, `https` was used as if it were a logical relationship kind. In this workspace, protocol belongs in the `technology` field, while the logical relationship kind should be something like `calls`. Then the same application traffic was redrawn again between deployed apps, even though deployment usually inherits that traffic through `instanceOf`.\n3. Verification step: check the shared relationship definitions. Model kinds are `uses`, `calls`, `async`, `reads`, and `writes`; deployment kinds like `https` are for infrastructure-specific deployment links. Also confirm the deployed apps already point to the model elements with `instanceOf`.\n4. Minimal fix: keep one logical relationship in the system model and move the protocol into `technology`; delete the duplicate deployment edge unless it represents infrastructure-only connectivity.\nCorrect model snippet:\n`webapp -[calls]-> api 'Browser traffic' { technology 'HTTPS' }`\nClean deployment approach:\n`webappApp { instanceOf corePlatform.webapp }`\n`apiApp { instanceOf corePlatform.api }`\nDo not add `webappApp -[https]-> apiApp` again unless you are modeling a deployment-specific path that does not already exist in the logical model."
+    }
+  ]
+}

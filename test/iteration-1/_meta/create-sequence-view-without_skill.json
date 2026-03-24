@@ -1,0 +1,25 @@
+{
+  "skill_name": "create-sequence-view",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use a dynamic view and keep the interactions in runtime order. Skeleton:\n```likec4\nviews {\n  dynamic view login_journey {\n    title \"Login journey\"\n\n    user -> webApp \"Open sign-in page\"\n    user -> webApp \"Submit credentials\"\n    webApp -> api \"POST /login\"\n    api -> primaryDatabase \"Verify user and password\"\n    api -> notificationService \"Send login event/notification\"\n    api -> webApp \"Return session/token\"\n    webApp -> user \"Show logged-in state\"\n  }\n}\n```\nIf your repository uses a slightly different wrapper for views, keep the interaction lines as-is and adapt only the outer declaration."
+    },
+    {
+      "id": 1,
+      "response": "Do not write `api_container -> api_container.auth_component` as a sequence step. That mixes containment with runtime interaction. In a dynamic view, participants should be at one abstraction level. Correct options:\n- Container-level story: keep `webApp -> api_container \"Authenticate user\"` and hide the internal component.\n- Component-level story: use the component directly as the participant.\nExample:\n```likec4\ndynamic view auth_flow {\n  webApp -> api_container.auth_component \"Submit credentials\"\n  api_container.auth_component -> primaryDatabase \"Load account and verify password\"\n  api_container.auth_component -> webApp \"Return token/session\"\n}\n```\nRule of thumb: avoid parent -> child hops inside the same dynamic sequence."
+    },
+    {
+      "id": 2,
+      "response": "For the async flow, make the queue handoff explicit and show the user-facing acknowledgment before the worker continues in the background:\n```likec4\nviews {\n  dynamic view async_processing {\n    title \"Async flow: external user to processing worker\"\n\n    externalUser -> webApp \"Start request\"\n    webApp -> api \"Submit job\"\n    api -> jobQueue \"Enqueue work\"\n    api -> webApp \"202 Accepted + tracking id\"\n    webApp -> externalUser \"Show accepted state\"\n\n    jobQueue -> processingWorker \"Deliver queued job\"\n    processingWorker -> database \"Persist result\"\n  }\n}\n```\nIf you want the shortest possible version, the essential chain is `externalUser -> webApp -> api -> jobQueue -> processingWorker -> database`."
+    },
+    {
+      "id": 3,
+      "response": "Show the immediate success first, then a bounded retry storyline for the background validator. Do not try to model an infinite loop; dynamic views are ordered narratives, not full state machines. Example:\n```likec4\nviews {\n  dynamic view upload_with_tracking_and_retries {\n    title \"Async upload with immediate tracking and background retries\"\n\n    user -> webApp \"Upload file\"\n    webApp -> api \"POST /uploads\"\n    api -> database \"Create upload record\"\n    api -> webApp \"202 Accepted + trackingUrl\"\n    webApp -> user \"Display tracking URL\"\n\n    api -> jobQueue \"Enqueue validation job\"\n    jobQueue -> validationWorker \"Deliver job (attempt 1)\"\n    validationWorker -> database \"Write status: validation_failed\"\n    validationWorker -> jobQueue \"Schedule retry\"\n\n    jobQueue -> validationWorker \"Deliver job (attempt 2)\"\n    validationWorker -> database \"Write status: validated\"\n  }\n}\n```\nIf retry policy, backoff, or dead-letter handling makes the diagram too busy, split it into two dynamic views: one for the immediate acknowledgment and one for the background validation/retry behavior."
+    }
+  ]
+}

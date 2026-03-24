@@ -1,12 +1,1 @@
-Start top-down, not bottom-up.
-
-1. Begin with **C1 Context**: define the system boundary, the main actors, and external systems.
-2. Move to **C2 Containers**: split the system into the runtime building blocks that make it work and show their main interactions.
-3. Add **C3 Components** only **selectively**: use it only for containers that are complex, risky, or architecturally central.
-
-After the structural model is stable, you can add two optional layers:
-
-- **Dynamic views** in `views 'Use Cases'` when a workflow needs time-ordered steps.
-- **Deployment views** when runtime topology, environments, zones, or instances matter.
-
-So the core path is **C1 → C2 → C3**, with **Dynamic** and **Deployment** as optional follow-ups when they add real value. Avoid starting from classes, folders, or framework details.
+Follow a top-down sequence: first re-establish the project rules and structure if needed, then model C1 (system boundary, actors, external systems), then C2 (runtime/deployable containers and their interactions), and only then add C3 for selected containers that truly need internal explanation. After the structural model is stable, add Dynamic views for time-ordered workflows and Deployment views for runtime topology. Finish with validation. What is optional: C3 is optional and should exist only where internal detail adds value; Dynamic views are optional and should be created only for workflows worth explaining; Deployment views are optional and should be added only when infrastructure/topology matters. C1 and C2 are the core path.

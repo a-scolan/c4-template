@@ -1,17 +1,1 @@
-Start from the repository’s declared taxonomy in `projects/shared/spec-containers.c4`. Do not guess from English labels.
-
-Confirmed exact kinds:
-
-- HTTP API → `Container_Api`
-- Message queue → `Container_Queue`
-
-For an async worker, do not assume a name such as `Container_Worker` or `Container_AsyncWorker`; those are not declared here. Check the actual declared kinds first. If no specific declared subtype fits, use the base `Container` rather than inventing a near match. If the role is specifically a processing service, `Container_ProcessingServer` is a real declared kind, but only use it when that label truly matches the design.
-
-How to resolve similar-looking names in this repository:
-
-1. Check `projects/shared/spec-containers.c4` as the source of truth for container kinds.
-2. Compare the exact declared identifier, character for character.
-3. Reject close spellings that are not declared, such as `Container_API`.
-4. If MCP is available, `read-project-summary` can confirm the active taxonomy.
-
-The rule is simple: exact repository declaration wins; guessing loses.
+For an HTTP API, the exact declared container kind is `Container_Api`. For a message queue, the exact declared container kind is `Container_Queue`. For an async worker, there is no dedicated `Container_Worker` or `Component_Worker` declared in the shared specs I checked. At C2, the nearest declared options are the generic `Container` or the more specialized `Container_ProcessingServer`, depending on whether the worker is best modeled as a processing server; at C3, the shared component taxonomy is only `Component`. The safe way to find this in the active workspace is: first inspect the active project summary if available, then confirm in `projects/shared/spec-containers.c4`, `projects/shared/spec-components.c4`, and `projects/shared/spec-global.c4`. When two names look similar, resolve them by exact declared identifier only—for example, keep `Container_Api` and reject `Container_API` rather than guessing from the English label.

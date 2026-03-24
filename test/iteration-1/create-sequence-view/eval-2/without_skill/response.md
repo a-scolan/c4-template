@@ -1,26 +1,18 @@
-A clean showcase proposal is:
-
+For the async flow, make the queue handoff explicit and show the user-facing acknowledgment before the worker continues in the background:
 ```likec4
-views 'Use Cases' {
-  dynamic view async_processing_flow of webapp {
-    title 'Async Processing Flow'
+views {
+  dynamic view async_processing {
+    title "Async flow: external user to processing worker"
 
-    include person_external
-    include webapp
-    include api
-    include queue
-    include processing_server
-    include database
+    externalUser -> webApp "Start request"
+    webApp -> api "Submit job"
+    api -> jobQueue "Enqueue work"
+    api -> webApp "202 Accepted + tracking id"
+    webApp -> externalUser "Show accepted state"
 
-    person_external -> webapp 'Starts the request'
-    webapp -> api 'Submits the request'
-    api -> queue 'Enqueues background work'
-    queue -> processing_server 'Dispatches job for processing'
-    processing_server -> database 'Stores processed result'
-    api -> webapp 'Returns accepted status'
-    webapp -> person_external 'Shows tracking information'
+    jobQueue -> processingWorker "Deliver queued job"
+    processingWorker -> database "Persist result"
   }
 }
 ```
-
-This keeps the flow initiated by `person_external` and shows `api -> queue -> processing_server` in temporal order using only simple `->` arrows.
+If you want the shortest possible version, the essential chain is `externalUser -> webApp -> api -> jobQueue -> processingWorker -> database`.

@@ -1,1 +1,0 @@
-No. C1 should stay static: it shows the system boundary, actors, and external systems, not a step-by-step journey. A temporal flow between the user, webapp, and API belongs in a use-case dynamic view because the point of that diagram is order in time. It also usually comes after C2, since webapp and API are container-level building blocks rather than C1 context elements.

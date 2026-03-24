@@ -1,24 +1,17 @@
-For `projects/template/system-views.c4`, add a dedicated use-case view like this:
-
+Use a dynamic view and keep the interactions in runtime order. Skeleton:
 ```likec4
-views 'Use Cases' {
-  dynamic view login_journey of mySystem {
-    title 'Login Journey'
+views {
+  dynamic view login_journey {
+    title "Login journey"
 
-    include user
-    include mySystem.webapp
-    include mySystem.api
-    include mySystem.database
-    include emailService
-
-    user -> mySystem.webapp 'Enters email and password'
-    mySystem.webapp -> mySystem.api 'Submits login request'
-    mySystem.api -> mySystem.database 'Loads account and password hash'
-    mySystem.api -> emailService 'Sends login notification'
-    mySystem.api -> mySystem.webapp 'Returns authenticated session'
-    mySystem.webapp -> user 'Shows signed-in state'
+    user -> webApp "Open sign-in page"
+    user -> webApp "Submit credentials"
+    webApp -> api "POST /login"
+    api -> primaryDatabase "Verify user and password"
+    api -> notificationService "Send login event/notification"
+    api -> webApp "Return session/token"
+    webApp -> user "Show logged-in state"
   }
 }
 ```
-
-This keeps the sequence actor-first and uses only simple `->` steps with action labels.
+If your repository uses a slightly different wrapper for views, keep the interaction lines as-is and adapt only the outer declaration.

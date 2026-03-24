@@ -1,0 +1,29 @@
+{
+  "skill_name": "customize-view",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "view c2_containers of mySystem {\n  include user\n  include mySystem.webapp\n  include mySystem.api\n  include mySystem.database\n  include emailService\n\n  autoLayout lr\n\n  mySystem.webapp {\n    navigateTo c2_webapp_details\n  }\n}"
+    },
+    {
+      "id": 1,
+      "response": "view c2_containers of mySystem {\n  style * {\n    opacity 40\n  }\n\n  style mySystem.api {\n    color primary\n    opacity 100\n  }\n}"
+    },
+    {
+      "id": 2,
+      "response": "view c2_containers of mySystem {\n  link \"Internal spec\" \"https://internal.example/specs/containers\"\n\n  mySystem.webapp {\n    navigateTo c2_webapp_details\n  }\n}"
+    },
+    {
+      "id": 3,
+      "response": "view c2_containers of mySystem {\n  link \"Internal spec\" \"https://internal.example/specs/containers\"\n\n  style * {\n    opacity 40\n  }\n\n  style mySystem.api {\n    color primary\n    opacity 100\n  }\n\n  mySystem.webapp {\n    navigateTo c2_webapp_details\n  }\n}\n\nThis stays at view-level customization only: emphasis, layout, drill-down, and links. It stops before adding or renaming elements, changing relationships, or restructuring the underlying model."
+    },
+    {
+      "id": 4,
+      "response": "Prefer autoLayout lr first, and only add one anchor if the actor still drifts:\n\nview c2_containers of mySystem {\n  autoLayout lr\n}\n\nOptional single anchor:\n\nview c2_containers of mySystem {\n  autoLayout lr\n  rank user -> mySystem.webapp\n}"
+    }
+  ]
+}

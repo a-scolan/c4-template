@@ -1,14 +1,1 @@
-This skill should **not** detail everything itself.
-
-`c4-modeling-process` is the **orchestration and sequencing** layer. Since you already have **C2**, use it to decide what comes next, then hand off the detailed work:
-
-- For **production infrastructure**, use **`model-deployment-infrastructure`**.
-- For the **nominal user scenario**, use **`create-sequence-view`**.
-
-That order matters:
-
-1. Keep the **C1/C2 structural core** as the foundation.
-2. Add **Deployment** only if runtime topology really matters.
-3. Add a **Dynamic** view only if the workflow needs time-ordered behavior.
-
-So Deployment and Dynamic are targeted, optional follow-ups after the structural model, not work that this skill should fully implement by itself.
+It should rely on other skills rather than trying to detail everything itself. This skill decides sequencing: with C2 already in place, production infrastructure should be handed to `model-deployment-infrastructure`, and the nominal user scenario should be handed to `create-sequence-view`. In other words, this skill says what comes next; specialized skills perform the detailed Deployment and Dynamic modeling. After both are added, use `test-model` to validate the result.

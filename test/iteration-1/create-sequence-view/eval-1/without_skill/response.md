@@ -1,23 +1,12 @@
-A dynamic view should not show `parent -> own-child` such as `api_container -> api_container.auth_component`, because that hides the real initiator of the interaction. Instead, target the concrete component directly from the actor that starts the scenario.
-
-In `projects/spec-showcase/component-views.c4`, add a separate use-case view like this:
-
+Do not write `api_container -> api_container.auth_component` as a sequence step. That mixes containment with runtime interaction. In a dynamic view, participants should be at one abstraction level. Correct options:
+- Container-level story: keep `webApp -> api_container "Authenticate user"` and hide the internal component.
+- Component-level story: use the component directly as the participant.
+Example:
 ```likec4
-views 'Use Cases' {
-  dynamic view authentication_journey of api_container {
-    title 'Authentication Journey'
-
-    include person_external
-    include api_container.auth_component
-    include api_container.routing_component
-    include component_database
-
-    person_external -> api_container.auth_component 'Submits credentials'
-    api_container.auth_component -> component_database 'Loads user record'
-    api_container.auth_component -> api_container.routing_component 'Passes authenticated request'
-    api_container.routing_component -> person_external 'Returns authentication result'
-  }
+dynamic view auth_flow {
+  webApp -> api_container.auth_component "Submit credentials"
+  api_container.auth_component -> primaryDatabase "Load account and verify password"
+  api_container.auth_component -> webApp "Return token/session"
 }
 ```
-
-That keeps the actor targeting `api_container.auth_component` directly and uses only plain `->` arrows with action labels.
+Rule of thumb: avoid parent -> child hops inside the same dynamic sequence.

@@ -1,0 +1,235 @@
+{
+  "iteration": "iteration-1",
+  "skill_name": "create-sequence-view",
+  "configuration": "with_skill",
+  "checked_at": "2026-03-17T09:27:55Z",
+  "run_count": 1,
+  "summary": {
+    "applicable_eval_count": 4,
+    "valid_eval_count": 0,
+    "valid_eval_rate": 0.0,
+    "snippet_count_total": 9,
+    "error_count_total": 38,
+    "warning_count_total": 46
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 8,
+      "warning_count": 10,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "user -> webApp 'Opens login'\n    webApp -> api 'POST /login'\n    api -> primaryDatabase 'Checks credentials'\n    api -> externalNotificationService 'Sends login alert'\n    api -> webApp 'Returns session'\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 10,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced.",
+            "Unknown relationship kind ''Opens'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Checks'.",
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'externalNotificationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 6,
+      "warning_count": 4,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "user -> webApp 'Starts login'\n    webApp -> api_container.auth_component 'POST /login'\n    api_container.auth_component -> primaryDatabase 'Reads user'\n  }\n}",
+          "valid": false,
+          "error_count": 5,
+          "warning_count": 4,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced.",
+            "Unknown relationship kind ''Starts'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Reads'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 8,
+      "warning_count": 10,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "externalUser -> webApp 'Submits request'\n    webApp -> api 'POST /process'\n    api -> jobQueue 'Queues job'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> database 'Stores result'\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 10,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced.",
+            "Unknown relationship kind ''Submits'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Queues'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Stores'."
+          ],
+          "warnings": [
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 16,
+      "warning_count": 22,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "externalUser -> webApp 'Uploads file'\n    webApp -> api 'POST /upload'\n    api -> objectStorage 'Stores file'\n    api -> primaryDatabase 'Creates tracking record'\n    api -> webApp 'Returns tracking URL'\n  }",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 10,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced.",
+            "Unknown relationship kind ''Uploads'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Stores'.",
+            "Unknown relationship kind ''Creates'.",
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'objectStorage' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "api -> jobQueue 'Queues validation'\n    jobQueue -> validationWorker 'Delivers job'\n    validationWorker -> primaryDatabase 'Marks validating'\n    validationWorker -> jobQueue 'Requeues job'\n    jobQueue -> validationWorker 'Redelivers job'\n    validationWorker -> primaryDatabase 'Updates final status'\n  }\n}",
+          "valid": false,
+          "error_count": 8,
+          "warning_count": 12,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced.",
+            "Unknown relationship kind ''Queues'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Marks'.",
+            "Unknown relationship kind ''Requeues'.",
+            "Unknown relationship kind ''Redelivers'.",
+            "Unknown relationship kind ''Updates'."
+          ],
+          "warnings": [
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    }
+  ]
+}

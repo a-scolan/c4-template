@@ -1,7 +1,0 @@
-Treat this as semantic validation, not just syntax validation.
-
-1. Revalidate structure first with `read-project-summary`: confirm both containers still exist with the correct kinds and that `async` is one of the valid relationship types in the active project.
-2. Revalidate references and relationships with `search-element` / `find-relationships`: confirm both FQNs still resolve, inspect every edge between the two containers, and make sure `async` reflects the real interaction pattern rather than being a syntactic substitute for a synchronous call. In this workspace, normal logical relationships should stay within the shared set (`uses`, `calls`, `async`, `reads`, `writes`).
-3. Check the impacted views, not only the edited line: open the affected C2 and any other views that include either container. If the diagram now looks odd, the issue may be layout, an over-broad include, or a missing intermediary such as a queue/event boundary that the model should show explicitly.
-4. Compare before and after: review the old `calls` relationship versus the new `async` relationship and note which dependent views changed appearance. That comparison is often what reveals a semantically wrong but syntactically legal change.
-5. Before commit, do the visual and editor pass: confirm the view renders as intended, verify there is no fake return path implied by the async flow, and clear the Problems panel / compile errors.

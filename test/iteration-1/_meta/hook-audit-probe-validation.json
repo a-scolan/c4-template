@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-03-16T21:16:30Z",
+  "path": "test/_agent-hooks/hook-audit.jsonl",
+  "mode": "baseline",
+  "entry_count": 1,
+  "first_timestamp": "2026-03-16T21:16:15.418Z",
+  "last_timestamp": "2026-03-16T21:16:15.418Z",
+  "issue_count": 0,
+  "issues": [],
+  "passed": true
+}

@@ -1,65 +1,96 @@
 {
+  "schema_version": 2,
   "skill_name": "name-deployment-nodes",
   "comparisons": [
     {
+      "schema_version": 2,
       "eval_id": 0,
+      "run_number": 1,
       "winner": "A",
-      "reasoning": "A is more repository-aligned: it fixes the bad identifiers, keeps the PascalCase `{Environment}{Service}Vm` pattern, and maps the zones more convincingly by using `NetworkZone` for ingress and `SecZone` for monitoring. B is still solid, but its zone mapping is less precise for this setup.",
+      "reasoning": "A follows the required `Vm` and tier-versus-zone naming conventions much more closely.",
       "rubric": {
         "A": {
-          "overall_score": 9.1
+          "content_score": 9.7,
+          "structure_score": 9.0,
+          "overall_score": 9.4
         },
         "B": {
-          "overall_score": 8.4
+          "content_score": 4.2,
+          "structure_score": 8.4,
+          "overall_score": 5.3
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 3,
+          "total": 3,
           "pass_rate": 1.0
         },
         "B": {
-          "pass_rate": 1.0
+          "passed": 1,
+          "total": 3,
+          "pass_rate": 0.3333
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 1,
-      "winner": "A",
-      "reasoning": "A keeps scope tight and makes the required handoff explicit by naming `model-deployment-infrastructure`, while still preserving the key naming patterns. B scopes the task correctly, but it only gestures at a separate workflow and misses the specific handoff the eval expects.",
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B wins by explicitly delegating full modeling to `model-deployment-infrastructure` while staying focused on naming.",
       "rubric": {
         "A": {
-          "overall_score": 9.7
+          "content_score": 4.1,
+          "structure_score": 8.0,
+          "overall_score": 5.4
         },
         "B": {
-          "overall_score": 7.2
+          "content_score": 9.5,
+          "structure_score": 9.0,
+          "overall_score": 9.3
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 1.0
+          "passed": 1,
+          "total": 3,
+          "pass_rate": 0.3333
         },
         "B": {
-          "pass_rate": 0.67
+          "passed": 3,
+          "total": 3,
+          "pass_rate": 1.0
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 2,
-      "winner": "A",
-      "reasoning": "A answers the ordering question directly, extends the base pattern consistently across VMs and zones, and stays cleaner by not muddying the environment concept. B is also strong, but introducing environment names like `ProdEu` and `ProdUs` makes the convention slightly less crisp for this repository.",
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B is more repository-aligned because it extends the pattern cleanly across both VMs and tier names.",
       "rubric": {
         "A": {
-          "overall_score": 9.3
+          "content_score": 8.4,
+          "structure_score": 8.8,
+          "overall_score": 8.6
         },
         "B": {
-          "overall_score": 8.8
+          "content_score": 9.5,
+          "structure_score": 9.0,
+          "overall_score": 9.3
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         },
         "B": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         }
       }

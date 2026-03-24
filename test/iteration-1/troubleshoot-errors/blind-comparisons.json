@@ -1,86 +1,127 @@
 {
+  "schema_version": 2,
   "skill_name": "troubleshoot-errors",
   "comparisons": [
     {
+      "schema_version": 2,
       "eval_id": 0,
-      "winner": "B",
-      "reasoning": "B is better aligned with the repository and the rubric because it separates the invalid kind from the FQN issue, explicitly points back to shared specs and project summary, and recommends verifying declarations before renaming anything. A is also strong, but it does not explicitly include the project-summary-first handoff expected here.",
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A better ties the missing `api` element back to the invalid kind before proposing the FQN fix.",
       "rubric": {
         "A": {
-          "overall_score": 8.9
+          "content_score": 8.9,
+          "structure_score": 8.0,
+          "overall_score": 8.6
         },
         "B": {
-          "overall_score": 9.6
+          "content_score": 8.6,
+          "structure_score": 8.8,
+          "overall_score": 8.5
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 0.67
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6667
         },
         "B": {
-          "pass_rate": 1.0
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6667
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 1,
+      "run_number": 1,
       "winner": "A",
-      "reasoning": "A wins narrowly because it identifies both conceptual errors cleanly and gives slightly more concrete corrections, including a direct replacement for the invalid parent-to-child interaction and a valid sibling-only use of rank constraints. B is fully correct too, but a little less pointed in its repair guidance.",
+      "reasoning": "A is more precise because it states both the parent-child dynamic-view error and the same-parent `rank same` rule.",
       "rubric": {
         "A": {
-          "overall_score": 9.5
+          "content_score": 9.2,
+          "structure_score": 9.0,
+          "overall_score": 9.1
         },
         "B": {
-          "overall_score": 9.2
+          "content_score": 8.6,
+          "structure_score": 8.4,
+          "overall_score": 8.5
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 3,
+          "total": 3,
           "pass_rate": 1.0
         },
         "B": {
-          "pass_rate": 1.0
+          "passed": 2,
+          "total": 3,
+          "pass_rate": 0.6667
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 2,
+      "run_number": 1,
       "winner": "A",
-      "reasoning": "A wins narrowly because it separates relationship taxonomy from FQN validation with a slightly clearer diagnostic order, names the allowed relationship kinds in this repository, and maps the intent of 'sends' to plausible approved alternatives. B is also correct and well scoped, but it is a bit less decisive.",
+      "reasoning": "A separates taxonomy from FQN validation more cleanly and offers the most targeted correction paths.",
       "rubric": {
         "A": {
-          "overall_score": 9.6
+          "content_score": 9.4,
+          "structure_score": 9.2,
+          "overall_score": 9.3
         },
         "B": {
-          "overall_score": 9.3
+          "content_score": 9.1,
+          "structure_score": 8.5,
+          "overall_score": 8.9
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         },
         "B": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 3,
-      "winner": "A",
-      "reasoning": "A wins narrowly because it explains the layer-mixing root cause most crisply, shows the correct logical repair with a model relationship plus technology 'HTTPS', and clearly states that the duplicate deployment edge should be removed in favor of inherited instanceOf relationships. B is also correct, just slightly less sharp.",
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B is more complete and usable because it pairs the root-cause diagnosis with explicit model and deployment fixes.",
       "rubric": {
         "A": {
-          "overall_score": 9.6
+          "content_score": 9.2,
+          "structure_score": 8.6,
+          "overall_score": 9.0
         },
         "B": {
-          "overall_score": 9.4
+          "content_score": 9.6,
+          "structure_score": 9.4,
+          "overall_score": 9.5
         }
       },
       "expectation_results": {
         "A": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         },
         "B": {
+          "passed": 4,
+          "total": 4,
           "pass_rate": 1.0
         }
       }

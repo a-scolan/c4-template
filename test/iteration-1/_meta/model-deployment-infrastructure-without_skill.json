@@ -1,0 +1,29 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use a deployment hierarchy like Prod -> Dmz/AppTier/ProcTier/DataTier -> VM -> Node_App. Put the API gateway Node_App on a VM in Dmz, the upload service Node_App on a VM in AppTier, the processing worker Node_App on a VM in ProcTier, and the MongoDB Node_App on a VM in DataTier. Each Node_App should link to the logical model with instanceOf pointing at the corresponding logical element. Normally you should not copy logical application relationships manually into deployment just to make them visible; add deployment relationships only when they represent deployment-only behavior such as monitoring, replication, load balancers, health checks, or other runtime infrastructure links."
+    },
+    {
+      "id": 1,
+      "response": "That level of prescriptive tiering is better handled by a more specialized deployment-tier or network-segmentation workflow, not by the generic infrastructure-modeling workflow alone. This workflow should cover the basic environment/zone/host/app hierarchy and instanceOf mapping; if you want a canonical Dmz/AppTier/ProcTier/DataTier split plus firewall-rule guidance between zones, switch to a narrower tiering-focused workflow."
+    },
+    {
+      "id": 2,
+      "response": "Do not invent physical hosts you do not actually know. For managed Kubernetes, keep the hierarchy honest: Prod -> managed cluster -> namespace or workload grouping if known -> deployed app instances. Model only the layers you operate or can verify, such as the managed cluster, namespaces, ingress, workloads, and any managed data service. Then wire instanceOf from each deployed app instance to its logical element, for example gateway, upload service, processing worker, and MongoDB. If MongoDB is a managed external service, model it as its own managed deployment node or deployed instance rather than pretending it runs on a VM you cannot see."
+    },
+    {
+      "id": 3,
+      "response": "Usually no: if Prod.Web.webApp -> Prod.App.apiApp and Prod.App.apiApp -> Prod.Data.dbApp are just the runtime instances of logical interactions that already exist, put the technology such as HTTPS or the database protocol on the logical relationships and let deployment reuse that meaning. Keep ports as deployment metadata or descriptions when they are environment-specific. Add explicit deployment relationships only when the connection is deployment-specific and not already present in the logical model, such as ingress hops, service-mesh traffic, monitoring scrapes, backup flows, or replication."
+    },
+    {
+      "id": 4,
+      "response": "Add the Prometheus scrape as a deployment relationship, because it is an operational runtime concern rather than the main business interaction already captured logically. Point it to the deployed API app if Prometheus scrapes the application's metrics endpoint; point it to the VM only if Prometheus actually scrapes a host-level exporter on that VM. Avoid duplicating browser -> API or API -> database deployment relationships when those interactions already exist in the logical model through instanceOf-linked elements."
+    }
+  ]
+}

@@ -1,13 +1,1 @@
-Use `calls` in the logical model.
-
-For `mySystem.webapp` talking to `mySystem.api`, `https` is not the logical-model relationship kind. In this repository, the model relationship kinds are declared in `projects/shared/spec-global.c4`, and the right choice for this interaction is a model kind such as `calls`.
-
-If the interaction is over HTTPS, put that in the relationship `technology` field, for example as `HTTPS`, while keeping the model kind as `calls`.
-
-`https` becomes valid in this repository only in the deployment taxonomy, where deployment-side infrastructure relationships are declared in `projects/shared/spec-deployment.c4`.
-
-How to confirm it:
-
-1. Check `projects/shared/spec-global.c4` for logical-model relationship kinds such as `calls`.
-2. Check `projects/shared/spec-deployment.c4` for deployment relationship kinds such as `https`.
-3. If MCP is available, `read-project-summary` can confirm the active taxonomy.
+For a web application talking to an API in the logical model, use `calls`, not `https`. In this workspace, `https` is part of the deployment relationship taxonomy declared in `projects/shared/spec-deployment.c4`, while logical-model behavior uses the relationships from `projects/shared/spec-global.c4`: `uses`, `calls`, `async`, `reads`, and `writes`. So the normal application-model pattern is something like a `Container_Webapp` or `Container_Spa` `-[calls]->` `Container_Api`, with the protocol captured in `technology`, for example `technology 'HTTPS'`. `https` becomes valid only when you are drawing deployment/infrastructure edges between deployment nodes or deployed instances rather than logical application behavior.

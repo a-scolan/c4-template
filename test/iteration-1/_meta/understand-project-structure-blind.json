@@ -1,0 +1,95 @@
+{
+  "skill_name": "understand-project-structure",
+  "comparisons": [
+    {
+      "schema_version": 2,
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A gives the fuller preflight: it separates config/shared specs/model files/views, warns against treating views as taxonomy, and provides a clearer ordered C1→C3 plan. B is serviceable but less fully grounded and less complete on source-of-truth coverage.",
+      "rubric": {
+        "A": {"content_score": 8.8, "structure_score": 8.7, "overall_score": 8.8},
+        "B": {"content_score": 7.1, "structure_score": 7.6, "overall_score": 7.2}
+      },
+      "expectation_results": {
+        "A": {"passed": 4, "total": 5, "pass_rate": 0.8},
+        "B": {"passed": 3, "total": 5, "pass_rate": 0.6}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A matches the requested revalidation workflow best: it explicitly includes list-projects and read-project-summary, rereads shared specs, and names concrete risks avoided. B has useful checks but skips the required project-switch preflight sequence.",
+      "rubric": {
+        "A": {"content_score": 9.6, "structure_score": 9.1, "overall_score": 9.4},
+        "B": {"content_score": 7.2, "structure_score": 8.0, "overall_score": 7.5}
+      },
+      "expectation_results": {
+        "A": {"passed": 5, "total": 5, "pass_rate": 1.0},
+        "B": {"passed": 3, "total": 5, "pass_rate": 0.6}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A is the stronger diagnosis guide because it starts from repo truth, compares against declared taxonomy, and includes a safe fallback when context stays inconsistent. B has solid confirmation steps, but it is weaker on fallback and source-of-truth framing.",
+      "rubric": {
+        "A": {"content_score": 8.6, "structure_score": 8.5, "overall_score": 8.6},
+        "B": {"content_score": 7.9, "structure_score": 8.2, "overall_score": 8.0}
+      },
+      "expectation_results": {
+        "A": {"passed": 4, "total": 5, "pass_rate": 0.8},
+        "B": {"passed": 3, "total": 5, "pass_rate": 0.6}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "Both identify c4-modeling-process correctly, but B gives the cleaner handoff: it locks project, files, taxonomy, and parent boundary, then leaves C1→C2→C3 sequencing to the next skill. A is good, but slightly blurrier on that division of responsibility.",
+      "rubric": {
+        "A": {"content_score": 8.3, "structure_score": 8.5, "overall_score": 8.4},
+        "B": {"content_score": 8.8, "structure_score": 8.7, "overall_score": 8.8}
+      },
+      "expectation_results": {
+        "A": {"passed": 4, "total": 5, "pass_rate": 0.8},
+        "B": {"passed": 4, "total": 5, "pass_rate": 0.8}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 4,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A is better onboarding for a UML/ArchiMate contributor: it explains local conventions, points to shared specs as semantic truth, explicitly labels .github/skills as workflow guidance, and offers a clear next-skill handoff. B is useful, but misses that key semantic-vs-workflow distinction.",
+      "rubric": {
+        "A": {"content_score": 9.1, "structure_score": 8.8, "overall_score": 9.0},
+        "B": {"content_score": 7.6, "structure_score": 8.1, "overall_score": 7.8}
+      },
+      "expectation_results": {
+        "A": {"passed": 4, "total": 5, "pass_rate": 0.8},
+        "B": {"passed": 3, "total": 5, "pass_rate": 0.6}
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 5,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B answers the authority question more cleanly: it rejects the view file as taxonomy and redirects first to config plus shared specs. A is helpful, but it leans more on another project's model example, which muddies the source-of-truth message.",
+      "rubric": {
+        "A": {"content_score": 7.9, "structure_score": 8.2, "overall_score": 8.0},
+        "B": {"content_score": 8.7, "structure_score": 8.6, "overall_score": 8.7}
+      },
+      "expectation_results": {
+        "A": {"passed": 3, "total": 4, "pass_rate": 0.75},
+        "B": {"passed": 3, "total": 4, "pass_rate": 0.75}
+      }
+    }
+  ]
+}

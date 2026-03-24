@@ -1,0 +1,29 @@
+{
+  "skill_name": "create-element",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "In this workspace, reuse the existing `Container_Api` kind under the existing `mySystem` system. A minimal declaration is:\n`mySystem { fileIngestionApi = Container_Api 'File Ingestion API' }`\nThat is correct, minimal, and does not invent a new kind."
+    },
+    {
+      "id": 1,
+      "response": "No. A one-off `Container_UploadOrchestrator` kind is not a good idea here. The workspace already uses reusable container kinds such as `Container_Api`, `Container_Webapp`, and `Container_Database`, and even specialized kinds like `Container_Api_Geo` only make sense when the distinction is reusable. For one upload service, keep an existing kind and express the difference in the element name, title, technology, description, tags, or metadata. Before adding a new kind, first check the existing kind catalog; if you need help with that, use `lookup-element-kinds` before defining anything new."
+    },
+    {
+      "id": 2,
+      "response": "Use `create-element` for the new elements (`virusScanProvider` and `scanApi`), `create-relationship` for the arrows, and `design-view` for the C2 view."
+    },
+    {
+      "id": 3,
+      "response": "Use two elements, not two new kinds. If the real payment API is third-party and the mock is internal, model them with existing kinds such as `System_External` for the real provider and `Container_Api` for the internal mock, then distinguish mock vs prod with names, technology, tags, or metadata rather than custom kinds. `create-element` is enough for the element modeling; if you want a reusable convention for mock-vs-prod across the workspace, that is where `implement-pattern` becomes relevant."
+    },
+    {
+      "id": 4,
+      "response": "A direct starting point is:\n`identityProvider = System_External 'Identity Provider'`\n`mySystem { portalApi = Container_Api 'Portal API' }`\nThat keeps the third-party provider external and the portal API internal, without solving relationships yet."
+    }
+  ]
+}

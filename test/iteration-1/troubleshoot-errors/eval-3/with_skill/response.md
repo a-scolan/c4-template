@@ -1,18 +1,10 @@
-The root cause is that two different modeling layers got mixed together.
-
-1. `webapp -[https]-> api` is wrong inside `model {}`.
-   `https` is a deployment-side relationship kind, not a logical system-model relationship kind. In the system model, keep a functional relationship such as `calls`, and put the protocol in the relationship technology.
-
-   The clean logical fix is:
-   `webapp -[calls]-> api 'Makes API requests' { technology 'HTTPS' }`
-
-2. The duplicate deployment traffic is also a modeling mistake.
-   If deployed applications `instanceOf` the logical containers, the application relationship should be inherited from the system model. Repeating the same app-to-app traffic again in deployment just to show the protocol creates duplication and confusion.
-
-3. Clean fix.
-   - change the system-model edge from `-[https]->` to a valid model relationship such as `-[calls]->`
-   - keep `technology 'HTTPS'` on that logical relationship
-   - remove the duplicate deployment relationship between the deployed apps
-   - keep deployment-only relationships only when they represent infrastructure-specific communication that is not already modeled logically
-
-So the real issue is not just syntax. It is a taxonomy mix-up in the system model plus duplicated relationships across logical and deployment layers.
+1. Probable error category: wrong relationship scope + duplicate deployment modeling.
+2. Root cause: inside `model {}`, `https` was used as if it were a logical relationship kind. In this workspace, protocol belongs in the `technology` field, while the logical relationship kind should be something like `calls`. Then the same application traffic was redrawn again between deployed apps, even though deployment usually inherits that traffic through `instanceOf`.
+3. Verification step: check the shared relationship definitions. Model kinds are `uses`, `calls`, `async`, `reads`, and `writes`; deployment kinds like `https` are for infrastructure-specific deployment links. Also confirm the deployed apps already point to the model elements with `instanceOf`.
+4. Minimal fix: keep one logical relationship in the system model and move the protocol into `technology`; delete the duplicate deployment edge unless it represents infrastructure-only connectivity.
+Correct model snippet:
+`webapp -[calls]-> api 'Browser traffic' { technology 'HTTPS' }`
+Clean deployment approach:
+`webappApp { instanceOf corePlatform.webapp }`
+`apiApp { instanceOf corePlatform.api }`
+Do not add `webappApp -[https]-> apiApp` again unless you are modeling a deployment-specific path that does not already exist in the logical model.

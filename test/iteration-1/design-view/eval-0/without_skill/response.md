@@ -1,26 +1,5 @@
-Add this inside `views 'C2'` in `projects/template/system-views.c4`:
-
-```likec4
-view c2_mySystem {
-  title 'My System - Containers'
-
-  // Parent system
-  include mySystem
-
-  // Neighboring context
-  include user
-  include emailService
-
-  // Container focus
-  include mySystem.*
-
-  include mySystem.webapp with {
-    navigateTo c2_webapp_details
-  }
-
-  rank source { user }
-  rank sink { mySystem.database, emailService }
-}
-```
-
-This keeps `mySystem` as the parent context, `mySystem.*` as the focus, and `user` plus `emailService` as the neighboring context, while preserving drill-down from `mySystem.webapp`.
+Place the logical model in `projects/template/system-model.c4` and the view definitions in `projects/template/system-views.c4`.
+- In the model, define `user`, an external `emailService`, and your main `system` with containers such as `webApp`, `api`, and `db`.
+- Add relationships `user -> webApp`, `webApp -> api`, `api -> db`, and `api -> emailService`.
+- In the views file, create one container view rooted at the system and one drill-down view rooted at `webApp`.
+A compact skeleton is: `model { user = person 'User'; emailService = system 'Email Service' { tags external }; platform = system 'Your System' { webApp = container 'Web Application'; api = container 'API'; db = container 'Database' } user -> platform.webApp 'Uses'; platform.webApp -> platform.api 'Calls'; platform.api -> platform.db 'Reads/Writes'; platform.api -> emailService 'Sends email' }` and `views { view platform_c2 of platform { include user; include emailService; include platform.*; autoLayout lr } view webApp_detail of platform.webApp { include * } }`. That gives you a proper C2 plus a ready drill-down entry point from the web application.

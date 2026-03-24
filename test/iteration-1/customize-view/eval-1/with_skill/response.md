@@ -1,4 +1,8 @@
-view existing_view {
-  style * { color muted; opacity 40% }
-  style element.tag = #api { color primary; opacity 100% }
+views 'C2' {
+  view containers_overview {
+    include *
+
+    style * { color muted; opacity 20% }
+    style api.*, gateway.* { color primary; opacity 100% }
+  }
 }

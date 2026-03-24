@@ -1,10 +1,10 @@
-Usually no.
+No. In this workspace, new kinds are a last resort, so `Container_UploadOrchestrator` is not a good idea for one service. Reuse an existing shared kind first—most likely `Container_Api` for an upload/orchestration API.
 
-In this repo, the rule is: **check shared specs first and reuse an existing kind whenever possible**. A one-off kind such as `Container_UploadOrchestrator` is discouraged if an existing shared kind already covers the need, such as `Container_Api` for an upload service.
+Before adding any new kind, check in this order: 1) the active project summary or model when available, 2) `projects/shared/SPEC_CHEATSHEET.md`, 3) the shared spec files such as `projects/shared/spec-context.c4` and `projects/shared/spec-containers.c4`, and 4) existing project model files for naming and placement.
 
-Before adding any new kind:
+Only introduce a new kind if none of the shared kinds fits, and ask before adding it. A better start here is:
 
-1. Verify the declared shared kinds first (or, in a normal workflow, inspect them via `read-project-summary`).
-2. Reuse an existing shared kind if it fits.
-3. Only if nothing suitable exists, ask for approval before introducing a new kind.
-4. Add the new kind to the shared spec rather than creating a project-specific one-off kind.
+ingestionApi = Container_Api 'Upload Orchestrator API' {
+  technology 'Node.js, Fastify'
+  description 'Coordinates upload requests and starts the ingestion workflow.'
+}

@@ -1,0 +1,28 @@
+{
+  "skill_name": "organize-multi-project",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/organize-multi-project/SKILL.md",
+    ".github/skills/organize-multi-project/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Bootstrap the new project from a minimal baseline, not by copying an example project wholesale. Create a new folder such as `projects/payments/` and add exactly these starter files: `likec4.config.json`, `system-model.c4`, and `system-views.c4`. In `likec4.config.json`, give the project a unique `name` and `title`, point `include.paths` to `../shared`, and keep image aliases consistent with the rest of the workspace. Then put only payments-domain model content in `system-model.c4`, and the first useful views in `system-views.c4`. Expand later only if needed with extra files for deployment, dynamic views, or operations. A clean starting checklist is: 1) create `projects/payments/`; 2) add local config; 3) wire shared includes with relative paths; 4) add a minimal model file; 5) add a minimal views file; 6) remove any example-specific names if you used a local scaffold."
+    },
+    {
+      "id": 1,
+      "response": "Not in the shared specifications area if `paymentsCore` and `backOfficeUser` are actual model elements for a specific domain. The shared area should contain reusable definitions only: kinds, tags, relationship types, shared styling, shared images, and similar conventions. Putting project-specific systems or actors there is a common mistake because it blurs ownership and makes the shared area a dumping ground. Keep `paymentsCore` and `backOfficeUser` in the payments project if they belong to that domain. For cross-project references, keep them explicit, minimal, and documented. If something is truly shared across projects, use one of two patterns: either define genuinely shared external systems in a shared model file and mark them clearly with `#external`, or create a dedicated project such as `projects/externals/` or another domain-scoped project for shared business elements. In short: shared specs for reusable definitions, domain projects for real model elements, and no circular project dependencies."
+    },
+    {
+      "id": 2,
+      "response": "Use this skill together with `configure-project-includes`. `organize-multi-project` is the right skill for deciding project boundaries, shared-vs-local ownership, and the minimal baseline for a new project. But when you need to change `include.paths` or image aliases in `likec4.config.json`, the skill itself explicitly points you to `configure-project-includes`. Good pairing, zero drama: organize first, then configure."
+    },
+    {
+      "id": 3,
+      "response": "Do not put everything into the shared area. Separate reusable technical conventions from reusable business domains. A good structure is: `projects/shared/` for shared specs, tags, kinds, relationship definitions, and shared images; domain folders such as `projects/payments/`, `projects/customer/`, or `projects/inventory/` for real business models and views. If some business models are genuinely reused across multiple projects, give them their own clearly named project rather than hiding them inside shared specs. That keeps the repo understandable without turning it into a maze. The rule of thumb is simple: if it is a reusable definition or convention, it belongs in `shared`; if it is an actual system, actor, container, or domain model, it belongs in a project. Keep the number of top-level projects small and meaningful, keep includes relative, and keep cross-project dependencies explicit and minimal."
+    }
+  ]
+}

@@ -1,17 +1,18 @@
-view c2_containers {
+view c2_containers of mySystem {
+  link "Internal spec" "https://internal.example/specs/containers"
+
   style * {
-    color muted
+    opacity 40
   }
 
-  style * where kind is Container_Api
-     or kind is Container_Api_Geo {
+  style mySystem.api {
     color primary
+    opacity 100
   }
 
-  include mySystem.webapp with {
+  mySystem.webapp {
     navigateTo c2_webapp_details
-    link https://intranet.example.com/specs/webapp 'Internal spec docs'
   }
 }
 
-This stops at view-level styling, linking, and navigation. Creating a new structural variant or a new C3/detail view is a separate design change.
+This stays at view-level customization only: emphasis, layout, drill-down, and links. It stops before adding or renaming elements, changing relationships, or restructuring the underlying model.

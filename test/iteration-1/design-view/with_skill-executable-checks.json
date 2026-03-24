@@ -1,0 +1,107 @@
+{
+  "iteration": "iteration-1",
+  "skill_name": "design-view",
+  "configuration": "with_skill",
+  "checked_at": "2026-03-17T09:27:55Z",
+  "run_count": 1,
+  "summary": {
+    "applicable_eval_count": 4,
+    "valid_eval_count": 3,
+    "valid_eval_rate": 0.75,
+    "snippet_count_total": 4,
+    "error_count_total": 5,
+    "warning_count_total": 3
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views 'C2' {\n  view c2_corePlatform {\n    title 'Core Platform - Containers'\n    description 'System boundary, containers, user, and email integration'\n\n    include user\n    include externalEmailService\n\n    include corePlatform\n    include corePlatform.*\n\n    include corePlatform.webApp with {\n      navigateTo c3_webApp\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views 'Deployment' {\n  deployment view production_overview {\n    title 'Production Infrastructure'\n    description 'DMZ, application tier, and data tier in production'\n\n    include production\n\n    include production.dmzTier\n    include production.appTier\n    include production.dataTier\n\n    include production.dmzTier.lbVm\n    include production.dmzTier.webVm\n\n    include production.appTier.apiVm\n    include production.appTier.workerVm\n\n    include production.dataTier.dbVm\n    include production.dataTier.cacheVm\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 5,
+      "warning_count": 3,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view uploadJourney {\n    title 'Upload Journey'\n\n    user -> browser 'Select file'\n    browser -> corePlatform.webApp 'Open upload page'\n    corePlatform.webApp -> corePlatform.api 'POST /uploads'\n    corePlatform.api -> corePlatform.uploadService 'Validate request'\n    corePlatform.uploadService -> corePlatform.objectStorage 'Store file'\n  }\n}",
+          "valid": false,
+          "error_count": 5,
+          "warning_count": 3,
+          "errors": [
+            "Unknown relationship kind ''Select'.",
+            "Unknown relationship kind ''Open'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Validate'.",
+            "Unknown relationship kind ''Store'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'browser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'browser' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views 'Operations' {\n  deployment view secZone_overview {\n    title 'Production Security Zone'\n    description 'Bastion, firewall, and dedicated security services in production'\n\n    include production\n    include production.secZone\n\n    include production.secZone.bastionVm\n    include production.secZone.firewallVm\n    include production.secZone.monitoringVm\n    include production.secZone.loggingVm\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

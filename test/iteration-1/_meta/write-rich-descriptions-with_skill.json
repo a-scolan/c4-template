@@ -1,0 +1,24 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/write-rich-descriptions/SKILL.md",
+    ".github/skills/write-rich-descriptions/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use an element-creation skill first, because this description skill assumes the element already exists. For the processing service, start with `create-element`; for the production VM, use the deployment modeling skill first if you are defining infrastructure. After that, choose format by element type: the service should get a normal prose description, with an optional `metadata {}` block only if fields like owner or regions will be queried. The VM should get a markdown table in its description, with network details first; add matching metadata only if automation needs to query those values."
+    },
+    {
+      "id": 1,
+      "response": "For `ProdApiVm`, write a short opening sentence, then one markdown table. Put fields in this order: `eth0`, `eth1` monitoring, other interfaces if any, then OS, hardware such as CPU/RAM/GPU/Disk, then service or runtime details, then operational items like health check, RTO, and RPO if truly relevant. Keep metadata optional and only duplicate table values if automation queries them. Do not repeat the hostname, tags, service endpoints, monitoring links, firewall rules, or relationship data. Also skip gateway on the VM unless it is a special routing edge case; that belongs on the zone."
+    },
+    {
+      "id": 2,
+      "response": "Keep it operator-first, not exhaustive. Start with a one-line summary, then use a single markdown table with only decision-useful facts. Lead with `eth0` and `eth1` monitoring, then OS, CPU/RAM/GPU/Disk, then runtime or app details, then the few operational fields someone will actually act on, such as health check, restart behavior, and RTO. If a detail will never be filtered, troubleshot, or used during recovery, leave it out. Avoid duplicating tags, relationships, hostname, or zone gateway. Add a `metadata {}` block only for fields your automation or inventory queries."
+    }
+  ]
+}

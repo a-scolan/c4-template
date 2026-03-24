@@ -1,3 +1,0 @@
-Start with the first error, not the second. In `projects/shared/spec-containers.c4` there is no `Container_WebUi`; declared web/container kinds include `Container_Webapp`, `Container_Spa`, `Container_Browser`, and `Container_WebServer`. If your `api` element was declared with `Container_WebUi`, LikeC4 never created that element, so `Element not found: api` is often just a cascade.
-
-Proper diagnosis: (1) find the declaration that uses `Container_WebUi`, (2) replace it with a declared kind or define/import a custom kind, (3) parse again, and only then (4) if `api` still fails, verify the alias and scope exactly as declared, including whether the correct reference is `api` or a fuller path such as `system.api`.

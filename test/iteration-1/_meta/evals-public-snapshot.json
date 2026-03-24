@@ -1,0 +1,536 @@
+{
+  "generated_at": "2026-03-16T21:15:28Z",
+  "iteration": "iteration-1",
+  "skill_count": 19,
+  "skills": [
+    {
+      "skill_name": "c4-modeling-process",
+      "evals_public_path": ".github/skills/c4-modeling-process/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I’m starting from a blank page to model a new SaaS product. Give me the LikeC4 design approach to follow, in the right order, and tell me what is optional.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I have a very simple API container. Do I really need to create a detailed C3 view? Explain the decision rule.",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I want to show a user journey in C1 with temporal arrows between the user, the webapp, and the API. Is that correct? If not, where should this diagram go and why?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I’m taking over a LikeC4 workspace I don’t know, and I need to design a new C2 view properly. In what order should I approach this, and which complementary skills should I call?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "I already have my C2. I now want to document production infrastructure and a nominal user scenario. Should this skill detail everything itself, or rely on other skills?",
+          "files": []
+        },
+        {
+          "id": 5,
+          "prompt": "I’m resuming this multi-project workspace after changes to shared specs. I need to add a sensitive C3 view, then document a nominal user scenario. Without skipping steps, what order should I follow, and which skills should take over?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "configure-project-includes",
+      "evals_public_path": ".github/skills/configure-project-includes/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I’m creating `projects/payments/likec4.config.json` for a new project based on the workspace baseline. Which fields should I keep, and how should I reference shared specs/images without breaking imports?",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I have a single 1200-line `system.c4`. How should I split it progressively into a clean project baseline, and which files should hold C1/C2/C3 views, Use Cases, deployment, and operations?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "My project already has `include.paths: ['../shared', '../platform-shared']`. I need to add a new shared source and keep icons working. Which edit rules should I follow to avoid breaking existing behavior?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I want to add a second LikeC4 project in this workspace with shared specs. Is this skill enough, or should it be combined with another skill?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "In `projects/payments/likec4.config.json`, I already have `../shared` and need to add `../platform-shared`, but this source redefines some existing image aliases. How should I adjust `include.paths` and `imageAliases` without breaking current resolution?",
+          "files": []
+        },
+        {
+          "id": 5,
+          "prompt": "Show me the smallest safe JSON edit for `projects/payments/likec4.config.json`: append `../platform-shared` after `../shared`, keep shared images working, and avoid alias collisions with a new platform image source.",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "create-element",
+      "evals_public_path": ".github/skills/create-element/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I’m working in my system model. Add a new API container under an existing system for file ingestion. I want a correct and minimal LikeC4 declaration, without inventing a custom kind.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I’m thinking about creating a `Container_UploadOrchestrator` kind just for one upload service. Is that a good idea in this workspace? Explain the rule and what to do before adding a new kind.",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I need to add an external `virusScanProvider` and an internal `scanApi`, then draw their arrows and a C2 view. Which skill should I use for each part?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I need to model a real payment API and a mock variant for integration tests. Should I create two kinds, two elements, or something else? And which skill handles the difference between mock and prod?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "Don’t solve relationships yet: I only need a third-party identity provider and an internal portal API modeled in this workspace. Give me the most direct LikeC4 declarations you would start with.",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "create-relationship",
+      "evals_public_path": ".github/skills/create-relationship/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I need to connect a web application container to an API container in my system model. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I’m modeling an async upload flow: `uploadService` publishes to `jobQueue`, then `worker` consumes and writes to the database. Should I also draw a return relationship from worker back to upload service?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "My `retrievalService` reads Redis and then PostgreSQL. Should I use `calls`, `reads`, or something else? Give me the rule and a short example.",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "My API reads Redis as cache, then PostgreSQL as fallback on cache miss. Should I model this with one “smart” relationship, two `reads`, or something else?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "I added `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment because I wanted the diagram to show browser traffic. Should I keep that there, and where should `Manual`, `HTTPS`, and `HTTP/8080` actually live?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "create-sequence-view",
+      "evals_public_path": ".github/skills/create-sequence-view/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I want to document the login journey between a user, a web application, an API, a primary database, and an external notification service. Give me a LikeC4 skeleton for a dynamic view.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I was planning to write `api_container -> api_container.auth_component` in a dynamic view to show authentication. Correct this approach.",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I want to illustrate the async flow `externalUser` -> `webApp` -> `api` -> `jobQueue` -> `processingWorker` -> `database`. Propose the LikeC4 view.",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "In an async upload, the user immediately gets a tracking URL, then validation runs in the background with retries on failure. How do I show both immediate success and retry behavior without breaking the dynamic view?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "customize-view",
+      "evals_public_path": ".github/skills/customize-view/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I want to improve an existing C2 container view to make flow left-to-right, keep the user as input, keep the database and an external mail service as outputs, and preserve drill-down on the web application. Give me only the LikeC4 block.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "In an existing view, I want to highlight API elements and de-emphasize everything else, but without inventing a local palette. Which LikeC4 customization would you propose?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I want to enrich an existing C2 view with an external link to internal spec docs and keep a stable drill-down from the web application to its existing detail view. Propose the customization block.",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "On an existing C2 container view, I want to highlight API elements, keep a stable drill-down to the web application detail view, and add an external link to internal docs. Which LikeC4 customization block should I use, and where does this skill stop?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "My C2 view already looks mostly fine. I just want the user to stay clearly on the left, but I do not want a pile of `rank` directives that make the diagram brittle. What customization would you suggest?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "design-view",
+      "evals_public_path": ".github/skills/design-view/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I want a proper C2 view for a system that shows the system, its containers, the user, and an external email service, with drill-down from the web application. Propose a LikeC4 skeleton in the right place.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I need to create a production infrastructure view with DMZ, app tier, and data tier. Give me a LikeC4 Deployment-view example aligned with workspace conventions.",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I want to document the upload journey step by step, with colors to highlight critical elements. What LikeC4 approach do you recommend?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I need to document a new production `SecZone` with bastion, firewall, and dedicated services. Should I create only a Deployment view, add a C2 as well, or both? Give me the cleanest LikeC4 approach.",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "document-decision",
+      "evals_public_path": ".github/skills/document-decision/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "We’re choosing PostgreSQL instead of MongoDB for the main database container in our system. Help me frame the ADR to write.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I just changed the repository’s GitHub Actions workflow. Should I write an ADR with this skill?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "We are replacing an internal payment orchestration service with a direct SaaS integration to Stripe, keeping only a small internal adapter boundary. This is a real architecture decision. Help me frame the ADR.",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "implement-pattern",
+      "evals_public_path": ".github/skills/implement-pattern/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I need to model in LikeC4 a call from an internal API to an external payment provider. Which standard elements and relationships should I add to stay consistent?",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I want to represent async processing: an API publishes a job, and a worker consumes it from RabbitMQ. Which LikeC4 pattern should I apply, and which mistake should I avoid?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I want to add Redis in front of Postgres to speed up API reads. How should I model this cache without implying it replaces the database?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I need to integrate Stripe: an internal API creates a payment, then Stripe sends a confirmation webhook to an internal endpoint. How do I model this pattern without implying a synchronous return?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "lookup-element-kinds",
+      "evals_public_path": ".github/skills/lookup-element-kinds/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I’m not sure whether my backend should use `Container_Api`, `Container_API`, or just `Container`, and which model relationships are valid toward a database. Give me the exact taxonomy and how to verify it in the active workspace.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "Between an app VM and a database VM in deployment, should I use `calls`, `tcp`, or `sql`? And in the logical application model, what remains valid?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "For a firewall in deployment infrastructure, is the exact kind `Infra_Firewall`, `Infra_Fw`, or something else? Also give two nearby kinds that are truly valid in the active workspace.",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I’m looking for exact kinds for an HTTP API, an async worker, and a message queue, but I don’t want to guess. How do you find them in the active workspace, and how do you resolve it when two names look similar?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "For a web application talking to an API in the logical model, should the relationship kind be `https` or `calls`? And when does `https` become valid in the active workspace?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "model-deployment-infrastructure",
+      "evals_public_path": ".github/skills/model-deployment-infrastructure/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I need to document production deployment for a document platform with an API gateway, an upload service, a processing worker, and MongoDB. Give me the LikeC4 structure to follow for environments, zones, VMs, and Node_App. Also explain how to link deployed apps to the logical model and whether deployment relationships must be copied manually.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I mainly want to split production into `Dmz`, `AppTier`, `ProcTier`, and `DataTier`, with firewall rules between zones. Should this skill detail that itself, or should I switch to another skill?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I’m deploying on managed Kubernetes in production and I don’t have access to underlying VM details. How do I keep an honest deployment hierarchy in LikeC4 without inventing physical hosts? And how do I wire `instanceOf`?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "In `deployment.c4`, I was about to add `Prod.Web.webApp -[https]-> Prod.App.apiApp` and `Prod.App.apiApp -[tcp]-> Prod.Data.dbApp` so the diagram shows protocols and ports. Is that the right place, or should those technologies live somewhere else?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "Prometheus scrapes my production API VM, but browser/API traffic already exists in the logical model. Which deployment relationships should I add, and which ones should I avoid duplicating?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "name-deployment-nodes",
+      "evals_public_path": ".github/skills/name-deployment-nodes/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I need to name the environment, zones, and VMs of a production setup with API gateway, upload, worker, MongoDB, and monitoring. Propose consistent names and also fix these candidates: `ProdApiVM`, `prod_upload_vm`, `AppServers`, `MonitoringTier`.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I don’t only want names: I also want full Environment→Zone→VM→Node_App hierarchy, Markdown descriptions with IP/CPU/RAM, and `instanceOf` links to containers. Is this the right skill?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I have a multi-region EU/US production setup with API, worker, and database. For VMs and zones, should it be `ProdEuApiVm` or `EuProdApiVm`? And how do I keep one readable convention across all names?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "organize-multi-project",
+      "evals_public_path": ".github/skills/organize-multi-project/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "In a multi-project LikeC4 workspace with shared specs and two existing projects, I need to add a new payments project. How do I bootstrap it cleanly, and which minimum files/config should I create?",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I want to put a `paymentsCore` system and a `backOfficeUser` actor in the shared specifications area so they are visible everywhere. Good idea or not? And how should cross-project references be handled?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I’m adding a new project and also need to adjust its include paths and image aliases. Is this skill enough, or should it be combined with another one?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I want to share technical conventions AND some reusable business models. Should everything go in the shared area, or should specs and domains be separated without turning the repo into a maze?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "structure-deployment-tiers",
+      "evals_public_path": ".github/skills/structure-deployment-tiers/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I’m designing production for a document platform with API gateway, business services, RabbitMQ, async worker, MongoDB, MinIO, and monitoring. Split this into coherent LikeC4 tiers and specify key responsibilities/network rules.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I understand the DMZ/AppTier/ProcTier/DataTier split. Now I want exact VM names, Markdown spec tables, and `instanceOf` wiring for Node_App. Should this skill detail all that?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "My production setup has `Dmz`, `AppTier`, and `DataTier`, but I also need to add a cross-cutting audit/security zone and a standby disaster-recovery site. Where should I place this without breaking tier readability?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "sync-with-template",
+      "evals_public_path": ".github/skills/sync-with-template/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I modified `.github/skills/create-relationship/SKILL.md`, `projects/shared/spec-context.c4`, `projects/payments/system-model.c4`, and `README.md`. What can be pushed to the upstream reference repo, and what must stay local?",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I improved `.github/skills/create-relationship/SKILL.md`. Give me the safe sequence to push this improvement to the upstream reference repo (remote `c4-template`) using a `sync/*` branch, while keeping confidentiality review before push.",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I want to pull upstream improvements for `.github` and `projects/shared`. Which commands should I run, and why `--squash`?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I improved `projects/shared/spec-containers.c4` in this repo. Another derived repository wants the same fix. How do I verify it is truly generic before pushing it upstream via `c4-template`?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "My `sync/spec-hardening` branch already contains a good generic change to `.github/skills/create-element/SKILL.md`, but I accidentally committed local edits to `projects/acme/system-model.c4` and `README.md` on the same branch. How do I recover before opening a PR to `c4-template`?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "test-model",
+      "evals_public_path": ".github/skills/test-model/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I just added a worker container and a dedicated C2 view in my main model and views files. Before commit, give me a LikeC4 validation plan to check kinds, FQNs, relationships, and rendering.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "In my C2 detail view, I show the user, the web application, and the API. How do I validate that it keeps the right parent context and that no include is too broad?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I replaced a `calls` relationship with `async` between two containers. LikeC4 no longer complains, but the C2 view looks odd. How do I validate that the model is truly correct and not just syntactically acceptable?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "troubleshoot-errors",
+      "evals_public_path": ".github/skills/troubleshoot-errors/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "After editing my system model, LikeC4 reports `Unknown kind Container_WebUi` and `Element not found: api`. How do I diagnose this properly?",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "In a dynamic view, I wrote `system -> system.api` and then `rank same user, system.api`, and it breaks. What is the real cause and what should I fix?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "LikeC4 reports `Unknown relationship type: sends` and `Element not found: dataLayer.cache`. I don’t know whether this is a wrong relationship name, a broken FQN, or both. How do you diagnose this properly?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I wrote `webapp -[https]-> api` inside `model {}` and then copied the same traffic again between deployed apps in deployment because I wanted protocols on the diagram. Now the model is confusing. What is the root cause and the clean fix?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "understand-project-structure",
+      "evals_public_path": ".github/skills/understand-project-structure/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I need to add a new API container in this LikeC4 workspace. Before any change, run a full preflight: active project, available kinds/relationships/tags, source-of-truth files, then give a C1→C2→C3 plan.",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "We have a multi-project workspace. I switched projects and want to edit a C3 view. Show how to avoid context errors and which MCP checks to re-run before editing.",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I get an unknown kind/relationship error. Provide a structured diagnosis: where to check first, what to compare, and how to confirm the correct taxonomy before fixing.",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "I’m starting a new LikeC4 model in this repository. Once project context is established, which skill should take over to sequence modeling, and what must this first skill lock in before handoff?",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "I’m coming from UML/ArchiMate and need to contribute to this LikeC4 workspace without breaking the model. Which local conventions should I understand first, where are the real sources of truth, and which skill should I hand off to next?",
+          "files": []
+        },
+        {
+          "id": 5,
+          "prompt": "I found a nice pattern in `projects/spec-showcase/container-views.c4`. Can I treat that as the authoritative taxonomy for adding a new queue and API in another project? What should I validate first?",
+          "files": []
+        }
+      ]
+    },
+    {
+      "skill_name": "write-rich-descriptions",
+      "evals_public_path": ".github/skills/write-rich-descriptions/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I haven’t created my processing service or production VM yet, but I already want to document their descriptions. Which skill should I use first, then which description format should I choose?",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "For a future `ProdApiVm`, I want an ops-useful description. Which information should I include, in what order, and what should not be duplicated?",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "For `ProdApiVm`, I have `eth0`, `eth1` monitoring, CPU/RAM/GPU specs, and many operational details. How do I write a rich ops-useful description without turning the block into an encyclopedia?",
+          "files": []
+        }
+      ]
+    }
+  ]
+}

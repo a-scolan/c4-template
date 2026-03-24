@@ -1,0 +1,36 @@
+{
+  "skill_name": "c4-modeling-process",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/c4-modeling-process/SKILL.md",
+    ".github/skills/c4-modeling-process/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Follow a top-down sequence: first re-establish the project rules and structure if needed, then model C1 (system boundary, actors, external systems), then C2 (runtime/deployable containers and their interactions), and only then add C3 for selected containers that truly need internal explanation. After the structural model is stable, add Dynamic views for time-ordered workflows and Deployment views for runtime topology. Finish with validation. What is optional: C3 is optional and should exist only where internal detail adds value; Dynamic views are optional and should be created only for workflows worth explaining; Deployment views are optional and should be added only when infrastructure/topology matters. C1 and C2 are the core path."
+    },
+    {
+      "id": 1,
+      "response": "No—do not create a C3 view just because a container exists. The decision rule is: create C3 only when the container is architecturally central, risky, hard to reason about, or internally complex enough that C2 no longer explains it well. If your API container is simple and already understandable at C2, stop at C2. C3 is selective, not mandatory."
+    },
+    {
+      "id": 2,
+      "response": "That is not correct for C1. C1 should stay static and show the system boundary, users, and external dependencies, not step-by-step behavior. A user journey with temporal arrows belongs in a Dynamic view under `views 'Use Cases'`, because that diagram is about order in time: who acts first, what calls happen next, and how the flow progresses."
+    },
+    {
+      "id": 3,
+      "response": "Approach it in this order: first use `understand-project-structure` to confirm the active project, shared specs, valid kinds, allowed relationships, and existing view organization. Then make sure the C1 boundary is already clear enough to support a C2. Next define or refine the runtime containers and their interactions, using `create-element` for container declarations and `create-relationship` for the typed links. Once the container set is stable, use `design-view` to build the C2 view itself. After that, validate with `test-model`. This skill should orchestrate the order; the detailed edits should be handed off to those complementary skills."
+    },
+    {
+      "id": 4,
+      "response": "It should rely on other skills rather than trying to detail everything itself. This skill decides sequencing: with C2 already in place, production infrastructure should be handed to `model-deployment-infrastructure`, and the nominal user scenario should be handed to `create-sequence-view`. In other words, this skill says what comes next; specialized skills perform the detailed Deployment and Dynamic modeling. After both are added, use `test-model` to validate the result."
+    },
+    {
+      "id": 5,
+      "response": "Do it in a strict sequence. First, because this is a multi-project workspace and shared specs changed, re-establish the workspace rules with `understand-project-structure` so you do not build the C3 on outdated kinds, relationships, or view conventions. Second, confirm that this container really deserves C3 detail—only proceed if the internal detail is justified. Third, create or refine the internal elements with `create-element` and the internal typed links with `create-relationship`. Fourth, build the sensitive static C3 view with `design-view`. Fifth, once the structural C3 is stable, document the nominal user scenario as a Dynamic view with `create-sequence-view` in `views 'Use Cases'`. Sixth, validate the model with `test-model`. This skill should orchestrate the handoff; it should not try to replace the specialized skills."
+    }
+  ]
+}

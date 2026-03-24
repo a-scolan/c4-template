@@ -8,21 +8,21 @@ target: vscode
 hooks:
   SessionStart:
     - type: command
-      command: python .github/agents/scripts/enforce-test-access.py
-      windows: python .github\agents\scripts\enforce-test-access.py
+      command: python test/scripts/benchmark_access_hook.py
+      windows: python test\scripts\benchmark_access_hook.py
       env:
         BENCH_MODE: baseline
         BENCH_DEBUG_HOOKS: true
-        BENCH_DEBUG_LOG: test/iteration-4/_meta/hook-debug.jsonl
+        BENCH_DEBUG_LOG: test/_agent-hooks/hook-debug.jsonl
       timeout: 15
   PreToolUse:
     - type: command
-      command: python .github/agents/scripts/enforce-test-access.py
-      windows: python .github\agents\scripts\enforce-test-access.py
+      command: python test/scripts/benchmark_access_hook.py
+      windows: python test\scripts\benchmark_access_hook.py
       env:
         BENCH_MODE: baseline
         BENCH_DEBUG_HOOKS: true
-        BENCH_DEBUG_LOG: test/iteration-4/_meta/hook-debug.jsonl
+        BENCH_DEBUG_LOG: test/_agent-hooks/hook-debug.jsonl
       timeout: 15
 ---
 You are the isolated `without_skill` benchmark worker in strict relocation mode.

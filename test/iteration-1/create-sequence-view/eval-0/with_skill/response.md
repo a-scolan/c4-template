@@ -1,18 +1,14 @@
-Add a use-case dynamic view like this:
+Yes — this belongs in `views 'Use Cases'`.
 
-```likec4
 views 'Use Cases' {
-  dynamic view login_journey {
-    title 'Login'
-
-    user -> mySystem.webapp 'Opens the login page'
-    mySystem.webapp -> mySystem.api 'Submits credentials'
-    mySystem.api -> mySystem.database 'Loads account data'
-    mySystem.api -> emailService 'Sends verification or notification email'
-    mySystem.api -> mySystem.webapp 'Returns authentication result'
-    mySystem.webapp -> user 'Shows the signed-in state'
+  dynamic view loginJourney {
+    title 'Login Journey'
+    user -> webApp 'Opens login'
+    webApp -> api 'POST /login'
+    api -> primaryDatabase 'Checks credentials'
+    api -> externalNotificationService 'Sends login alert'
+    api -> webApp 'Returns session'
   }
 }
-```
 
-This keeps the flow in temporal order, starts with `user`, and uses only plain `->` arrows with action labels.
+Keep labels short and action-focused. One anti-pattern to avoid: `webApp -> webApp.someChild` inside the dynamic view.

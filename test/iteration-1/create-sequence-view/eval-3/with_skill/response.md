@@ -1,27 +1,26 @@
-Use two small dynamic views instead of one overloaded branch-heavy diagram. One view shows the immediate user-facing success path, and a second view shows the background validation and retry path. That keeps the initiating actor explicit and avoids turning the diagram into a pseudo `if/else` program.
+The cleanest way is to use two short dynamic views in `views 'Use Cases'`: one for the immediate acknowledgement, and one for the background retry loop. That keeps each sequence linear and readable instead of forcing branching into one oversized view.
 
-```likec4
+Assuming IDs such as `externalUser`, `webApp`, `api`, `objectStorage`, `jobQueue`, `validationWorker`, and `primaryDatabase` exist:
+
 views 'Use Cases' {
-  dynamic view upload_submission {
-    title 'Upload Submission'
-
-    user -> mySystem.webapp 'Selects a file and starts upload'
-    mySystem.webapp -> mySystem.api 'Posts the upload request'
-    mySystem.api -> mySystem.queue 'Queues validation work'
-    mySystem.api -> mySystem.webapp 'Returns a tracking URL'
-    mySystem.webapp -> user 'Shows the tracking URL immediately'
+  dynamic view uploadAccepted {
+    title 'Upload Accepted'
+    externalUser -> webApp 'Uploads file'
+    webApp -> api 'POST /upload'
+    api -> objectStorage 'Stores file'
+    api -> primaryDatabase 'Creates tracking record'
+    api -> webApp 'Returns tracking URL'
   }
 
-  dynamic view upload_validation_retry {
+  dynamic view uploadValidationRetry {
     title 'Upload Validation Retry'
-
-    scheduler -> mySystem.queue 'Triggers the next validation attempt'
-    mySystem.queue -> mySystem.worker 'Dispatches the validation job'
-    mySystem.worker -> mySystem.database 'Loads upload metadata'
-    mySystem.worker -> mySystem.queue 'Requeues the job after a failure'
-    mySystem.worker -> mySystem.database 'Stores final success or failure status'
+    api -> jobQueue 'Queues validation'
+    jobQueue -> validationWorker 'Delivers job'
+    validationWorker -> primaryDatabase 'Marks validating'
+    validationWorker -> jobQueue 'Requeues job'
+    jobQueue -> validationWorker 'Redelivers job'
+    validationWorker -> primaryDatabase 'Updates final status'
   }
 }
-```
 
-If you need even more detail, add a separate view for the terminal failure path rather than stuffing all logic into one dynamic view.
+Critical anti-pattern: do not try to encode retries, branching, and parent -> own-child hops in one dynamic view. Keep each view action-focused and ordered.

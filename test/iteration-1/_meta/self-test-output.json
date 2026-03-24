@@ -1,0 +1,149 @@
+{
+  "iteration": "iteration-1",
+  "baseline_isolation": "relocation",
+  "interactive_entrypoint": "Skill Benchmark Manager",
+  "automation_entrypoint": "python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-N --workspace-root .",
+  "checks": [
+    {
+      "name": "policy_tests",
+      "command": "C:\\Users\\ascolan\\AppData\\Local\\Programs\\Python\\Python315\\python.exe test/scripts/test_benchmark_agent_policy.py",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ".......................................\n----------------------------------------------------------------------\nRan 39 tests in 5.755s\n\nOK",
+      "passed": true
+    },
+    {
+      "name": "blind_isolation",
+      "passed": true,
+      "issue_count": 0
+    },
+    {
+      "name": "harness_tests",
+      "command": "C:\\Users\\ascolan\\AppData\\Local\\Programs\\Python\\Python315\\python.exe test/scripts/test_skill_suite_tools.py",
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "..............\n----------------------------------------------------------------------\nRan 14 tests in 0.424s\n\nOK",
+      "passed": true
+    },
+    {
+      "name": "eval_artifacts",
+      "passed": true,
+      "issue_count": 0
+    },
+    {
+      "name": "protocol_manifest",
+      "passed": true,
+      "issue_count": 0
+    },
+    {
+      "name": "workspace_skill_creator",
+      "passed": true,
+      "path": ".github/skills/skill-creator/eval-viewer/generate_review.py"
+    }
+  ],
+  "policy_test": {
+    "command": "C:\\Users\\ascolan\\AppData\\Local\\Programs\\Python\\Python315\\python.exe test/scripts/test_benchmark_agent_policy.py",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ".......................................\n----------------------------------------------------------------------\nRan 39 tests in 5.755s\n\nOK",
+    "passed": true
+  },
+  "harness_test": {
+    "command": "C:\\Users\\ascolan\\AppData\\Local\\Programs\\Python\\Python315\\python.exe test/scripts/test_skill_suite_tools.py",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "..............\n----------------------------------------------------------------------\nRan 14 tests in 0.424s\n\nOK",
+    "passed": true
+  },
+  "blind_isolation": {
+    "iteration": "iteration-1",
+    "checked_skills": 19,
+    "checked_evals": 0,
+    "issue_count": 0,
+    "issues": [],
+    "passed": true
+  },
+  "eval_artifacts": {
+    "generated_at": "2026-03-17T06:27:59Z",
+    "skills_checked": 19,
+    "issue_count": 0,
+    "issues": [],
+    "passed": true
+  },
+  "protocol_manifest": {
+    "manifest_path": "test/benchmark-protocol.json",
+    "protocol_version": "benchmark-v2",
+    "tracked_file_count": 9,
+    "issue_count": 0,
+    "issues": [],
+    "passed": true
+  },
+  "agent_plan": {
+    "iteration": "iteration-1",
+    "protocol_version": "benchmark-v2",
+    "required_setting": {
+      "chat.useCustomAgentHooks": true
+    },
+    "agents": {
+      "manager": "Skill Benchmark Manager",
+      "without_skill": "Skill Benchmark Baseline",
+      "without_skill_hook_only": "Skill Benchmark Baseline Hook-Only",
+      "with_skill": "Skill Benchmark With Skill",
+      "blind_compare": "Skill Blind Comparator"
+    },
+    "baseline_isolation": "relocation",
+    "parallelism": {
+      "default_policy": "parallel-within-phase",
+      "cross_phase_parallelism": "forbidden",
+      "unit_of_parallelism": "<skill, configuration, run_number>",
+      "phase_barrier": "wait for all tasks in the current phase before starting the next one",
+      "safe_parallel_condition": "parallelize only tasks whose output directories do not overlap",
+      "anonymous_stateful_fallback": "serialize with_skill/blind_compare and run reset-hook-state when hook payloads omit sessionId",
+      "fallback_policy": "if runtime or platform limits are hit, reduce concurrency before falling back to serial execution"
+    },
+    "entrypoints": {
+      "interactive": "Skill Benchmark Manager",
+      "automation": "python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-N --workspace-root .",
+      "preflight": "python test/scripts/skill_suite_tools.py protocol-preflight --iteration test/iteration-1 --workspace-root ."
+    },
+    "phases": [
+      {
+        "phase": "without_skill",
+        "agent": "Skill Benchmark Baseline",
+        "dispatch_mode": "parallel",
+        "parallel_scope": "<skill, run_number>",
+        "precondition": "Workspace skills were physically moved out of .github/skills/ and fresh workers were started afterwards."
+      },
+      {
+        "phase": "with_skill",
+        "agent": "Skill Benchmark With Skill",
+        "dispatch_mode": "parallel",
+        "parallel_scope": "<skill, run_number>",
+        "precondition": "Workspace skills were restored and each fresh worker stays inside one target skill directory.",
+        "anonymous_session_fallback": "serial with reset-hook-state --mode with_skill_targeted",
+        "target_skill": null
+      },
+      {
+        "phase": "blind_compare",
+        "agent": "Skill Blind Comparator",
+        "dispatch_mode": "parallel",
+        "parallel_scope": "<skill, eval_id, run_number>",
+        "precondition": "Only blind A/B artifacts and the target eval definitions are exposed to the comparator.",
+        "anonymous_session_fallback": "serial with reset-hook-state --mode blind_compare"
+      }
+    ],
+    "notes": [
+      "Enable chat.useCustomAgentHooks = true before using the benchmark agents.",
+      "Human entrypoint: use the workspace custom agent 'Skill Benchmark Manager'.",
+      "Automation entrypoint: use 'python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-N --workspace-root .' for offline checks.",
+      "The benchmark manager may delegate only to the constrained benchmark worker agents.",
+      "Benchmark worker agents are read-only and set agents: [] so they cannot chain into unconstrained subagents.",
+      "Only narrow LikeC4 MCP grounding is allowed in baseline, hook-only baseline, and with-skill workers; project listing, project summaries, and view browsing stay blocked, and benchmark_manager/blind_compare keep MCP disabled.",
+      "Keep the physical relocation step for the strict without_skill phase; hooks strengthen isolation but do not replace it.",
+      "Default execution mode is parallel within each phase: launch independent worker sessions concurrently, then wait for all of them to finish before advancing the phase.",
+      "If resolved hook audit entries show a missing raw sessionId, serialize the stateful with_skill and blind_compare phases in practice and clear anonymous hook state between fresh workers with `python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode <mode>`.",
+      "Never overlap without_skill and with_skill phases; keep phase boundaries sequential even when workers inside a phase run in parallel."
+    ]
+  },
+  "passed": true
+}

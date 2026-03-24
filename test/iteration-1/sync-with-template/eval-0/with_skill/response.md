@@ -1,19 +1,9 @@
-You can split these changes into two groups.
+Candidates for upstream sync:
+- `.github/skills/create-relationship/SKILL.md` — yes, if the improvement is reusable across derived repositories and contains no local/private context.
+- `projects/shared/spec-context.c4` — yes, if it is a genuinely shared spec improvement rather than a workaround for one repo.
 
-## Can be pushed to the template
+Must stay local:
+- `projects/payments/system-model.c4` — no; anything under `projects/<project>/` is project-local.
+- `README.md` — no; repository-level docs are usually local to this repo.
 
-- `.github/skills/create-relationship/SKILL.md` — generic skill content belongs in the template.
-- `projects/shared/spec-context.c4` — shared reusable spec content can go back to the template **if** the change is still generic.
-
-## Must stay local
-
-- `projects/payments/system-model.c4` — this is a project-specific model.
-- `README.md` — this is project introduction/documentation and should stay local.
-
-## Before pushing anything
-
-1. **Generalize the content**: remove project names, internal identifiers, and any local assumptions.
-2. **Run a confidentiality review**: make sure the diff does not expose internal architecture, security details, employee/team names, or other confidential context.
-3. **Push only the generic files** from a dedicated `sync/*` branch.
-
-If a change only makes sense for the `payments` project, or another project would need to adapt it heavily, keep it local instead of pushing it to the template.
+Before pushing the first two upstream, apply the decision test: would another derived repo use them without knowing your local domain, do they avoid project names/internal systems/private architecture, and can you explain them as reusable workspace improvements rather than one-off fixes?

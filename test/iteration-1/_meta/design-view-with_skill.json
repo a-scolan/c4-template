@@ -1,0 +1,29 @@
+{
+  "skill_name": "design-view",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/design-view/SKILL.md",
+    ".github/skills/design-view/evals/evals-public.json",
+    ".github/skills/design-view/PATTERNS.md"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Put it in `system-views.c4` under `views 'C2'`. The clean include strategy is: actor + external system, then the parent system, then its direct containers, and add drill-down on the web application.\n\n```likec4\nviews 'C2' {\n  view c2_corePlatform {\n    title 'Core Platform - Containers'\n    description 'System boundary, containers, user, and email integration'\n\n    include user\n    include externalEmailService\n\n    include corePlatform\n    include corePlatform.*\n\n    include corePlatform.webApp with {\n      navigateTo c3_webApp\n    }\n  }\n}\n```\n\nIf you want the full neighbor context later, add directed includes such as `include -> corePlatform.*` and `include corePlatform.* ->`, but the skeleton above is the right starting shape and the right category."
+    },
+    {
+      "id": 1,
+      "response": "Use a `deployment view` in `views 'Deployment'`, ideally in `deployment-views.c4` if the project is split. Follow the workspace convention of explicit includes only: environment first, then each tier, then each VM. No wildcards, and stop at VM level unless placement is the point.\n\n```likec4\nviews 'Deployment' {\n  deployment view production_overview {\n    title 'Production Infrastructure'\n    description 'DMZ, application tier, and data tier in production'\n\n    include production\n\n    include production.dmzTier\n    include production.appTier\n    include production.dataTier\n\n    include production.dmzTier.lbVm\n    include production.dmzTier.webVm\n\n    include production.appTier.apiVm\n    include production.appTier.workerVm\n\n    include production.dataTier.dbVm\n    include production.dataTier.cacheVm\n  }\n}\n```\n\nIf your hierarchy has clusters inside a tier, include those explicitly between the tier and the VMs."
+    },
+    {
+      "id": 2,
+      "response": "For a step-by-step upload journey, do **not** use a C1/C2/C3 static view. The right LikeC4 approach is a `dynamic view` in `views 'Use Cases'`, because order matters more than structure here.\n\n```likec4\nviews 'Use Cases' {\n  dynamic view uploadJourney {\n    title 'Upload Journey'\n\n    user -> browser 'Select file'\n    browser -> corePlatform.webApp 'Open upload page'\n    corePlatform.webApp -> corePlatform.api 'POST /uploads'\n    corePlatform.api -> corePlatform.uploadService 'Validate request'\n    corePlatform.uploadService -> corePlatform.objectStorage 'Store file'\n  }\n}\n```\n\nFor color highlighting, keep that as a second pass: tag the critical elements and style that tag, rather than forcing the sequence into a static view. In short: dynamic view for the journey, styling/tags for the emphasis."
+    },
+    {
+      "id": 3,
+      "response": "Default to **one deployment-style view**, not a new C2. A production `SecZone` with bastion, firewall, and security services is primarily infrastructure, so the cleanest approach is a focused view under `views 'Operations'` (or `views 'Deployment'` if you keep all infra together). Add a C2 **only** if those dedicated services are also real logical containers that need structural explanation outside their placement.\n\n```likec4\nviews 'Operations' {\n  deployment view secZone_overview {\n    title 'Production Security Zone'\n    description 'Bastion, firewall, and dedicated security services in production'\n\n    include production\n    include production.secZone\n\n    include production.secZone.bastionVm\n    include production.secZone.firewallVm\n    include production.secZone.monitoringVm\n    include production.secZone.loggingVm\n  }\n}\n```\n\nUse **both** only when there are two distinct concerns to document:\n- C2 for logical responsibilities such as `auditService` or `vaultService`\n- Deployment/Operations view for where those services run and how the zone is structured\n\nDo not create a C2 just to redraw bastions, firewalls, or zone boundaries."
+    }
+  ]
+}

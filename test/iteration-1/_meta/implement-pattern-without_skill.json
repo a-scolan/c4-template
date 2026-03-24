@@ -1,0 +1,25 @@
+{
+  "skill_name": "implement-pattern",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use the repository’s existing vocabulary: model your internal service as `Container_Api`, the payment provider as `System_External`, and connect them with a `calls` relationship over HTTPS. A clear label is something like \"Creates payment\" or \"Authorizes payment\". Keep the provider outside your system boundary; do not model it as an internal component or database."
+    },
+    {
+      "id": 1,
+      "response": "Apply the brokered async pattern already present in the model: `Container_Api` --`async`--> `Container_Queue` (RabbitMQ) --`async`--> the worker, ideally as a `Container_ProcessingServer` if it is a background processor. The mistake to avoid is collapsing this into a direct API-to-worker call, or a single API-to-worker edge labeled \"RabbitMQ\", because that hides the queue and makes the flow look synchronous."
+    },
+    {
+      "id": 2,
+      "response": "Model Redis as a separate cache concern, not as a replacement for Postgres. If it is just an internal implementation detail, the closest match to the current repository is a cache `Component` inside the API with technology Redis; if it is separately deployed, lift it to its own container. In both cases, keep Postgres as `Container_Database` and preserve the explicit API/persistence -> Postgres read path. Show the API or persistence layer `uses` Redis for lookup and, on a miss, `reads` Postgres and then updates or warms Redis. Avoid a model where the only read path is API -> Redis or where Redis appears to own the database."
+    },
+    {
+      "id": 3,
+      "response": "Model Stripe as `System_External` and use two separate relationships: first, your internal `Container_Api` `calls` Stripe over HTTPS to create the payment; second, Stripe separately `calls` your internal webhook endpoint over HTTPS for payment confirmation. If the webhook is just another route on the same API, the second edge can target the same `Container_Api`; if it is isolated, use a dedicated internal API or component for the webhook handler. The key mistake to avoid is drawing the webhook as a return arrow or bidirectional response on the first call, because that incorrectly implies synchronous confirmation."
+    }
+  ]
+}

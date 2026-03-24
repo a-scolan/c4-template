@@ -1,1 +1,0 @@
-Do not write a parent container calling its own child component in a dynamic view. That parent-to-own-child interaction is the key anti-pattern. Either call the component directly from the real caller or stay at container level if component detail is not needed.

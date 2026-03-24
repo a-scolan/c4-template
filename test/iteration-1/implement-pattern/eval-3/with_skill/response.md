@@ -1,17 +1,27 @@
-Model this as an **external integration with two explicit interactions**, not as one request with an implied return.
+Pattern: External integration plus webhook callback, modeled as two separate one-way relationships.
 
-First, represent Stripe as a dedicated external system:
+Minimal scaffold:
+stripe = System_External 'Stripe' {
+  technology 'HTTPS API'
+  description 'External payment provider.'
+}
 
-`stripe = System_External 'Stripe' { technology 'REST API + Webhooks'; description 'External payment provider'; #External }`
+api -[calls]-> stripe 'Creates payment' {
+  technology 'HTTPS'
+}
 
-Then model the outbound payment creation call:
+stripe -[calls]-> api 'Sends payment confirmation webhook' {
+  technology 'HTTPS webhook'
+}
 
-`vault.api -[calls]-> stripe 'Create payment'`
+How to keep it accurate:
+- Treat the webhook as a second independent inbound call, not as a return arrow on the create-payment request.
+- If the receiving endpoint deserves its own element, split it out under `api` using the exact declared kind from your workspace.
 
-Model the webhook as a second, separate interaction:
+Substitute before finalizing:
+- parent: place `stripe` as an external system and the receiving endpoint under your internal API boundary
+- exact kinds: replace `System_External`, `api`, or `calls` with the exact declared names if needed
+- names: use the real payment API and webhook endpoint names
+- tech: typically `HTTPS` for the outbound payment call and `HTTPS webhook` for the callback
 
-`stripe -[calls]-> vault.api 'Payment confirmation webhook'`
-
-That separation matters: the webhook is **not** a synchronous return from the first relationship. It is a new inbound call initiated later by Stripe.
-
-If you need to show the temporal order in more detail, you can complement the structural model with **`create-sequence-view`**.
+If you need to show the order explicitly, move that temporal story to a dynamic or sequence view instead of turning the first call into a synchronous round trip.

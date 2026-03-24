@@ -3,9 +3,44 @@
   "configuration": "with_skill",
   "language": "English",
   "mcp_used": false,
-  "started_at": "2026-03-12T14:01:27Z",
-  "finished_at": "2026-03-12T14:03:07Z",
-  "elapsed_seconds_total": 100,
+  "started_at": "2026-03-17T07:41:36Z",
+  "finished_at": "2026-03-17T07:42:49Z",
+  "elapsed_seconds_total": 73.0,
   "files_read_count": 2,
-  "files_written_count": 4
+  "files_written_count": 6,
+  "run_count": 1,
+  "runs": [
+    {
+      "skill_name": "write-rich-descriptions",
+      "configuration": "with_skill",
+      "language": "English",
+      "mcp_used": false,
+      "started_at": "2026-03-17T07:41:36Z",
+      "finished_at": "2026-03-17T07:42:49Z",
+      "elapsed_seconds_total": 73.0,
+      "files_read_count": 2,
+      "files_written_count": 6,
+      "run_number": 1
+    }
+  ],
+  "aggregate": {
+    "elapsed_seconds_total": {
+      "mean": 73.0,
+      "stddev": 0.0,
+      "min": 73.0,
+      "max": 73.0
+    },
+    "files_read_count": {
+      "mean": 2.0,
+      "stddev": 0.0,
+      "min": 2.0,
+      "max": 2.0
+    },
+    "files_written_count": {
+      "mean": 6.0,
+      "stddev": 0.0,
+      "min": 6.0,
+      "max": 6.0
+    }
+  }
 }

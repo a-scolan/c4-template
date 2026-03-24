@@ -1,1 +1,0 @@
-Fetch c4-template main, then subtree pull into .github and projects/shared with squash, and push origin main afterward. Use squash to keep the imported upstream history compact and easier to review instead of pulling in a long chain of upstream commits.

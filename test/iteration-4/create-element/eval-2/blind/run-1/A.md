@@ -1,1 +1,0 @@
-Use create-element for both declarations: model virusScanProvider as System_External, and model scanApi as Container_Api under the correct system. Then use create-relationship for the arrows between them, and use design-view for the C2 container view.

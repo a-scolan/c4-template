@@ -1,108 +1,190 @@
 {
+  "schema_version": 2,
   "skill_name": "understand-project-structure",
   "comparisons": [
     {
+      "schema_version": 2,
       "eval_id": 0,
-      "winner": "B",
-      "reasoning": "B is slightly better because it keeps the preflight tightly anchored to this repository by adding explicit project-summary validation and current project structure checks, while still giving a correct C1→C2→C3 plan. A is strong and accurate, but it is a bit more generic and less explicit about revalidating loaded project context.",
-      "rubric": {
-        "A": {
-          "overall_score": 8.9
-        },
-        "B": {
-          "overall_score": 9.4
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "pass_rate": 1.0
-        },
-        "B": {
-          "pass_rate": 1.0
-        }
-      }
-    },
-    {
-      "eval_id": 1,
+      "run_number": 1,
       "winner": "A",
-      "reasoning": "A is clearly better because it directly answers the project-switch problem with an explicit MCP revalidation sequence, including both list-projects and read-project-summary, then ties that sequence to concrete C3 risks. B gives sensible local checks, but it omits the required MCP validation loop and is therefore less faithful to the task.",
+      "reasoning": "A gives the fuller preflight: it separates config/shared specs/model files/views, warns against treating views as taxonomy, and provides a clearer ordered C1→C3 plan. B is serviceable but less fully grounded and less complete on source-of-truth coverage.",
       "rubric": {
         "A": {
-          "overall_score": 9.6
+          "content_score": 8.8,
+          "structure_score": 8.7,
+          "overall_score": 8.8
         },
         "B": {
+          "content_score": 7.1,
+          "structure_score": 7.6,
           "overall_score": 7.2
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 1.0
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
         },
         "B": {
-          "pass_rate": 0.75
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
         }
       }
     },
     {
+      "schema_version": 2,
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A matches the requested revalidation workflow best: it explicitly includes list-projects and read-project-summary, rereads shared specs, and names concrete risks avoided. B has useful checks but skips the required project-switch preflight sequence.",
+      "rubric": {
+        "A": {
+          "content_score": 9.6,
+          "structure_score": 9.1,
+          "overall_score": 9.4
+        },
+        "B": {
+          "content_score": 7.2,
+          "structure_score": 8.0,
+          "overall_score": 7.5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        }
+      }
+    },
+    {
+      "schema_version": 2,
       "eval_id": 2,
-      "winner": "B",
-      "reasoning": "B is better because it combines source-of-truth taxonomy checks with explicit active-project revalidation and a clearer confirmation sequence before correction. A has a solid raw-spec diagnosis, but it leans more on config and examples than on project-summary-centered confirmation, which makes it less aligned with the repository workflow described by the eval.",
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A is the stronger diagnosis guide because it starts from repo truth, compares against declared taxonomy, and includes a safe fallback when context stays inconsistent. B has solid confirmation steps, but it is weaker on fallback and source-of-truth framing.",
       "rubric": {
         "A": {
-          "overall_score": 7.8
+          "content_score": 8.6,
+          "structure_score": 8.5,
+          "overall_score": 8.6
         },
         "B": {
-          "overall_score": 9.2
+          "content_score": 7.9,
+          "structure_score": 8.2,
+          "overall_score": 8.0
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 0.75
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
         },
         "B": {
-          "pass_rate": 1.0
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 3,
-      "winner": "A",
-      "reasoning": "A is better because it explicitly names c4-modeling-process as the handoff skill, lists the exact repository facts that must be locked in first, and clearly separates workspace framing from C1→C2→C3 sequencing. B frames the workspace well, but it never explicitly names the handoff skill, which is a central requirement here.",
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "Both identify c4-modeling-process correctly, but B gives the cleaner handoff: it locks project, files, taxonomy, and parent boundary, then leaves C1→C2→C3 sequencing to the next skill. A is good, but slightly blurrier on that division of responsibility.",
       "rubric": {
         "A": {
-          "overall_score": 9.7
+          "content_score": 8.3,
+          "structure_score": 8.5,
+          "overall_score": 8.4
         },
         "B": {
-          "overall_score": 6.8
+          "content_score": 8.8,
+          "structure_score": 8.7,
+          "overall_score": 8.8
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 1.0
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
         },
         "B": {
-          "pass_rate": 0.75
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
         }
       }
     },
     {
+      "schema_version": 2,
       "eval_id": 4,
+      "run_number": 1,
       "winner": "A",
-      "reasoning": "A is much better aligned to this repository because it explicitly walks through the local workspace structures, cites the project summary and shared specs as sources of truth, gives concrete local taxonomy examples, and makes a clear handoff to c4-modeling-process. B offers reasonable onboarding advice, but it misses key local workflow anchors and leaves the handoff too generic.",
+      "reasoning": "A is better onboarding for a UML/ArchiMate contributor: it explains local conventions, points to shared specs as semantic truth, explicitly labels .github/skills as workflow guidance, and offers a clear next-skill handoff. B is useful, but misses that key semantic-vs-workflow distinction.",
       "rubric": {
         "A": {
-          "overall_score": 9.6
+          "content_score": 9.1,
+          "structure_score": 8.8,
+          "overall_score": 9.0
         },
         "B": {
-          "overall_score": 6.1
+          "content_score": 7.6,
+          "structure_score": 8.1,
+          "overall_score": 7.8
         }
       },
       "expectation_results": {
         "A": {
-          "pass_rate": 1.0
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
         },
         "B": {
-          "pass_rate": 0.25
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 5,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B answers the authority question more cleanly: it rejects the view file as taxonomy and redirects first to config plus shared specs. A is helpful, but it leans more on another project's model example, which muddies the source-of-truth message.",
+      "rubric": {
+        "A": {
+          "content_score": 7.9,
+          "structure_score": 8.2,
+          "overall_score": 8.0
+        },
+        "B": {
+          "content_score": 8.7,
+          "structure_score": 8.6,
+          "overall_score": 8.7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
+        },
+        "B": {
+          "passed": 3,
+          "total": 4,
+          "pass_rate": 0.75
         }
       }
     }

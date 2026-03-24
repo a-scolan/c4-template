@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
-HOOK_SCRIPT = ROOT / ".github" / "agents" / "scripts" / "enforce-test-access.py"
+HOOK_SCRIPT = ROOT / "test" / "scripts" / "benchmark_access_hook.py"
 ALLOWED_SUBAGENTS = "Skill Benchmark Baseline,Skill Benchmark Baseline Hook-Only,Skill Benchmark With Skill,Skill Blind Comparator"
 
 
@@ -73,7 +73,7 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
     def payload(
         self,
         *,
-        session_id: str,
+        session_id: Any | None,
         tool_name: str,
         tool_input: dict[str, Any],
         timestamp: str = "2026-03-12T12:00:00Z",
@@ -92,7 +92,7 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
 
     def read_payload(
         self,
-        session_id: str,
+        session_id: Any | None,
         relative_path: str,
         *,
         start_line: int = 1,
@@ -109,6 +109,14 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             },
             timestamp=timestamp,
         )
+
+    def session_start_payload(self, session_id: Any | None, timestamp: str = "2026-03-12T12:00:00Z") -> dict[str, Any]:
+        return {
+            "timestamp": timestamp,
+            "cwd": self.workspace_root.as_posix(),
+            "sessionId": session_id,
+            "hookEventName": "SessionStart",
+        }
 
     def subagent_payload(self, session_id: str, agent_name: str, description: str, prompt: str) -> dict[str, Any]:
         return self.payload(
@@ -131,6 +139,16 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
                 "explanation": "unsafe command",
                 "isBackground": False,
                 "timeout": 0,
+            },
+        )
+
+    def create_file_payload(self, session_id: str, relative_path: str, content: str) -> dict[str, Any]:
+        return self.payload(
+            session_id=session_id,
+            tool_name="create_file",
+            tool_input={
+                "filePath": (self.workspace_root / relative_path).as_posix(),
+                "content": content,
             },
         )
 
@@ -168,6 +186,18 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         if result.returncode != 0:
             self.fail(f"hook exited with {result.returncode}: {result.stderr}\nstdout={result.stdout}")
         return json.loads(result.stdout)
+
+    def read_jsonl(self, relative_path: str) -> list[dict[str, Any]]:
+        path = self.workspace_root / relative_path
+        if not path.exists():
+            return []
+        records: list[dict[str, Any]] = []
+        for line in path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            records.append(json.loads(line))
+        return records
 
     def decision(self, output: dict[str, Any]) -> str:
         return output["hookSpecificOutput"]["permissionDecision"]
@@ -301,7 +331,7 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(output), "deny")
 
-    def test_baseline_allows_likec4_mcp_tools_after_relocation(self) -> None:
+    def test_baseline_denies_broad_likec4_project_browsing_after_relocation(self) -> None:
         self.clear_workspace_skills()
         output = self.run_hook_payload(
             self.mcp_payload(
@@ -311,19 +341,58 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             ),
             mode="baseline",
         )
-        self.assertEqual(self.decision(output), "allow")
+        self.assertEqual(self.decision(output), "deny")
 
-    def test_baseline_allows_additional_likec4_mcp_tools_after_relocation(self) -> None:
+    def test_baseline_allows_narrow_likec4_grounding_after_relocation(self) -> None:
         self.clear_workspace_skills()
         output = self.run_hook_payload(
             self.mcp_payload(
                 "baseline-mcp-extra-session",
-                "mcp_likec4_element-diff",
-                {"element1Id": "shop.frontend", "element2Id": "shop.backend"},
+                "mcp_likec4_search-element",
+                {"search": "Container_Api"},
             ),
             mode="baseline",
         )
         self.assertEqual(self.decision(output), "allow")
+
+    def test_baseline_resolved_audit_records_denied_broad_likec4_browsing(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "baseline-audit-deny-session",
+                "mcp_likec4_read-project-summary",
+                {"project": "template"},
+            ),
+            mode="baseline",
+            extra_env={
+                "BENCH_DEBUG_HOOKS": "1",
+                "BENCH_DEBUG_LOG": "test/_agent-hooks/hook-debug.jsonl",
+            },
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+        audit_records = self.read_jsonl("test/_agent-hooks/hook-audit.jsonl")
+        self.assertTrue(audit_records)
+        self.assertEqual(audit_records[-1]["tool_name"], "mcp_likec4_read-project-summary")
+        self.assertEqual(audit_records[-1]["permissionDecision"], "deny")
+
+    def test_baseline_resolved_audit_records_allowed_shared_read(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.read_payload("baseline-audit-allow-session", "projects/shared/spec-context.c4", end_line=20),
+            mode="baseline",
+            extra_env={
+                "BENCH_DEBUG_HOOKS": "1",
+                "BENCH_DEBUG_LOG": "test/_agent-hooks/hook-debug.jsonl",
+            },
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+        audit_records = self.read_jsonl("test/_agent-hooks/hook-audit.jsonl")
+        self.assertTrue(audit_records)
+        self.assertEqual(audit_records[-1]["tool_name"], "read_file")
+        self.assertEqual(audit_records[-1]["permissionDecision"], "allow")
+        self.assertEqual(audit_records[-1]["tool_paths"], ["projects/shared/spec-context.c4"])
 
     def test_baseline_denies_non_likec4_mcp_tools(self) -> None:
         self.clear_workspace_skills()
@@ -337,7 +406,7 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(output), "deny")
 
-    def test_baseline_hook_only_allows_likec4_mcp_tools(self) -> None:
+    def test_baseline_hook_only_denies_broad_likec4_project_browsing(self) -> None:
         output = self.run_hook_payload(
             self.mcp_payload(
                 "baseline-hook-mcp-session",
@@ -345,9 +414,20 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             ),
             mode="baseline_hook_only",
         )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_hook_only_allows_narrow_likec4_grounding(self) -> None:
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "baseline-hook-mcp-search-session",
+                "mcp_likec4_search-element",
+                {"search": "Container_Api"},
+            ),
+            mode="baseline_hook_only",
+        )
         self.assertEqual(self.decision(output), "allow")
 
-    def test_with_skill_allows_likec4_mcp_tools(self) -> None:
+    def test_with_skill_allows_narrow_likec4_grounding(self) -> None:
         output = self.run_hook_payload(
             self.mcp_payload(
                 "with-skill-mcp-session",
@@ -357,6 +437,17 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             mode="with_skill_targeted",
         )
         self.assertEqual(self.decision(output), "allow")
+
+    def test_with_skill_denies_broad_likec4_project_browsing(self) -> None:
+        output = self.run_hook_payload(
+            self.mcp_payload(
+                "with-skill-project-session",
+                "mcp_likec4_read-project-summary",
+                {"project": "template"},
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "deny")
 
     def test_with_skill_denies_non_likec4_mcp_tools(self) -> None:
         output = self.run_hook_payload(
@@ -397,6 +488,92 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             mode="with_skill_targeted",
         )
         self.assertEqual(self.decision(second), "deny")
+
+    def test_with_skill_session_start_resets_stale_skill_lock(self) -> None:
+        first = self.run_hook_payload(
+            self.read_payload("with-skill-reset-session", ".github/skills/create-element/SKILL.md", end_line=80),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(first), "allow")
+
+        denied = self.run_hook_payload(
+            self.read_payload(
+                "with-skill-reset-session",
+                ".github/skills/create-relationship/SKILL.md",
+                end_line=80,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(denied), "deny")
+
+        self.run_hook_payload(
+            self.session_start_payload("with-skill-reset-session", timestamp="2026-03-12T12:00:20Z"),
+            mode="with_skill_targeted",
+        )
+
+        allowed_after_reset = self.run_hook_payload(
+            self.read_payload(
+                "with-skill-reset-session",
+                ".github/skills/create-relationship/SKILL.md",
+                end_line=80,
+                timestamp="2026-03-12T12:00:30Z",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(allowed_after_reset), "allow")
+
+    def test_with_skill_missing_session_id_uses_mode_scoped_anonymous_state_file(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload(None, ".github/skills/create-element/SKILL.md", end_line=80),
+            mode="with_skill_targeted",
+        )
+
+        self.assertEqual(self.decision(output), "allow")
+        anonymous_state_path = Path(self.state_root.name) / "anonymous-with_skill_targeted.json"
+        self.assertTrue(anonymous_state_path.exists())
+        self.assertFalse((Path(self.state_root.name) / "default.json").exists())
+
+        stored_state = json.loads(anonymous_state_path.read_text(encoding="utf-8"))
+        self.assertEqual(stored_state.get("session_id"), "anonymous-with_skill_targeted")
+        self.assertEqual(stored_state.get("locked_skill"), "create-element")
+
+    def test_with_skill_anonymous_session_start_resets_scoped_state_and_warns_about_serial_execution(self) -> None:
+        first = self.run_hook_payload(
+            self.read_payload(None, ".github/skills/create-element/SKILL.md", end_line=80),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(first), "allow")
+
+        denied = self.run_hook_payload(
+            self.read_payload(
+                None,
+                ".github/skills/create-relationship/SKILL.md",
+                end_line=80,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(denied), "deny")
+
+        session_start = self.run_hook_payload(
+            self.session_start_payload(None, timestamp="2026-03-12T12:00:20Z"),
+            mode="with_skill_targeted",
+        )
+        additional_context = session_start["hookSpecificOutput"]["additionalContext"]
+        self.assertIn("serially", additional_context)
+        self.assertIn("anonymous-with_skill_targeted", additional_context)
+
+        allowed_after_reset = self.run_hook_payload(
+            self.read_payload(
+                None,
+                ".github/skills/create-relationship/SKILL.md",
+                end_line=80,
+                timestamp="2026-03-12T12:00:30Z",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(allowed_after_reset), "allow")
 
     def test_with_skill_allows_shared_specs_but_denies_nonshared_projects(self) -> None:
         shared = self.run_hook_payload(
@@ -484,12 +661,23 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(output), "deny")
 
-    def test_blind_comparator_denies_previous_iteration_blind_artifacts(self) -> None:
-        output = self.run_hook_payload(
+    def test_blind_comparator_locks_first_iteration_read_instead_of_assuming_latest(self) -> None:
+        first = self.run_hook_payload(
             self.read_payload("blind-old-session", "test/iteration-1/create-element/eval-0/blind/A.md", end_line=40),
             mode="blind_compare",
         )
-        self.assertEqual(self.decision(output), "deny")
+        self.assertEqual(self.decision(first), "allow")
+
+        second = self.run_hook_payload(
+            self.read_payload(
+                "blind-old-session",
+                "test/iteration-2/create-element/eval-0/blind/A.md",
+                end_line=40,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(second), "deny")
 
     def test_blind_comparator_denies_previous_comparison_results(self) -> None:
         output = self.run_hook_payload(
@@ -504,6 +692,17 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             mode="benchmark_manager",
         )
         self.assertEqual(self.decision(output), "deny")
+
+    def test_manager_create_file_allows_json_content_with_path_like_strings(self) -> None:
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "manager-create-file-session",
+                "test/iteration-2/_meta/example.json",
+                '{"output_path":"test/iteration-2/create-element/blind-comparisons.json","note":"C:/temp/report.md"}',
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(output), "allow")
 
 
 if __name__ == "__main__":

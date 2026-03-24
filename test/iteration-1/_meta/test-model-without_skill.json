@@ -1,0 +1,21 @@
+{
+  "skill_name": "test-model",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Validation plan: 1) Resolve the new worker by exact FQN and confirm it sits under the same parent system as the existing containers; in the template project the C2 siblings are `mySystem.webapp`, `mySystem.api`, and `mySystem.database`, so a new worker should normally look like `mySystem.<workerName>`, not a new top-level element. 2) Confirm the worker uses a container kind that matches the project taxonomy, not an actor, system, or component kind. 3) Inspect the worker’s direct incoming and outgoing relationships and verify every endpoint uses the intended FQN, with the right direction, label, and technology. 4) Inspect each peer element that should connect to it and make sure the reciprocal incoming/outgoing edge is visible there too; this catches typos and one-sided assumptions. 5) Check view membership: the worker itself should be present in the dedicated C2 view and, only if intended, in the broader container view. 6) Check relationship membership as well: the new worker edge must appear in the dedicated C2 view, otherwise the model may be valid while the rendering is incomplete. 7) Validate rendering: the worker should render with container-style shape/color and should not appear orphaned, duplicated, or cross-scoped. 8) Finish with a manual C2 sanity check: parent system context is still obvious, labels are readable, and only the expected nodes and edges are shown."
+    },
+    {
+      "id": 1,
+      "response": "Use the current template as your baseline: `mySystem.webapp` and `mySystem.api` both have parent `mySystem`, and the existing `c2_webapp_details` view includes `user`, `mySystem`, `mySystem.webapp`, and `mySystem.api`. A focused validation flow is: first confirm the shown containers still resolve to parent `mySystem`; if either container no longer has that parent, the view has lost its C2 context. Next compare view membership of nearby siblings: `mySystem.database` is not part of `c2_webapp_details` today, so if it appears after your change, your include is probably too broad. Then verify that every non-actor element in the detail view either is `mySystem` itself or has an FQN beginning with `mySystem.`. Finally, review the edges shown in that detail view and make sure they are only the ones needed for the `user` -> `mySystem.webapp` -> `mySystem.api` story; if unrelated sibling edges start appearing, the include scope is wider than intended. In short: preserve the `mySystem` parent, keep element selection explicit, and treat the accidental appearance of unrelated siblings as the clearest sign that the include is too broad."
+    },
+    {
+      "id": 2,
+      "response": "Do not trust syntax alone; validate semantics and view behavior together. In the current template, the direct edge `mySystem.webapp` -> `mySystem.api` is a `calls` relationship titled `Makes API requests` with technology `HTTPS`, and it appears in `c2_webapp_details`, `c2_containers_focused`, and `c2_containers`. After changing that edge to `async`, check four things: first, the exact endpoints are still `mySystem.webapp` and `mySystem.api`, with the same direction and no duplicate leftover `calls` edge. Second, the new kind is actually meaningful for the interaction; if the edge still says `Makes API requests` over `HTTPS`, `async` may be syntactically accepted but semantically suspicious. Third, the edge still belongs to the same intended views; if the relation is valid but disappears or re-routes visually, the issue is likely view/layout behavior rather than model correctness. Fourth, inspect the surrounding relationships for unintended symmetry or contradictions, such as a request/response pair now looking like fire-and-forget. A good rule here is: if the exact FQNs, direction, and intended communication semantics still match, the model is correct; if only the diagram looks odd after that, investigate styling, layout, or whether `async` is the right relationship kind for an HTTPS request at all."
+    }
+  ]
+}

@@ -2,10 +2,45 @@
   "skill_name": "create-element",
   "configuration": "without_skill",
   "language": "English",
-  "mcp_used": false,
-  "started_at": "2026-03-12T13:31:50Z",
-  "finished_at": "2026-03-12T13:33:13Z",
-  "elapsed_seconds_total": 83,
-  "files_read_count": 4,
-  "files_written_count": 5
+  "mcp_used": true,
+  "started_at": "2026-03-16T21:30:05Z",
+  "finished_at": "2026-03-16T21:37:37Z",
+  "elapsed_seconds_total": 452.0,
+  "files_read_count": 0,
+  "files_written_count": 10,
+  "run_count": 1,
+  "runs": [
+    {
+      "skill_name": "create-element",
+      "configuration": "without_skill",
+      "language": "English",
+      "mcp_used": true,
+      "started_at": "2026-03-16T21:30:05Z",
+      "finished_at": "2026-03-16T21:37:37Z",
+      "elapsed_seconds_total": 452.0,
+      "files_read_count": 0,
+      "files_written_count": 10,
+      "run_number": 1
+    }
+  ],
+  "aggregate": {
+    "elapsed_seconds_total": {
+      "mean": 452.0,
+      "stddev": 0.0,
+      "min": 452.0,
+      "max": 452.0
+    },
+    "files_read_count": {
+      "mean": 0.0,
+      "stddev": 0.0,
+      "min": 0.0,
+      "max": 0.0
+    },
+    "files_written_count": {
+      "mean": 10.0,
+      "stddev": 0.0,
+      "min": 10.0,
+      "max": 10.0
+    }
+  }
 }

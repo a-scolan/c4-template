@@ -1,0 +1,29 @@
+{
+  "skill_name": "create-relationship",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use a normal container-to-container relationship in the system model, not in deployment. This workspace already shows the pattern in `projects/template/system-model.c4`: `mySystem.webapp` connects to `mySystem.api` with kind `calls` and technology `HTTPS`. So model your web application container -> API container the same way: source = web app, target = API, kind = `calls`, optional title like `Makes API requests`, technology = `HTTPS`. The relationship type/kind (`calls`) belongs in the project specification/shared spec; the system model only uses that predefined kind between elements."
+    },
+    {
+      "id": 1,
+      "response": "No. Do not add a return relationship from `worker` back to `uploadService` unless the worker really sends a callback, command, or event to it. Model the actual async chain only: upload service publishes to the queue, worker consumes from the queue, worker writes to the database. A reverse edge would wrongly imply a direct dependency or request/response path."
+    },
+    {
+      "id": 2,
+      "response": "Rule: use `reads` when the target is a data store or cache you query for data; use `calls` when the target is another service/API that performs behavior for you. Redis and PostgreSQL are data stores, so `retrievalService` should use `reads` to both. Short example: `retrievalService` reads Redis for the fast path, then reads PostgreSQL on cache miss. If it repopulates Redis afterward, add a separate `writes` relationship for that."
+    },
+    {
+      "id": 3,
+      "response": "Use separate relationships, not one smart relationship. The template already follows this style by modeling `mySystem.api -> mySystem.database` as separate `reads` and `writes`. For cache fallback, do the same: one `reads` from API to Redis, one `reads` from API to PostgreSQL, and add a separate `writes` to Redis only if the API backfills the cache after a miss. Put cache-miss/fallback behavior in the relationship title or description, not in a combined magic edge."
+    },
+    {
+      "id": 4,
+      "response": "No—do not keep `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment just to make browser traffic visible. In this workspace, protocol and interaction semantics live on the logical element relationships in `projects/template/system-model.c4`: `User -> webapp` carries `Manual`, `webapp -> api` carries `HTTPS`, and the API/database links carry `PostgreSQL` on separate `reads`/`writes` relationships. Deployment should primarily show where instances run and let those logical relationships be inherited. So: `Manual` belongs on actor -> web app, `HTTPS` belongs on the logical web app -> API relationship, and `HTTP/8080` belongs only on a real direct runtime/service hop if that hop actually exists (for example proxy -> API), not as an invented deployment-only browser edge."
+    }
+  ]
+}

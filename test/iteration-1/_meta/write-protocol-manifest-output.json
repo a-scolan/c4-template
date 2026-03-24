@@ -1,0 +1,5 @@
+{
+  "protocol_version": "benchmark-v2",
+  "output_path": "test/benchmark-protocol.json",
+  "tracked_file_count": 9
+}

@@ -1,1 +1,0 @@
-Create two elements, not two new kinds. Reuse the same shared kind and distinguish mock versus prod by element name, variable name, description, and technology. If both are external provider endpoints, model both as System_External. If the mock runs inside your own system, keep the real provider as System_External and model the mock as an internal Container_Api under that system.

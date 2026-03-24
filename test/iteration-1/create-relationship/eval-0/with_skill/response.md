@@ -1,9 +1,11 @@
-In `projects/template/system-model.c4`, use a typed arrow and keep the label inline:
-
-```likec4
-mySystem.webapp -[calls]-> mySystem.api 'Makes API requests' {
+Relationship choice: `calls`.
+Rule: In the system model, the relationship kind belongs in the arrow itself (`-[calls]->`). Protocol or medium details belong in the block as `technology '...'`, not as the relationship kind.
+Example:
+webApp -[calls]-> api 'Sends request' {
   technology 'HTTPS'
 }
-```
-
-The relationship type belongs in the arrow (`-[calls]->`), not in the properties block. Keep the action label inline, and keep `technology 'HTTPS'` inside the block. Avoid invalid syntax such as `-> { calls ... }`.
+Anti-pattern:
+webApp -> api {
+  calls 'Sends request'
+  technology 'HTTPS'
+}

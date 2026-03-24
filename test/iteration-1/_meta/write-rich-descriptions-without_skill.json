@@ -1,0 +1,21 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Start with the creation workflow, because rich descriptions are most useful after the element exists in the model. Then choose the description format by kind: a service or application style description for the processing service, and an operations-focused deployment or VM description for the production VM."
+    },
+    {
+      "id": 1,
+      "response": "For ProdApiVm, order the description from purpose to operations: role and production context; runtime or placement details that matter operationally; connectivity and exposure; capacity envelope such as CPU, RAM, GPU, and storage if relevant; then the key operating constraints such as patching, restart impact, backup, HA, ownership, and critical alerts. Do not duplicate the element name, obvious environment labels, long hardware inventories, or facts already expressed cleanly in metadata, tags, relationships, or child elements."
+    },
+    {
+      "id": 2,
+      "response": "Keep it layered and high-signal: one sentence for the VM mission, one for interfaces and why they matter, one for the resource envelope, and one for the few operational details that change how people run or troubleshoot it. Summarize eth0 and eth1 by purpose instead of dumping every field, compress CPU, RAM, and GPU into a single capacity sentence, and keep only details that affect operations such as patch windows, restart expectations, failover behavior, or monitoring dependencies. If a detail already lives in structured model data, do not repeat it in prose; aim for a short paragraph that lets ops understand what it hosts, how it connects, what it can handle, and what to watch out for in under a minute."
+    }
+  ]
+}

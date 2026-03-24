@@ -1,12 +1,7 @@
-Run the pull only for the template-managed generic areas:
+Run:
+- `git fetch c4-template main`
+- `git subtree pull --prefix=.github c4-template main --squash`
+- `git subtree pull --prefix=projects/shared c4-template main --squash`
+- `git push origin main`
 
-```bash
-git fetch c4-template main
-git subtree pull --prefix=.github c4-template main --squash
-git subtree pull --prefix=projects/shared c4-template main --squash
-git push origin main
-```
-
-Use `--squash` because it keeps your project history cleaner and more compact. Instead of importing the full upstream commit graph for each subtree update, it records the pulled template changes as a smaller, easier-to-review change in your repository.
-
-This is the right scope because `.github` and `projects/shared` are generic template content; project-specific files should not be pulled this way.
+Use `--squash` so each subtree update lands as a compact single change instead of importing the full upstream commit history into this derived repo. That keeps sync history readable, reduces noise, and makes it clear that you pulled shared workspace assets rather than mirroring the whole upstream graph.

@@ -1,17 +1,1 @@
-That is usually **not** a good idea.
-
-`projects/shared/` should contain only reusable definitions such as shared specs, tags, styles, relationship kinds, and assets. It should **not** hold project-specific business models.
-
-So if `paymentsCore` and `backOfficeUser` belong to the payments domain, keep them in the owning project, for example in `projects/payments/system-model.c4`.
-
-For cross-project references, keep them explicit, minimal, and non-circular:
-
-- If something is truly shared and external to several projects, define a small shared external abstraction that all projects can reference.
-- If shared business concepts deserve their own ownership boundary, create a dedicated project such as `projects/externals/` or another clearly named domain project.
-- Do **not** make projects include each other in a loop.
-
-A good rule is:
-
-- `projects/shared/` = reusable conventions and assets
-- owning project = domain actors/systems/containers
-- cross-project references = documented, minimal, one-way where possible
+Not in the shared specifications area if `paymentsCore` and `backOfficeUser` are actual model elements for a specific domain. The shared area should contain reusable definitions only: kinds, tags, relationship types, shared styling, shared images, and similar conventions. Putting project-specific systems or actors there is a common mistake because it blurs ownership and makes the shared area a dumping ground. Keep `paymentsCore` and `backOfficeUser` in the payments project if they belong to that domain. For cross-project references, keep them explicit, minimal, and documented. If something is truly shared across projects, use one of two patterns: either define genuinely shared external systems in a shared model file and mark them clearly with `#external`, or create a dedicated project such as `projects/externals/` or another domain-scoped project for shared business elements. In short: shared specs for reusable definitions, domain projects for real model elements, and no circular project dependencies.

@@ -1,10 +1,10 @@
-view applications {
+view c2_containers of mySystem {
   style * {
-    color muted
+    opacity 40
   }
 
-  style * where kind is Container_Api
-     or kind is Container_Api_Geo {
+  style mySystem.api {
     color primary
+    opacity 100
   }
 }

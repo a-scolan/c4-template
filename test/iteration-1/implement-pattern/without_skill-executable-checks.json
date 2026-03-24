@@ -1,0 +1,79 @@
+{
+  "iteration": "iteration-1",
+  "skill_name": "implement-pattern",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-17T09:27:55Z",
+  "run_count": 1,
+  "summary": {
+    "applicable_eval_count": 2,
+    "valid_eval_count": 2,
+    "valid_eval_rate": 1.0,
+    "snippet_count_total": 2,
+    "error_count_total": 0,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Model Redis as a separate cache concern, not as a replacement for Postgres. If it is just an internal implementation detail, the closest match to the current repository is a cache `Component` inside the API with technology Redis; if it is separately deployed, lift it to its own container. In both cases, keep Postgres as `Container_Database` and preserve the explicit API/persistence -> Postgres read path. Show the API or persistence layer `uses` Redis for lookup and, on a miss, `reads` Postgres and then updates or warms Redis. Avoid a model where the only read path is API -> Redis or where Redis appears to own the database.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Model Stripe as `System_External` and use two separate relationships: first, your internal `Container_Api` `calls` Stripe over HTTPS to create the payment; second, Stripe separately `calls` your internal webhook endpoint over HTTPS for payment confirmation. If the webhook is just another route on the same API, the second edge can target the same `Container_Api`; if it is isolated, use a dedicated internal API or component for the webhook handler. The key mistake to avoid is drawing the webhook as a return arrow or bidirectional response on the first call, because that incorrectly implies synchronous confirmation.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

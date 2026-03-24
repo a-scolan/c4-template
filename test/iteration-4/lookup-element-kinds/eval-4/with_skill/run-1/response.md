@@ -1,1 +1,0 @@
-For a web application talking to an API in the logical model, use calls, not https. The logical relationship kinds are declared in spec-global, while https is a deployment-side relationship kind. In the logical model, keep the relationship kind as calls and put the protocol in technology, for example HTTPS.

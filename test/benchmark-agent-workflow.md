@@ -8,6 +8,7 @@ This guide documents the custom benchmark agents and the shared hook policy used
 - Use the strict relocated baseline by default for the full `without_skill` batch.
 - Run independent workers in parallel by default **within** each phase.
 - Treat the hook-only baseline worker as an explicit probe mode, not as a replacement for relocation.
+- If resolved hook-audit entries show that raw `sessionId` is missing, serialize the stateful `with_skill` and `blind_compare` phases and reset anonymous hook state between fresh workers.
 - Before the first scored worker of a campaign, run a live isolation probe against a clearly forbidden file (for example `README.md` or a prior-iteration artifact) and confirm the worker is truly blocked.
 
 ## Entry points
@@ -28,6 +29,8 @@ Use this scheduler unless a run-specific constraint forces a narrower scope:
 
 This means the benchmark is **parallel by default inside a phase** and **strictly sequential across phase boundaries**.
 
+If the live hook payloads omit `sessionId`, the wrapper falls back to shared anonymous session state for `with_skill_targeted` and `blind_compare`. In that runtime condition, keep those two phases **serial in practice** and clear anonymous hook state between fresh workers.
+
 ## Agent inventory
 
 | Agent file | Role | Tools | Subagents |
@@ -40,10 +43,14 @@ This means the benchmark is **parallel by default inside a phase** and **strictl
 
 ## Shared hook engine
 
-- Script: `.github/agents/scripts/enforce-test-access.py`
+- Script: `test/scripts/benchmark_access_hook.py`
 - Main hook event: `PreToolUse`
 - Context injection: `SessionStart`
 - Manager reinforcement: `SubagentStart`
+
+The wrapper under `test/scripts/benchmark_access_hook.py` is the active benchmark hook entrypoint. It reuses the legacy policy logic while resetting stale session state on `SessionStart`, normalizing missing `sessionId` values into mode-scoped anonymous session ids, avoiding false path detection in `create_file` payload content, and letting blind-comparator sessions lock onto the first requested iteration instead of whichever iteration folder happens to sort last.
+
+When hook debug logging is enabled, the wrapper also writes a resolved audit trail beside the raw attempt log so you can distinguish blocked attempts from actually allowed tool uses and compare raw vs effective session ids.
 
 ### Policy modes
 
@@ -52,10 +59,10 @@ This means the benchmark is **parallel by default inside a phase** and **strictl
 | `benchmark_manager` | Orchestrate benchmark work and benchmark-specific docs | Can delegate only to allowlisted benchmark workers; edits are limited to `README.md`, `test/`, and `.github/agents/*.agent.md`; no shell escape; no MCP |
 | `baseline` | Strict relocated `without_skill` worker | Requires `.github/skills/` to be empty before tool use; worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no `SKILL.md`, no `README.md`, no project-local examples, no `test/` artefacts, no edits, no terminal, no subagents |
 | `baseline_hook_only` | Hook-only `without_skill` isolation probe | Workspace skills may remain in place, but worker reads are still limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no `.github` path, no `_disabled-skills` backup, no `SKILL.md`, no `README.md`, no project-local examples, no edits, no terminal, no subagents |
-| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; inside that skill, benchmark prompts must come from `evals/evals-public.json` only; outside that skill, worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no unrelated `test/` artefacts, no edits, no terminal, no subagents |
-| `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `grading-spec.json`; no `blind-map.json`, no raw outputs, no `SKILL.md`; no MCP, including LikeC4 MCP |
+| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; inside that skill, benchmark prompts must come from `evals/evals-public.json` only; outside that skill, worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no unrelated `test/` artefacts, no edits, no terminal, no subagents. If raw `sessionId` is missing, treat anonymous workers as serial-only and reset hook state between fresh workers. |
+| `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `grading-spec.json`; no `blind-map.json`, no raw outputs, no `SKILL.md`; no MCP, including LikeC4 MCP. The comparator locks to the first blind iteration/skill it touches instead of assuming the numerically latest iteration folder. If raw `sessionId` is missing, keep comparator workers serial and reset hook state between fresh workers. |
 
-LikeC4 MCP is intentionally allowed only for the scored answer-generation workers (`baseline`, `baseline_hook_only`, and `with_skill_targeted`) because some LikeC4 tasks need model and relationship grounding even in `without_skill`. It remains blocked for `benchmark_manager` and `blind_compare`, and the grader/analyzer support playbooks are not part of this MCP allowance.
+LikeC4 MCP is intentionally allowed only for the scored answer-generation workers (`baseline`, `baseline_hook_only`, and `with_skill_targeted`) because some LikeC4 tasks need model and relationship grounding even in `without_skill`. That allowance is deliberately narrow: keep it to element/relationship grounding only. Project listing, project summaries, and view browsing are blocked during scored runs because they expose template/showcase examples outside `projects/shared/`. LikeC4 MCP remains blocked for `benchmark_manager` and `blind_compare`, and the grader/analyzer support playbooks are not part of this MCP allowance.
 
 ## Critical subagent rule
 
@@ -91,6 +98,19 @@ The benchmark manager may consult the workspace skill `skill-creator`, but the m
 
 Outside the locked skill, benchmark workers are intentionally allowed to read only `projects/shared/` because those files act as reusable specification examples. They may not consult `README.md`, `projects/template/`, or `projects/spec-showcase/` during scored runs.
 
+## Provisional iterations and forbidden fallback
+
+Never reuse `blind-comparisons.json` from a previous iteration as if it were fresh comparator evidence for the current iteration. Those judgments belong to older outputs and can silently invalidate blind-derived metrics and previous-iteration deltas.
+
+If the blind-comparison phase cannot be completed cleanly:
+
+1. keep the current iteration marked as provisional,
+2. write machine-readable caveats to `test/iteration-N/_meta/benchmark-caveats.json`,
+3. suppress previous-iteration comparison in the aggregated report,
+4. rerun the comparator phase later instead of copying old comparison payloads forward.
+
+Use the same caveat file when timings are synthetic placeholders or when `with_skill` had to fall back to injected guidance.
+
 The scored protocol is now versioned. Before a campaign, freeze the active agent prompts, hook rules, and split eval artifacts into `test/iteration-N/_meta/protocol-lock.json` with `skill_suite_tools.py protocol-preflight`.
 
 ## Support playbook mapping
@@ -108,9 +128,14 @@ The scored protocol is now versioned. Before a campaign, freeze the active agent
 Recommended starting points:
 
 ```bash
+python test/scripts/skill_suite_tools.py clean-benchmark-artifacts --workspace-root .
+python test/scripts/skill_suite_tools.py utc-now
 python test/scripts/skill_suite_tools.py self-test --iteration test/iteration-2 --workspace-root .
 python test/scripts/skill_suite_tools.py write-protocol-manifest --workspace-root .
 python test/scripts/skill_suite_tools.py protocol-preflight --iteration test/iteration-2 --workspace-root .
+python test/scripts/skill_suite_tools.py validate-hook-audit --path test/_agent-hooks/hook-audit.jsonl --mode baseline
+python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode with_skill_targeted
+python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode blind_compare
 python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --baseline-isolation relocation
 python test/scripts/skill_suite_tools.py agent-plan --iteration test/iteration-2 --baseline-isolation hook-only
 ```
@@ -133,6 +158,10 @@ python test/scripts/skill_suite_tools.py validate-blind-isolation --iteration te
 python test/scripts/test_benchmark_agent_policy.py
 ```
 
+Use `utc-now` immediately before and after a scored worker when you need auditable per-worker timestamps without leaving the benchmark-manager command allowlist.
+
+When raw `sessionId` is missing in live hook-audit entries, call `reset-hook-state` before each fresh anonymous `with_skill` or `blind_compare` worker and avoid parallel dispatch for those phases.
+
 ## Skill-creator-aligned review flow
 
 1. Use `export-review-workspace` to adapt one benchmarked skill into the directory layout expected by `skill-creator`'s review viewer.
@@ -149,6 +178,9 @@ The support skill `.github/skills/skill-creator/` is intentionally vendored and 
 
 - Open the **GitHub Copilot Chat Hooks** output channel to inspect hook decisions.
 - Use `#debugEventsSnapshot` when you want to inspect the effective tool payloads seen by the hooks.
+- The default debug log target is `test/_agent-hooks/hook-debug.jsonl`; rotate or delete it between campaigns when needed.
+- The resolved decision log lives beside it at `test/_agent-hooks/hook-audit.jsonl`; use `validate-hook-audit` to confirm that scored workers only received allowed reads and that broad LikeC4 MCP browsing stayed denied.
+- If `validate-hook-audit` reports malformed JSONL lines, treat the audit log as disposable campaign state: rotate or delete `test/_agent-hooks/` and rerun the affected phase instead of trusting a partially corrupted log.
 - If the local schema still flags `hooks` in `.agent.md`, verify your VS Code version and keep `chat.useCustomAgentHooks = true`; the feature is preview-only in VS Code 1.111.
 
 ## Boundary of trust

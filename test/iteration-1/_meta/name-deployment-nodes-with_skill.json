@@ -1,0 +1,24 @@
+{
+  "skill_name": "name-deployment-nodes",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/name-deployment-nodes/SKILL.md",
+    ".github/skills/name-deployment-nodes/evals/evals-public.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use `Prod` for the environment. A consistent set is: zones `Dmz`, `AppTier`, `ProcTier`, `DataTier`, and `SecZone`; VMs `ProdApigwVm`, `ProdUploadVm`, `ProdWorkerVm`, `ProdDatabaseVm`, and `ProdMonitoringVm`. Fix the candidates as follows: `ProdApiVM` -> `ProdApigwVm`, `prod_upload_vm` -> `ProdUploadVm`, `AppServers` -> `AppTier`, `MonitoringTier` -> `SecZone` if it groups monitoring/security, otherwise `InfraZone` for general operations tooling. Keep the VM pattern in PascalCase as `{Environment}{Service}Vm`; if you also need FQN-style IDs, use kebab-case such as `prod-apigw-vm`."
+    },
+    {
+      "id": 1,
+      "response": "Not on its own. This skill is specifically for consistent deployment node names such as `Prod`, `AppTier`, and `ProdUploadVm`. It explicitly points to `model-deployment-infrastructure` as the required background for full hierarchy, descriptions, and infrastructure requirements. For the full `Environment -> Zone -> VM -> Node_App` hierarchy, Markdown descriptions with IP/CPU/RAM, and `instanceOf` links to containers, use `model-deployment-infrastructure` as the primary skill, keep `name-deployment-nodes` for the identifiers, and optionally add `write-rich-descriptions` for richer Markdown tables."
+    },
+    {
+      "id": 2,
+      "response": "Prefer `ProdEuApiVm`, not `EuProdApiVm`. The convention starts with the environment, so extend it consistently as `{Environment}{Region}{Service}Vm`: `ProdEuApiVm`, `ProdEuWorkerVm`, `ProdEuDatabaseVm`, `ProdUsApiVm`, `ProdUsWorkerVm`, `ProdUsDatabaseVm`. For zones, keep the standard suffix-based names and let the parent scope carry region/environment when possible: under `ProdEu` use `Dmz`, `AppTier`, `ProcTier`, and `DataTier`; under `ProdUs` reuse the same zone names. Only add region to a zone name if flat uniqueness truly requires it, and then stay consistent, for example `EuAppTier` and `UsDataTier`. The key is to choose one slot order and never mix both `ProdEu...` and `EuProd...`."
+    }
+  ]
+}

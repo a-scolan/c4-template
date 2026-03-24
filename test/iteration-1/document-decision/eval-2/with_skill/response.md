@@ -1,26 +1,54 @@
-Use `ADR/0002-replace-payments-service-with-stripe.md`
+Yes — this is exactly the kind of decision this skill is meant for. Frame the ADR around the architecture boundary change, not around implementation steps.
 
-# ADR-0002: Replace `payments-service` with a direct Stripe integration
+Suggested ADR structure:
+
+# Adopt direct Stripe integration behind a thin internal payment adapter
 
 ## Status
-Proposed
+Proposed or Accepted
 
 ## Context
-The current architecture routes payment processing through the internal `payments-service`. That gives us full control, but it also creates ongoing operational and maintenance overhead for provider-specific APIs, retries, webhooks, reconciliation, and security-sensitive payment concerns. We now want to simplify the architecture by removing the internal service and keeping only a small `stripeAdapter` that isolates Stripe-specific logic from the rest of the system. This decision affects the LikeC4 elements `payments-service` and `stripeAdapter`, plus any internal callers that currently depend on `payments-service`.
+- The current design uses an internal payment orchestration service.
+- The team wants to simplify the architecture by integrating directly with Stripe.
+- A small internal adapter boundary will remain so Stripe-specific concerns do not leak across the system.
+- Capture the key forces: delivery speed, operational overhead, vendor coupling, compliance/security, failure handling, retries/idempotency, webhook processing, and the need to keep a stable internal contract.
 
 ## Decision
-Retire the internal `payments-service` and integrate directly with Stripe through a thin `stripeAdapter`. The `stripeAdapter` will be the only internal boundary responsible for Stripe request mapping, webhook verification, idempotency handling, and translation between Stripe concepts and our internal domain model.
+Replace the broad internal payment orchestration service for this use case with a direct Stripe SaaS integration through a thin internal adapter boundary.
+Clarify the boundary explicitly: the adapter owns Stripe-specific protocol mapping, authentication, error normalization, idempotency concerns, and webhook handling. Business services call the adapter, not Stripe directly.
+Also state what is out of scope, such as support for multiple payment providers if that is not part of the current decision.
+
+## Impacted Elements
+List the real affected elements, for example:
+- checkout/order/payment application services that initiate payments
+- the existing internal payment orchestration service to be reduced or removed
+- the retained or newly defined payment adapter boundary
+- the external Stripe system/integration endpoint
+- any operational or deployment documentation related to webhooks, secrets, retries, and observability
+Use actual model IDs or stable names; do not invent view IDs.
+
+## Alternatives Considered
+- Keep the existing internal orchestration service: preserves a broader abstraction but keeps more internal complexity and ownership.
+- Call Stripe directly from business services: simplest short term, but spreads vendor-specific details across the codebase.
+- Thin internal adapter over Stripe: chosen middle ground that reduces internal platform scope while preserving a clean boundary.
 
 ## Consequences
-
 ### Positive
-- Reduces platform surface area by removing a full internal payment service.
-- Shifts commodity payment capabilities to Stripe, including managed payment features and provider expertise.
-- Lowers maintenance burden for payment orchestration, retries, and provider-specific behavior.
-- Keeps Stripe-specific logic isolated in `stripeAdapter` instead of spreading it across the system.
+- Simpler overall architecture and less internal platform code to own
+- Faster delivery by using Stripe capabilities directly
+- Cleaner boundary if the adapter centralizes auth, mapping, idempotency, and error handling
 
 ### Negative
-- Introduces stronger dependency on a SaaS provider for a critical business capability.
-- Reduces control over payment flow behavior, data shape, and change timing compared with a fully owned internal service.
-- Makes Stripe API changes, outages, rate limits, and webhook delays part of our runtime risk profile.
-- Requires careful migration planning for contracts, idempotency, reconciliation, and historical payment handling.
+- Increased dependence on Stripe capabilities, API behavior, and service limits
+- Migration effort from the current orchestration service
+- Webhook handling, retries, failure modes, and operational monitoring must be designed carefully
+
+### Neutral
+- The internal boundary becomes smaller, but more important as the contract stabilization point
+
+## Follow-up
+- Update affected model elements and relationships to reflect the new integration boundary
+- Document webhook, idempotency, and secret-management assumptions
+- Recheck any affected deployment and operational views
+
+A strong one-line title would be: Adopt direct Stripe SaaS integration behind a thin internal payment adapter.

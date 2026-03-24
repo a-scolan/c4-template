@@ -1,13 +1,14 @@
-Do not model `api_container -> api_container.auth_component` in a dynamic view. A dynamic view shows interactions between participants, not a parent calling its own child. Keep the container/component hierarchy in the static C3 view, and let the initiating actor target the component directly.
+Do not use `api_container -> api_container.auth_component` in a dynamic view. That is a parent -> own-child interaction, which is the main anti-pattern here.
 
-```likec4
+Use the real caller to target the child directly, or stay at container level if component detail is not needed:
+
 views 'Use Cases' {
-  dynamic view authentication_flow {
-    title 'Authentication'
-
-    person_external -> api_container.auth_component 'Submits credentials'
-    api_container.auth_component -> component_database 'Loads user record'
-    api_container.auth_component -> person_external 'Returns authentication result'
+  dynamic view authenticationFlow {
+    title 'Authentication Flow'
+    user -> webApp 'Starts login'
+    webApp -> api_container.auth_component 'POST /login'
+    api_container.auth_component -> primaryDatabase 'Reads user'
   }
 }
-```
+
+If you do not need component-level detail, simplify it further to `webApp -> api_container 'POST /login'`.

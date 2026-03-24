@@ -25,6 +25,7 @@ COMPARATOR_SCHEMA_VERSION = 2
 BENCHMARK_PROTOCOL_VERSION = "benchmark-v2"
 EVALS_PUBLIC_FILENAME = "evals-public.json"
 GRADING_SPEC_FILENAME = "grading-spec.json"
+ITERATION_CAVEATS_FILENAME = "benchmark-caveats.json"
 COMPARATOR_SIDES = ("A", "B")
 COMPARATOR_WINNERS = {"A", "B", "TIE"}
 PROTOCOL_MANIFEST_RELATIVE_PATH = Path("test") / "benchmark-protocol.json"
@@ -34,11 +35,34 @@ PROTOCOL_TRACKED_FILES = (
     ".github/agents/skill-benchmark-baseline-hook-only.agent.md",
     ".github/agents/skill-benchmark-with-skill.agent.md",
     ".github/agents/skill-blind-comparator.agent.md",
-    ".github/agents/scripts/enforce-test-access.py",
+    "test/scripts/benchmark_access_hook.py",
     "test/benchmark-agent-workflow.md",
     "test/skill-suite-eval-prompt.md",
     "test/scripts/skill_suite_tools.py",
 )
+HOOK_DEBUG_LOG_RELATIVE_PATH = Path("test") / "_agent-hooks" / "hook-debug.jsonl"
+HOOK_AUDIT_LOG_RELATIVE_PATH = Path("test") / "_agent-hooks" / "hook-audit.jsonl"
+HOOK_STATE_FILENAME_RE = re.compile(r"[^A-Za-z0-9_.-]+")
+ANONYMOUS_HOOK_SESSION_PREFIX = "anonymous-"
+BENCH_HOOK_MODES = (
+    "benchmark_manager",
+    "baseline",
+    "baseline_hook_only",
+    "with_skill_targeted",
+    "blind_compare",
+)
+STATEFUL_ANONYMOUS_HOOK_MODES = {"with_skill_targeted", "blind_compare"}
+RESTRICTED_LIKEC4_MCP_NORMALIZED_NAMES = {
+    "mcplikec4listprojects",
+    "mcplikec4readprojectsummary",
+    "mcplikec4readview",
+    "mcplikec4openview",
+}
+HOOK_AUDIT_ALLOWED_READ_PREFIXES = {
+    "baseline": ("projects/shared/",),
+    "baseline_hook_only": ("projects/shared/",),
+    "with_skill_targeted": ("projects/shared/", ".github/skills/"),
+}
 HIGH_VARIANCE_EXPECTATION_STDDEV = 0.2
 HIGH_VARIANCE_RUBRIC_STDDEV = 1.0
 
@@ -119,6 +143,73 @@ def write_json(path: Path, data: Any) -> None:
 def write_text(path: Path, content: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(content, encoding="utf-8")
+
+
+def anonymous_hook_session_id(mode: str) -> str:
+    return f"{ANONYMOUS_HOOK_SESSION_PREFIX}{mode}"
+
+
+def hook_state_root(workspace_root: Path) -> Path:
+    return workspace_root / "test" / "_agent-hooks"
+
+
+def hook_state_path(workspace_root: Path, session_id: str) -> Path:
+    safe_name = HOOK_STATE_FILENAME_RE.sub("_", session_id or "default")
+    return hook_state_root(workspace_root) / f"{safe_name}.json"
+
+
+def hook_state_reset_candidates(mode: str | None = None, session_id: str | None = None) -> list[str]:
+    candidates: list[str] = []
+    if isinstance(session_id, str) and session_id.strip():
+        candidates.append(session_id.strip())
+    elif isinstance(mode, str) and mode.strip():
+        normalized_mode = mode.strip()
+        candidates.append(anonymous_hook_session_id(normalized_mode))
+        if normalized_mode in STATEFUL_ANONYMOUS_HOOK_MODES:
+            candidates.append("default")
+    else:
+        candidates.append("default")
+
+    ordered: list[str] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        if candidate not in seen:
+            seen.add(candidate)
+            ordered.append(candidate)
+    return ordered
+
+
+def reset_hook_state(workspace_root: Path, *, mode: str | None = None, session_id: str | None = None) -> dict[str, Any]:
+    state_root = hook_state_root(workspace_root)
+    state_root.mkdir(parents=True, exist_ok=True)
+
+    removed: list[str] = []
+    missing: list[str] = []
+    resolved_sessions = hook_state_reset_candidates(mode, session_id)
+    for resolved_session_id in resolved_sessions:
+        state_path = hook_state_path(workspace_root, resolved_session_id)
+        relative_path = state_path.relative_to(workspace_root).as_posix()
+        if state_path.exists():
+            state_path.unlink()
+            removed.append(relative_path)
+        else:
+            missing.append(relative_path)
+
+    return {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "workspace_root": workspace_root.as_posix(),
+        "mode": mode,
+        "session_id": session_id,
+        "resolved_session_ids": resolved_sessions,
+        "removed_count": len(removed),
+        "removed": removed,
+        "missing_count": len(missing),
+        "missing": missing,
+    }
+
+
+def utc_now_iso() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def deep_copy_json_like(value: Any) -> Any:
@@ -1172,6 +1263,39 @@ def load_skill_eval_bundle(workspace_root: Path, skill_name: str) -> dict[str, A
     return load_split_eval_artifacts(workspace_root, skill_name)
 
 
+def snapshot_public_evals(iteration_dir: Path, workspace_root: Path, skill_name: str | None = None) -> dict[str, Any]:
+    skill_names = [skill_name] if skill_name else workspace_benchmark_skill_names(workspace_root)
+    snapshot: list[dict[str, Any]] = []
+
+    for current_skill in skill_names:
+        bundle = load_skill_eval_bundle(workspace_root, current_skill)
+        public = bundle["public"]
+        snapshot.append(
+            {
+                "skill_name": current_skill,
+                "evals_public_path": bundle["paths"]["public"].relative_to(workspace_root).as_posix(),
+                "evals": [
+                    {
+                        "id": item.get("id"),
+                        "prompt": item.get("prompt"),
+                        "files": normalize_string_list(item.get("files", [])),
+                    }
+                    for item in public.get("evals", [])
+                    if isinstance(item, dict)
+                ],
+            }
+        )
+
+    payload = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "iteration": iteration_dir.name,
+        "skill_count": len(snapshot),
+        "skills": snapshot,
+    }
+    write_json(iteration_dir / "_meta" / "evals-public-snapshot.json", payload)
+    return payload
+
+
 def get_eval_entry(eval_definition: dict[str, Any], eval_id: int) -> dict[str, Any]:
     for item in eval_definition.get("evals", []):
         if item.get("id") == eval_id:
@@ -1695,7 +1819,7 @@ def benchmark_agent_plan(
         f"Automation entrypoint: use '{AUTOMATION_ENTRYPOINT}' for offline checks.",
         "The benchmark manager may delegate only to the constrained benchmark worker agents.",
         "Benchmark worker agents are read-only and set agents: [] so they cannot chain into unconstrained subagents.",
-        "All LikeC4 MCP tools (likec4/*) are allowed only in baseline, hook-only baseline, and with-skill workers; benchmark_manager and blind_compare keep MCP disabled.",
+        "Only narrow LikeC4 MCP grounding is allowed in baseline, hook-only baseline, and with-skill workers; project listing, project summaries, and view browsing stay blocked, and benchmark_manager/blind_compare keep MCP disabled.",
     ]
     if baseline_isolation == "hook-only":
         notes.append(
@@ -1711,6 +1835,9 @@ def benchmark_agent_plan(
         )
     notes.append(
         "Default execution mode is parallel within each phase: launch independent worker sessions concurrently, then wait for all of them to finish before advancing the phase."
+    )
+    notes.append(
+        "If resolved hook audit entries show a missing raw sessionId, serialize the stateful with_skill and blind_compare phases in practice and clear anonymous hook state between fresh workers with `python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode <mode>`."
     )
     notes.append(
         "Never overlap without_skill and with_skill phases; keep phase boundaries sequential even when workers inside a phase run in parallel."
@@ -1730,6 +1857,7 @@ def benchmark_agent_plan(
             "unit_of_parallelism": "<skill, configuration, run_number>",
             "phase_barrier": "wait for all tasks in the current phase before starting the next one",
             "safe_parallel_condition": "parallelize only tasks whose output directories do not overlap",
+            "anonymous_stateful_fallback": "serialize with_skill/blind_compare and run reset-hook-state when hook payloads omit sessionId",
             "fallback_policy": "if runtime or platform limits are hit, reduce concurrency before falling back to serial execution",
         },
         "entrypoints": {
@@ -1755,6 +1883,7 @@ def benchmark_agent_plan(
                 "dispatch_mode": "parallel",
                 "parallel_scope": "<skill, run_number>",
                 "precondition": "Workspace skills were restored and each fresh worker stays inside one target skill directory.",
+                "anonymous_session_fallback": "serial with reset-hook-state --mode with_skill_targeted",
                 "target_skill": skill,
             },
             {
@@ -1763,6 +1892,7 @@ def benchmark_agent_plan(
                 "dispatch_mode": "parallel",
                 "parallel_scope": "<skill, eval_id, run_number>",
                 "precondition": "Only blind A/B artifacts and the target eval definitions are exposed to the comparator.",
+                "anonymous_session_fallback": "serial with reset-hook-state --mode blind_compare",
             },
         ],
         "notes": notes,
@@ -1876,6 +2006,163 @@ def run_command(command: list[str], workspace_root: Path) -> dict[str, Any]:
         "stdout": result.stdout.strip(),
         "stderr": result.stderr.strip(),
         "passed": result.returncode == 0,
+    }
+
+
+def preview_jsonl_line(raw_line: str, limit: int = 200) -> str:
+    preview = raw_line.strip().replace("\t", "\\t")
+    if len(preview) <= limit:
+        return preview
+    return preview[: max(1, limit - 1)] + "…"
+
+
+def load_jsonl_records_with_issues(path: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    if not path.exists():
+        raise FileNotFoundError(f"Missing JSONL file: {path}")
+
+    entries: list[dict[str, Any]] = []
+    issues: list[dict[str, Any]] = []
+    for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        line = raw_line.strip()
+        if not line:
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError as exc:
+            issues.append(
+                {
+                    "line_number": line_number,
+                    "problem": "malformed-jsonl-line",
+                    "reason": str(exc),
+                    "raw_preview": preview_jsonl_line(raw_line),
+                }
+            )
+            continue
+        if not isinstance(payload, dict):
+            issues.append(
+                {
+                    "line_number": line_number,
+                    "problem": "non-object-jsonl-line",
+                    "reason": f"JSONL entry must be an object, got {type(payload).__name__}",
+                    "raw_preview": preview_jsonl_line(raw_line),
+                }
+            )
+            continue
+        payload["_line_number"] = line_number
+        entries.append(payload)
+    return entries, issues
+
+
+def load_jsonl_records(path: Path) -> list[dict[str, Any]]:
+    entries, issues = load_jsonl_records_with_issues(path)
+    if issues:
+        first_issue = issues[0]
+        raise ValueError(
+            f"Invalid JSONL entry at line {first_issue['line_number']} ({first_issue['problem']}): {path}"
+        )
+    return entries
+
+
+def normalize_hook_tool_name(tool_name: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "", tool_name.lower())
+
+
+def is_hook_audit_read_allowed(rel_path: str, mode: str) -> bool:
+    prefixes = HOOK_AUDIT_ALLOWED_READ_PREFIXES.get(mode, ())
+    if rel_path.startswith("@external/"):
+        return False
+    return any(rel_path.startswith(prefix) for prefix in prefixes)
+
+
+def validate_hook_audit(path: Path, mode: str | None = None) -> dict[str, Any]:
+    entries, parse_issues = load_jsonl_records_with_issues(path)
+    issues: list[dict[str, Any]] = [
+        {
+            "line_number": issue["line_number"],
+            "mode": None,
+            "tool_name": None,
+            "problem": issue["problem"],
+            "reason": issue["reason"],
+            "raw_preview": issue["raw_preview"],
+        }
+        for issue in parse_issues
+    ]
+    filtered_entries: list[dict[str, Any]] = []
+
+    for entry in entries:
+        entry_mode = entry.get("mode")
+        if mode and entry_mode != mode:
+            continue
+        filtered_entries.append(entry)
+
+        if entry.get("permissionDecision") != "allow":
+            continue
+
+        tool_name = str(entry.get("tool_name", ""))
+        normalized_tool = normalize_hook_tool_name(tool_name)
+        tool_paths = [value for value in entry.get("tool_paths", []) if isinstance(value, str)]
+
+        if entry_mode in {"baseline", "baseline_hook_only", "with_skill_targeted"}:
+            if normalized_tool in RESTRICTED_LIKEC4_MCP_NORMALIZED_NAMES:
+                issues.append(
+                    {
+                        "line_number": entry.get("_line_number"),
+                        "mode": entry_mode,
+                        "tool_name": tool_name,
+                        "problem": "allowed-broad-likec4-mcp",
+                        "reason": entry.get("permissionDecisionReason"),
+                    }
+                )
+
+            if tool_name.startswith("mcp_") and not tool_name.startswith("mcp_likec4_"):
+                issues.append(
+                    {
+                        "line_number": entry.get("_line_number"),
+                        "mode": entry_mode,
+                        "tool_name": tool_name,
+                        "problem": "allowed-non-likec4-mcp",
+                        "reason": entry.get("permissionDecisionReason"),
+                    }
+                )
+
+            if tool_name == "read_file":
+                for rel_path in tool_paths:
+                    if is_hook_audit_read_allowed(rel_path, entry_mode):
+                        continue
+                    issues.append(
+                        {
+                            "line_number": entry.get("_line_number"),
+                            "mode": entry_mode,
+                            "tool_name": tool_name,
+                            "path": rel_path,
+                            "problem": "allowed-read-outside-mode-scope",
+                            "reason": entry.get("permissionDecisionReason"),
+                        }
+                    )
+
+        if entry_mode == "blind_compare" and tool_name.startswith("mcp_"):
+            issues.append(
+                {
+                    "line_number": entry.get("_line_number"),
+                    "mode": entry_mode,
+                    "tool_name": tool_name,
+                    "problem": "allowed-mcp-in-blind-compare",
+                    "reason": entry.get("permissionDecisionReason"),
+                }
+            )
+
+    timestamps = [entry.get("timestamp") for entry in filtered_entries if isinstance(entry.get("timestamp"), str) and entry.get("timestamp", "").strip()]
+    return {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "path": path.as_posix(),
+        "mode": mode,
+        "entry_count": len(filtered_entries),
+        "malformed_line_count": len(parse_issues),
+        "first_timestamp": timestamps[0] if timestamps else None,
+        "last_timestamp": timestamps[-1] if timestamps else None,
+        "issue_count": len(issues),
+        "issues": issues,
+        "passed": len(issues) == 0,
     }
 
 
@@ -2060,6 +2347,56 @@ def normalize_iteration_metrics(iteration_dir: Path) -> dict[str, Any]:
     return summary
 
 
+def clean_benchmark_artifacts(workspace_root: Path) -> dict[str, Any]:
+    test_root = workspace_root / "test"
+    removed: list[str] = []
+    missing: list[str] = []
+
+    targets: list[Path] = []
+    if test_root.exists():
+        targets.extend(
+            sorted(
+                [child for child in test_root.iterdir() if child.is_dir() and ITERATION_RE.match(child.name)],
+                key=lambda path: path.name,
+            )
+        )
+        targets.extend(
+            [
+                test_root / "_agent-hooks",
+                test_root / "_live-mcp-probe",
+                test_root / "scripts" / "__pycache__",
+            ]
+        )
+
+    for path in targets:
+        if not path.exists():
+            missing.append(path.relative_to(workspace_root).as_posix())
+            continue
+        if path.is_dir():
+            shutil.rmtree(path)
+        else:
+            path.unlink()
+        removed.append(path.relative_to(workspace_root).as_posix())
+
+    summary = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "removed_count": len(removed),
+        "removed": removed,
+        "missing_count": len(missing),
+        "missing": missing,
+    }
+    meta_root = test_root / "_meta"
+    meta_root.mkdir(parents=True, exist_ok=True)
+    write_json(meta_root / "clean-benchmark-artifacts.json", summary)
+    return summary
+
+
+def current_utc_timestamp() -> dict[str, Any]:
+    return {
+        "timestamp": utc_now_iso(),
+    }
+
+
 def prepare_blind(iteration_dir: Path) -> dict[str, Any]:
     prepared: list[dict[str, Any]] = []
     for skill_dir in skill_dirs(iteration_dir):
@@ -2128,6 +2465,111 @@ def load_comparisons(path: Path) -> list[dict[str, Any]]:
     if isinstance(data, list):
         return data
     raise ValueError(f"Unsupported comparison format in {path}")
+
+
+def iteration_caveats_path(iteration_dir: Path) -> Path:
+    return iteration_dir / "_meta" / ITERATION_CAVEATS_FILENAME
+
+
+def load_iteration_caveats(iteration_dir: Path) -> dict[str, Any] | None:
+    path = iteration_caveats_path(iteration_dir)
+    if not path.exists():
+        return None
+    data = read_json(path)
+    if not isinstance(data, dict):
+        raise ValueError(f"Iteration caveats must be a JSON object: {path}")
+    return data
+
+
+def derive_iteration_comparison_validity(caveats: dict[str, Any] | None) -> dict[str, Any]:
+    caveats = caveats if isinstance(caveats, dict) else {}
+
+    reused_blind_from = caveats.get("reused_blind_comparisons_from_iteration")
+    if not isinstance(reused_blind_from, str) or not reused_blind_from.strip():
+        reused_blind_from = None
+
+    synthetic_timing = bool(caveats.get("synthetic_timing"))
+    injected_guidance = bool(caveats.get("with_skill_guidance_injected"))
+    notes = normalize_string_list(caveats.get("notes", []))
+
+    reasons: list[str] = []
+    protocol_deviations: list[str] = []
+
+    if reused_blind_from:
+        reasons.append(
+            f"Blind comparison results were reused from {reused_blind_from}, so blind-derived metrics do not describe fresh A/B judgments for this iteration."
+        )
+    if synthetic_timing:
+        reasons.append("Timing metrics use synthetic placeholder values, so time comparisons are not trustworthy.")
+    if injected_guidance:
+        protocol_deviations.append(
+            "with_skill responses were produced with injected target-skill guidance rather than a clean targeted worker session."
+        )
+
+    return {
+        "provisional": bool(reasons or protocol_deviations or notes),
+        "blind_metrics_trustworthy": reused_blind_from is None,
+        "time_metrics_trustworthy": not synthetic_timing,
+        "previous_iteration_comparison_trustworthy": not (reused_blind_from or synthetic_timing or injected_guidance),
+        "reasons": reasons,
+        "protocol_deviations": protocol_deviations,
+        "notes": notes,
+    }
+
+
+def apply_iteration_comparison_validity(skill_rows: list[dict[str, Any]], validity: dict[str, Any]) -> None:
+    if not validity.get("blind_metrics_trustworthy", True):
+        for skill in skill_rows:
+            blind = skill.get("capability", {}).get("blind", {})
+            blind["with_skill_win_rate"] = None
+            blind["without_skill_win_rate"] = None
+            blind["variance"] = {
+                "with_skill_win_rate": None,
+                "without_skill_win_rate": None,
+            }
+
+            expectation = skill.get("capability", {}).get("expectation_pass_rate", {})
+            expectation["with_skill"] = None
+            expectation["without_skill"] = None
+            expectation["delta"] = None
+            expectation["variance"] = {
+                "with_skill": None,
+                "without_skill": None,
+                "delta": None,
+            }
+
+            rubric = skill.get("capability", {}).get("rubric_score", {})
+            rubric["with_skill"] = None
+            rubric["without_skill"] = None
+            rubric["delta"] = None
+            rubric["variance"] = {
+                "with_skill": None,
+                "without_skill": None,
+                "delta": None,
+            }
+
+            skill.get("capability", {})["high_variance_evals"] = []
+            skill["high_variance_evals"] = [
+                item for item in skill.get("high_variance_evals", []) if item.get("source") != "blind"
+            ]
+
+    if not validity.get("time_metrics_trustworthy", True):
+        for skill in skill_rows:
+            for configuration in ("with_skill", "without_skill"):
+                block = skill.get("time", {}).get(configuration, {})
+                previous_variance = block.get("variance", {})
+                block["elapsed_seconds_total"] = None
+                block["elapsed_seconds_per_eval"] = None
+                block["variance"] = {
+                    "elapsed_seconds_total": None,
+                    "elapsed_seconds_per_eval": None,
+                    "response_words_total": previous_variance.get("response_words_total"),
+                    "response_words_per_eval": previous_variance.get("response_words_per_eval"),
+                    "files_read_count": previous_variance.get("files_read_count"),
+                    "files_written_count": previous_variance.get("files_written_count"),
+                }
+            skill.get("time", {}).setdefault("delta", {})["elapsed_seconds_total"] = None
+            skill.get("time", {}).setdefault("delta", {})["elapsed_seconds_per_eval"] = None
 
 
 def load_likec4_reference_data(workspace_root: Path) -> dict[str, Any]:
@@ -2775,8 +3217,11 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
     executable_validation = validate_executable_checks(iteration_dir, workspace_root)
     protocol_lock_path = iteration_dir / "_meta" / "protocol-lock.json"
     protocol_lock = read_json(protocol_lock_path) if protocol_lock_path.exists() else None
+    benchmark_caveats = load_iteration_caveats(iteration_dir)
+    comparison_validity = derive_iteration_comparison_validity(benchmark_caveats)
 
     skill_rows = [row for row in (build_skill_row(skill_dir, workspace_root) for skill_dir in skill_dirs(iteration_dir)) if row]
+    apply_iteration_comparison_validity(skill_rows, comparison_validity)
     overview_rows = suite_overview_rows(skill_rows)
 
     suite_summary = {
@@ -2786,6 +3231,8 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
         "protocol_version": protocol_lock.get("protocol_version") if protocol_lock else None,
         "protocol_lock_path": protocol_lock_path.relative_to(workspace_root).as_posix() if protocol_lock else None,
         "skill_count": len(skill_rows),
+        "benchmark_caveats": benchmark_caveats,
+        "comparison_validity": comparison_validity,
         "suite_averages": {
             "with_skill_win_rate": safe_mean([row["capability"]["blind"]["with_skill_win_rate"] for row in skill_rows]),
             "expectation_delta": safe_mean([row["capability"]["expectation_pass_rate"]["delta"] for row in skill_rows]),
@@ -2815,33 +3262,40 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
     }
 
     if previous_summary:
-        previous_by_skill = {row["skill"]: row for row in previous_summary.get("overview", [])}
-        comparisons = []
-        for row in overview_rows:
-            previous_row = previous_by_skill.get(row["skill"])
-            if not previous_row:
-                continue
-            comparisons.append(
-                {
-                    "skill": row["skill"],
-                    "previous_with_skill_win_rate": previous_row.get("with_skill_win_rate"),
-                    "current_with_skill_win_rate": row.get("with_skill_win_rate"),
-                    "delta_with_skill_win_rate": delta_or_none(row.get("with_skill_win_rate"), previous_row.get("with_skill_win_rate")),
-                    "previous_expectation_delta": previous_row.get("expectation_delta"),
-                    "current_expectation_delta": row.get("expectation_delta"),
-                    "delta_expectation_delta": delta_or_none(row.get("expectation_delta"), previous_row.get("expectation_delta")),
-                    "previous_rubric_delta": previous_row.get("rubric_delta"),
-                    "current_rubric_delta": row.get("rubric_delta"),
-                    "delta_rubric_delta": delta_or_none(row.get("rubric_delta"), previous_row.get("rubric_delta")),
-                    "previous_time_delta_per_eval": previous_row.get("time_delta_per_eval"),
-                    "current_time_delta_per_eval": row.get("time_delta_per_eval"),
-                    "delta_time_delta_per_eval": delta_or_none(row.get("time_delta_per_eval"), previous_row.get("time_delta_per_eval")),
-                }
-            )
-        suite_summary["previous_iteration_comparison"] = {
-            "previous_iteration": previous_iteration.name,
-            "skills": comparisons,
-        }
+        if not comparison_validity.get("previous_iteration_comparison_trustworthy", True):
+            suite_summary["previous_iteration_comparison"] = {
+                "previous_iteration": previous_iteration.name,
+                "status": "suppressed",
+                "reasons": comparison_validity.get("reasons", []) + comparison_validity.get("protocol_deviations", []),
+            }
+        else:
+            previous_by_skill = {row["skill"]: row for row in previous_summary.get("overview", [])}
+            comparisons = []
+            for row in overview_rows:
+                previous_row = previous_by_skill.get(row["skill"])
+                if not previous_row:
+                    continue
+                comparisons.append(
+                    {
+                        "skill": row["skill"],
+                        "previous_with_skill_win_rate": previous_row.get("with_skill_win_rate"),
+                        "current_with_skill_win_rate": row.get("with_skill_win_rate"),
+                        "delta_with_skill_win_rate": delta_or_none(row.get("with_skill_win_rate"), previous_row.get("with_skill_win_rate")),
+                        "previous_expectation_delta": previous_row.get("expectation_delta"),
+                        "current_expectation_delta": row.get("expectation_delta"),
+                        "delta_expectation_delta": delta_or_none(row.get("expectation_delta"), previous_row.get("expectation_delta")),
+                        "previous_rubric_delta": previous_row.get("rubric_delta"),
+                        "current_rubric_delta": row.get("rubric_delta"),
+                        "delta_rubric_delta": delta_or_none(row.get("rubric_delta"), previous_row.get("rubric_delta")),
+                        "previous_time_delta_per_eval": previous_row.get("time_delta_per_eval"),
+                        "current_time_delta_per_eval": row.get("time_delta_per_eval"),
+                        "delta_time_delta_per_eval": delta_or_none(row.get("time_delta_per_eval"), previous_row.get("time_delta_per_eval")),
+                    }
+                )
+            suite_summary["previous_iteration_comparison"] = {
+                "previous_iteration": previous_iteration.name,
+                "skills": comparisons,
+            }
 
     return suite_summary
 
@@ -2866,6 +3320,7 @@ def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
 def render_markdown(summary: dict[str, Any]) -> str:
     metric_validation = summary.get("metric_validation") or {}
     suite_variance = summary.get("suite_variance") or {}
+    comparison_validity = summary.get("comparison_validity") or {}
     lines = [
         f"# Skill Suite Summary — {summary['iteration']}",
         "",
@@ -2874,6 +3329,26 @@ def render_markdown(summary: dict[str, Any]) -> str:
         f"Protocol version: {summary.get('protocol_version') or 'unlocked'}",
         f"Skill count: {summary['skill_count']}",
         "",
+    ]
+
+    if comparison_validity.get("provisional"):
+        lines.extend([
+            "## Benchmark caveats",
+            "",
+            "This iteration should be treated as **provisional**.",
+            "",
+        ])
+        for reason in comparison_validity.get("reasons", []):
+            lines.append(f"- {reason}")
+        for note in comparison_validity.get("protocol_deviations", []):
+            lines.append(f"- Protocol deviation: {note}")
+        for note in comparison_validity.get("notes", []):
+            lines.append(f"- Note: {note}")
+        lines.extend([
+            "",
+        ])
+
+    lines.extend([
         "## Metric validation",
         "",
         f"Status: {metric_validation.get('status', 'unknown')}",
@@ -2903,7 +3378,7 @@ def render_markdown(summary: dict[str, Any]) -> str:
         "",
         "## Suite variance",
         "",
-    ]
+    ])
 
     variance_rows = []
     for metric_name, stats in (
@@ -3073,7 +3548,12 @@ def render_markdown(summary: dict[str, Any]) -> str:
     ])
 
     previous = summary.get("previous_iteration_comparison")
-    if previous and previous.get("skills"):
+    if previous and previous.get("status") == "suppressed":
+        lines.append("Cross-iteration comparison was suppressed for this iteration:")
+        lines.append("")
+        for reason in previous.get("reasons", []):
+            lines.append(f"- {reason}")
+    elif previous and previous.get("skills"):
         previous_headers = [
             "Skill",
             "Prev win rate",
@@ -3156,6 +3636,16 @@ def cmd_debug_log_window(args: argparse.Namespace) -> None:
     }, indent=2, ensure_ascii=False))
 
 
+def cmd_validate_hook_audit(args: argparse.Namespace) -> None:
+    summary = validate_hook_audit(args.path, args.mode)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_reset_hook_state(args: argparse.Namespace) -> None:
+    summary = reset_hook_state(args.workspace_root, mode=args.mode, session_id=args.session_id)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
 def cmd_write_protocol_manifest(args: argparse.Namespace) -> None:
     manifest = build_protocol_manifest(args.workspace_root, args.version)
     output_path = protocol_manifest_path(args.workspace_root, args.output)
@@ -3217,6 +3707,11 @@ def cmd_validate_executable_checks(args: argparse.Namespace) -> None:
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
+def cmd_snapshot_public_evals(args: argparse.Namespace) -> None:
+    summary = snapshot_public_evals(args.iteration, args.workspace_root, args.skill)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
 def cmd_blind_compare_bundle(args: argparse.Namespace) -> None:
     bundle = build_blind_compare_bundle(args.iteration, args.workspace_root, args.skill, args.eval_id, args.run_number)
     print(json.dumps(bundle, indent=2, ensure_ascii=False))
@@ -3272,6 +3767,15 @@ def cmd_validate_metrics(args: argparse.Namespace) -> None:
 def cmd_normalize_metrics(args: argparse.Namespace) -> None:
     summary = normalize_iteration_metrics(args.iteration)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_clean_benchmark_artifacts(args: argparse.Namespace) -> None:
+    summary = clean_benchmark_artifacts(args.workspace_root)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_current_utc_timestamp(args: argparse.Namespace) -> None:
+    print(json.dumps(current_utc_timestamp(), indent=2, ensure_ascii=False))
 
 
 def cmd_write_run_metrics(args: argparse.Namespace) -> None:
@@ -3410,6 +3914,18 @@ def build_parser() -> argparse.ArgumentParser:
     debug_log_window_parser.add_argument("--path", type=Path, required=True, help="Path to the debug log file")
     debug_log_window_parser.set_defaults(func=cmd_debug_log_window)
 
+    validate_hook_audit_parser = subparsers.add_parser("validate-hook-audit", help="Validate resolved hook-audit decisions for benchmark worker modes")
+    validate_hook_audit_parser.add_argument("--path", type=Path, default=HOOK_AUDIT_LOG_RELATIVE_PATH, help=f"Path to the hook-audit JSONL file (default: {HOOK_AUDIT_LOG_RELATIVE_PATH.as_posix()})")
+    validate_hook_audit_parser.add_argument("--mode", choices=["benchmark_manager", "baseline", "baseline_hook_only", "with_skill_targeted", "blind_compare"], help="Optional benchmark mode filter")
+    validate_hook_audit_parser.set_defaults(func=cmd_validate_hook_audit)
+
+    reset_hook_state_parser = subparsers.add_parser("reset-hook-state", help="Remove persisted benchmark hook session state before starting a fresh worker")
+    reset_hook_state_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    reset_hook_state_group = reset_hook_state_parser.add_mutually_exclusive_group(required=True)
+    reset_hook_state_group.add_argument("--mode", choices=BENCH_HOOK_MODES, help="Benchmark hook mode whose anonymous session state should be cleared")
+    reset_hook_state_group.add_argument("--session-id", help="Explicit hook session id to clear")
+    reset_hook_state_parser.set_defaults(func=cmd_reset_hook_state)
+
     protocol_manifest_parser = subparsers.add_parser("write-protocol-manifest", help="Write the benchmark protocol manifest with hashes for tracked prompts, schemas, and hooks")
     protocol_manifest_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
     protocol_manifest_parser.add_argument("--output", type=Path, help="Optional output path for the manifest JSON")
@@ -3516,6 +4032,13 @@ def build_parser() -> argparse.ArgumentParser:
     normalize_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     normalize_parser.set_defaults(func=cmd_normalize_metrics)
 
+    clean_parser = subparsers.add_parser("clean-benchmark-artifacts", help="Remove generated benchmark iteration directories and disposable benchmark artefacts")
+    clean_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    clean_parser.set_defaults(func=cmd_clean_benchmark_artifacts)
+
+    utc_now_parser = subparsers.add_parser("utc-now", help="Print the current UTC timestamp in benchmark-friendly ISO-8601 format")
+    utc_now_parser.set_defaults(func=cmd_current_utc_timestamp)
+
     aggregate_parser = subparsers.add_parser("aggregate", help="Aggregate per-skill results into suite-summary files")
     aggregate_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     aggregate_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
@@ -3541,6 +4064,12 @@ def build_parser() -> argparse.ArgumentParser:
     executable_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     executable_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
     executable_parser.set_defaults(func=cmd_validate_executable_checks)
+
+    snapshot_public_parser = subparsers.add_parser("snapshot-public-evals", help="Copy the current evals-public prompts into the iteration meta folder before strict baseline runs")
+    snapshot_public_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    snapshot_public_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    snapshot_public_parser.add_argument("--skill", help="Optional single skill to snapshot")
+    snapshot_public_parser.set_defaults(func=cmd_snapshot_public_evals)
 
     blind_bundle_parser = subparsers.add_parser("blind-compare-bundle", help="Build the blind-comparison input bundle for one skill eval using the benchmark comparator playbook")
     blind_bundle_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")

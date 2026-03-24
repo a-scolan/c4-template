@@ -1,0 +1,42 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "files_read": [
+    ".github/skills/understand-project-structure/SKILL.md",
+    ".github/skills/understand-project-structure/evals/evals-public.json",
+    "projects/shared/SPEC_CHEATSHEET.md",
+    "projects/shared/spec-global.c4",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-components.c4",
+    "projects/template/likec4.config.json"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Start with the active project, not the new API itself: open the target project's likec4.config.json and confirm it includes ../shared; in this repo, projects/template/likec4.config.json does. Then use the semantic sources of truth in projects/shared: SPEC_CHEATSHEET.md, spec-context.c4, spec-containers.c4, spec-components.c4, and spec-global.c4. Valid examples include System_External, Container_Api, Container_Queue, Container_Database, Component, and relationships uses, calls, async, reads, writes; tags include #Internal, #External, #Cloud, #Queue, #Security. Plan: define C1 boundary and actors, add the API and its neighbors at C2, then model C3 only if the API’s internal structure matters."
+    },
+    {
+      "id": 1,
+      "response": "After switching projects, assume your old context is stale. Re-run these checks before touching the C3 view: list-projects, read-project-summary for the explicit project, then search-element or read-element for the parent system/container whose components the view shows. Offline, also reopen the destination project's likec4.config.json and compare it with projects/shared/SPEC_CHEATSHEET.md and the shared spec files. Lock in the real parent boundary, valid C3 kind Component, and allowed relationships such as uses, calls, async, reads, writes. This prevents wrong project IDs, wrong FQNs, wrong parent containers, and example-driven edits."
+    },
+    {
+      "id": 2,
+      "response": "Treat an unknown kind or relationship error as a context failure first. Check in order: the intended project, its likec4.config.json, then the semantic taxonomy in projects/shared/SPEC_CHEATSHEET.md plus spec-context.c4, spec-containers.c4, spec-components.c4, and spec-global.c4. Compare the failing name against real declarations such as Container_Api, Container_Queue, System_External, Component, and relationships uses, calls, async, reads, writes. Also verify PascalCase tags. If a name appears only in an example or a nice-looking view file, it is not authoritative. If project context still looks inconsistent, stop and report blocked context instead of guessing a fix."
+    },
+    {
+      "id": 3,
+      "response": "Once project context is established, the next skill should be c4-modeling-process, because it sequences C1 → C2 → C3 deliberately instead of jumping straight into detail. Before that handoff, this first skill must lock in four things: the active project, the source-of-truth files, the valid local taxonomy, and the real parent boundary you will model under. In this repository that means confirming the project config includes ../shared, then using projects/shared/SPEC_CHEATSHEET.md together with spec-context.c4, spec-containers.c4, spec-components.c4, and spec-global.c4 so later edits do not invent kinds, relationships, tags, or parents."
+    },
+    {
+      "id": 4,
+      "response": "First learn the repository’s local LikeC4 conventions, not generic UML habits. The real semantic sources of truth are projects/shared/SPEC_CHEATSHEET.md and the shared spec files; .github/skills explains workflow, but it does not define taxonomy, and projects/spec-showcase is for examples, not authority. Key local conventions are PascalCase names, C1 kinds like Actor_Person and System_External, C2 kinds like Container_Api, Container_Queue, and Container_Database, C3 Component, and relationships uses, calls, async, reads, writes. Confirm the active project config before editing. After that preflight, hand off to c4-modeling-process, or to create-element/create-relationship for a narrowly scoped change."
+    },
+    {
+      "id": 5,
+      "response": "No. projects/spec-showcase/container-views.c4 is a reference pattern, not the authoritative taxonomy for another project. Validate the real sources first: the target project’s likec4.config.json, then projects/shared/SPEC_CHEATSHEET.md, projects/shared/spec-containers.c4, and projects/shared/spec-global.c4. For a queue and an API, confirm the declared kinds are Container_Queue and Container_Api, and choose an allowed relationship such as async, calls, or uses, with technology stored on the relationship. Also confirm the correct parent system/container and active project so you do not copy a nice example into the wrong boundary, with the wrong kind, or under the wrong FQN."
+    }
+  ]
+}

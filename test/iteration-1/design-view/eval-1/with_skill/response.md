@@ -1,37 +1,27 @@
-Use a Deployment view and list the hierarchy explicitly from the environment down to each VM.
+Use a `deployment view` in `views 'Deployment'`, ideally in `deployment-views.c4` if the project is split. Follow the workspace convention of explicit includes only: environment first, then each tier, then each VM. No wildcards, and stop at VM level unless placement is the point.
 
 ```likec4
 views 'Deployment' {
   deployment view production_overview {
     title 'Production Infrastructure'
+    description 'DMZ, application tier, and data tier in production'
 
-    // Environment
     include production
 
-    // Zones
     include production.dmzTier
     include production.appTier
     include production.dataTier
 
-    // DMZ VMs
-    include production.dmzTier.bastionVm
-    include production.dmzTier.reverseProxyVm
-    include production.dmzTier.firewallVm
+    include production.dmzTier.lbVm
+    include production.dmzTier.webVm
 
-    // App tier VMs
-    include production.appTier.web01Vm
-    include production.appTier.web02Vm
     include production.appTier.apiVm
     include production.appTier.workerVm
 
-    // Data tier VMs
-    include production.dataTier.postgresVm
-    include production.dataTier.redisVm
-    include production.dataTier.backupVm
-
-    autoLayout TopBottom
+    include production.dataTier.dbVm
+    include production.dataTier.cacheVm
   }
 }
 ```
 
-That matches the repository convention for deployment views: keep the parent hierarchy visible, avoid `*` and `**` wildcards, and stop at VM level rather than drilling into application instances.
+If your hierarchy has clusters inside a tier, include those explicitly between the tier and the VMs.

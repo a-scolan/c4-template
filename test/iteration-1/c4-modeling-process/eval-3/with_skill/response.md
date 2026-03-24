@@ -1,16 +1,1 @@
-Approach it in this order:
-
-1. Start with **`understand-project-structure`**.
-   - Re-establish the valid project structure, shared specs, allowed kinds, relationship types, and view organization before editing anything.
-2. Reconfirm the **C1** framing.
-   - Make sure the system boundary, actors, and external dependencies are still correct.
-3. Then design the **C2** view.
-   - Define or refine the runtime containers and the main interactions between them.
-4. Hand off the detailed work to specialized skills:
-   - **`create-element`** for container declarations
-   - **`create-relationship`** for typed relationships
-   - **`design-view`** for the static C2 view itself
-5. Only consider **C3** later if a container truly needs deeper internal detail.
-6. Finish with **`test-model`** to validate the result.
-
-So the flow is: **reload project context → confirm C1 → build C2 → delegate detailed edits to the right skills**.
+Approach it in this order: first use `understand-project-structure` to confirm the active project, shared specs, valid kinds, allowed relationships, and existing view organization. Then make sure the C1 boundary is already clear enough to support a C2. Next define or refine the runtime containers and their interactions, using `create-element` for container declarations and `create-relationship` for the typed links. Once the container set is stable, use `design-view` to build the C2 view itself. After that, validate with `test-model`. This skill should orchestrate the order; the detailed edits should be handed off to those complementary skills.

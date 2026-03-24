@@ -1,0 +1,37 @@
+{
+  "skill_name": "lookup-element-kinds",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [
+    ".github/skills/lookup-element-kinds/SKILL.md",
+    ".github/skills/lookup-element-kinds/evals/evals-public.json",
+    "projects/shared/spec-containers.c4",
+    "projects/shared/spec-context.c4",
+    "projects/shared/spec-deployment.c4",
+    "projects/shared/spec-components.c4",
+    "projects/shared/spec-global.c4"
+  ],
+  "responses": [
+    {
+      "id": 0,
+      "response": "The exact container kind for a backend API/service in this workspace is `Container_Api`. `Container_API` is a lookalike and is not declared. Plain `Container` is valid as the generic base kind, but if the backend is specifically an API/service, prefer the declared subtype `Container_Api`. For a database, the declared container kind is `Container_Database`. The logical-model relationship kinds declared in the shared taxonomy are `uses`, `calls`, `async`, `reads`, and `writes`. Toward a database, the most precise choices are `reads` and `writes`; `uses` is still legal if you intentionally want a generic dependency instead of a data-access semantic. To verify this in the active workspace, first check the active project summary when available, then confirm the exact identifiers in `projects/shared/spec-containers.c4` and the logical relationships in `projects/shared/spec-global.c4`. Trust the declared identifier exactly and reject the more English-looking variant."
+    },
+    {
+      "id": 1,
+      "response": "For deployment between an app VM and a database VM, use the deployment taxonomy from `projects/shared/spec-deployment.c4`: `sql` is the most specific and usually the best fit for database traffic, while `tcp` is valid only if you want a generic transport-level edge and do not want to model it specifically as SQL. `calls` is not a deployment relationship kind here, so do not use it between deployment nodes. In the logical application model, the valid relationship kinds are the logical ones from `projects/shared/spec-global.c4`: `uses`, `calls`, `async`, `reads`, and `writes`. For an application talking to a database in the logical model, prefer `reads` and `writes`; `calls` is generally for application/service behavior rather than database access."
+    },
+    {
+      "id": 2,
+      "response": "The exact deployment kind for a firewall in this workspace is `Infra_Fw`. `Infra_Firewall` is not declared in the shared deployment spec. Two nearby deployment kinds that are truly valid are `Infra_Router` and `Infra_F5`. You can verify all three directly in `projects/shared/spec-deployment.c4`, where the deployment node identifiers are declared exactly; when two names look similar, keep the repository spelling and reject the natural-language expansion."
+    },
+    {
+      "id": 3,
+      "response": "For an HTTP API, the exact declared container kind is `Container_Api`. For a message queue, the exact declared container kind is `Container_Queue`. For an async worker, there is no dedicated `Container_Worker` or `Component_Worker` declared in the shared specs I checked. At C2, the nearest declared options are the generic `Container` or the more specialized `Container_ProcessingServer`, depending on whether the worker is best modeled as a processing server; at C3, the shared component taxonomy is only `Component`. The safe way to find this in the active workspace is: first inspect the active project summary if available, then confirm in `projects/shared/spec-containers.c4`, `projects/shared/spec-components.c4`, and `projects/shared/spec-global.c4`. When two names look similar, resolve them by exact declared identifier only—for example, keep `Container_Api` and reject `Container_API` rather than guessing from the English label."
+    },
+    {
+      "id": 4,
+      "response": "For a web application talking to an API in the logical model, use `calls`, not `https`. In this workspace, `https` is part of the deployment relationship taxonomy declared in `projects/shared/spec-deployment.c4`, while logical-model behavior uses the relationships from `projects/shared/spec-global.c4`: `uses`, `calls`, `async`, `reads`, and `writes`. So the normal application-model pattern is something like a `Container_Webapp` or `Container_Spa` `-[calls]->` `Container_Api`, with the protocol captured in `technology`, for example `technology 'HTTPS'`. `https` becomes valid only when you are drawing deployment/infrastructure edges between deployment nodes or deployed instances rather than logical application behavior."
+    }
+  ]
+}

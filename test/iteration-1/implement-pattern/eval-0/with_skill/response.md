@@ -1,11 +1,19 @@
-Use the **external integration** pattern.
+Pattern: External integration.
 
-Add a dedicated external system for the payment provider and tag it as external:
+Minimal scaffold:
+paymentProvider = System_External 'Payment Provider' {
+  technology 'HTTPS API'
+  description 'External payment service used by the platform.'
+}
 
-`paymentProvider = System_External 'Payment Provider' { technology 'REST API'; description 'External payment processor'; #External }`
+api -[calls]-> paymentProvider 'Creates payment / checks status' {
+  technology 'HTTPS'
+}
 
-Then connect your internal API with a typed `calls` relationship:
+Substitute before finalizing:
+- parent: place `paymentProvider` at the correct external/system level next to your internal `api`
+- exact kinds: replace `System_External` or `calls` if your workspace declares different names
+- names: use the real provider name, for example `stripe`
+- tech: keep the element technology as the provider API and the relationship technology as the transport, usually `HTTPS`
 
-`vault.api -[calls]-> paymentProvider 'Process payment'`
-
-Keep the relationship label action-focused, such as **`Process payment`**, rather than something vague like `Integration` or `Request`.
+Keep the provider modeled as external, not as an internal container.

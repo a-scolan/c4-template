@@ -1,0 +1,21 @@
+{
+  "skill_name": "name-deployment-nodes",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Use one consistent pattern: PascalCase, singular nouns, stable suffixes, and broad-to-specific ordering. For a production setup, a clean hierarchy would be: Environment = `Prod`; Zones = `EdgeZone`, `AppZone`, `DataZone`, `MonitoringZone`; VMs = `ApiGatewayVm`, `UploadVm`, `WorkerVm`, `MongoVm`, `MonitoringVm`. Candidate fixes: `ProdApiVM` -> `ProdApiGatewayVm` (or just `ApiGatewayVm` if it already sits under `Prod`), `prod_upload_vm` -> `ProdUploadVm` (or `UploadVm`), `AppServers` -> `AppZone`, `MonitoringTier` -> `MonitoringZone`. If you want every child name to stand alone, prefix them consistently: `ProdEdgeZone`, `ProdAppZone`, `ProdDataZone`, `ProdMonitoringZone`, and `ProdApiGatewayVm`, `ProdUploadVm`, `ProdWorkerVm`, `ProdMongoVm`, `ProdMonitoringVm`."
+    },
+    {
+      "id": 1,
+      "response": "No, not by itself. `name-deployment-nodes` is a fit for the naming part, but your request also includes modeling the full `Environment -> Zone -> VM -> Node_App` hierarchy, writing Markdown descriptions with IP/CPU/RAM, and adding `instanceOf` links to containers. That goes beyond naming alone. So this is only a partial match: good for choosing clear deployment-node names, but not sufficient for the whole task."
+    },
+    {
+      "id": 2,
+      "response": "Prefer `ProdEuApiVm` if you flatten names. It follows one readable order: Environment -> Region/Zone -> Role -> Type. Keep that same order everywhere, for example: `ProdEuZone`, `ProdEuApiVm`, `ProdEuWorkerVm`, `ProdEuDatabaseVm`, `ProdUsZone`, `ProdUsApiVm`, `ProdUsWorkerVm`, `ProdUsDatabaseVm`. Even better, if your model is nested, avoid repeating parent context in child names and let the hierarchy carry it: `Prod` -> `EuZone` -> `ApiVm`; `Prod` -> `UsZone` -> `WorkerVm`. Core rules: PascalCase, singular nouns, fixed suffixes such as `Zone` and `Vm`, no underscores, no mixed acronym styles, and never swap the word order once you choose it."
+    }
+  ]
+}

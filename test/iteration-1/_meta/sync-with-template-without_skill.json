@@ -1,0 +1,29 @@
+{
+  "skill_name": "sync-with-template",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Upstream-safe: `.github/skills/create-relationship/SKILL.md` and `projects/shared/spec-context.c4`, because they are reusable template/shared assets. Keep local: `projects/payments/system-model.c4`, because it is project-specific. `README.md` should also stay local by default; only upstream a separate doc patch if the change is truly template-generic and scrubbed of repo-specific names, links, screenshots, and process details."
+    },
+    {
+      "id": 1,
+      "response": "Safe sequence:\n1) Make sure local-only work is out of the way: `git status` and, if needed, `git stash push -u -m \"local-only before upstream sync\"`.\n2) Fetch the reference repo: `git fetch c4-template`.\n3) Create a clean branch from upstream main: `git switch -c sync/create-relationship c4-template/main`.\n4) Copy only the generic file from the branch or commit that contains your improvement: `git restore --source=<your-local-branch-or-commit> -- .github/skills/create-relationship/SKILL.md`.\n5) Review only that file: `git diff -- .github/skills/create-relationship/SKILL.md`.\n6) Do the confidentiality review before any push: check for internal customer names, repo-local examples, private URLs, secrets, screenshots, or process language that should not leave the derived repo.\n7) Commit only the reviewed file: `git add .github/skills/create-relationship/SKILL.md && git commit -m \"sync: improve create-relationship skill\"`.\n8) Push the sync branch: `git push -u c4-template sync/create-relationship`.\n9) Open the PR against the upstream reference repo only after the confidentiality review is complete."
+    },
+    {
+      "id": 2,
+      "response": "Run:\n`git fetch c4-template`\n`git switch -c sync/github-shared`\n`git merge --squash --no-commit c4-template/main`\n`git restore --source=HEAD --staged --worktree -- . ':(exclude).github' ':(exclude)projects/shared'`\n`git diff -- .github projects/shared`\n`git add .github projects/shared`\n`git commit -m \"sync: import upstream .github and shared updates\"`\nUse `--squash` because you usually want one curated sync commit, not a real merge commit that drags upstream history into the derived repo. It makes review easier, keeps rollback simple, and lets you accept only the reusable paths while dropping everything else."
+    },
+    {
+      "id": 3,
+      "response": "Verify genericity in four passes: 1) Scope: the diff should stay inside `projects/shared/spec-containers.c4` and solve a pattern that other repos can reuse, not a single business case. 2) Content: reject any customer/project names, repo-local paths, internal URLs, private examples, or metadata/tag conventions that only make sense in this repo. 3) Portability: compare against `c4-template/main`, then apply the change mentally or in a test branch to at least one other derived repo; if the file still reads correctly without renaming anything, it is probably generic. 4) Separation: if part of the patch is generic and part is local, split the commit and upstream only the generic hunk to `c4-template`. In short: if the fix improves shared LikeC4 guidance for many repos and contains zero derived-repo assumptions, it is a good upstream candidate."
+    },
+    {
+      "id": 4,
+      "response": "Safest recovery: make a backup, rebuild the sync branch from upstream, and copy back only the generic file. Commands:\n`git branch backup/sync-spec-hardening`\n`git fetch c4-template`\n`git switch -c sync/spec-hardening-clean c4-template/main`\n`git restore --source=backup/sync-spec-hardening -- .github/skills/create-element/SKILL.md`\n`git diff -- .github/skills/create-element/SKILL.md`\n`git add .github/skills/create-element/SKILL.md`\n`git commit -m \"sync: harden create-element skill\"`\n`git push -u c4-template sync/spec-hardening-clean`\nLeave `projects/acme/system-model.c4` and `README.md` on the backup/local branch; do not carry them into the upstream PR. If you must keep the original branch name, back it up first, then hard-reset `sync/spec-hardening` to `c4-template/main`, restore only the skill file from the backup branch, recommit, and force-push the cleaned branch."
+    }
+  ]
+}

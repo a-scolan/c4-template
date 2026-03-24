@@ -1,12 +1,16 @@
-view c2_containers {
-  link https://docs.internal/specs/containers 'Internal Spec Docs'
+views 'C2' {
+  view containers_overview {
+    include *
 
-  include mySystem.webapp with {
-    navigateTo c2_webapp_details
+    style * { color muted; opacity 20% }
+    style api.*, gateway.* { color primary; opacity 100% }
+
+    include webApp with {
+      navigateTo webApp_details
+    }
+
+    link https://docs.internal/spec 'System specification'
   }
-
-  style * { color muted; opacity 40% }
-  style mySystem.api { color primary; opacity 100% }
 }
 
-This skill stops at view-level styling, layout, and links; if you need to create or restructure the view itself or add a new drill-down or C3 view, hand that work to `design-view`.
+This skill stops at styling, lightweight layout hints, `navigateTo`, and external links. If you need to change included elements, parent context, or create a new/detail view, hand off to `design-view`.

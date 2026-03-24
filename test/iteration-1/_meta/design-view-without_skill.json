@@ -1,0 +1,25 @@
+{
+  "skill_name": "design-view",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "Place the logical model in `projects/template/system-model.c4` and the view definitions in `projects/template/system-views.c4`.\n- In the model, define `user`, an external `emailService`, and your main `system` with containers such as `webApp`, `api`, and `db`.\n- Add relationships `user -> webApp`, `webApp -> api`, `api -> db`, and `api -> emailService`.\n- In the views file, create one container view rooted at the system and one drill-down view rooted at `webApp`.\nA compact skeleton is: `model { user = person 'User'; emailService = system 'Email Service' { tags external }; platform = system 'Your System' { webApp = container 'Web Application'; api = container 'API'; db = container 'Database' } user -> platform.webApp 'Uses'; platform.webApp -> platform.api 'Calls'; platform.api -> platform.db 'Reads/Writes'; platform.api -> emailService 'Sends email' }` and `views { view platform_c2 of platform { include user; include emailService; include platform.*; autoLayout lr } view webApp_detail of platform.webApp { include * } }`. That gives you a proper C2 plus a ready drill-down entry point from the web application."
+    },
+    {
+      "id": 1,
+      "response": "Aligned with the visible repo layout, keep the deployment model beside the template system: add the production environment and nodes in `projects/template/system-model.c4`, and add the deployment view in `projects/template/system-views.c4`.\nA clean example shape is: `deployment { prod = environment 'Production' { dmz = node 'DMZ' { ingress = node 'Ingress / Reverse proxy'; web = instance of platform.webApp } appTier = node 'App tier' { api = instance of platform.api } dataTier = node 'Data tier' { db = instance of platform.db } } }` and `views { deployment view prod_infra of prod { include *; autoLayout tb } }`.\nThe key convention is to keep DMZ/app/data as deployment nodes or zones, while `webApp`, `api`, and `db` remain the logical containers from the model."
+    },
+    {
+      "id": 2,
+      "response": "Use a `dynamic view` for the upload journey, backed by the normal static model. Keep the structure in a C2/C3 view, then add one `upload_journey` dynamic view with ordered steps such as `User -> Web App -> Upload API -> Storage -> Scanner -> Notification`. For colors, do not hard-code them per step; tag the critical elements and/or relationships as `critical` or `critical_path` in the model and style those tags in shared or project-level styles. That gives you the right split: static views explain what exists, the dynamic view explains the step-by-step flow, and tag-based styles highlight the critical path consistently."
+    },
+    {
+      "id": 3,
+      "response": "The cleanest LikeC4 approach is usually both, but with strict separation of concerns. Put `SecZone`, `bastion`, `firewall`, and placement/network boundaries only in a Deployment view. Add a C2 only if the new dedicated services are real software containers with responsibilities and interactions that matter at design level. In other words: C2 = logical services and dependencies; Deployment = production topology and security zoning. If `SecZone` is only an infrastructure boundary around already-known containers, Deployment-only is enough; if it introduces new dedicated services, keep those services in C2 and show their placement inside `SecZone` in the Deployment view."
+    }
+  ]
+}

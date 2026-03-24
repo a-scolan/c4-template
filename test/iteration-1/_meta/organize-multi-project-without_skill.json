@@ -1,0 +1,25 @@
+{
+  "skill_name": "organize-multi-project",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": true,
+  "files_read": [],
+  "responses": [
+    {
+      "id": 0,
+      "response": "In this repo, bootstrap projects/payments/ by following the shape already visible in projects/template/: create projects/payments/likec4.config.json, one model file such as system-model.c4, and one view file such as system-views.c4; that is the minimum clean setup. In the config, give the project its own name/title, include the payments files plus only the shared spec files and images it actually needs, and keep payments-owned business elements inside projects/payments/, not under projects/shared/. Add an ADR/ folder only if you want the same decision-record convention as the template project."
+    },
+    {
+      "id": 1,
+      "response": "Not in the shared specifications area. The visible shared area is spec-oriented (spec-*.c4, a cheat sheet, and images), so putting paymentsCore there would mix business model with technical specification. Keep paymentsCore in the payments project. Put backOfficeUser in shared only if it is a truly cross-project actor with one canonical meaning everywhere, and even then place it in a separate shared domain/common-model file rather than in spec files. Cross-project references should use one canonical definition and be consumed by inclusion or by an integration/landscape project; avoid duplicating the same actor or system in multiple projects or referencing another project's private internals directly."
+    },
+    {
+      "id": 2,
+      "response": "Not by itself. Use this workflow for project boundaries, ownership, and deciding what is shared versus project-local, but combine it with a configuration-focused step for include paths and image aliases, because those are config concerns rather than repository-organization concerns. In practice: create the new project structure first, then update that project's config so it resolves the correct shared files and image roots."
+    },
+    {
+      "id": 3,
+      "response": "Do not dump everything into one shared bucket. Separate technical conventions from reusable business models, but keep the structure shallow: keep spec files and assets in the existing shared spec area, and add one small shared-domain or common-model area for truly reusable actors and systems. Project-owned models should still live inside each project folder. A good rule is: spec files define language, styles, and conventions; shared domain files define canonical reusable business elements; project folders define local models and views. That avoids both the junk-drawer problem and an over-engineered folder maze."
+    }
+  ]
+}

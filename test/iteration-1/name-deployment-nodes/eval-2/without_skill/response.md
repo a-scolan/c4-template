@@ -1,17 +1,1 @@
-Use `ProdEuApiVm`, not `EuProdApiVm`.
-
-A readable convention is to extend the base pattern in one direction only:
-
-- VMs: `{Environment}{Region}{Service}Vm`
-- Tier zones: `{Environment}{Region}{Role}Tier`
-- Functional zones: `{Environment}{Region}{Function}Zone`
-
-Examples:
-
-- EU VMs: `ProdEuApiVm`, `ProdEuWorkerVm`, `ProdEuDbVm`
-- US VMs: `ProdUsApiVm`, `ProdUsWorkerVm`, `ProdUsDbVm`
-- EU zones: `ProdEuAppTier`, `ProdEuProcTier`, `ProdEuDataTier`
-- US zones: `ProdUsAppTier`, `ProdUsProcTier`, `ProdUsDataTier`
-- Functional zones if needed: `ProdEuSecZone`, `ProdUsInfraZone`
-
-Do not mix `ProdEu...` and `EuProd...` in the same estate. Pick one order, keep PascalCase everywhere, and preserve the expected suffixes: `Vm`, `Tier`, and `Zone`.
+Prefer `ProdEuApiVm` if you flatten names. It follows one readable order: Environment -> Region/Zone -> Role -> Type. Keep that same order everywhere, for example: `ProdEuZone`, `ProdEuApiVm`, `ProdEuWorkerVm`, `ProdEuDatabaseVm`, `ProdUsZone`, `ProdUsApiVm`, `ProdUsWorkerVm`, `ProdUsDatabaseVm`. Even better, if your model is nested, avoid repeating parent context in child names and let the hierarchy carry it: `Prod` -> `EuZone` -> `ApiVm`; `Prod` -> `UsZone` -> `WorkerVm`. Core rules: PascalCase, singular nouns, fixed suffixes such as `Zone` and `Vm`, no underscores, no mixed acronym styles, and never swap the word order once you choose it.

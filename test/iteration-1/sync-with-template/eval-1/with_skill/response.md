@@ -1,47 +1,18 @@
-Use a dedicated `sync/*` branch that starts from `c4-template/main`, then bring over only the generic file.
+Safe sequence:
+1. Commit the local fix on your normal local branch:
+   - `git add .github/skills/create-relationship/SKILL.md`
+   - `git commit -m 'fix: improve create-relationship skill guidance'`
+2. Branch from the upstream reference repo, not from `main`:
+   - `git fetch c4-template main`
+   - `git checkout -b sync/create-relationship-skill c4-template/main`
+3. Bring over only the generic file:
+   - `git checkout main -- .github/skills/create-relationship/SKILL.md`
+4. Review the staged diff and do the confidentiality review before creating the sync commit:
+   - `git diff --cached`
+   - Verify the file does **not** contain project-specific paths, internal API details, confidential architecture notes, security credentials, or employee/team names.
+5. Commit only that generic change on the sync branch:
+   - `git commit -m 'sync: update create-relationship skill'`
+6. Push the sync branch and open a PR to the upstream repo:
+   - `git push c4-template sync/create-relationship-skill --set-upstream`
 
-1. Make sure your local improvement exists on `main`.
-2. Fetch the template upstream:
-
-```bash
-git fetch c4-template main
-```
-
-3. Create a sync branch from the template, not from your local `main`:
-
-```bash
-git checkout -b sync/skills-template c4-template/main
-```
-
-4. Copy only the generic skill file from your local `main` onto that branch:
-
-```bash
-git checkout main -- .github/skills/create-relationship/SKILL.md
-```
-
-5. Stage it and review exactly what will be pushed:
-
-```bash
-git add .github/skills/create-relationship/SKILL.md
-git diff --cached
-```
-
-6. Do a confidentiality and genericity review **before any push**:
-   - no project names
-   - no internal architecture details
-   - no security-sensitive content
-   - no employee or team names
-
-7. Commit only after that review passes:
-
-```bash
-git commit -m "sync: improve create-relationship skill"
-```
-
-8. Push the `sync/*` branch to the template remote:
-
-```bash
-git push c4-template sync/skills-template --set-upstream
-```
-
-This keeps the template update isolated, pushes only the generic file, and avoids pushing directly from `main`.
+Do not push directly from `main`. If the audit fails, keep the change local or remove it from the sync branch before pushing.
