@@ -1,44 +1,44 @@
 {
   "protocol_version": "benchmark-v2",
-  "generated_at": "2026-03-25T13:46:05Z",
+  "generated_at": "2026-03-25T15:22:34Z",
   "eval_artifact_schema_version": 2,
   "comparator_schema_version": 2,
   "tracked_files": [
     {
       "path": ".github/agents/skill-benchmark-manager.agent.md",
-      "sha256": "b1fc75695e6774f00655a0b22f7a84948d4b52c10af603a9fca5d38e1c0f4dc3"
+      "sha256": "6b2d966e252fda1d7e942af34e4ac013b54e2036bcfbe8805b24c04871fc0bc7"
     },
     {
       "path": ".github/agents/skill-benchmark-baseline.agent.md",
-      "sha256": "1b01f01d8df12d9ea08453b23da1feae4b71c344dfa694ca3f073325c331b378"
+      "sha256": "01747de67712ecec113ff6e5238c2613e61345a4d8c141c19afbee21d12f8dec"
     },
     {
       "path": ".github/agents/skill-benchmark-baseline-hook-only.agent.md",
-      "sha256": "6ed751a78dd2a7c28d80e03f6b91d3afb1fdbd22eaf96e66b750b53679937e6b"
+      "sha256": "bf5d7f57d708198b6f1e8b7e3fe5ffbe3585b680d370578973f2c7bfcfe36f98"
     },
     {
       "path": ".github/agents/skill-benchmark-with-skill.agent.md",
-      "sha256": "5d1fc0f1856265413e2e5a91267145f3c6dd108cc78d32c727fc24510552dfb2"
+      "sha256": "49151ab24e2ae3764f53556988c51ed755fe7ba6dc280cd5f4817e2b5b76bd4e"
     },
     {
       "path": ".github/agents/skill-blind-comparator.agent.md",
-      "sha256": "147c1783b61deec42f3f95d16a320c3110ced04b0757df344bace8cda0264471"
+      "sha256": "e7be60d308776479c3f2b9598009a79e333c33c1c2d14bbd60539fc2852daf80"
     },
     {
       "path": "test/scripts/benchmark_access_hook.py",
-      "sha256": "d53e0836f571acff585f147a41913ab5324c480169262439541d1e6663d36cf6"
+      "sha256": "80f051dca9e10d2b50e5bed23dffaefc89dd6ff60dce12cb629ac81505c8e2f8"
     },
     {
       "path": "test/benchmark-agent-workflow.md",
-      "sha256": "ef1c7f72dbd60c24f1c8b83d312b42d7e1a9497479ae9eec833c586ca277be95"
+      "sha256": "516d924e205817625118ebf0834f0100e3fdf06c17cd2c37a5e18daf89b0ce34"
     },
     {
       "path": "test/skill-suite-eval-prompt.md",
-      "sha256": "e68a00e74b075308325661aaf99c75ad070af87e65de0c5d09bcdd0f97625ce1"
+      "sha256": "c5d9e78e5f312a0de9654071e345dabaa202cfe3032b6422ad4698c2aea5234f"
     },
     {
       "path": "test/scripts/skill_suite_tools.py",
-      "sha256": "794adc4fd9e79d8f8e409d6f7ecffbe39f89c3577ef17ba8889062ae0e984c4f"
+      "sha256": "ee405cccb3753890bf220bb268bc615d0d7985d69090761b5264270b9241675b"
     }
   ]
 }

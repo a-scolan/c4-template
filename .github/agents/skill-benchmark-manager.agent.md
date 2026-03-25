@@ -16,8 +16,7 @@ hooks:
       env:
         BENCH_MODE: benchmark_manager
         BENCH_ALLOWED_AGENTS: Skill Benchmark Baseline,Skill Benchmark Baseline Hook-Only,Skill Benchmark With Skill,Skill Blind Comparator
-        BENCH_DEBUG_HOOKS: true
-        BENCH_DEBUG_LOG: test/_agent-hooks/hook-debug.jsonl
+        BENCH_TRACE_LEVEL: normal
       timeout: 15
   PreToolUse:
     - type: command
@@ -26,8 +25,7 @@ hooks:
       env:
         BENCH_MODE: benchmark_manager
         BENCH_ALLOWED_AGENTS: Skill Benchmark Baseline,Skill Benchmark Baseline Hook-Only,Skill Benchmark With Skill,Skill Blind Comparator
-        BENCH_DEBUG_HOOKS: true
-        BENCH_DEBUG_LOG: test/_agent-hooks/hook-debug.jsonl
+        BENCH_TRACE_LEVEL: normal
       timeout: 15
   SubagentStart:
     - type: command
@@ -36,8 +34,7 @@ hooks:
       env:
         BENCH_MODE: benchmark_manager
         BENCH_ALLOWED_AGENTS: Skill Benchmark Baseline,Skill Benchmark Baseline Hook-Only,Skill Benchmark With Skill,Skill Blind Comparator
-        BENCH_DEBUG_HOOKS: true
-        BENCH_DEBUG_LOG: test/_agent-hooks/hook-debug.jsonl
+        BENCH_TRACE_LEVEL: normal
       timeout: 15
 ---
 You orchestrate the benchmark workflow and preserve isolation guarantees across every phase.

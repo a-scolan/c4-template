@@ -5,9 +5,11 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import skill_suite_tools as tools  # noqa: E402
+from benchmark.hook_runtime import resolve_audit_log_path, resolve_trace_level  # noqa: E402
 
 
 class SkillSuiteToolsTests(unittest.TestCase):
@@ -494,20 +496,71 @@ class SkillSuiteToolsTests(unittest.TestCase):
     def test_clean_benchmark_artifacts_removes_iterations_and_disposables(self) -> None:
         (self.workspace_root / "test" / "iteration-1" / "foo").mkdir(parents=True, exist_ok=True)
         (self.workspace_root / "test" / "iteration-2" / "bar").mkdir(parents=True, exist_ok=True)
+        (self.workspace_root / "test" / "likec4-dsl-test4" / "baz").mkdir(parents=True, exist_ok=True)
         (self.workspace_root / "test" / "_agent-hooks").mkdir(parents=True, exist_ok=True)
         (self.workspace_root / "test" / "_live-mcp-probe").mkdir(parents=True, exist_ok=True)
         (self.workspace_root / "test" / "scripts" / "__pycache__").mkdir(parents=True, exist_ok=True)
 
         summary = tools.clean_benchmark_artifacts(self.workspace_root)
 
-        self.assertEqual(summary["removed_count"], 6)
+        self.assertEqual(summary["removed_count"], 7)
         self.assertFalse((self.workspace_root / "test" / "iteration-1").exists())
         self.assertFalse((self.workspace_root / "test" / "iteration-2").exists())
         self.assertFalse((self.workspace_root / "test" / "iteration-9").exists())
+        self.assertFalse((self.workspace_root / "test" / "likec4-dsl-test4").exists())
         self.assertFalse((self.workspace_root / "test" / "_agent-hooks").exists())
         self.assertFalse((self.workspace_root / "test" / "_live-mcp-probe").exists())
         self.assertFalse((self.workspace_root / "test" / "scripts" / "__pycache__").exists())
         self.assertTrue((self.workspace_root / "test" / "_meta" / "clean-benchmark-artifacts.json").exists())
+
+    def test_prune_generated_artifacts_removes_review_exports_only(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        review_workspace = skill_dir / "_skill-creator-review-workspace"
+        review_workspace.mkdir(parents=True, exist_ok=True)
+        benchmark_json = skill_dir / "skill-creator-benchmark.json"
+        review_html = skill_dir / "skill-creator-review.html"
+        retained_summary = self.iteration_dir / "suite-summary.json"
+        retained_summary.parent.mkdir(parents=True, exist_ok=True)
+
+        benchmark_json.write_text("{}\n", encoding="utf-8")
+        review_html.write_text("<html></html>\n", encoding="utf-8")
+        retained_summary.write_text("{}\n", encoding="utf-8")
+
+        summary = tools.prune_generated_artifacts(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(summary["removed_count"], 3)
+        self.assertFalse(review_workspace.exists())
+        self.assertFalse(benchmark_json.exists())
+        self.assertFalse(review_html.exists())
+        self.assertTrue(retained_summary.exists())
+        self.assertTrue((self.iteration_dir / "_meta" / "generated-artifacts-pruned.json").exists())
+
+    def test_trace_level_defaults_to_off_and_supports_audit_and_debug(self) -> None:
+        with patch.dict("os.environ", {}, clear=True):
+            self.assertEqual(resolve_trace_level(), "off")
+            self.assertIsNone(resolve_audit_log_path(self.workspace_root))
+
+        with patch.dict("os.environ", {"BENCH_TRACE_LEVEL": "audit"}, clear=True):
+            self.assertEqual(resolve_trace_level(), "audit")
+            self.assertEqual(
+                resolve_audit_log_path(self.workspace_root),
+                self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl",
+            )
+
+        with patch.dict("os.environ", {"BENCH_TRACE_LEVEL": "debug", "BENCH_DEBUG_LOG": "test/_agent-hooks/hook-debug.jsonl"}, clear=True):
+            self.assertEqual(resolve_trace_level(), "debug")
+            self.assertEqual(
+                resolve_audit_log_path(self.workspace_root),
+                self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl",
+            )
+
+    def test_trace_level_preserves_legacy_debug_hooks_compatibility(self) -> None:
+        with patch.dict("os.environ", {"BENCH_DEBUG_HOOKS": "true", "BENCH_DEBUG_LOG": "test/_agent-hooks/custom-debug.jsonl"}, clear=True):
+            self.assertEqual(resolve_trace_level(), "debug")
+            self.assertEqual(
+                resolve_audit_log_path(self.workspace_root),
+                self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl",
+            )
 
     def test_snapshot_public_evals_writes_iteration_meta_copy(self) -> None:
         summary = tools.snapshot_public_evals(self.iteration_dir, self.workspace_root)

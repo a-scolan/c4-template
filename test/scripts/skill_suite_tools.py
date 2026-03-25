@@ -12,8 +12,62 @@ import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from statistics import mean
 from typing import Any
+
+from benchmark.common import (
+    calculate_benchmark_stats,
+    coerce_bool,
+    coerce_float,
+    coerce_int,
+    count_words,
+    deep_copy_json_like,
+    delta_or_none,
+    file_sha256,
+    iso_to_datetime,
+    normalize_string_list,
+    read_json,
+    relative_to_root,
+    round_or_none,
+    safe_mean,
+    utc_now_iso,
+    write_json,
+    write_text,
+)
+from benchmark.artifacts import (
+    clean_benchmark_artifacts as _clean_benchmark_artifacts,
+    prune_generated_artifacts as _prune_generated_artifacts,
+)
+from benchmark.evals import (
+    load_split_eval_artifacts as _load_split_eval_artifacts,
+    skill_eval_paths as _skill_eval_paths,
+    skill_eval_root as _skill_eval_root,
+    validate_grading_spec_definition as _validate_grading_spec_definition,
+    validate_public_eval_definition as _validate_public_eval_definition,
+    validate_split_eval_pair as _validate_split_eval_pair,
+    validate_workspace_eval_artifacts as _validate_workspace_eval_artifacts,
+    workspace_benchmark_skill_names as _workspace_benchmark_skill_names,
+)
+from benchmark.metrics import (
+    build_run_metrics_payload as _build_run_metrics_payload,
+    canonicalize_run_metrics as _canonicalize_run_metrics,
+    extract_files_read_count as _extract_files_read_count,
+    extract_timestamp_field as _extract_timestamp_field,
+    infer_run_metrics_fields as _infer_run_metrics_fields,
+    load_run_metrics as _load_run_metrics,
+    parse_eval_metrics_path as _parse_eval_metrics_path,
+    validate_run_metrics_payload as _validate_run_metrics_payload,
+)
+from benchmark.protocol import (
+    build_protocol_manifest as _build_protocol_manifest,
+    freeze_protocol_for_iteration as _freeze_protocol_for_iteration,
+    protocol_manifest_path as _protocol_manifest_path,
+    validate_protocol_manifest as _validate_protocol_manifest,
+)
+from benchmark.rendering import (
+    format_number as _format_number,
+    markdown_table as _markdown_table,
+    render_markdown as _render_markdown,
+)
 
 
 ITERATION_RE = re.compile(r"^iteration-(\d+)$")
@@ -38,7 +92,6 @@ PROTOCOL_TRACKED_FILES = (
     ".github/agents/skill-blind-comparator.agent.md",
     "test/scripts/benchmark_access_hook.py",
     "test/benchmark-agent-workflow.md",
-    "test/skill-suite-eval-prompt.md",
     "test/scripts/skill_suite_tools.py",
 )
 HOOK_DEBUG_LOG_RELATIVE_PATH = Path("test") / "_agent-hooks" / "hook-debug.jsonl"
@@ -132,20 +185,6 @@ RUN_METRIC_ALIAS_KEYS_TO_DROP = {
 }
 
 
-def read_json(path: Path) -> Any:
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def write_json(path: Path, data: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-
-def write_text(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(content, encoding="utf-8")
-
-
 def anonymous_hook_session_id(mode: str) -> str:
     return f"{ANONYMOUS_HOOK_SESSION_PREFIX}{mode}"
 
@@ -216,310 +255,64 @@ def reset_hook_state(workspace_root: Path, *, mode: str | None = None, session_i
     }
 
 
-def utc_now_iso() -> str:
-    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-
-
-def deep_copy_json_like(value: Any) -> Any:
-    return json.loads(json.dumps(value, ensure_ascii=False))
-
-
-def file_sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(65536), b""):
-            digest.update(chunk)
-    return digest.hexdigest()
-
-
-def normalize_string_list(value: Any) -> list[str]:
-    if not isinstance(value, list):
-        return []
-    normalized: list[str] = []
-    for item in value:
-        if isinstance(item, str) and item.strip():
-            normalized.append(item.strip())
-    return normalized
-
-
 def skill_eval_root(workspace_root: Path, skill_name: str) -> Path:
-    return workspace_root / ".github" / "skills" / skill_name / "evals"
+    return _skill_eval_root(workspace_root, skill_name)
 
 
 def skill_eval_paths(workspace_root: Path, skill_name: str) -> dict[str, Path]:
-    eval_root = skill_eval_root(workspace_root, skill_name)
-    return {
-        "root": eval_root,
-        "public": eval_root / EVALS_PUBLIC_FILENAME,
-        "grading": eval_root / GRADING_SPEC_FILENAME,
-    }
-    return result
+    return _skill_eval_paths(workspace_root, skill_name, EVALS_PUBLIC_FILENAME, GRADING_SPEC_FILENAME)
 
 
 def workspace_benchmark_skill_names(workspace_root: Path) -> list[str]:
-    skills_root = workspace_skills_root(workspace_root)
-    if not skills_root.exists():
-        return []
-    result: list[str] = []
-    for child in sorted(skills_root.iterdir(), key=lambda path: path.name):
-        if not child.is_dir():
-            continue
-        eval_root = child / "evals"
-        if not eval_root.exists():
-            continue
-        if any((eval_root / name).exists() for name in (EVALS_PUBLIC_FILENAME, GRADING_SPEC_FILENAME)):
-            result.append(child.name)
-    return result
+    return _workspace_benchmark_skill_names(workspace_root, EVALS_PUBLIC_FILENAME, GRADING_SPEC_FILENAME)
 
 
 def validate_public_eval_definition(skill_name: str, data: dict[str, Any]) -> list[str]:
-    issues: list[str] = []
-    if not isinstance(data, dict):
-        return [f"{skill_name}: evals-public payload must be a JSON object"]
-
-    if data.get("artifact_type") not in {None, "evals-public"}:
-        issues.append(f"{skill_name}: evals-public artifact_type must be 'evals-public'")
-
-    evals = data.get("evals")
-    if not isinstance(evals, list) or not evals:
-        issues.append(f"{skill_name}: evals-public must contain a non-empty 'evals' array")
-        return issues
-
-    seen_ids: set[int] = set()
-    for index, item in enumerate(evals):
-        if not isinstance(item, dict):
-            issues.append(f"{skill_name}: evals-public eval #{index} must be an object")
-            continue
-        eval_id = item.get("id")
-        if not isinstance(eval_id, int):
-            issues.append(f"{skill_name}: evals-public eval #{index} must provide an integer id")
-        elif eval_id in seen_ids:
-            issues.append(f"{skill_name}: duplicate eval id {eval_id} in evals-public")
-        else:
-            seen_ids.add(eval_id)
-        if not isinstance(item.get("prompt"), str) or not item.get("prompt", "").strip():
-            issues.append(f"{skill_name}: eval {eval_id!r} in evals-public must provide a non-empty prompt")
-        if "expected_output" in item or "expectations" in item:
-            issues.append(f"{skill_name}: eval {eval_id!r} in evals-public leaks hidden grading fields")
-        if "files" in item and not isinstance(item.get("files"), list):
-            issues.append(f"{skill_name}: eval {eval_id!r} in evals-public must use a list for files")
-    return issues
+    return _validate_public_eval_definition(skill_name, data)
 
 
 def validate_grading_spec_definition(skill_name: str, data: dict[str, Any]) -> list[str]:
-    issues: list[str] = []
-    if not isinstance(data, dict):
-        return [f"{skill_name}: grading-spec payload must be a JSON object"]
-
-    if data.get("artifact_type") not in {None, "grading-spec"}:
-        issues.append(f"{skill_name}: grading-spec artifact_type must be 'grading-spec'")
-
-    evals = data.get("evals")
-    if not isinstance(evals, list) or not evals:
-        issues.append(f"{skill_name}: grading-spec must contain a non-empty 'evals' array")
-        return issues
-
-    seen_ids: set[int] = set()
-    for index, item in enumerate(evals):
-        if not isinstance(item, dict):
-            issues.append(f"{skill_name}: grading-spec eval #{index} must be an object")
-            continue
-        eval_id = item.get("id")
-        if not isinstance(eval_id, int):
-            issues.append(f"{skill_name}: grading-spec eval #{index} must provide an integer id")
-        elif eval_id in seen_ids:
-            issues.append(f"{skill_name}: duplicate eval id {eval_id} in grading-spec")
-        else:
-            seen_ids.add(eval_id)
-        if "prompt" in item:
-            issues.append(
-                f"{skill_name}: grading-spec eval {eval_id!r} must not contain prompt; prompts live in evals-public"
-            )
-        if "files" in item and not isinstance(item.get("files"), list):
-            issues.append(f"{skill_name}: grading-spec eval {eval_id!r} must use a list for files")
-        if not isinstance(item.get("expected_output"), str):
-            issues.append(f"{skill_name}: grading-spec eval {eval_id!r} must provide a string expected_output")
-        expectations = item.get("expectations")
-        if not isinstance(expectations, list) or not all(isinstance(entry, str) and entry.strip() for entry in expectations):
-            issues.append(f"{skill_name}: grading-spec eval {eval_id!r} must provide a string-only expectations list")
-    return issues
+    return _validate_grading_spec_definition(skill_name, data)
 
 
 def validate_split_eval_pair(skill_name: str, public: dict[str, Any], grading: dict[str, Any]) -> list[str]:
-    issues = validate_public_eval_definition(skill_name, public)
-    issues.extend(validate_grading_spec_definition(skill_name, grading))
-    if issues:
-        return issues
-
-    public_by_id = {item.get("id"): item for item in public.get("evals", []) if isinstance(item, dict)}
-    grading_by_id = {item.get("id"): item for item in grading.get("evals", []) if isinstance(item, dict)}
-    if set(public_by_id) != set(grading_by_id):
-        issues.append(f"{skill_name}: eval ids differ between evals-public and grading-spec")
-        return issues
-
-    for eval_id in sorted(public_by_id):
-        public_files = normalize_string_list(public_by_id[eval_id].get("files", []))
-        grading_files = normalize_string_list(grading_by_id[eval_id].get("files", []))
-        if public_files != grading_files:
-            issues.append(f"{skill_name}: eval {eval_id} files differ between evals-public and grading-spec")
-    return issues
+    return _validate_split_eval_pair(skill_name, public, grading)
 
 
 def load_split_eval_artifacts(workspace_root: Path, skill_name: str) -> dict[str, Any]:
-    paths = skill_eval_paths(workspace_root, skill_name)
-    if paths["public"].exists():
-        public = read_json(paths["public"])
-    else:
-        raise FileNotFoundError(f"Missing {EVALS_PUBLIC_FILENAME} for skill '{skill_name}': {paths['public']}")
-
-    if paths["grading"].exists():
-        grading = read_json(paths["grading"])
-    else:
-        raise FileNotFoundError(f"Missing {GRADING_SPEC_FILENAME} for skill '{skill_name}': {paths['grading']}")
-
-    issues = validate_split_eval_pair(skill_name, public, grading)
-    if issues:
-        raise ValueError("; ".join(issues))
-
-    return {
-        "skill_name": skill_name,
-        "public": public,
-        "grading": grading,
-        "paths": paths,
-    }
+    return _load_split_eval_artifacts(workspace_root, skill_name, EVALS_PUBLIC_FILENAME, GRADING_SPEC_FILENAME)
 
 
 def validate_workspace_eval_artifacts(workspace_root: Path) -> dict[str, Any]:
-    issues: list[dict[str, Any]] = []
-    skills_checked = 0
-    for skill_name in workspace_benchmark_skill_names(workspace_root):
-        skills_checked += 1
-        try:
-            artifacts = load_split_eval_artifacts(workspace_root, skill_name)
-        except Exception as exc:
-            issues.append({"skill": skill_name, "problem": str(exc)})
-            continue
-
-        public_path = artifacts["paths"]["public"]
-        grading_path = artifacts["paths"]["grading"]
-        if not public_path.exists():
-            issues.append({"skill": skill_name, "problem": f"missing {EVALS_PUBLIC_FILENAME}"})
-        if not grading_path.exists():
-            issues.append({"skill": skill_name, "problem": f"missing {GRADING_SPEC_FILENAME}"})
-
-    return {
-        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "skills_checked": skills_checked,
-        "issue_count": len(issues),
-        "issues": issues,
-        "passed": len(issues) == 0,
-    }
+    return _validate_workspace_eval_artifacts(workspace_root, EVALS_PUBLIC_FILENAME, GRADING_SPEC_FILENAME)
 
 
 def protocol_manifest_path(workspace_root: Path, manifest_path: Path | None = None) -> Path:
-    return manifest_path or (workspace_root / PROTOCOL_MANIFEST_RELATIVE_PATH)
+    return _protocol_manifest_path(workspace_root, PROTOCOL_MANIFEST_RELATIVE_PATH, manifest_path)
 
 
 def build_protocol_manifest(workspace_root: Path, version: str = BENCHMARK_PROTOCOL_VERSION) -> dict[str, Any]:
-    tracked_files: list[dict[str, Any]] = []
-    for rel_path in PROTOCOL_TRACKED_FILES:
-        absolute = workspace_root / rel_path
-        if not absolute.exists():
-            raise FileNotFoundError(f"Missing protocol-tracked file: {absolute}")
-        tracked_files.append(
-            {
-                "path": rel_path,
-                "sha256": file_sha256(absolute),
-            }
-        )
-    return {
-        "protocol_version": version,
-        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "eval_artifact_schema_version": EVAL_ARTIFACT_SCHEMA_VERSION,
-        "comparator_schema_version": COMPARATOR_SCHEMA_VERSION,
-        "tracked_files": tracked_files,
-    }
+    return _build_protocol_manifest(
+        workspace_root,
+        version=version,
+        tracked_files=PROTOCOL_TRACKED_FILES,
+        eval_artifact_schema_version=EVAL_ARTIFACT_SCHEMA_VERSION,
+        comparator_schema_version=COMPARATOR_SCHEMA_VERSION,
+    )
 
 
 def validate_protocol_manifest(workspace_root: Path, manifest_path: Path) -> dict[str, Any]:
-    if not manifest_path.exists():
-        raise FileNotFoundError(f"Missing protocol manifest: {manifest_path}")
-
-    manifest = read_json(manifest_path)
-    issues: list[dict[str, Any]] = []
-    for item in manifest.get("tracked_files", []):
-        rel_path = item.get("path")
-        expected_hash = item.get("sha256")
-        if not isinstance(rel_path, str) or not isinstance(expected_hash, str):
-            issues.append({"path": rel_path or "<unknown>", "problem": "invalid manifest entry"})
-            continue
-        absolute = workspace_root / rel_path
-        if not absolute.exists():
-            issues.append({"path": rel_path, "problem": "missing file"})
-            continue
-        actual_hash = file_sha256(absolute)
-        if actual_hash != expected_hash:
-            issues.append(
-                {
-                    "path": rel_path,
-                    "problem": "hash mismatch",
-                    "expected_sha256": expected_hash,
-                    "actual_sha256": actual_hash,
-                }
-            )
-
-    return {
-        "manifest_path": manifest_path.relative_to(workspace_root).as_posix(),
-        "protocol_version": manifest.get("protocol_version"),
-        "tracked_file_count": len(manifest.get("tracked_files", [])),
-        "issue_count": len(issues),
-        "issues": issues,
-        "passed": len(issues) == 0,
-    }
+    return _validate_protocol_manifest(workspace_root, manifest_path)
 
 
 def freeze_protocol_for_iteration(iteration_dir: Path, workspace_root: Path, manifest_path: Path) -> dict[str, Any]:
-    manifest_validation = validate_protocol_manifest(workspace_root, manifest_path)
-    if not manifest_validation.get("passed"):
-        raise ValueError(f"Protocol manifest mismatch: {manifest_validation['issue_count']} issue(s)")
-
-    eval_validation = validate_workspace_eval_artifacts(workspace_root)
-    if not eval_validation.get("passed"):
-        raise ValueError(f"Split eval artifact validation failed: {eval_validation['issue_count']} issue(s)")
-
-    skill_hashes: list[dict[str, Any]] = []
-    for skill_name in workspace_benchmark_skill_names(workspace_root):
-        paths = skill_eval_paths(workspace_root, skill_name)
-        skill_hashes.append(
-            {
-                "skill": skill_name,
-                "evals_public_path": paths["public"].relative_to(workspace_root).as_posix(),
-                "evals_public_sha256": file_sha256(paths["public"]),
-                "grading_spec_path": paths["grading"].relative_to(workspace_root).as_posix(),
-                "grading_spec_sha256": file_sha256(paths["grading"]),
-            }
-        )
-
-    manifest = read_json(manifest_path)
-    lock_payload = {
-        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "iteration": iteration_dir.name,
-        "protocol_version": manifest.get("protocol_version"),
-        "manifest_path": manifest_path.relative_to(workspace_root).as_posix(),
-        "manifest_sha256": file_sha256(manifest_path),
-        "tracked_files": manifest.get("tracked_files", []),
-        "skill_eval_artifacts": skill_hashes,
-    }
-    output_path = iteration_dir / "_meta" / "protocol-lock.json"
-    write_json(output_path, lock_payload)
-    return {
-        "iteration": iteration_dir.name,
-        "protocol_version": lock_payload["protocol_version"],
-        "manifest_path": lock_payload["manifest_path"],
-        "output_path": output_path.relative_to(workspace_root).as_posix(),
-        "tracked_file_count": len(lock_payload["tracked_files"]),
-        "skill_count": len(skill_hashes),
-    }
+    return _freeze_protocol_for_iteration(
+        iteration_dir,
+        workspace_root,
+        manifest_path,
+        evals_public_filename=EVALS_PUBLIC_FILENAME,
+        grading_spec_filename=GRADING_SPEC_FILENAME,
+    )
 
 
 def run_label(run_number: int) -> str:
@@ -589,8 +382,7 @@ def per_eval_run_metrics_path(skill_dir: Path, configuration: str, eval_id: int,
 
 
 def parse_eval_metrics_path(path: Path) -> int | None:
-    match = EVAL_METRICS_RE.match(path.stem)
-    return int(match.group(1)) if match else None
+    return _parse_eval_metrics_path(path, EVAL_METRICS_RE)
 
 
 def discover_run_numbers(skill_dir: Path, configuration: str) -> list[int]:
@@ -624,23 +416,11 @@ def discover_run_numbers(skill_dir: Path, configuration: str) -> list[int]:
 
 
 def extract_timestamp_field(payload: dict[str, Any], *keys: str) -> str | None:
-    for key in keys:
-        value = payload.get(key)
-        if isinstance(value, str) and value.strip():
-            return value.strip()
-    return None
+    return _extract_timestamp_field(payload, *keys)
 
 
 def extract_files_read_count(payload: dict[str, Any]) -> int:
-    files_read = payload.get("files_read")
-    if isinstance(files_read, list):
-        normalized = [str(item).strip() for item in files_read if str(item).strip()]
-        seen: set[str] = set()
-        for item in normalized:
-            seen.add(item)
-        return len(seen)
-    explicit_count = coerce_int(payload.get("files_read_count"))
-    return explicit_count if explicit_count is not None else 0
+    return _extract_files_read_count(payload)
 
 
 def refresh_run_metrics_collection(skill_dir: Path, configuration: str) -> dict[str, Any]:
@@ -1028,93 +808,8 @@ def materialize_blind_comparisons(iteration_dir: Path, skill_name: str, raw_json
     }
 
 
-def count_words(text: str) -> int:
-    return len(WORD_RE.findall(text))
-
-
-def safe_mean(values: list[float]) -> float | None:
-    cleaned = [value for value in values if value is not None]
-    if not cleaned:
-        return None
-    return round(mean(cleaned), 4)
-
-
-def round_or_none(value: float | None, digits: int = 4) -> float | None:
-    if value is None:
-        return None
-    return round(value, digits)
-
-
-def iso_to_datetime(value: Any) -> datetime | None:
-    if not isinstance(value, str) or not value.strip():
-        return None
-    normalized = value.strip()
-    if normalized.endswith("Z"):
-        normalized = normalized[:-1] + "+00:00"
-    try:
-        parsed = datetime.fromisoformat(normalized)
-    except ValueError:
-        return None
-    if parsed.tzinfo is None:
-        parsed = parsed.replace(tzinfo=timezone.utc)
-    return parsed.astimezone(timezone.utc)
-
-
-def coerce_bool(value: Any) -> bool | None:
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, str):
-        lowered = value.strip().lower()
-        if lowered in {"true", "1", "yes", "y"}:
-            return True
-        if lowered in {"false", "0", "no", "n"}:
-            return False
-    return None
-
-
-def coerce_int(value: Any) -> int | None:
-    if value is None or isinstance(value, bool):
-        return None
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def coerce_float(value: Any) -> float | None:
-    if value is None or isinstance(value, bool):
-        return None
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return None
-
-
 def infer_run_metrics_fields(metrics_path: Path) -> dict[str, str | None]:
-    configuration = None
-    file_name = metrics_path.name
-    for candidate in ("with_skill", "without_skill"):
-        if file_name == f"{candidate}-run-metrics.json":
-            configuration = candidate
-            break
-        if metrics_path.parent.name == candidate:
-            configuration = candidate
-            break
-        if metrics_path.parent.parent.name == candidate:
-            configuration = candidate
-            break
-
-    skill_name = None
-    if metrics_path.parent.name in {"with_skill", "without_skill"} and metrics_path.parent.parent.name == "_runs":
-        skill_name = metrics_path.parent.parent.parent.name
-    elif metrics_path.parent.parent.name in {"with_skill", "without_skill"} and metrics_path.parent.parent.parent.name == "_runs":
-        skill_name = metrics_path.parent.parent.parent.parent.name
-    elif metrics_path.parent != metrics_path:
-        skill_name = metrics_path.parent.name
-    return {
-        "skill_name": skill_name,
-        "configuration": configuration,
-    }
+    return _infer_run_metrics_fields(metrics_path)
 
 
 def build_run_metrics_payload(
@@ -1130,108 +825,47 @@ def build_run_metrics_payload(
     files_written_count: int,
     run_number: int | None = None,
 ) -> dict[str, Any]:
-    payload = {
-        "skill_name": skill_name,
-        "configuration": configuration,
-        "language": language,
-        "mcp_used": mcp_used,
-        "started_at": started_at,
-        "finished_at": finished_at,
-        "elapsed_seconds_total": elapsed_seconds_total,
-        "files_read_count": files_read_count,
-        "files_written_count": files_written_count,
-    }
-    if run_number is not None:
-        payload["run_number"] = run_number
-    return payload
+    return _build_run_metrics_payload(
+        skill_name=skill_name,
+        configuration=configuration,
+        language=language,
+        mcp_used=mcp_used,
+        started_at=started_at,
+        finished_at=finished_at,
+        elapsed_seconds_total=elapsed_seconds_total,
+        files_read_count=files_read_count,
+        files_written_count=files_written_count,
+        run_number=run_number,
+    )
 
 
 def canonicalize_run_metrics(metrics: dict[str, Any], metrics_path: Path | None = None) -> tuple[dict[str, Any], list[str]]:
-    inferred = infer_run_metrics_fields(metrics_path) if metrics_path else {}
-    canonical: dict[str, Any] = {}
-    changes: list[str] = []
-
-    for key in REQUIRED_RUN_METRIC_KEYS:
-        aliases = RUN_METRIC_KEY_ALIASES.get(key, (key,))
-        value = None
-        source_key = None
-        for alias in aliases:
-            if alias in metrics and metrics[alias] is not None:
-                value = metrics[alias]
-                source_key = alias
-                break
-
-        if value is None and key in RUN_METRIC_LIST_FALLBACKS:
-            for list_key in RUN_METRIC_LIST_FALLBACKS[key]:
-                list_value = metrics.get(list_key)
-                if isinstance(list_value, list):
-                    value = len(list_value)
-                    source_key = list_key
-                    changes.append(f"derived {key} from {list_key}")
-                    break
-
-        if value is None and inferred.get(key) is not None:
-            value = inferred[key]
-            changes.append(f"inferred {key} from metrics path")
-
-        if value is None and key in RUN_METRIC_DEFAULTS:
-            value = RUN_METRIC_DEFAULTS[key]
-            changes.append(f"defaulted {key}")
-
-        if key == "mcp_used":
-            coerced = coerce_bool(value)
-            if value is not None and coerced is None:
-                changes.append(f"could not coerce {key}; leaving as-is")
-            value = coerced if coerced is not None else value
-        elif key in {"files_read_count", "files_written_count"}:
-            coerced = coerce_int(value)
-            value = coerced if coerced is not None else value
-        elif key == "elapsed_seconds_total":
-            coerced = coerce_float(value)
-            value = coerced if coerced is not None else value
-
-        if source_key and source_key != key:
-            changes.append(f"mapped {source_key} -> {key}")
-
-        canonical[key] = value
-
-    if canonical.get("elapsed_seconds_total") is None:
-        started_at = iso_to_datetime(canonical.get("started_at"))
-        finished_at = iso_to_datetime(canonical.get("finished_at"))
-        if started_at and finished_at:
-            canonical["elapsed_seconds_total"] = round((finished_at - started_at).total_seconds(), 6)
-            changes.append("derived elapsed_seconds_total from started_at and finished_at")
-
-    normalized = {key: canonical.get(key) for key in REQUIRED_RUN_METRIC_KEYS}
-    for key, value in metrics.items():
-        if key in normalized or key in RUN_METRIC_ALIAS_KEYS_TO_DROP:
-            continue
-        normalized[key] = value
-
-    return normalized, changes
+    return _canonicalize_run_metrics(
+        metrics,
+        metrics_path,
+        required_run_metric_keys=REQUIRED_RUN_METRIC_KEYS,
+        run_metric_key_aliases=RUN_METRIC_KEY_ALIASES,
+        run_metric_list_fallbacks=RUN_METRIC_LIST_FALLBACKS,
+        run_metric_defaults=RUN_METRIC_DEFAULTS,
+        run_metric_alias_keys_to_drop=RUN_METRIC_ALIAS_KEYS_TO_DROP,
+    )
 
 
 def load_run_metrics(metrics_path: Path, *, write_back: bool) -> tuple[dict[str, Any], list[str]]:
-    metrics = read_json(metrics_path)
-    normalized, changes = canonicalize_run_metrics(metrics, metrics_path)
-    if write_back and (changes or normalized != metrics):
-        write_json(metrics_path, normalized)
-    return normalized, changes
-
-
-def delta_or_none(left: float | int | None, right: float | int | None, digits: int = 4) -> float | None:
-    if left is None or right is None:
-        return None
-    return round(float(left) - float(right), digits)
+    return _load_run_metrics(
+        metrics_path,
+        write_back=write_back,
+        required_run_metric_keys=REQUIRED_RUN_METRIC_KEYS,
+        run_metric_key_aliases=RUN_METRIC_KEY_ALIASES,
+        run_metric_list_fallbacks=RUN_METRIC_LIST_FALLBACKS,
+        run_metric_defaults=RUN_METRIC_DEFAULTS,
+        run_metric_alias_keys_to_drop=RUN_METRIC_ALIAS_KEYS_TO_DROP,
+    )
 
 
 def iteration_number(path: Path) -> int | None:
     match = ITERATION_RE.match(path.name)
     return int(match.group(1)) if match else None
-
-
-def relative_to_root(path: Path, root: Path) -> str:
-    return path.relative_to(root).as_posix()
 
 
 def workspace_skills_root(workspace_root: Path) -> Path:
@@ -1487,24 +1121,6 @@ def build_blind_compare_bundle(
     }
 
 
-def calculate_benchmark_stats(values: list[float]) -> dict[str, float]:
-    if not values:
-        return {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0}
-    if len(values) == 1:
-        value = round(float(values[0]), 4)
-        return {"mean": value, "stddev": 0.0, "min": value, "max": value}
-
-    sample_mean = sum(values) / len(values)
-    variance = sum((value - sample_mean) ** 2 for value in values) / (len(values) - 1)
-    stddev = variance ** 0.5
-    return {
-        "mean": round(sample_mean, 4),
-        "stddev": round(stddev, 4),
-        "min": round(min(values), 4),
-        "max": round(max(values), 4),
-    }
-
-
 def load_comparison_index(skill_dir: Path) -> dict[tuple[int, int], dict[str, Any]]:
     comparisons_path = skill_dir / "blind-comparisons.json"
     if not comparisons_path.exists():
@@ -1663,17 +1279,6 @@ def build_skill_creator_benchmark(iteration_dir: Path, workspace_root: Path, ski
 def write_skill_creator_benchmark(iteration_dir: Path, workspace_root: Path, skill_name: str, output_path: Path) -> dict[str, Any]:
     benchmark = build_skill_creator_benchmark(iteration_dir, workspace_root, skill_name)
     write_json(output_path, benchmark)
-    markdown_lines = [
-        f"# Skill-Creator Benchmark Export — {skill_name}",
-        "",
-        f"Iteration: {iteration_dir.name}",
-        f"Included eval ids: {', '.join(map(str, benchmark['metadata']['evals_run'])) if benchmark['metadata']['evals_run'] else 'none'}",
-        "",
-        "## Notes",
-        "",
-    ]
-    markdown_lines.extend(f"- {note}" for note in benchmark.get("notes", []))
-    write_text(output_path.with_suffix(".md"), "\n".join(markdown_lines) + "\n")
     return benchmark
 
 
@@ -1760,7 +1365,6 @@ def export_review_workspace(iteration_dir: Path, workspace_root: Path, skill_nam
         "missing_runs": missing_runs,
         "runs": exported_runs,
     }
-    write_json(output_dir / "export-summary.json", summary)
     return summary
 
 
@@ -2277,8 +1881,8 @@ def validate_hook_audit(path: Path, mode: str | None = None) -> dict[str, Any]:
 
 
 def run_self_test(iteration_dir: Path, workspace_root: Path, baseline_isolation: str) -> dict[str, Any]:
-    policy_test = run_command([sys.executable, "test/scripts/test_benchmark_agent_policy.py"], workspace_root)
-    harness_test = run_command([sys.executable, "test/scripts/test_skill_suite_tools.py"], workspace_root)
+    policy_test = run_command([sys.executable, "test/scripts/tests/test_benchmark_agent_policy.py"], workspace_root)
+    harness_test = run_command([sys.executable, "test/scripts/tests/test_skill_suite_tools.py"], workspace_root)
     blind_isolation = validate_blind_isolation(iteration_dir)
     viewer_script = locate_skill_creator_viewer_script(workspace_root)
     eval_artifacts = validate_workspace_eval_artifacts(workspace_root)
@@ -2458,47 +2062,11 @@ def normalize_iteration_metrics(iteration_dir: Path) -> dict[str, Any]:
 
 
 def clean_benchmark_artifacts(workspace_root: Path) -> dict[str, Any]:
-    test_root = workspace_root / "test"
-    removed: list[str] = []
-    missing: list[str] = []
+    return _clean_benchmark_artifacts(workspace_root)
 
-    targets: list[Path] = []
-    if test_root.exists():
-        targets.extend(
-            sorted(
-                [child for child in test_root.iterdir() if child.is_dir() and ITERATION_RE.match(child.name)],
-                key=lambda path: path.name,
-            )
-        )
-        targets.extend(
-            [
-                test_root / "_agent-hooks",
-                test_root / "_live-mcp-probe",
-                test_root / "scripts" / "__pycache__",
-            ]
-        )
 
-    for path in targets:
-        if not path.exists():
-            missing.append(path.relative_to(workspace_root).as_posix())
-            continue
-        if path.is_dir():
-            shutil.rmtree(path)
-        else:
-            path.unlink()
-        removed.append(path.relative_to(workspace_root).as_posix())
-
-    summary = {
-        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "removed_count": len(removed),
-        "removed": removed,
-        "missing_count": len(missing),
-        "missing": missing,
-    }
-    meta_root = test_root / "_meta"
-    meta_root.mkdir(parents=True, exist_ok=True)
-    write_json(meta_root / "clean-benchmark-artifacts.json", summary)
-    return summary
+def prune_generated_artifacts(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]:
+    return _prune_generated_artifacts(iteration_dir, workspace_root)
 
 
 def current_utc_timestamp() -> dict[str, Any]:
@@ -3411,292 +2979,15 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
 
 
 def format_number(value: Any, digits: int = 2, percentage: bool = False) -> str:
-    if value is None:
-        return "-"
-    if percentage:
-        return f"{value * 100:.1f}%"
-    if isinstance(value, int):
-        return str(value)
-    return f"{value:.{digits}f}"
+    return _format_number(value, digits=digits, percentage=percentage)
 
 
 def markdown_table(headers: list[str], rows: list[list[str]]) -> str:
-    lines = ["| " + " | ".join(headers) + " |", "| " + " | ".join(["---"] * len(headers)) + " |"]
-    for row in rows:
-        lines.append("| " + " | ".join(row) + " |")
-    return "\n".join(lines)
+    return _markdown_table(headers, rows)
 
 
 def render_markdown(summary: dict[str, Any]) -> str:
-    metric_validation = summary.get("metric_validation") or {}
-    suite_variance = summary.get("suite_variance") or {}
-    comparison_validity = summary.get("comparison_validity") or {}
-    lines = [
-        f"# Skill Suite Summary — {summary['iteration']}",
-        "",
-        f"Generated at: {summary['generated_at']}",
-        f"Previous iteration: {summary['previous_iteration'] or 'None found'}",
-        f"Protocol version: {summary.get('protocol_version') or 'unlocked'}",
-        f"Skill count: {summary['skill_count']}",
-        "",
-    ]
-
-    if comparison_validity.get("provisional"):
-        lines.extend([
-            "## Benchmark caveats",
-            "",
-            "This iteration should be treated as **provisional**.",
-            "",
-        ])
-        for reason in comparison_validity.get("reasons", []):
-            lines.append(f"- {reason}")
-        for note in comparison_validity.get("protocol_deviations", []):
-            lines.append(f"- Protocol deviation: {note}")
-        for note in comparison_validity.get("notes", []):
-            lines.append(f"- Note: {note}")
-        lines.extend([
-            "",
-        ])
-
-    lines.extend([
-        "## Metric validation",
-        "",
-        f"Status: {metric_validation.get('status', 'unknown')}",
-        f"Files checked: {metric_validation.get('checked_files', 0)}/{metric_validation.get('expected_files', 0)}",
-        f"Issues: {metric_validation.get('issue_count', 0)}",
-        "",
-        "## Metric legend",
-        "",
-        "| Metric | Meaning | How to read it |",
-        "| --- | --- | --- |",
-        "| With-skill win rate | Share of blind comparisons won by the `with_skill` response. | Higher is better for the skill. Ties are not wins. |",
-        "| Expectation pass rate | Average share of listed expectations satisfied by a response. | Higher is better. `Expectation Δ = with_skill - without_skill`. |",
-        "| Rubric score | Blind comparator overall quality score on a 0-10 scale. | Higher is better. `Rubric Δ = with_skill - without_skill`. |",
-        "| Time per eval | Average wall-clock seconds spent per eval. | Lower is faster. `Time Δ = with_skill - without_skill`, so a negative delta means the skill was faster. |",
-        "| Words per eval | Average response length in words. | Lower means more concise, but not automatically better unless quality stays strong. |",
-        "| Files read count | Count of repository files intentionally read during a run. | Proxy for context consumption. Higher means more repository context was consumed. |",
-        "| Executable validity | Share of snippet-bearing eval runs whose LikeC4 snippets passed automated structural checks. | Higher is better. `Executable Δ = with_skill - without_skill`. |",
-        "",
-        "### Reading deltas",
-        "",
-        "- `Expectation Δ > 0`: the skill satisfied more listed expectations.",
-        "- `Rubric Δ > 0`: the skill was judged better overall.",
-        "- `Time Δ < 0`: the skill was faster.",
-        "- `Words Δ < 0`: the skill was more concise.",
-        "- `Files read Δ > 0`: the skill consumed more repository context.",
-        "- `Executable Δ > 0`: the skill produced more structurally valid LikeC4 snippets.",
-        "",
-        "## Suite variance",
-        "",
-    ])
-
-    variance_rows = []
-    for metric_name, stats in (
-        ("With-skill win rate", suite_variance.get("with_skill_win_rate")),
-        ("Expectation Δ", suite_variance.get("expectation_delta")),
-        ("Rubric Δ", suite_variance.get("rubric_delta")),
-        ("Time Δ / eval", suite_variance.get("time_delta_per_eval")),
-        ("Executable Δ", suite_variance.get("executable_delta")),
-    ):
-        if not stats:
-            continue
-        variance_rows.append(
-            [
-                metric_name,
-                format_number(stats.get("mean"), digits=3),
-                format_number(stats.get("stddev"), digits=3),
-                format_number(stats.get("min"), digits=3),
-                format_number(stats.get("max"), digits=3),
-            ]
-        )
-    if variance_rows:
-        lines.extend([
-            markdown_table(["Metric", "Mean", "Stddev", "Min", "Max"], variance_rows),
-            "",
-        ])
-    else:
-        lines.extend([
-            "Variance metrics are not available yet.",
-            "",
-        ])
-
-    lines.extend([
-        "",
-        "## Suite overview",
-        "",
-    ])
-
-    if metric_validation.get("issues"):
-        issue_headers = ["Skill", "Config", "Path", "Problem", "Missing keys"]
-        issue_rows = []
-        for issue in metric_validation["issues"]:
-            issue_rows.append(
-                [
-                    issue.get("skill", "-"),
-                    issue.get("configuration", "-"),
-                    issue.get("path", "-"),
-                    issue.get("problem", "-"),
-                    ", ".join(issue.get("missing_keys", [])) if issue.get("missing_keys") else "-",
-                ]
-            )
-        lines.extend([
-            markdown_table(issue_headers, issue_rows),
-            "",
-        ])
-    else:
-        lines.extend([
-            "All required run-metrics files were present and complete.",
-            "",
-        ])
-
-    overview_headers = [
-        "Skill",
-        "Evals",
-        "Runs",
-        "With-skill win rate",
-        "Expectation Δ",
-        "Rubric Δ",
-        "Time Δ / eval (s)",
-        "Executable Δ",
-        "Words Δ / eval",
-        "Files read Δ",
-        "High-var evals",
-    ]
-    overview_rows = []
-    for row in summary["overview"]:
-        overview_rows.append(
-            [
-                row["skill"],
-                str(row["eval_count"]),
-                str(row.get("run_count", 1)),
-                format_number(row["with_skill_win_rate"], percentage=True),
-                format_number(row["expectation_delta"], digits=3),
-                format_number(row["rubric_delta"], digits=3),
-                format_number(row["time_delta_per_eval"], digits=3),
-                format_number(row.get("executable_delta"), digits=3),
-                format_number(row["words_delta_per_eval"], digits=1),
-                format_number(row["files_read_delta"], digits=1),
-                str(row.get("high_variance_eval_count", 0)),
-            ]
-        )
-    lines.append(markdown_table(overview_headers, overview_rows))
-
-    lines.extend([
-        "",
-        "## Per-skill detailed comparison",
-        "",
-    ])
-
-    detail_headers = [
-        "Skill",
-        "Runs",
-        "Exp pass with",
-        "Exp pass without",
-        "Rubric with",
-        "Rubric without",
-        "Sec/eval with",
-        "Sec/eval without",
-        "Exec with",
-        "Exec without",
-        "Words/eval with",
-        "Words/eval without",
-        "Files read with",
-        "Files read without",
-    ]
-    detail_rows = []
-    for skill in summary["skills"]:
-        detail_rows.append(
-            [
-                skill["skill"],
-                str(skill.get("run_count", 1)),
-                format_number(skill["capability"]["expectation_pass_rate"]["with_skill"], digits=3),
-                format_number(skill["capability"]["expectation_pass_rate"]["without_skill"], digits=3),
-                format_number(skill["capability"]["rubric_score"]["with_skill"], digits=3),
-                format_number(skill["capability"]["rubric_score"]["without_skill"], digits=3),
-                format_number(skill["time"]["with_skill"]["elapsed_seconds_per_eval"], digits=3),
-                format_number(skill["time"]["without_skill"]["elapsed_seconds_per_eval"], digits=3),
-                format_number(skill["executable_validity"]["with_skill"].get("valid_eval_rate") if skill["executable_validity"]["with_skill"] else None, digits=3),
-                format_number(skill["executable_validity"]["without_skill"].get("valid_eval_rate") if skill["executable_validity"]["without_skill"] else None, digits=3),
-                format_number(skill["consumption"]["with_skill"]["response_words_per_eval"], digits=1),
-                format_number(skill["consumption"]["without_skill"]["response_words_per_eval"], digits=1),
-                format_number(skill["consumption"]["with_skill"]["files_read_count"], digits=1),
-                format_number(skill["consumption"]["without_skill"]["files_read_count"], digits=1),
-            ]
-        )
-    lines.append(markdown_table(detail_headers, detail_rows))
-
-    lines.extend([
-        "",
-        "## High-variance evals",
-        "",
-    ])
-
-    high_variance_evals = summary.get("high_variance_evals") or []
-    if high_variance_evals:
-        variance_headers = ["Skill", "Source", "Eval", "Run count", "Winner flips", "Expectation stddev", "Rubric stddev"]
-        variance_rows = []
-        for item in high_variance_evals:
-            variance_rows.append(
-                [
-                    item.get("skill", "-"),
-                    item.get("source", "-"),
-                    str(item.get("id", "-")),
-                    str(item.get("run_count", "-")),
-                    "yes" if item.get("winner_flips") else "no",
-                    format_number((item.get("expectation_delta_stats") or {}).get("stddev"), digits=3),
-                    format_number((item.get("rubric_delta_stats") or {}).get("stddev"), digits=3),
-                ]
-            )
-        lines.append(markdown_table(variance_headers, variance_rows))
-    else:
-        lines.append("No high-variance evals were flagged.")
-
-    lines.extend([
-        "",
-        "## Previous-iteration comparison",
-        "",
-    ])
-
-    previous = summary.get("previous_iteration_comparison")
-    if previous and previous.get("status") == "suppressed":
-        lines.append("Cross-iteration comparison was suppressed for this iteration:")
-        lines.append("")
-        for reason in previous.get("reasons", []):
-            lines.append(f"- {reason}")
-    elif previous and previous.get("skills"):
-        previous_headers = [
-            "Skill",
-            "Prev win rate",
-            "Curr win rate",
-            "Δ win rate",
-            "Prev expectation Δ",
-            "Curr expectation Δ",
-            "Δ expectation Δ",
-            "Prev time Δ / eval",
-            "Curr time Δ / eval",
-            "Δ time Δ / eval",
-        ]
-        previous_rows = []
-        for row in previous["skills"]:
-            previous_rows.append(
-                [
-                    row["skill"],
-                    format_number(row["previous_with_skill_win_rate"], percentage=True),
-                    format_number(row["current_with_skill_win_rate"], percentage=True),
-                    format_number(row["delta_with_skill_win_rate"], digits=3),
-                    format_number(row["previous_expectation_delta"], digits=3),
-                    format_number(row["current_expectation_delta"], digits=3),
-                    format_number(row["delta_expectation_delta"], digits=3),
-                    format_number(row["previous_time_delta_per_eval"], digits=3),
-                    format_number(row["current_time_delta_per_eval"], digits=3),
-                    format_number(row["delta_time_delta_per_eval"], digits=3),
-                ]
-            )
-        lines.append(markdown_table(previous_headers, previous_rows))
-    else:
-        lines.append("No previous iteration was found for comparison.")
-
-    return "\n".join(lines) + "\n"
+    return _render_markdown(summary)
 
 
 def cmd_prepare_blind(args: argparse.Namespace) -> None:
@@ -3863,7 +3154,6 @@ def cmd_write_skill_creator_benchmark(args: argparse.Namespace) -> None:
     print(json.dumps({
         "skill_name": args.skill,
         "output_json": str(output_path),
-        "output_md": str(output_path.with_suffix('.md')),
         "run_count": len(benchmark.get("runs", [])),
         "note_count": len(benchmark.get("notes", [])),
     }, indent=2, ensure_ascii=False))
@@ -3881,6 +3171,11 @@ def cmd_normalize_metrics(args: argparse.Namespace) -> None:
 
 def cmd_clean_benchmark_artifacts(args: argparse.Namespace) -> None:
     summary = clean_benchmark_artifacts(args.workspace_root)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_prune_generated_artifacts(args: argparse.Namespace) -> None:
+    summary = prune_generated_artifacts(args.iteration, args.workspace_root)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
@@ -4200,6 +3495,11 @@ def build_parser() -> argparse.ArgumentParser:
     clean_parser = subparsers.add_parser("clean-benchmark-artifacts", help="Remove generated benchmark iteration directories and disposable benchmark artefacts")
     clean_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
     clean_parser.set_defaults(func=cmd_clean_benchmark_artifacts)
+
+    prune_parser = subparsers.add_parser("prune-generated-artifacts", help="Remove disposable per-iteration exports that are not part of the canonical benchmark outputs")
+    prune_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N or /test/<series>-testN")
+    prune_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    prune_parser.set_defaults(func=cmd_prune_generated_artifacts)
 
     utc_now_parser = subparsers.add_parser("utc-now", help="Print the current UTC timestamp in benchmark-friendly ISO-8601 format")
     utc_now_parser.set_defaults(func=cmd_current_utc_timestamp)

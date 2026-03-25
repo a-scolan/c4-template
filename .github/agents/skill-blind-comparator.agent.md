@@ -12,8 +12,7 @@ hooks:
       windows: python test\scripts\benchmark_access_hook.py
       env:
         BENCH_MODE: blind_compare
-        BENCH_DEBUG_HOOKS: true
-        BENCH_DEBUG_LOG: test/_agent-hooks/hook-debug.jsonl
+        BENCH_TRACE_LEVEL: normal
       timeout: 15
   PreToolUse:
     - type: command
@@ -21,8 +20,7 @@ hooks:
       windows: python test\scripts\benchmark_access_hook.py
       env:
         BENCH_MODE: blind_compare
-        BENCH_DEBUG_HOOKS: true
-        BENCH_DEBUG_LOG: test/_agent-hooks/hook-debug.jsonl
+        BENCH_TRACE_LEVEL: normal
       timeout: 15
 ---
 You are the mandatory blind comparator for the benchmark workflow.

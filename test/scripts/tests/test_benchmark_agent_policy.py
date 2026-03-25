@@ -10,7 +10,7 @@ import unittest
 from pathlib import Path
 from typing import Any
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 HOOK_SCRIPT = ROOT / "test" / "scripts" / "benchmark_access_hook.py"
 ALLOWED_SUBAGENTS = "Skill Benchmark Baseline,Skill Benchmark Baseline Hook-Only,Skill Benchmark With Skill,Skill Blind Comparator"
 

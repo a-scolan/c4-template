@@ -5,7 +5,6 @@
 test/iteration-*/**/_skill-creator-review-workspace*/
 test/iteration-*/**/skill-creator-review.html
 test/iteration-*/**/skill-creator-benchmark.json
-test/iteration-*/**/skill-creator-benchmark.md
 
 # Python cache artifacts are generated locally and should never be versioned.
 __pycache__/

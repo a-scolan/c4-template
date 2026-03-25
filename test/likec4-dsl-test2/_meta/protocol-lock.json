@@ -34,10 +34,6 @@
       "sha256": "45c80a3fc39a34fa468dc2c9ab3000060d51adb69882b1f41127c2fa01b6a9a1"
     },
     {
-      "path": "test/skill-suite-eval-prompt.md",
-      "sha256": "2ef2402dfd865a6b7f33d83350702bec7ee9641f989a4c90b2682bca919857d1"
-    },
-    {
       "path": "test/scripts/skill_suite_tools.py",
       "sha256": "9305e19c3ab83e02a7d94f66117b3b2e79cee68719cd11067cc2641f1f298fde"
     }
