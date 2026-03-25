@@ -1,13 +1,10 @@
 {
-  "generated_at": "2026-03-16T21:15:20Z",
-  "removed_count": 3,
+  "generated_at": "2026-03-25T13:09:34Z",
+  "scope": "test/likec4-dsl-test3",
+  "removed_count": 1,
   "removed": [
-    "test/iteration-1",
-    "test/_agent-hooks",
-    "test/scripts/__pycache__"
+    "test/likec4-dsl-test3"
   ],
-  "missing_count": 1,
-  "missing": [
-    "test/_live-mcp-probe"
-  ]
+  "missing_count": 0,
+  "missing": []
 }

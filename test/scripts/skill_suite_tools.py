@@ -18,6 +18,7 @@ from typing import Any
 
 ITERATION_RE = re.compile(r"^iteration-(\d+)$")
 RUN_DIR_RE = re.compile(r"^run-(\d+)$")
+EVAL_METRICS_RE = re.compile(r"^eval-(\d+)-metrics$")
 WORD_RE = re.compile(r"\S+")
 
 EVAL_ARTIFACT_SCHEMA_VERSION = 2
@@ -579,6 +580,19 @@ def per_run_metrics_path(skill_dir: Path, configuration: str, run_number: int) -
     return per_run_metrics_dir(skill_dir, configuration) / f"{run_label(run_number)}-metrics.json"
 
 
+def per_eval_run_metrics_dir(skill_dir: Path, configuration: str, run_number: int) -> Path:
+    return per_run_metrics_dir(skill_dir, configuration) / run_label(run_number)
+
+
+def per_eval_run_metrics_path(skill_dir: Path, configuration: str, eval_id: int, run_number: int) -> Path:
+    return per_eval_run_metrics_dir(skill_dir, configuration, run_number) / f"eval-{eval_id}-metrics.json"
+
+
+def parse_eval_metrics_path(path: Path) -> int | None:
+    match = EVAL_METRICS_RE.match(path.stem)
+    return int(match.group(1)) if match else None
+
+
 def discover_run_numbers(skill_dir: Path, configuration: str) -> list[int]:
     discovered: set[int] = set()
     metrics_root = per_run_metrics_dir(skill_dir, configuration)
@@ -586,6 +600,12 @@ def discover_run_numbers(skill_dir: Path, configuration: str) -> list[int]:
         for child in metrics_root.glob("run-*-metrics.json"):
             match = RUN_DIR_RE.match(child.stem.replace("-metrics", ""))
             if match:
+                discovered.add(int(match.group(1)))
+        for child in metrics_root.iterdir():
+            if not child.is_dir():
+                continue
+            match = RUN_DIR_RE.match(child.name)
+            if match and any(parse_eval_metrics_path(path) is not None for path in child.glob("eval-*-metrics.json")):
                 discovered.add(int(match.group(1)))
 
     for eval_dir in sorted(skill_dir.glob("eval-*"), key=lambda path: path.name):
@@ -627,22 +647,88 @@ def refresh_run_metrics_collection(skill_dir: Path, configuration: str) -> dict[
     run_metrics_root = per_run_metrics_dir(skill_dir, configuration)
     run_metrics_root.mkdir(parents=True, exist_ok=True)
 
-    run_paths = sorted(
-        run_metrics_root.glob("run-*-metrics.json"),
-        key=lambda path: int(path.stem.split("-", 2)[1]),
-    )
-    if not run_paths:
+    run_numbers = discover_run_numbers(skill_dir, configuration)
+    if not run_numbers:
         raise FileNotFoundError(f"No per-run metrics found for {skill_dir.name} {configuration}: {run_metrics_root}")
 
     runs: list[dict[str, Any]] = []
     elapsed_values: list[float] = []
     files_read_values: list[float] = []
     files_written_values: list[float] = []
-    for index, path in enumerate(run_paths, start=1):
-        metrics, _changes = load_run_metrics(path, write_back=True)
-        run_number = coerce_int(metrics.get("run_number")) or index
-        normalized = dict(metrics)
-        normalized["run_number"] = run_number
+    for run_number in run_numbers:
+        per_eval_paths = sorted(
+            [
+                path
+                for path in per_eval_run_metrics_dir(skill_dir, configuration, run_number).glob("eval-*-metrics.json")
+                if parse_eval_metrics_path(path) is not None
+            ],
+            key=lambda path: parse_eval_metrics_path(path) or -1,
+        )
+
+        if per_eval_paths:
+            eval_metrics: list[dict[str, Any]] = []
+            started_candidates: list[datetime] = []
+            finished_candidates: list[datetime] = []
+            elapsed_total = 0.0
+            files_read_total = 0
+            files_written_total = 0
+            languages: list[str] = []
+            mcp_used = False
+
+            for path in per_eval_paths:
+                metrics, _changes = load_run_metrics(path, write_back=True)
+                missing_keys = validate_run_metrics_payload(metrics)
+                if missing_keys:
+                    raise ValueError(
+                        f"Incomplete per-eval run metrics for {skill_dir.name} {configuration} run-{run_number}: missing/null keys {missing_keys} in {path}"
+                    )
+
+                eval_id = parse_eval_metrics_path(path)
+                eval_metrics.append(
+                    {
+                        "eval_id": eval_id,
+                        "path": path.relative_to(skill_dir).as_posix(),
+                        **metrics,
+                    }
+                )
+
+                started_at = iso_to_datetime(metrics.get("started_at"))
+                finished_at = iso_to_datetime(metrics.get("finished_at"))
+                if started_at is not None:
+                    started_candidates.append(started_at)
+                if finished_at is not None:
+                    finished_candidates.append(finished_at)
+
+                elapsed_total += float(metrics.get("elapsed_seconds_total", 0.0) or 0.0)
+                files_read_total += int(metrics.get("files_read_count", 0) or 0)
+                files_written_total += int(metrics.get("files_written_count", 0) or 0)
+
+                if isinstance(metrics.get("language"), str) and metrics.get("language", "").strip():
+                    languages.append(metrics["language"].strip())
+                mcp_used = mcp_used or bool(metrics.get("mcp_used", False))
+
+            started_at = min(started_candidates).strftime("%Y-%m-%dT%H:%M:%SZ") if started_candidates else utc_now_iso()
+            finished_at = max(finished_candidates).strftime("%Y-%m-%dT%H:%M:%SZ") if finished_candidates else utc_now_iso()
+            normalized = build_run_metrics_payload(
+                skill_name=skill_dir.name,
+                configuration=configuration,
+                language=languages[0] if languages else "English",
+                mcp_used=mcp_used,
+                started_at=started_at,
+                finished_at=finished_at,
+                elapsed_seconds_total=round(elapsed_total, 6),
+                files_read_count=files_read_total,
+                files_written_count=files_written_total,
+                run_number=run_number,
+            )
+            normalized["worker_count"] = len(per_eval_paths)
+            normalized["eval_metrics"] = eval_metrics
+        else:
+            path = per_run_metrics_path(skill_dir, configuration, run_number)
+            metrics, _changes = load_run_metrics(path, write_back=True)
+            normalized = dict(metrics)
+            normalized["run_number"] = run_number
+
         runs.append(normalized)
         elapsed = coerce_float(normalized.get("elapsed_seconds_total"))
         if elapsed is not None:
@@ -877,7 +963,14 @@ def materialize_run_artifacts(
         files_written_count=len(written_files),
         run_number=run_number,
     )
-    run_metrics_path = per_run_metrics_path(skill_dir, configuration, run_number)
+    per_eval_metrics_output = None
+    if len(response_ids) == 1:
+        eval_id = next(iter(response_ids))
+        metrics_payload["eval_id"] = eval_id
+        run_metrics_path = per_eval_run_metrics_path(skill_dir, configuration, eval_id, run_number)
+        per_eval_metrics_output = str(run_metrics_path)
+    else:
+        run_metrics_path = per_run_metrics_path(skill_dir, configuration, run_number)
     write_json(run_metrics_path, metrics_payload)
     collection = refresh_run_metrics_collection(skill_dir, configuration)
 
@@ -891,6 +984,7 @@ def materialize_run_artifacts(
         "written_files": written_files,
         "run_metrics_path": str(skill_dir / f"{configuration}-run-metrics.json"),
         "per_run_metrics_path": str(run_metrics_path),
+        "per_eval_metrics_path": per_eval_metrics_output,
         "run_count": collection.get("run_count", 1),
         "files_read_count": files_read_count,
         "elapsed_seconds_total": elapsed_seconds_total,
@@ -1006,10 +1100,15 @@ def infer_run_metrics_fields(metrics_path: Path) -> dict[str, str | None]:
         if metrics_path.parent.name == candidate:
             configuration = candidate
             break
+        if metrics_path.parent.parent.name == candidate:
+            configuration = candidate
+            break
 
     skill_name = None
     if metrics_path.parent.name in {"with_skill", "without_skill"} and metrics_path.parent.parent.name == "_runs":
         skill_name = metrics_path.parent.parent.parent.name
+    elif metrics_path.parent.parent.name in {"with_skill", "without_skill"} and metrics_path.parent.parent.parent.name == "_runs":
+        skill_name = metrics_path.parent.parent.parent.parent.name
     elif metrics_path.parent != metrics_path:
         skill_name = metrics_path.parent.name
     return {
@@ -1840,6 +1939,10 @@ def benchmark_agent_plan(
         notes.append(
             f"For with_skill runs, open a fresh session with {BENCHMARK_AGENTS['with_skill']} and read only the target skill '{skill}'."
         )
+    else:
+        notes.append(
+            "When a campaign covers only part of the skill space, build each phase matrix from that selected subset only; do not serialize across untouched skills."
+        )
     notes.append(
         "Default execution mode is parallel within each phase: launch independent worker sessions concurrently, then wait for all of them to finish before advancing the phase."
     )
@@ -1861,7 +1964,7 @@ def benchmark_agent_plan(
         "parallelism": {
             "default_policy": "parallel-within-phase",
             "cross_phase_parallelism": "forbidden",
-            "unit_of_parallelism": "<skill, configuration, run_number>",
+            "unit_of_parallelism": "<skill, eval_id, configuration, run_number>",
             "phase_barrier": "wait for all tasks in the current phase before starting the next one",
             "safe_parallel_condition": "parallelize only tasks whose output directories do not overlap",
             "anonymous_stateful_fallback": "derive per-scope anonymous sessions; if scope derivation cannot be maintained, reset-hook-state and serialize as a safety fallback",
@@ -1877,7 +1980,7 @@ def benchmark_agent_plan(
                 "phase": "without_skill",
                 "agent": baseline_agent,
                 "dispatch_mode": "parallel",
-                "parallel_scope": "<skill, run_number>",
+                "parallel_scope": "<skill, eval_id, run_number>",
                 "precondition": (
                     "Workspace skills were physically moved out of .github/skills/ and fresh workers were started afterwards."
                     if baseline_isolation != "hook-only"
@@ -1888,7 +1991,7 @@ def benchmark_agent_plan(
                 "phase": "with_skill",
                 "agent": BENCHMARK_AGENTS["with_skill"],
                 "dispatch_mode": "parallel",
-                "parallel_scope": "<skill, run_number>",
+                "parallel_scope": "<skill, eval_id, run_number>",
                 "precondition": "Workspace skills were restored and each fresh worker stays inside one target skill directory.",
                 "anonymous_session_fallback": "derived anonymous sessions per skill; if unresolved, serial with reset-hook-state --mode with_skill_targeted",
                 "target_skill": skill,

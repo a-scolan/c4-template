@@ -22,17 +22,17 @@ All logs and reports must stay **anonymous**: never expose the absolute workspac
 - Do not edit repository source files while evaluating.
 - Treat each skill as an independent benchmark target.
 - Produce a **blind comparison** between `with_skill` and `without_skill` for every eval.
-- If a previous iteration exists under `/test/iteration-*`, include a comparison against the latest previous iteration.
+- If a previous iteration exists under `/test/` for the same benchmark series (for example `iteration-2` → `iteration-3` or `likec4-dsl-test2` → `likec4-dsl-test3`), include a comparison against the latest previous iteration.
 - No Git history mining is required.
 - Do **not** log request or response character counts.
-- Use a **fresh session or fresh worker** for each `<skill, configuration>` pair.
+- Use a **fresh session or fresh worker** for each `<skill, configuration, eval_id, run_number>` task.
 - In `with_skill`, enable only the single target skill.
 - In `without_skill`, read **no** `SKILL.md` file at all.
 - In `without_skill`, “without skill” means “do not read any `SKILL.md` file”; it does **not** mean “without all LikeC4 MCP help”, but any LikeC4 MCP use must stay limited to narrow element/relationship grounding.
 - A run is invalid if its `*-run-metrics.json` file is missing required keys or contains `null` for required metric values.
 - Do **not** hand-author `*-run-metrics.json` files; write them with `python test/scripts/skill_suite_tools.py write-run-metrics ...`.
 - **Critically important:** prompt-level instructions are **not enough** to guarantee a clean `without_skill` baseline.
-- Before any `without_skill` run, physically disable workspace skills by moving every directory from `.github/skills/` into `test/iteration-N/_disabled-skills/`.
+- Before any `without_skill` run, physically disable workspace skills by moving every directory from `.github/skills/` into `test/<iteration-name>/_disabled-skills/`.
 - Run **all** `without_skill` scenarios first while skills are physically disabled.
 - Restore the skill directories back into `.github/skills/` only after the baseline batch is fully complete.
 - Run `with_skill` scenarios **only after** restoration, in fresh workers created after the restore step.
@@ -45,24 +45,24 @@ All logs and reports must stay **anonymous**: never expose the absolute workspac
 - Benchmark targets: `.github/skills/<skill-name>/`
 - Worker prompts: `.github/skills/<skill-name>/evals/evals-public.json`
 - Hidden grading spec: `.github/skills/<skill-name>/evals/grading-spec.json`
-- Result root: `/test/iteration-N/`
+- Result root: `/test/<iteration-name>/`
 
 ## Execution protocol
 
 The run order is mandatory:
 
-1. Move every directory from `.github/skills/` to `test/iteration-N/_disabled-skills/` and write a relocation manifest.
-2. Run `python test/scripts/skill_suite_tools.py protocol-preflight --iteration test/iteration-N --workspace-root .` so the active prompt/schema/hook version is frozen into the iteration metadata before scoring begins.
+1. Move every directory from `.github/skills/` to `test/<iteration-name>/_disabled-skills/` and write a relocation manifest.
+2. Run `python test/scripts/skill_suite_tools.py protocol-preflight --iteration test/<iteration-name> --workspace-root .` so the active prompt/schema/hook version is frozen into the iteration metadata before scoring begins.
 3. Start fresh sessions or fresh workers created **after** the relocation step, with no prior exposure to workspace skill contents.
-4. Run **all** eval prompts for **all** skills in `without_skill` mode first, dispatching independent `<skill, run_number>` workers in parallel.
-5. Save one English response per eval and write one canonical run-metrics JSON per skill configuration with `skill_suite_tools.py write-run-metrics`.
+4. Run **all** eval prompts for **all** selected skills in `without_skill` mode first, dispatching independent `<skill, eval_id, run_number>` workers in parallel.
+5. Save one English response per eval, persist per-eval worker metrics, and aggregate one canonical run-metrics JSON per skill configuration.
 6. Prefer `n >= 3` repeated runs per `<skill, configuration>` when you want publishable evidence; use `--run-number` during materialization and metrics writing.
 7. Run `skill_suite_tools.py normalize-metrics` and `skill_suite_tools.py validate-metrics` on the iteration before building `without_skill` summaries; fix or rerun any configuration that still fails validation.
 8. Build one anonymous summary JSON per `without_skill` configuration.
 9. Restore every skill directory back into `.github/skills/` and write a restoration manifest.
 10. Start fresh sessions or fresh workers created **after** the restore step.
-11. For each skill, read `SKILL.md` and `evals/evals-public.json`, then run all eval prompts in `with_skill` mode, again using parallel `<skill, run_number>` workers.
-12. Save one English response per eval and write one canonical run-metrics JSON per skill configuration with `skill_suite_tools.py write-run-metrics`.
+11. For each selected skill, read `SKILL.md` and `evals/evals-public.json`, then run all eval prompts in `with_skill` mode, again using parallel `<skill, eval_id, run_number>` workers.
+12. Save one English response per eval, persist per-eval worker metrics, and aggregate one canonical run-metrics JSON per skill configuration.
 13. Run `skill_suite_tools.py normalize-metrics` and `skill_suite_tools.py validate-metrics` on the iteration before building `with_skill` summaries; fix or rerun any configuration that still fails validation.
 14. Build one anonymous summary JSON per `with_skill` configuration.
 15. Blind the pairwise outputs into `A.md` and `B.md` per eval (and per run when repeated runs are enabled).
@@ -88,7 +88,7 @@ This step is **non-negotiable**.
 - Do not mix `without_skill` and `with_skill` workers in the same phase.
 - If a baseline response mentions workspace skill names or skill-only handoff patterns that only come from `SKILL.md`, invalidate that baseline batch and rerun it from the physical-disable step.
 - Mentioning or using the allowed LikeC4 MCP grounding steps is not, by itself, a baseline contamination signal.
-- Keep the disabled skill backup under `test/iteration-N/_disabled-skills/` so the procedure is auditable and reversible.
+- Keep the disabled skill backup under `test/<iteration-name>/_disabled-skills/` so the procedure is auditable and reversible.
 
 ## Anonymization rules
 
@@ -101,14 +101,14 @@ This step is **non-negotiable**.
 ## Worker isolation protocol
 
 - Run `with_skill` and `without_skill` in separate fresh sessions or fresh workers.
-- A worker may handle **one skill and one configuration only**.
+- A worker may handle **one skill, one configuration, one eval, and one run number only**.
 - Fresh baseline sessions/workers for `without_skill` must be started only after skills were moved out of `.github/skills/`.
 - Fresh skill-enabled sessions/workers for `with_skill` must be started only after skills were restored into `.github/skills/`.
 - A `with_skill` worker may read the target `SKILL.md`, its `evals/evals-public.json`, and repository files needed to answer accurately.
 - A `with_skill` worker must not read `grading-spec.json`.
 - A `without_skill` worker may read repository files needed to answer accurately, but must not read any `SKILL.md` content.
 - Do not reuse a worker that has already read a skill file for any `without_skill` task.
-- Use parallel waves as the default dispatch mode for each phase; reduce concurrency before falling back to fully serial execution.
+- Use parallel waves as the default dispatch mode for each phase; prefer one worker per eval, and reduce concurrency before falling back to fully serial execution.
 - Parallelize across independent workers only when their output directories do not overlap.
 - Parallelize **within a phase** (`without_skill` batch or `with_skill` batch), never across both phases at once.
 
@@ -142,7 +142,7 @@ The manager may delegate only to those constrained benchmark workers.
 - Do not use non-LikeC4 MCP tools.
 - Only narrow LikeC4 MCP grounding is allowed for scored workers; do not browse projects or views.
 - Answer in English only.
-- Save outputs only under the assigned `/test/iteration-N/<skill-name>/...` directory.
+- Save outputs only under the assigned `/test/<iteration-name>/<skill-name>/...` directory.
 
 ### without_skill
 
@@ -151,7 +151,7 @@ The manager may delegate only to those constrained benchmark workers.
 - Do not use non-LikeC4 MCP tools.
 - Only narrow LikeC4 MCP grounding is allowed for scored workers; do not browse projects or views.
 - Answer in English only.
-- Save outputs only under the assigned `/test/iteration-N/<skill-name>/...` directory.
+- Save outputs only under the assigned `/test/<iteration-name>/<skill-name>/...` directory.
 
 ## Required artifact layout
 
@@ -160,7 +160,7 @@ The manager may delegate only to those constrained benchmark workers.
   skill-suite-eval-prompt.md
   scripts/
     skill_suite_tools.py
-  iteration-N/
+  <iteration-name>/
     _disabled-skills/
     suite-summary.json
     suite-summary.md
@@ -175,6 +175,15 @@ The manager may delegate only to those constrained benchmark workers.
     <skill-name>/
       with_skill-run-metrics.json
       without_skill-run-metrics.json
+      _runs/
+        with_skill/
+          run-1/
+            eval-0-metrics.json
+            eval-1-metrics.json
+        without_skill/
+          run-1/
+            eval-0-metrics.json
+            eval-1-metrics.json
       with_skill-executable-checks.json
       without_skill-executable-checks.json
       with_skill-summary.json
@@ -280,7 +289,7 @@ Recommended safe path: write the file with the helper instead of typing JSON man
 
 ```bash
 python test/scripts/skill_suite_tools.py write-run-metrics \
-  --output test/iteration-3/create-element/with_skill-run-metrics.json \
+  --output test/likec4-dsl-test3/create-element/with_skill-run-metrics.json \
   --started-at 2026-03-12T10:00:00Z \
   --finished-at 2026-03-12T10:00:12Z \
   --files-read-count 4 \
@@ -292,8 +301,8 @@ This command infers `skill_name` and `configuration` from the output path when p
 After a batch, run:
 
 ```bash
-python test/scripts/skill_suite_tools.py normalize-metrics --iteration test/iteration-3
-python test/scripts/skill_suite_tools.py validate-metrics --iteration test/iteration-3
+python test/scripts/skill_suite_tools.py normalize-metrics --iteration test/likec4-dsl-test3
+python test/scripts/skill_suite_tools.py validate-metrics --iteration test/likec4-dsl-test3
 ```
 
 `normalize-metrics` repairs known legacy alias keys in-place before validation. `validate-metrics` must still end with zero remaining issues.
@@ -429,7 +438,7 @@ When running a benchmark subtask, prefer an instruction bundle like this:
 - if you are a scored `with_skill` / `without_skill` worker, do not use non-LikeC4 MCP tools
 - if you are the benchmark manager or blind comparator, do not use MCP tools at all
 - do not edit repository source files
-- save outputs only under `/test/iteration-N/...`
+- save outputs only under `/test/<iteration-name>/...`
 - keep the answer focused on the eval prompt
 - avoid extra narration outside the requested artifact
 - keep logs anonymous and never emit absolute workspace paths

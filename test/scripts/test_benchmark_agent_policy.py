@@ -35,6 +35,16 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         (blind_dir / "A.md").write_text("blind artifact current\n", encoding="utf-8")
         (blind_dir.parent / "blind-map.json").write_text("{}\n", encoding="utf-8")
         (blind_dir.parent.parent / "blind-comparisons.json").write_text("{}\n", encoding="utf-8")
+        skill_series_blind_dir = self.workspace_root / "test" / "likec4-dsl-test4" / "likec4-dsl" / "eval-0" / "blind"
+        skill_series_blind_dir.mkdir(parents=True, exist_ok=True)
+        (skill_series_blind_dir / "A.md").write_text("blind artifact series A\n", encoding="utf-8")
+        (skill_series_blind_dir / "B.md").write_text("blind artifact series B\n", encoding="utf-8")
+        (skill_series_blind_dir.parent / "blind-map.json").write_text("{}\n", encoding="utf-8")
+        (skill_series_blind_dir.parent.parent / "blind-comparisons.json").write_text("{}\n", encoding="utf-8")
+        run_blind_dir = skill_series_blind_dir / "run-1"
+        run_blind_dir.mkdir(parents=True, exist_ok=True)
+        (run_blind_dir / "A.md").write_text("blind artifact series run A\n", encoding="utf-8")
+        (run_blind_dir / "B.md").write_text("blind artifact series run B\n", encoding="utf-8")
         disabled_skill = self.workspace_root / "test" / "iteration-1" / "_disabled-skills" / "create-element"
         disabled_skill.mkdir(parents=True, exist_ok=True)
         (disabled_skill / "SKILL.md").write_text("# disabled create-element\n", encoding="utf-8")
@@ -59,6 +69,11 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         skill_creator_agents = self.workspace_root / ".github" / "skills" / "skill-creator" / "agents"
         skill_creator_agents.mkdir(parents=True, exist_ok=True)
         (skill_creator_agents / "comparator.md").write_text("# comparator\n", encoding="utf-8")
+
+        likec4_dsl_root = self.workspace_root / ".github" / "skills" / "likec4-dsl"
+        (likec4_dsl_root / "evals").mkdir(parents=True, exist_ok=True)
+        (likec4_dsl_root / "SKILL.md").write_text("# likec4-dsl\n", encoding="utf-8")
+        (likec4_dsl_root / "evals" / "grading-spec.json").write_text("{}\n", encoding="utf-8")
 
     def clear_workspace_skills(self) -> None:
         skills_root = self.workspace_root / ".github" / "skills"
@@ -581,6 +596,45 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         state_root = Path(self.state_root.name)
         self.assertTrue((state_root / "anonymous-blind_compare-iteration-1-create-element.json").exists())
         self.assertTrue((state_root / "anonymous-blind_compare-iteration-2-create-element.json").exists())
+
+    def test_blind_compare_allows_skill_series_blind_artifacts(self) -> None:
+        blind = self.run_hook_payload(
+            self.read_payload(None, "test/likec4-dsl-test4/likec4-dsl/eval-0/blind/A.md", end_line=40),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(blind), "allow")
+
+        blind_run = self.run_hook_payload(
+            self.read_payload(
+                None,
+                "test/likec4-dsl-test4/likec4-dsl/eval-0/blind/run-1/B.md",
+                end_line=40,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(blind_run), "allow")
+
+    def test_blind_compare_missing_session_id_uses_skill_series_scoped_anonymous_state(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload(None, "test/likec4-dsl-test4/likec4-dsl/eval-0/blind/A.md", end_line=40),
+            mode="blind_compare",
+        )
+
+        self.assertEqual(self.decision(output), "allow")
+        state_root = Path(self.state_root.name)
+        self.assertTrue((state_root / "anonymous-blind_compare-likec4-dsl-test4-likec4-dsl.json").exists())
+
+        grading = self.run_hook_payload(
+            self.read_payload(
+                None,
+                ".github/skills/likec4-dsl/evals/grading-spec.json",
+                end_line=40,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(grading), "allow")
 
     def test_with_skill_anonymous_session_start_resets_scoped_state_and_warns_about_serial_execution(self) -> None:
         first = self.run_hook_payload(

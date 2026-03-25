@@ -97,6 +97,45 @@ class SkillSuiteToolsTests(unittest.TestCase):
         )
         return public_path, grading_path
 
+    def _write_two_eval_split_evals(self, skill_name: str) -> tuple[Path, Path]:
+        evals_dir = self.workspace_root / ".github" / "skills" / skill_name / "evals"
+        evals_dir.mkdir(parents=True, exist_ok=True)
+        public_path = evals_dir / "evals-public.json"
+        grading_path = evals_dir / "grading-spec.json"
+        public_path.write_text(
+            json.dumps(
+                {
+                    "skill_name": skill_name,
+                    "artifact_type": "evals-public",
+                    "schema_version": tools.EVAL_ARTIFACT_SCHEMA_VERSION,
+                    "evals": [
+                        {"id": 0, "prompt": "Add an API container.", "files": []},
+                        {"id": 1, "prompt": "Add a Webapp container.", "files": []},
+                    ],
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        grading_path.write_text(
+            json.dumps(
+                {
+                    "skill_name": skill_name,
+                    "artifact_type": "grading-spec",
+                    "schema_version": tools.EVAL_ARTIFACT_SCHEMA_VERSION,
+                    "evals": [
+                        {"id": 0, "expected_output": "Use Container_Api.", "files": [], "expectations": ["Uses Container_Api"]},
+                        {"id": 1, "expected_output": "Use Container_Webapp.", "files": [], "expectations": ["Uses Container_Webapp"]},
+                    ],
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        return public_path, grading_path
+
     def _write_json(self, path: Path, data: dict) -> Path:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
@@ -159,15 +198,64 @@ class SkillSuiteToolsTests(unittest.TestCase):
 
         self.assertEqual(plan["parallelism"]["default_policy"], "parallel-within-phase")
         self.assertEqual(plan["parallelism"]["cross_phase_parallelism"], "forbidden")
+        self.assertEqual(plan["parallelism"]["unit_of_parallelism"], "<skill, eval_id, configuration, run_number>")
 
         phases = {entry["phase"]: entry for entry in plan["phases"]}
         self.assertEqual(phases["without_skill"]["dispatch_mode"], "parallel")
         self.assertEqual(phases["with_skill"]["dispatch_mode"], "parallel")
         self.assertEqual(phases["blind_compare"]["dispatch_mode"], "parallel")
+        self.assertEqual(phases["without_skill"]["parallel_scope"], "<skill, eval_id, run_number>")
+        self.assertEqual(phases["with_skill"]["parallel_scope"], "<skill, eval_id, run_number>")
 
         self.assertTrue(
             any("parallel within each phase" in note for note in plan.get("notes", []))
         )
+
+    def test_materialize_run_aggregates_parallel_eval_workers_into_one_config_run(self) -> None:
+        self._write_two_eval_split_evals("create-element")
+        raw_eval_0 = self._write_json(
+            self.workspace_root / "parallel-eval-0.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:00:00Z",
+                "finished_at": "2026-03-13T10:00:03Z",
+                "responses": [{"id": 0, "response": "API answer"}],
+            },
+        )
+        raw_eval_1 = self._write_json(
+            self.workspace_root / "parallel-eval-1.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:00:01Z",
+                "finished_at": "2026-03-13T10:00:05Z",
+                "responses": [{"id": 1, "response": "Webapp answer"}],
+            },
+        )
+
+        first = tools.materialize_run_artifacts(self.iteration_dir, "create-element", "with_skill", raw_eval_0, run_number=1)
+        second = tools.materialize_run_artifacts(self.iteration_dir, "create-element", "with_skill", raw_eval_1, run_number=1)
+
+        self.assertIsNotNone(first["per_eval_metrics_path"])
+        self.assertIsNotNone(second["per_eval_metrics_path"])
+
+        summary = tools.summarize_config(
+            self.iteration_dir / "create-element",
+            "with_skill",
+            self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "evals-public.json",
+        )
+
+        self.assertEqual(summary["run_count"], 1)
+        self.assertEqual(len(summary["runs"]), 1)
+        self.assertEqual(len(summary["runs"][0]["evals"]), 2)
+        self.assertEqual(summary["summary"]["elapsed_seconds_total"], 7.0)
+        self.assertTrue((self.iteration_dir / "create-element" / "_runs" / "with_skill" / "run-1" / "eval-0-metrics.json").exists())
+        self.assertTrue((self.iteration_dir / "create-element" / "_runs" / "with_skill" / "run-1" / "eval-1-metrics.json").exists())
 
     def test_materialize_run_and_summarize_support_repeated_runs(self) -> None:
         raw_1 = self._write_json(

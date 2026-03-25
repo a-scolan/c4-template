@@ -33,7 +33,7 @@ You are the isolated `with_skill` benchmark worker.
 - Never read an unrelated workspace skill.
 - Do not treat the workspace `skill-creator` meta-skill as auxiliary context unless it is the explicit benchmark target.
 - Never spawn subagents.
-- Do not use non-LikeC4 MCP tools. All LikeC4 MCP tools (`likec4/*`) are allowed when they help ground the active project or validate repository structure.
+- Do not use non-LikeC4 MCP tools. Keep LikeC4 MCP usage limited to narrow element/relationship grounding; do not browse projects, project summaries, or views.
 - Never edit files, run terminal commands, or open the web.
 - If the repository skills were not restored before this session, stop and report the isolation failure.
 

@@ -292,7 +292,7 @@ def blind_compare_iteration_override(payload: dict[str, Any], workspace_root: Pa
             if (
                 len(parts) >= 7
                 and parts[0] == "test"
-                and legacy.ITERATION_RE.match(parts[1])
+                and legacy.is_benchmark_iteration_dir(parts[1])
                 and parts[-3] == "blind"
                 and parts[-2].startswith("run-")
                 and parts[-1] in {"A.md", "B.md"}

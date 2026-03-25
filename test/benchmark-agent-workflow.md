@@ -23,14 +23,14 @@ The other `skill_suite_tools.py` subcommands are low-level harness helpers. They
 
 Use this scheduler unless a run-specific constraint forces a narrower scope:
 
-1. Build a task matrix for the current phase (`without_skill`, `with_skill`, or `blind_compare`).
+1. Build a task matrix for the current phase (`without_skill`, `with_skill`, or `blind_compare`) from the selected skill subset.
 2. Launch the whole matrix in parallel waves, as long as output directories do not overlap.
 3. Wait for all workers in the phase to finish (phase barrier).
 4. Start the next phase only after the previous one is fully complete.
 
-This means the benchmark is **parallel by default inside a phase** and **strictly sequential across phase boundaries**.
+For answer-generation phases, the default task unit is one eval worker: `<skill, eval_id, configuration, run_number>`. This means the benchmark is **parallel by default inside a phase** and **strictly sequential across phase boundaries**.
 
-If the live hook payloads omit `sessionId`, the wrapper derives anonymous session state from requested scope for stateful modes (`with_skill_targeted`: per skill; `blind_compare`: per iteration+skill), which keeps independent workers parallel-safe. If a worker cannot be mapped to a stable scope, fall back to serial execution for that phase and clear anonymous hook state between fresh workers.
+If the live hook payloads omit `sessionId`, the wrapper derives anonymous session state from requested scope for stateful modes (`with_skill_targeted`: per skill; `blind_compare`: per iteration+skill), which keeps independent workers parallel-safe even when multiple evals of the same skill are active at once. If a worker cannot be mapped to a stable scope, fall back to serial execution for that phase and clear anonymous hook state between fresh workers.
 
 ## Agent inventory
 
@@ -49,7 +49,7 @@ If the live hook payloads omit `sessionId`, the wrapper derives anonymous sessio
 - Context injection: `SessionStart`
 - Manager reinforcement: `SubagentStart`
 
-The wrapper under `test/scripts/benchmark_access_hook.py` is the active benchmark hook entrypoint. It reuses the legacy policy logic while resetting stale session state on `SessionStart`, deriving missing `sessionId` values into per-scope anonymous session ids for stateful modes, avoiding false path detection in `create_file` payload content, and letting blind-comparator sessions lock onto the first requested iteration instead of whichever iteration folder happens to sort last.
+The wrapper under `test/scripts/benchmark_access_hook.py` is the active benchmark hook entrypoint. It reuses the legacy policy logic while resetting stale session state on `SessionStart`, deriving missing `sessionId` values into per-scope anonymous session ids for stateful modes, avoiding false path detection in `create_file` payload content, and letting blind-comparator sessions lock onto the first requested benchmark folder instead of whichever iteration folder happens to sort last. This covers both generic folders like `iteration-2` and skill-series folders like `likec4-dsl-test4`.
 
 When hook debug logging is enabled, the wrapper also writes a resolved audit trail beside the raw attempt log so you can distinguish blocked attempts from actually allowed tool uses and compare raw vs effective session ids.
 
@@ -58,10 +58,10 @@ When hook debug logging is enabled, the wrapper also writes a resolved audit tra
 | Mode | Purpose | Main guardrails |
 | --- | --- | --- |
 | `benchmark_manager` | Orchestrate benchmark work and benchmark-specific docs | Can delegate only to allowlisted benchmark workers; edits are limited to `README.md`, `test/`, and `.github/agents/*.agent.md`; no shell escape; no MCP |
-| `baseline` | Strict relocated `without_skill` worker | Requires `.github/skills/` to be empty before tool use; worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no `SKILL.md`, no `README.md`, no project-local examples, no `test/` artefacts, no edits, no terminal, no subagents |
-| `baseline_hook_only` | Hook-only `without_skill` isolation probe | Workspace skills may remain in place, but worker reads are still limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no `.github` path, no `_disabled-skills` backup, no `SKILL.md`, no `README.md`, no project-local examples, no edits, no terminal, no subagents |
-| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; inside that skill, benchmark prompts must come from `evals/evals-public.json` only; outside that skill, worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no unrelated `test/` artefacts, no edits, no terminal, no subagents. If raw `sessionId` is missing, the wrapper derives a skill-scoped anonymous session id so parallel workers stay isolated; if this cannot be derived, reset hook state and serialize as fallback. |
-| `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `grading-spec.json`; no `blind-map.json`, no raw outputs, no `SKILL.md`; no MCP, including LikeC4 MCP. The comparator locks to the first blind iteration/skill it touches instead of assuming the numerically latest iteration folder. If raw `sessionId` is missing, the wrapper derives iteration+skill-scoped anonymous session ids to preserve parallelism; if this cannot be derived, reset hook state and serialize as fallback. |
+| `baseline` | Strict relocated `without_skill` worker | Requires `.github/skills/` to be empty before tool use; worker reads are limited to `projects/shared/`; only narrow LikeC4 MCP grounding is allowed, while project listing, project summaries, and view browsing stay denied; no `SKILL.md`, no `README.md`, no project-local examples, no `test/` artefacts, no edits, no terminal, no subagents |
+| `baseline_hook_only` | Hook-only `without_skill` isolation probe | Workspace skills may remain in place, but worker reads are still limited to `projects/shared/`; only narrow LikeC4 MCP grounding is allowed, while project listing, project summaries, and view browsing stay denied; no `.github` path, no `_disabled-skills` backup, no `SKILL.md`, no `README.md`, no project-local examples, no edits, no terminal, no subagents |
+| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; inside that skill, benchmark prompts must come from `evals/evals-public.json` only; outside that skill, worker reads are limited to `projects/shared/`; only narrow LikeC4 MCP grounding is allowed, while project listing, project summaries, and view browsing stay denied; no unrelated `test/` artefacts, no edits, no terminal, no subagents. If raw `sessionId` is missing, the wrapper derives a skill-scoped anonymous session id so parallel workers stay isolated; if this cannot be derived, reset hook state and serialize as fallback. |
+| `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `grading-spec.json`; no `blind-map.json`, no raw outputs, no `SKILL.md`; no MCP, including LikeC4 MCP. The comparator locks to the first blind benchmark folder/skill it touches instead of assuming the numerically latest `iteration-N` folder. If raw `sessionId` is missing, the wrapper derives benchmark-folder+skill-scoped anonymous session ids to preserve parallelism; if this cannot be derived, reset hook state and serialize as fallback. |
 
 LikeC4 MCP is intentionally allowed only for the scored answer-generation workers (`baseline`, `baseline_hook_only`, and `with_skill_targeted`) because some LikeC4 tasks need model and relationship grounding even in `without_skill`. That allowance is deliberately narrow: keep it to element/relationship grounding only. Project listing, project summaries, and view browsing are blocked during scored runs because they expose template/showcase examples outside `projects/shared/`. LikeC4 MCP remains blocked for `benchmark_manager` and `blind_compare`, and the grader/analyzer support playbooks are not part of this MCP allowance.
 

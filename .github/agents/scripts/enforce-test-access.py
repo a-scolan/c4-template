@@ -9,6 +9,7 @@ from typing import Any
 from urllib.parse import unquote, urlparse
 
 ITERATION_RE = re.compile(r"^iteration-\d+$")
+SERIES_ITERATION_RE = re.compile(r"^.+-test\d+$")
 PATCH_PATH_RE = re.compile(r"^\*\*\* (?:Add|Update|Delete) File: (.+)$", re.MULTILINE)
 WILDCARD_RE = re.compile(r"[*?\[{]")
 
@@ -187,23 +188,27 @@ def session_start_output(mode: str) -> dict[str, Any]:
             "Strict baseline benchmark worker mode is active. Workspace skills must have been "
             "relocated out of .github/skills/ before the session started, and no SKILL.md file "
             "may be read in this session. Outside the target prompt and benchmark artefacts, "
-            "only shared specification examples under projects/shared/ may be read. All LikeC4 MCP "
-            "tools are allowed in this mode; other MCP servers remain blocked."
+            "only shared specification examples under projects/shared/ may be read. LikeC4 MCP use "
+            "must stay limited to narrow element/relationship grounding; project listing, project "
+            "summaries, and view browsing remain blocked. Other MCP servers remain blocked."
         ),
         "baseline_hook_only": (
             "Hook-only baseline probe mode is active. Workspace skills may remain in place, "
             "but no .github path or SKILL.md file may be read in this session. Outside the "
             "target prompt and benchmark artefacts, only shared specification examples under "
-            "projects/shared/ may be read. All LikeC4 MCP tools are allowed in this mode; all other "
-            "MCP servers remain blocked. Treat this as an experiment, not the default trust boundary."
+            "projects/shared/ may be read. LikeC4 MCP use must stay limited to narrow "
+            "element/relationship grounding; project listing, project summaries, and view browsing "
+            "remain blocked. All other MCP servers remain blocked. Treat this as an experiment, not "
+            "the default trust boundary."
         ),
         "with_skill_targeted": (
             "Targeted with-skill worker mode is active. The first skill directory you read "
             "becomes the only workspace skill allowed for the rest of the session. Outside that "
             "skill, only shared specification examples under projects/shared/ may be read. "
             "Within the target skill, read eval prompts only from evals/evals-public.json; "
-            "grading-spec.json stays hidden from workers. All LikeC4 MCP tools are allowed in this "
-            "mode; all other MCP servers remain blocked."
+            "grading-spec.json stays hidden from workers. LikeC4 MCP use must stay limited to narrow "
+            "element/relationship grounding; project listing, project summaries, and view browsing "
+            "remain blocked. All other MCP servers remain blocked."
         ),
         "blind_compare": (
             "Blind comparator mode is active. Stay blind to mapping and raw non-blind outputs; "
@@ -694,6 +699,10 @@ def normalize_rel_path(value: str) -> str:
     return normalized.lstrip("/")
 
 
+def is_benchmark_iteration_dir(name: str) -> bool:
+    return bool(ITERATION_RE.match(name) or SERIES_ITERATION_RE.match(name))
+
+
 def normalize_glob_prefix(pattern: str) -> str | None:
     cleaned = normalize_rel_path(pattern.strip())
     if not cleaned:
@@ -732,7 +741,7 @@ def extract_skill_from_skills_path(rel_path: str) -> str | None:
 
 def extract_skill_from_iteration_path(rel_path: str) -> str | None:
     parts = normalize_rel_path(rel_path).split("/")
-    if len(parts) >= 3 and parts[0] == "test" and ITERATION_RE.match(parts[1]):
+    if len(parts) >= 3 and parts[0] == "test" and is_benchmark_iteration_dir(parts[1]):
         candidate = parts[2]
         if candidate.startswith("_") or candidate == "scripts":
             return None
@@ -742,7 +751,7 @@ def extract_skill_from_iteration_path(rel_path: str) -> str | None:
 
 def extract_iteration_from_iteration_path(rel_path: str) -> str | None:
     parts = normalize_rel_path(rel_path).split("/")
-    if len(parts) >= 2 and parts[0] == "test" and ITERATION_RE.match(parts[1]):
+    if len(parts) >= 2 and parts[0] == "test" and is_benchmark_iteration_dir(parts[1]):
         return parts[1]
     return None
 
@@ -755,8 +764,7 @@ def latest_iteration_name(workspace_root: Path) -> str | None:
     for child in test_root.iterdir():
         if not child.is_dir():
             continue
-        match = ITERATION_RE.match(child.name)
-        if not match:
+        if not ITERATION_RE.match(child.name):
             continue
         try:
             number = int(child.name.split("-", 1)[1])

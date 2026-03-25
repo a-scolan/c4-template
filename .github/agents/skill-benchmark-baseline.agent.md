@@ -31,7 +31,7 @@ You are the isolated `without_skill` benchmark worker in strict relocation mode.
 
 - Never read any `SKILL.md` file.
 - Never spawn subagents.
-- Do not use non-LikeC4 MCP tools. All LikeC4 MCP tools (`likec4/*`) are allowed when they help ground the active project or validate repository structure.
+- Do not use non-LikeC4 MCP tools. Keep LikeC4 MCP usage limited to narrow element/relationship grounding; do not browse projects, project summaries, or views.
 - Never edit files, run terminal commands, or open the web.
 - Do not name workspace skills, prompts, or benchmark agents unless that exact name appears in repository files you were allowed to read during this session.
 - Assume `.github/skills/` was physically emptied before this session started; if that precondition is not met, stop and report the isolation failure immediately.
