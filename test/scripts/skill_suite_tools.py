@@ -78,13 +78,14 @@ from benchmark.rendering import (
 
 
 ITERATION_RE = re.compile(r"^iteration-(\d+)$")
+SERIES_ITERATION_RE = re.compile(r"^(.+?-test)(\d+)?$")
 RUN_DIR_RE = re.compile(r"^run-(\d+)$")
 EVAL_METRICS_RE = re.compile(r"^eval-(\d+)-metrics$")
 WORD_RE = re.compile(r"\S+")
 
 EVAL_ARTIFACT_SCHEMA_VERSION = 2
 COMPARATOR_SCHEMA_VERSION = 2
-BENCHMARK_PROTOCOL_VERSION = "benchmark-v2"
+BENCHMARK_PROTOCOL_VERSION = "benchmark-v3"
 EVALS_PUBLIC_FILENAME = "evals-public.json"
 GRADING_SPEC_FILENAME = "grading-spec.json"
 ITERATION_CAVEATS_FILENAME = "benchmark-caveats.json"
@@ -875,6 +876,21 @@ def iteration_number(path: Path) -> int | None:
     return int(match.group(1)) if match else None
 
 
+def iteration_series_key(path: Path) -> tuple[str, int] | None:
+    name = path.name
+    iteration_match = ITERATION_RE.match(name)
+    if iteration_match:
+        return ("iteration", int(iteration_match.group(1)))
+
+    series_match = SERIES_ITERATION_RE.match(name)
+    if series_match:
+        series_name = series_match.group(1)
+        series_number = int(series_match.group(2) or "1")
+        return (series_name, series_number)
+
+    return None
+
+
 def workspace_skills_root(workspace_root: Path) -> Path:
     return workspace_root / ".github" / "skills"
 
@@ -971,15 +987,22 @@ def restore_workspace_skills(workspace_root: Path, iteration_dir: Path) -> dict[
 
 
 def find_previous_iteration(test_root: Path, current_iteration: Path) -> Path | None:
-    current_number = iteration_number(current_iteration)
+    current_series = iteration_series_key(current_iteration)
+    if current_series is None:
+        return None
+
+    current_family, current_number = current_series
     candidates: list[tuple[int, Path]] = []
     for child in test_root.iterdir():
         if not child.is_dir():
             continue
-        number = iteration_number(child)
-        if number is None:
+        series = iteration_series_key(child)
+        if series is None:
             continue
-        if current_number is not None and number < current_number:
+        family, number = series
+        if family != current_family:
+            continue
+        if number < current_number:
             candidates.append((number, child))
     if not candidates:
         return None

@@ -1,7 +1,7 @@
 # Critical Synthesis — `likec4-dsl` Benchmark
 
 **Iteration:** `likec4-dsl-test3`  
-**Protocol:** `benchmark-v2`  
+**Protocol:** `benchmark-v3`  
 **Evals:** 21 (ids 0–20), 1 run per configuration  
 **Generated:** 2026-03-25
 

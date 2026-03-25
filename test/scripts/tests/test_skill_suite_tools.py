@@ -195,6 +195,24 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertEqual(lock_payload["protocol_version"], "benchmark-test")
         self.assertEqual(len(lock_payload["skill_eval_artifacts"]), 1)
 
+    def test_default_protocol_version_is_benchmark_v3(self) -> None:
+        manifest = tools.build_protocol_manifest(self.workspace_root)
+
+        self.assertEqual(manifest["protocol_version"], "benchmark-v3")
+
+    def test_find_previous_iteration_supports_named_skill_series(self) -> None:
+        series_root = self.workspace_root / "test"
+        base = series_root / "likec4-dsl-test"
+        second = series_root / "likec4-dsl-test2"
+        third = series_root / "likec4-dsl-test3"
+        unrelated = series_root / "other-skill-test4"
+        for path in (base, second, third, unrelated):
+            path.mkdir(parents=True, exist_ok=True)
+
+        self.assertEqual(tools.find_previous_iteration(series_root, second), base)
+        self.assertEqual(tools.find_previous_iteration(series_root, third), second)
+        self.assertIsNone(tools.find_previous_iteration(series_root, base))
+
     def test_benchmark_agent_plan_defaults_to_parallel_within_phase(self) -> None:
         plan = tools.benchmark_agent_plan(self.iteration_dir, skill="create-element")
 

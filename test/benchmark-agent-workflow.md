@@ -2,6 +2,8 @@
 
 Single reference for the benchmark harness, agents, hooks, outputs, and trust rules.
 
+Current protocol generation target is **`benchmark-v3`**.
+
 ## Entry points
 
 - Human: workspace agent `Skill Benchmark Manager`
@@ -22,6 +24,7 @@ Internal helpers now live under `test/scripts/benchmark/`. This refactor must re
 - `with_skill` starts only after skill restoration
 - blind comparison starts only after `with_skill` completes
 - `materialize-comparisons` must refresh `suite-summary.json` and `suite-summary.md` immediately
+- Cross-iteration comparisons must support both numeric iterations (`iteration-N`) and named benchmark series (`<skill>-test`, `<skill>-test2`, `<skill>-test3`, ...)
 - Never reuse an older `blind-comparisons.json` as fresh evidence
 - Blind comparator workers must receive explicit evidence paths from `blind-compare-bundle` (A, B, grading spec). Do not rely on broad repository search during blind runs.
 

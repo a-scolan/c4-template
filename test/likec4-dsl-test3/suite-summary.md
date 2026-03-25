@@ -1,8 +1,8 @@
 # Skill Suite Summary — likec4-dsl-test3
 
-Generated at: 2026-03-25T19:54:31Z
-Previous iteration: None found
-Protocol version: benchmark-v2
+Generated at: 2026-03-25T20:03:28Z
+Previous iteration: likec4-dsl-test2
+Protocol version: benchmark-v3
 Skill count: 1
 
 ## Metric validation
@@ -63,4 +63,6 @@ No high-variance evals were flagged.
 
 ## Previous-iteration comparison
 
-No previous iteration was found for comparison.
+| Skill | Prev win rate | Curr win rate | Δ win rate | Prev expectation Δ | Curr expectation Δ | Δ expectation Δ | Prev time Δ / eval | Curr time Δ / eval | Δ time Δ / eval |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| likec4-dsl | 95.2% | 85.7% | -0.095 | 0.324 | 0.295 | -0.029 | -4.809 | 5.333 | 10.143 |

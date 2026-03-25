@@ -1,8 +1,8 @@
 {
-  "generated_at": "2026-03-25T19:54:31Z",
+  "generated_at": "2026-03-25T20:03:28Z",
   "iteration": "likec4-dsl-test3",
-  "previous_iteration": null,
-  "protocol_version": "benchmark-v2",
+  "previous_iteration": "likec4-dsl-test2",
+  "protocol_version": "benchmark-v3",
   "protocol_lock_path": "test/likec4-dsl-test3/_meta/protocol-lock.json",
   "skill_count": 1,
   "benchmark_caveats": null,
@@ -57,7 +57,7 @@
     }
   },
   "metric_validation": {
-    "generated_at": "2026-03-25T19:54:31Z",
+    "generated_at": "2026-03-25T20:03:28Z",
     "iteration": "likec4-dsl-test3",
     "status": "passed",
     "expected_files": 2,
@@ -68,7 +68,7 @@
     "issues": []
   },
   "executable_checks": {
-    "generated_at": "2026-03-25T19:54:31Z",
+    "generated_at": "2026-03-25T20:03:28Z",
     "iteration": "likec4-dsl-test3",
     "summary_count": 2,
     "summaries": [
@@ -813,5 +813,24 @@
     }
   ],
   "high_variance_evals": [],
-  "previous_iteration_comparison": null
+  "previous_iteration_comparison": {
+    "previous_iteration": "likec4-dsl-test2",
+    "skills": [
+      {
+        "skill": "likec4-dsl",
+        "previous_with_skill_win_rate": 0.9524,
+        "current_with_skill_win_rate": 0.8571,
+        "delta_with_skill_win_rate": -0.0953,
+        "previous_expectation_delta": 0.3238,
+        "current_expectation_delta": 0.2952,
+        "delta_expectation_delta": -0.0286,
+        "previous_rubric_delta": 3.0714,
+        "current_rubric_delta": 2.8809,
+        "delta_rubric_delta": -0.1905,
+        "previous_time_delta_per_eval": -4.8095,
+        "current_time_delta_per_eval": 5.3333,
+        "delta_time_delta_per_eval": 10.1428
+      }
+    ]
+  }
 }
