@@ -46,9 +46,59 @@ def bool_env_enabled(name: str) -> bool:
     return os.environ.get(name, "").strip().lower() in ENABLED_BOOL_VALUES
 
 
-def resolve_effective_session_id(session_id: Any, mode: str) -> str:
+def infer_anonymous_session_suffix(payload: dict[str, Any], workspace_root: Path, mode: str) -> str | None:
+    tool_paths = extract_tool_paths(payload, workspace_root)
+    if not tool_paths:
+        return None
+
+    if mode == "with_skill_targeted":
+        skills = {
+            skill
+            for rel_path in tool_paths
+            if (skill := legacy.extract_skill_from_skills_path(rel_path))
+        }
+        if len(skills) == 1:
+            return f"{mode}-{next(iter(skills))}"
+        return None
+
+    if mode == "blind_compare":
+        skills: set[str] = set()
+        iterations: set[str] = set()
+        for rel_path in tool_paths:
+            normalized = rel_path.replace("\\", "/").lstrip("/")
+            skill = legacy.extract_skill_from_skills_path(normalized) or legacy.extract_skill_from_iteration_path(normalized)
+            if skill:
+                skills.add(skill)
+
+            iteration = legacy.extract_iteration_from_iteration_path(normalized)
+            if iteration:
+                iterations.add(iteration)
+
+        if len(skills) > 1 or len(iterations) > 1:
+            return None
+
+        skill_part = next(iter(skills)) if skills else "unknown-skill"
+        if iterations:
+            return f"{mode}-{next(iter(iterations))}-{skill_part}"
+        if skills:
+            return f"{mode}-{skill_part}"
+        return None
+
+    return None
+
+
+def resolve_effective_session_id(
+    session_id: Any,
+    mode: str,
+    payload: dict[str, Any] | None = None,
+    workspace_root: Path | None = None,
+) -> str:
     if isinstance(session_id, str) and session_id.strip():
         return session_id.strip()
+    if payload is not None and workspace_root is not None and mode in STATEFUL_ANONYMOUS_MODES:
+        derived_suffix = infer_anonymous_session_suffix(payload, workspace_root, mode)
+        if derived_suffix:
+            return f"{ANONYMOUS_SESSION_PREFIX}{derived_suffix}"
     if mode:
         return f"{ANONYMOUS_SESSION_PREFIX}{mode}"
     return "default"
@@ -58,9 +108,9 @@ def uses_anonymous_session(raw_session_id: Any, effective_session_id: str) -> bo
     return not (isinstance(raw_session_id, str) and raw_session_id.strip()) and bool(effective_session_id)
 
 
-def normalize_payload_session(payload: dict[str, Any], mode: str) -> dict[str, Any]:
+def normalize_payload_session(payload: dict[str, Any], mode: str, workspace_root: Path) -> dict[str, Any]:
     normalized = dict(payload)
-    normalized["sessionId"] = resolve_effective_session_id(payload.get("sessionId"), mode)
+    normalized["sessionId"] = resolve_effective_session_id(payload.get("sessionId"), mode, payload, workspace_root)
     return normalized
 
 
@@ -86,6 +136,12 @@ def anonymous_session_context(mode: str, raw_session_id: Any, effective_session_
     if not uses_anonymous_session(raw_session_id, effective_session_id):
         return None
     if mode in STATEFUL_ANONYMOUS_MODES:
+        default_shared_session = f"{ANONYMOUS_SESSION_PREFIX}{mode}"
+        if effective_session_id != default_shared_session:
+            return (
+                f"No sessionId was provided in the hook payload, so the hook derived the anonymous session '{effective_session_id}' "
+                "from the requested benchmark scope."
+            )
         return (
             f"No sessionId was provided in the hook payload, so the hook is using the shared anonymous session '{effective_session_id}'. "
             "Run this stateful benchmark phase serially and reset hook state between fresh workers."
@@ -260,7 +316,7 @@ def main() -> None:
         event_name = legacy.infer_hook_event_name(payload)
         mode = os.environ.get("BENCH_MODE", "").strip()
         workspace_root = resolve_workspace_root(payload)
-        normalized_payload = normalize_payload_session(payload, mode)
+        normalized_payload = normalize_payload_session(payload, mode, workspace_root)
         raw_session_id = payload.get("sessionId")
         effective_session_id = str(normalized_payload.get("sessionId", "default"))
 

@@ -90,7 +90,7 @@ Before running a benchmark:
 
 - Keep the workspace setting in `.vscode/settings.json` so `chat.useCustomAgentHooks = true` is enabled by default.
 - Use the **strict relocated baseline** by default.
-- Run independent workers in parallel by default inside each phase, with a hard barrier between phases. If resolved hook-audit entries show missing raw `sessionId` values, serialize the stateful `with_skill` and `blind_compare` phases and reset anonymous hook state between fresh workers.
+- Run independent workers in parallel by default inside each phase, with a hard barrier between phases. If resolved hook-audit entries show missing raw `sessionId`, the hook now derives per-scope anonymous session ids (skill-scoped for `with_skill`, iteration+skill scoped for `blind_compare`) so parallel workers stay isolated. If scope derivation cannot be maintained in a run, reset anonymous hook state and fall back to serial execution for safety.
 - Keep all benchmark artefacts under `test/iteration-N/`.
 - Keep reports anonymous and repository-relative.
 
@@ -111,8 +111,8 @@ The hook-only baseline worker exists only for explicit isolation probes. It is u
 	- If hook logging is enabled for the campaign, validate the resolved hook audit before trusting the batch: `python test/scripts/skill_suite_tools.py validate-hook-audit --path test/_agent-hooks/hook-audit.jsonl --mode baseline`
     - If hook-audit validation reports malformed JSONL lines, rotate or delete `test/_agent-hooks/` and rerun the affected phase; the audit log is disposable and should not be trusted once malformed lines appear.
 5. Restore the skill directories to `.github/skills/`.
-6. Run the `with_skill` batch in fresh workers created after restoration, parallelized across independent skill workers when raw `sessionId` is available. If hook-audit entries show missing raw `sessionId`, run `python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode with_skill_targeted` before each fresh worker and serialize the batch. Prefer `n >= 3` runs per `<skill, configuration>` when you want publishable claims.
-7. Produce blinded `A.md` / `B.md` artefacts and evaluate them with the blind comparator. If raw `sessionId` is missing there too, run `python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode blind_compare` before each fresh comparator and keep that phase serial.
+6. Run the `with_skill` batch in fresh workers created after restoration, parallelized across independent skill workers. If raw `sessionId` is missing, verify via hook-audit that effective anonymous session ids are skill-scoped; if not, run `python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode with_skill_targeted` and serialize as a safety fallback. Prefer `n >= 3` runs per `<skill, configuration>` when you want publishable claims.
+7. Produce blinded `A.md` / `B.md` artefacts and evaluate them with the blind comparator in parallel across independent `<skill, eval_id, run_number>` tasks. If raw `sessionId` is missing, verify hook-audit shows iteration+skill-scoped anonymous session ids; if not, run `python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode blind_compare` and fall back to serial.
 8. Write, normalise, and validate run metrics before aggregation:
 	- `python test/scripts/skill_suite_tools.py materialize-run --iteration test/iteration-N --skill <name> --configuration with_skill --raw-json test/iteration-N/_meta/<name>-with_skill.json`
 	- `python test/scripts/skill_suite_tools.py materialize-comparisons --iteration test/iteration-N --skill <name> --raw-json test/iteration-N/_meta/<name>-blind.json`
@@ -140,7 +140,7 @@ All of them rely on the shared hook engine in `test/scripts/benchmark_access_hoo
 The active benchmark hook entrypoint is `test/scripts/benchmark_access_hook.py`, which wraps the legacy policy logic and fixes three operational hazards discovered during iteration work:
 
 - stale `locked_skill` / `locked_iteration` state leaking across fresh worker sessions,
-- missing raw `sessionId` values in live hook payloads by normalizing them into mode-scoped anonymous session ids for auditability and controlled resets,
+- missing raw `sessionId` values in live hook payloads by deriving per-scope anonymous session ids for stateful modes (`with_skill`: skill-scoped, `blind_compare`: iteration+skill scoped) to preserve parallel isolation while keeping reset controls,
 - false path detection when `create_file` content contains path-like JSON strings.
 
 It also keeps blind-comparator sessions tied to the first explicit blind iteration they read, instead of assuming the numerically latest `test/iteration-N/` folder is always the active campaign.
@@ -164,7 +164,7 @@ The benchmark is only meaningful if these constraints hold:
 - Only narrow LikeC4 MCP grounding is allowed, and only in the scored `baseline`, `baseline_hook_only`, and `with_skill` workers; project listing, project summaries, and view browsing are blocked, and the manager/blind comparator remain MCP-free.
 - No unconstrained subagent chaining is allowed.
 - The full `without_skill` batch is executed before any `with_skill` run.
-- Parallelism is intra-phase only: workers may run concurrently inside one phase, but `without_skill` and `with_skill` phases must never overlap. If raw `sessionId` is missing, treat `with_skill` and `blind_compare` as serial-only runtime phases and reset anonymous hook state between fresh workers.
+- Parallelism is intra-phase only: workers may run concurrently inside one phase, but `without_skill` and `with_skill` phases must never overlap. If raw `sessionId` is missing, verify the resolved audit keeps distinct anonymous sessions per worker scope; if not, reset hook state and temporarily serialize the affected stateful phase.
 - `with_skill` runs happen only after skill restoration and in fresh sessions.
 - Benchmark workers do not read `README.md` or project-local examples such as `projects/template/` or `projects/spec-showcase/`; outside the target skill, repository reads are limited to `projects/shared/` as specification examples only.
 - `with_skill` workers do not read hidden grading artefacts such as `grading-spec.json`; they read only `evals-public.json` for prompts.

@@ -209,6 +209,81 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertIn("elapsed_seconds_per_eval", summary["variance"])
         self.assertTrue((self.iteration_dir / "create-element" / "eval-0" / "with_skill" / "run-2" / "response.md").exists())
 
+    def test_refresh_suite_outputs_after_blind_writes_suite_summary_files(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        with_response = skill_dir / "eval-0" / "with_skill" / "response.md"
+        without_response = skill_dir / "eval-0" / "without_skill" / "response.md"
+        with_response.parent.mkdir(parents=True, exist_ok=True)
+        without_response.parent.mkdir(parents=True, exist_ok=True)
+        with_response.write_text("with skill answer\n", encoding="utf-8")
+        without_response.write_text("without skill answer\n", encoding="utf-8")
+
+        self._write_json(
+            skill_dir / "with_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:00:00Z",
+                "finished_at": "2026-03-13T10:00:05Z",
+                "elapsed_seconds_total": 5.0,
+                "files_read_count": 1,
+                "files_written_count": 1,
+            },
+        )
+        self._write_json(
+            skill_dir / "without_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "without_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:01:00Z",
+                "finished_at": "2026-03-13T10:01:08Z",
+                "elapsed_seconds_total": 8.0,
+                "files_read_count": 0,
+                "files_written_count": 1,
+            },
+        )
+
+        self._write_json(skill_dir / "eval-0" / "blind-map.json", {"A": "with_skill", "B": "without_skill"})
+        self._write_json(
+            skill_dir / "blind-comparisons.json",
+            {
+                "schema_version": 2,
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "schema_version": 2,
+                        "eval_id": 0,
+                        "run_number": 1,
+                        "winner": "A",
+                        "reasoning": "A is better.",
+                        "rubric": {
+                            "A": {"content_score": 9, "structure_score": 9, "overall_score": 9},
+                            "B": {"content_score": 5, "structure_score": 5, "overall_score": 5},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                            "B": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                        },
+                    }
+                ],
+            },
+        )
+
+        refresh = tools.refresh_suite_outputs_after_blind(self.iteration_dir, self.workspace_root, "create-element")
+
+        suite_json = self.iteration_dir / "suite-summary.json"
+        suite_md = self.iteration_dir / "suite-summary.md"
+        self.assertTrue(suite_json.exists())
+        self.assertTrue(suite_md.exists())
+        self.assertEqual(refresh["skill_count"], 1)
+        suite = tools.read_json(suite_json)
+        self.assertEqual(suite["skill_count"], 1)
+        self.assertEqual(suite["overview"][0]["skill"], "create-element")
+
     def test_validate_executable_checks_flags_unknown_kind(self) -> None:
         response_path = self.iteration_dir / "create-element" / "eval-0" / "with_skill" / "response.md"
         response_path.parent.mkdir(parents=True, exist_ok=True)
@@ -473,6 +548,22 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertIn("test/_agent-hooks/anonymous-with_skill_targeted.json", summary["removed"])
         self.assertIn("test/_agent-hooks/default.json", summary["removed"])
         self.assertFalse((hook_root / "anonymous-with_skill_targeted.json").exists())
+        self.assertFalse((hook_root / "default.json").exists())
+
+    def test_reset_hook_state_removes_derived_anonymous_state_files(self) -> None:
+        hook_root = self.workspace_root / "test" / "_agent-hooks"
+        hook_root.mkdir(parents=True, exist_ok=True)
+        (hook_root / "anonymous-blind_compare-iteration-2-create-element.json").write_text("{}\n", encoding="utf-8")
+        (hook_root / "anonymous-blind_compare-iteration-3-create-element.json").write_text("{}\n", encoding="utf-8")
+        (hook_root / "default.json").write_text("{}\n", encoding="utf-8")
+
+        summary = tools.reset_hook_state(self.workspace_root, mode="blind_compare")
+
+        self.assertEqual(summary["removed_count"], 3)
+        self.assertIn("anonymous-blind_compare-iteration-2-create-element", summary["resolved_session_ids"])
+        self.assertIn("anonymous-blind_compare-iteration-3-create-element", summary["resolved_session_ids"])
+        self.assertFalse((hook_root / "anonymous-blind_compare-iteration-2-create-element.json").exists())
+        self.assertFalse((hook_root / "anonymous-blind_compare-iteration-3-create-element.json").exists())
         self.assertFalse((hook_root / "default.json").exists())
 
 

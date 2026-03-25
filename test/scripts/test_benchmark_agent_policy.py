@@ -523,29 +523,29 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(allowed_after_reset), "allow")
 
-    def test_with_skill_missing_session_id_uses_mode_scoped_anonymous_state_file(self) -> None:
+    def test_with_skill_missing_session_id_uses_skill_scoped_anonymous_state_file(self) -> None:
         output = self.run_hook_payload(
             self.read_payload(None, ".github/skills/create-element/SKILL.md", end_line=80),
             mode="with_skill_targeted",
         )
 
         self.assertEqual(self.decision(output), "allow")
-        anonymous_state_path = Path(self.state_root.name) / "anonymous-with_skill_targeted.json"
+        anonymous_state_path = Path(self.state_root.name) / "anonymous-with_skill_targeted-create-element.json"
         self.assertTrue(anonymous_state_path.exists())
         self.assertFalse((Path(self.state_root.name) / "default.json").exists())
 
         stored_state = json.loads(anonymous_state_path.read_text(encoding="utf-8"))
-        self.assertEqual(stored_state.get("session_id"), "anonymous-with_skill_targeted")
+        self.assertEqual(stored_state.get("session_id"), "anonymous-with_skill_targeted-create-element")
         self.assertEqual(stored_state.get("locked_skill"), "create-element")
 
-    def test_with_skill_anonymous_session_start_resets_scoped_state_and_warns_about_serial_execution(self) -> None:
-        first = self.run_hook_payload(
+    def test_with_skill_missing_session_id_derives_distinct_sessions_per_skill_for_parallel_workers(self) -> None:
+        create_element = self.run_hook_payload(
             self.read_payload(None, ".github/skills/create-element/SKILL.md", end_line=80),
             mode="with_skill_targeted",
         )
-        self.assertEqual(self.decision(first), "allow")
+        self.assertEqual(self.decision(create_element), "allow")
 
-        denied = self.run_hook_payload(
+        create_relationship = self.run_hook_payload(
             self.read_payload(
                 None,
                 ".github/skills/create-relationship/SKILL.md",
@@ -554,7 +554,51 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             ),
             mode="with_skill_targeted",
         )
-        self.assertEqual(self.decision(denied), "deny")
+        self.assertEqual(self.decision(create_relationship), "allow")
+
+        state_root = Path(self.state_root.name)
+        self.assertTrue((state_root / "anonymous-with_skill_targeted-create-element.json").exists())
+        self.assertTrue((state_root / "anonymous-with_skill_targeted-create-relationship.json").exists())
+
+    def test_blind_compare_missing_session_id_uses_iteration_scoped_anonymous_state(self) -> None:
+        first = self.run_hook_payload(
+            self.read_payload(None, "test/iteration-1/create-element/eval-0/blind/A.md", end_line=40),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(first), "allow")
+
+        second = self.run_hook_payload(
+            self.read_payload(
+                None,
+                "test/iteration-2/create-element/eval-0/blind/A.md",
+                end_line=40,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(second), "allow")
+
+        state_root = Path(self.state_root.name)
+        self.assertTrue((state_root / "anonymous-blind_compare-iteration-1-create-element.json").exists())
+        self.assertTrue((state_root / "anonymous-blind_compare-iteration-2-create-element.json").exists())
+
+    def test_with_skill_anonymous_session_start_resets_scoped_state_and_warns_about_serial_execution(self) -> None:
+        first = self.run_hook_payload(
+            self.read_payload(None, ".github/skills/create-element/SKILL.md", end_line=80),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(first), "allow")
+
+        second = self.run_hook_payload(
+            self.read_payload(
+                None,
+                ".github/skills/create-relationship/SKILL.md",
+                end_line=80,
+                timestamp="2026-03-12T12:00:10Z",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(second), "allow")
 
         session_start = self.run_hook_payload(
             self.session_start_payload(None, timestamp="2026-03-12T12:00:20Z"),

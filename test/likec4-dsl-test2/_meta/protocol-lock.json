@@ -1,0 +1,54 @@
+{
+  "generated_at": "2026-03-24T16:29:17Z",
+  "iteration": "likec4-dsl-test2",
+  "protocol_version": "benchmark-v2",
+  "manifest_path": "test/benchmark-protocol.json",
+  "manifest_sha256": "429d521c960fc81d189c6d81f5f72a7d99384576a0e53942717c2b5f31d44cb3",
+  "tracked_files": [
+    {
+      "path": ".github/agents/skill-benchmark-manager.agent.md",
+      "sha256": "27810750afd1ccaef9873da7dd3f3bf385bf8428d4c8813b21ae5707a9198966"
+    },
+    {
+      "path": ".github/agents/skill-benchmark-baseline.agent.md",
+      "sha256": "dd32ca24790fc636738517e78936811403085b3ecb969f88747a115f70eae7bb"
+    },
+    {
+      "path": ".github/agents/skill-benchmark-baseline-hook-only.agent.md",
+      "sha256": "aefb4a7c03612d6a83aed53c619dc417892719bd00eb7d96d2f6223c653408c7"
+    },
+    {
+      "path": ".github/agents/skill-benchmark-with-skill.agent.md",
+      "sha256": "e80baae976fac0e108b0f62098ad6b9edceffdd914fe32d6dbae21b8ba737252"
+    },
+    {
+      "path": ".github/agents/skill-blind-comparator.agent.md",
+      "sha256": "147c1783b61deec42f3f95d16a320c3110ced04b0757df344bace8cda0264471"
+    },
+    {
+      "path": "test/scripts/benchmark_access_hook.py",
+      "sha256": "6d97c0b80b0b6406f17f70147fed7e9e1c21525fc2e3b3144f390e4f32bb322e"
+    },
+    {
+      "path": "test/benchmark-agent-workflow.md",
+      "sha256": "45c80a3fc39a34fa468dc2c9ab3000060d51adb69882b1f41127c2fa01b6a9a1"
+    },
+    {
+      "path": "test/skill-suite-eval-prompt.md",
+      "sha256": "2ef2402dfd865a6b7f33d83350702bec7ee9641f989a4c90b2682bca919857d1"
+    },
+    {
+      "path": "test/scripts/skill_suite_tools.py",
+      "sha256": "9305e19c3ab83e02a7d94f66117b3b2e79cee68719cd11067cc2641f1f298fde"
+    }
+  ],
+  "skill_eval_artifacts": [
+    {
+      "skill": "likec4-dsl",
+      "evals_public_path": ".github/skills/likec4-dsl/evals/evals-public.json",
+      "evals_public_sha256": "placeholder",
+      "grading_spec_path": ".github/skills/likec4-dsl/evals/grading-spec.json",
+      "grading_spec_sha256": "placeholder"
+    }
+  ]
+}

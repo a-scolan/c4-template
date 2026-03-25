@@ -194,13 +194,21 @@ model {
 
     NESTED_ELEMENTS | RELATIONSHIPS
   }
-  // Extend existing relationship (must have SOURCE and TARGET)
-  extend SOURCE -> TARGET  { 
+  // Extend existing relationship (must match existing relationship identity)
+  // SOURCE and TARGET are always required. If multiple relationships exist between the
+  // same endpoints, include kind and/or title to disambiguate the exact relationship.
+  extend SOURCE -> TARGET  {
+    TAGS                   // additional tags to apply to this relationship
+    PROPERTIES             // additional properties to merge into this relationship, allowed `metadata` and `link` only
+  }
+  extend SOURCE -[REL_KIND]-> TARGET "Relationship title" {
     TAGS                   // additional tags to apply to this relationship
     PROPERTIES             // additional properties to merge into this relationship, allowed `metadata` and `link` only
   }
 }
 ```
+
+For relationship `extend`, matching is not a loose "same endpoints only" lookup when the model contains distinct relationships between the same source and target. In practice, treat the matcher as needing the same relationship identity as the original declaration: source, target, and — when present or needed for disambiguation — relationship kind and title.
 
 Example:
 

@@ -55,8 +55,10 @@ You orchestrate the benchmark workflow and preserve isolation guarantees across 
 - Never invoke an unconstrained agent, a built-in exploratory subagent, or any agent whose file-access policy is unknown.
 - Keep blind comparison blind: the comparator worker must never see `blind-map.json`, raw `with_skill` / `without_skill` outputs, or any `SKILL.md` file.
 - Use strict relocation for the default `without_skill` phase, and reserve the hook-only baseline worker for explicit isolation probes only.
-- Run independent benchmark workers in parallel by default inside each phase, except when hook payloads omit `sessionId` for stateful phases (`with_skill`, `blind_compare`); in that case, serialize those workers and reset anonymous hook state between fresh sessions.
+- Run independent benchmark workers in parallel by default inside each phase, including stateful phases when hook payloads omit `sessionId` but the resolved audit still shows distinct derived anonymous sessions per worker scope. If that scope derivation is missing or ambiguous, reset anonymous hook state and serialize as a safety fallback.
 - Never overlap phases: complete the full `without_skill` phase before any `with_skill` work, and complete `with_skill` before blind comparison.
+- After each blind-comparison materialization, regenerate `suite-summary.json` and `suite-summary.md` for the active iteration immediately (no deferred synthesis pass).
+- When a synthesis discusses a single losing eval, label it as a **disagreement to verify** (grading/comparator/spec) rather than asserting the skill is definitively wrong.
 
 ## Delegation rules
 
@@ -75,7 +77,8 @@ You orchestrate the benchmark workflow and preserve isolation guarantees across 
 - Keep reports anonymous and repository-relative.
 - Treat this manager as the human entrypoint; keep `skill_suite_tools.py self-test` as the single automation entrypoint for offline checks.
 - Run `skill_suite_tools.py protocol-preflight` before a scored campaign so the protocol version, split eval artifacts, and prompt hashes are locked into the active iteration.
-- Build a phase task matrix and dispatch it in parallel waves (`without_skill` wave, then `with_skill`, then `blind_compare`) instead of defaulting to serial skill-by-skill execution, unless missing `sessionId` values force serialized `with_skill` / `blind_compare` workers for trustworthy anonymous-state handling.
+- Ensure each scored run ends with refreshed suite synthesis artifacts (`suite-summary.json` + `suite-summary.md`) inside the same iteration folder.
+- Build a phase task matrix and dispatch it in parallel waves (`without_skill` wave, then `with_skill`, then `blind_compare`) instead of defaulting to serial skill-by-skill execution. When raw `sessionId` is missing, validate resolved audit `effectiveSessionId` values to confirm stable per-scope anonymous isolation; serialize only as a fallback when that condition is not met.
 - Prefer small, auditable changes and validate with the offline policy tests before asking humans to trust the setup.
 - Treat the shared hook script as a protected boundary: inspect it freely, but do not loosen it casually.
 - When a human-facing review is needed, prefer exporting a review workspace and generating static HTML through `skill-creator`'s `eval-viewer/generate_review.py` rather than inventing a custom review page.

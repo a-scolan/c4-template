@@ -186,6 +186,13 @@ def reset_hook_state(workspace_root: Path, *, mode: str | None = None, session_i
     removed: list[str] = []
     missing: list[str] = []
     resolved_sessions = hook_state_reset_candidates(mode, session_id)
+    if not session_id and isinstance(mode, str) and mode.strip() in STATEFUL_ANONYMOUS_HOOK_MODES:
+        anonymous_prefix = anonymous_hook_session_id(mode.strip())
+        for candidate in sorted(state_root.glob(f"{anonymous_prefix}*.json"), key=lambda path: path.name):
+            resolved_session_id = candidate.stem
+            if resolved_session_id not in resolved_sessions:
+                resolved_sessions.append(resolved_session_id)
+
     for resolved_session_id in resolved_sessions:
         state_path = hook_state_path(workspace_root, resolved_session_id)
         relative_path = state_path.relative_to(workspace_root).as_posix()
@@ -1837,7 +1844,7 @@ def benchmark_agent_plan(
         "Default execution mode is parallel within each phase: launch independent worker sessions concurrently, then wait for all of them to finish before advancing the phase."
     )
     notes.append(
-        "If resolved hook audit entries show a missing raw sessionId, serialize the stateful with_skill and blind_compare phases in practice and clear anonymous hook state between fresh workers with `python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode <mode>`."
+        "If resolved hook audit entries show missing raw sessionId values, ensure workers still receive disjoint derived anonymous sessions (per skill / blind scope). If a run is interrupted or reused, clear stale anonymous hook state between fresh workers with `python test/scripts/skill_suite_tools.py reset-hook-state --workspace-root . --mode <mode>`."
     )
     notes.append(
         "Never overlap without_skill and with_skill phases; keep phase boundaries sequential even when workers inside a phase run in parallel."
@@ -1857,7 +1864,7 @@ def benchmark_agent_plan(
             "unit_of_parallelism": "<skill, configuration, run_number>",
             "phase_barrier": "wait for all tasks in the current phase before starting the next one",
             "safe_parallel_condition": "parallelize only tasks whose output directories do not overlap",
-            "anonymous_stateful_fallback": "serialize with_skill/blind_compare and run reset-hook-state when hook payloads omit sessionId",
+            "anonymous_stateful_fallback": "derive per-scope anonymous sessions; if scope derivation cannot be maintained, reset-hook-state and serialize as a safety fallback",
             "fallback_policy": "if runtime or platform limits are hit, reduce concurrency before falling back to serial execution",
         },
         "entrypoints": {
@@ -1883,7 +1890,7 @@ def benchmark_agent_plan(
                 "dispatch_mode": "parallel",
                 "parallel_scope": "<skill, run_number>",
                 "precondition": "Workspace skills were restored and each fresh worker stays inside one target skill directory.",
-                "anonymous_session_fallback": "serial with reset-hook-state --mode with_skill_targeted",
+                "anonymous_session_fallback": "derived anonymous sessions per skill; if unresolved, serial with reset-hook-state --mode with_skill_targeted",
                 "target_skill": skill,
             },
             {
@@ -1892,7 +1899,7 @@ def benchmark_agent_plan(
                 "dispatch_mode": "parallel",
                 "parallel_scope": "<skill, eval_id, run_number>",
                 "precondition": "Only blind A/B artifacts and the target eval definitions are exposed to the comparator.",
-                "anonymous_session_fallback": "serial with reset-hook-state --mode blind_compare",
+                "anonymous_session_fallback": "derived anonymous sessions per blind scope; if unresolved, serial with reset-hook-state --mode blind_compare",
             },
         ],
         "notes": notes,
@@ -3846,6 +3853,8 @@ def cmd_materialize_run_stdin(args: argparse.Namespace) -> None:
 
 def cmd_materialize_comparisons(args: argparse.Namespace) -> None:
     summary = materialize_blind_comparisons(args.iteration, args.skill, args.raw_json)
+    workspace_root = infer_workspace_root_from_iteration(args.iteration)
+    summary["suite_refresh"] = refresh_suite_outputs_after_blind(args.iteration, workspace_root, args.skill)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
@@ -3857,6 +3866,8 @@ def cmd_materialize_comparisons_stdin(args: argparse.Namespace) -> None:
     raw_output = args.raw_json or (args.iteration / "_meta" / f"{args.skill}-blind.json")
     write_json(raw_output, payload)
     summary = materialize_blind_comparisons(args.iteration, args.skill, raw_output)
+    workspace_root = infer_workspace_root_from_iteration(args.iteration)
+    summary["suite_refresh"] = refresh_suite_outputs_after_blind(args.iteration, workspace_root, args.skill)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
@@ -3868,6 +3879,13 @@ def completed_skill_names_for_config(iteration_dir: Path, config: str) -> list[s
     return sorted(result)
 
 
+def infer_workspace_root_from_iteration(iteration_dir: Path) -> Path:
+    resolved = iteration_dir.resolve()
+    if resolved.parent.name == "test":
+        return resolved.parent.parent
+    return resolved.parent.parent
+
+
 def resolve_public_evals_for_config(iteration_dir: Path, workspace_root: Path, skill_name: str, config: str) -> Path:
     workspace_path = skill_eval_paths(workspace_root, skill_name)["public"]
     disabled_path = disabled_skills_root(iteration_dir) / skill_name / "evals" / EVALS_PUBLIC_FILENAME
@@ -3876,6 +3894,50 @@ def resolve_public_evals_for_config(iteration_dir: Path, workspace_root: Path, s
         if candidate.exists():
             return candidate
     raise FileNotFoundError(f"Missing {EVALS_PUBLIC_FILENAME} for skill '{skill_name}' while summarizing {config}")
+
+
+def refresh_suite_outputs_after_blind(
+    iteration_dir: Path,
+    workspace_root: Path,
+    skill_name: str | None = None,
+) -> dict[str, Any]:
+    skills = [skill_name] if skill_name else [path.name for path in skill_dirs(iteration_dir)]
+    summarized: list[dict[str, Any]] = []
+
+    for name in skills:
+        skill_dir = iteration_dir / name
+        if not skill_dir.exists():
+            continue
+        for config in ("with_skill", "without_skill"):
+            metrics_path = skill_dir / f"{config}-run-metrics.json"
+            if not metrics_path.exists():
+                continue
+            evals_path = resolve_public_evals_for_config(iteration_dir, workspace_root, name, config)
+            summary = summarize_config(skill_dir, config, evals_path)
+            summarized.append(
+                {
+                    "skill": name,
+                    "configuration": config,
+                    "eval_count": len(summary.get("evals", [])),
+                    "run_count": summary.get("run_count", 1),
+                    "summary_path": (skill_dir / f"{config}-summary.json").relative_to(workspace_root).as_posix(),
+                }
+            )
+
+    suite_summary = aggregate_suite(iteration_dir, workspace_root)
+    suite_summary_json = iteration_dir / "suite-summary.json"
+    suite_summary_md = iteration_dir / "suite-summary.md"
+    write_json(suite_summary_json, suite_summary)
+    write_text(suite_summary_md, render_markdown(suite_summary))
+
+    return {
+        "iteration": iteration_dir.name,
+        "summarized_count": len(summarized),
+        "summarized": summarized,
+        "suite_summary_json": suite_summary_json.relative_to(workspace_root).as_posix(),
+        "suite_summary_md": suite_summary_md.relative_to(workspace_root).as_posix(),
+        "skill_count": suite_summary.get("skill_count", 0),
+    }
 
 
 def cmd_summarize_phase(args: argparse.Namespace) -> None:

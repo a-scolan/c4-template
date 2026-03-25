@@ -8,8 +8,9 @@ This guide documents the custom benchmark agents and the shared hook policy used
 - Use the strict relocated baseline by default for the full `without_skill` batch.
 - Run independent workers in parallel by default **within** each phase.
 - Treat the hook-only baseline worker as an explicit probe mode, not as a replacement for relocation.
-- If resolved hook-audit entries show that raw `sessionId` is missing, serialize the stateful `with_skill` and `blind_compare` phases and reset anonymous hook state between fresh workers.
+- If resolved hook-audit entries show that raw `sessionId` is missing, confirm effective anonymous session ids are derived per worker scope (`with_skill`: per skill, `blind_compare`: per iteration+skill). If derivation is missing or ambiguous, reset anonymous hook state and temporarily serialize the affected stateful phase.
 - Before the first scored worker of a campaign, run a live isolation probe against a clearly forbidden file (for example `README.md` or a prior-iteration artifact) and confirm the worker is truly blocked.
+- Regenerate `suite-summary.json` and `suite-summary.md` for the active iteration after each blind-comparison materialization (treat this as mandatory, not optional post-processing).
 
 ## Entry points
 
@@ -29,7 +30,7 @@ Use this scheduler unless a run-specific constraint forces a narrower scope:
 
 This means the benchmark is **parallel by default inside a phase** and **strictly sequential across phase boundaries**.
 
-If the live hook payloads omit `sessionId`, the wrapper falls back to shared anonymous session state for `with_skill_targeted` and `blind_compare`. In that runtime condition, keep those two phases **serial in practice** and clear anonymous hook state between fresh workers.
+If the live hook payloads omit `sessionId`, the wrapper derives anonymous session state from requested scope for stateful modes (`with_skill_targeted`: per skill; `blind_compare`: per iteration+skill), which keeps independent workers parallel-safe. If a worker cannot be mapped to a stable scope, fall back to serial execution for that phase and clear anonymous hook state between fresh workers.
 
 ## Agent inventory
 
@@ -48,7 +49,7 @@ If the live hook payloads omit `sessionId`, the wrapper falls back to shared ano
 - Context injection: `SessionStart`
 - Manager reinforcement: `SubagentStart`
 
-The wrapper under `test/scripts/benchmark_access_hook.py` is the active benchmark hook entrypoint. It reuses the legacy policy logic while resetting stale session state on `SessionStart`, normalizing missing `sessionId` values into mode-scoped anonymous session ids, avoiding false path detection in `create_file` payload content, and letting blind-comparator sessions lock onto the first requested iteration instead of whichever iteration folder happens to sort last.
+The wrapper under `test/scripts/benchmark_access_hook.py` is the active benchmark hook entrypoint. It reuses the legacy policy logic while resetting stale session state on `SessionStart`, deriving missing `sessionId` values into per-scope anonymous session ids for stateful modes, avoiding false path detection in `create_file` payload content, and letting blind-comparator sessions lock onto the first requested iteration instead of whichever iteration folder happens to sort last.
 
 When hook debug logging is enabled, the wrapper also writes a resolved audit trail beside the raw attempt log so you can distinguish blocked attempts from actually allowed tool uses and compare raw vs effective session ids.
 
@@ -59,8 +60,8 @@ When hook debug logging is enabled, the wrapper also writes a resolved audit tra
 | `benchmark_manager` | Orchestrate benchmark work and benchmark-specific docs | Can delegate only to allowlisted benchmark workers; edits are limited to `README.md`, `test/`, and `.github/agents/*.agent.md`; no shell escape; no MCP |
 | `baseline` | Strict relocated `without_skill` worker | Requires `.github/skills/` to be empty before tool use; worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no `SKILL.md`, no `README.md`, no project-local examples, no `test/` artefacts, no edits, no terminal, no subagents |
 | `baseline_hook_only` | Hook-only `without_skill` isolation probe | Workspace skills may remain in place, but worker reads are still limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no `.github` path, no `_disabled-skills` backup, no `SKILL.md`, no `README.md`, no project-local examples, no edits, no terminal, no subagents |
-| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; inside that skill, benchmark prompts must come from `evals/evals-public.json` only; outside that skill, worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no unrelated `test/` artefacts, no edits, no terminal, no subagents. If raw `sessionId` is missing, treat anonymous workers as serial-only and reset hook state between fresh workers. |
-| `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `grading-spec.json`; no `blind-map.json`, no raw outputs, no `SKILL.md`; no MCP, including LikeC4 MCP. The comparator locks to the first blind iteration/skill it touches instead of assuming the numerically latest iteration folder. If raw `sessionId` is missing, keep comparator workers serial and reset hook state between fresh workers. |
+| `with_skill_targeted` | Clean `with_skill` worker | First workspace skill read locks the session to that one skill; inside that skill, benchmark prompts must come from `evals/evals-public.json` only; outside that skill, worker reads are limited to `projects/shared/`; all LikeC4 MCP tools (`likec4/*`) allowed; no unrelated `test/` artefacts, no edits, no terminal, no subagents. If raw `sessionId` is missing, the wrapper derives a skill-scoped anonymous session id so parallel workers stay isolated; if this cannot be derived, reset hook state and serialize as fallback. |
+| `blind_compare` | Blind A/B judge | May read only blind A/B artifacts and target `grading-spec.json`; no `blind-map.json`, no raw outputs, no `SKILL.md`; no MCP, including LikeC4 MCP. The comparator locks to the first blind iteration/skill it touches instead of assuming the numerically latest iteration folder. If raw `sessionId` is missing, the wrapper derives iteration+skill-scoped anonymous session ids to preserve parallelism; if this cannot be derived, reset hook state and serialize as fallback. |
 
 LikeC4 MCP is intentionally allowed only for the scored answer-generation workers (`baseline`, `baseline_hook_only`, and `with_skill_targeted`) because some LikeC4 tasks need model and relationship grounding even in `without_skill`. That allowance is deliberately narrow: keep it to element/relationship grounding only. Project listing, project summaries, and view browsing are blocked during scored runs because they expose template/showcase examples outside `projects/shared/`. LikeC4 MCP remains blocked for `benchmark_manager` and `blind_compare`, and the grader/analyzer support playbooks are not part of this MCP allowance.
 
@@ -113,6 +114,8 @@ Use the same caveat file when timings are synthetic placeholders or when `with_s
 
 The scored protocol is now versioned. Before a campaign, freeze the active agent prompts, hook rules, and split eval artifacts into `test/iteration-N/_meta/protocol-lock.json` with `skill_suite_tools.py protocol-preflight`.
 
+When writing synthesis text, do not over-claim from one eval disagreement. If a single eval loses while suite-level metrics remain strong, report it as a focused disagreement to verify (comparator reasoning vs grading spec vs DSL semantics), not as a blanket skill failure.
+
 ## Support playbook mapping
 
 | Support playbook | Used by | Purpose |
@@ -158,9 +161,11 @@ python test/scripts/skill_suite_tools.py validate-blind-isolation --iteration te
 python test/scripts/test_benchmark_agent_policy.py
 ```
 
+`materialize-comparisons` now refreshes per-config summaries and rewrites `suite-summary.json` + `suite-summary.md` for the same iteration automatically.
+
 Use `utc-now` immediately before and after a scored worker when you need auditable per-worker timestamps without leaving the benchmark-manager command allowlist.
 
-When raw `sessionId` is missing in live hook-audit entries, call `reset-hook-state` before each fresh anonymous `with_skill` or `blind_compare` worker and avoid parallel dispatch for those phases.
+When raw `sessionId` is missing in live hook-audit entries, inspect `effectiveSessionId` in the resolved hook audit: parallel stateful dispatch is acceptable when those ids stay distinct per worker scope. Use `reset-hook-state` to clear stale anonymous files between campaigns or before forcing a serialized fallback.
 
 ## Skill-creator-aligned review flow
 
