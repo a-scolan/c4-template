@@ -30,6 +30,8 @@ EDIT_TOOL_NAMES = {
     "create_directory",
     "edit_notebook_file",
     "create_new_jupyter_notebook",
+    "replace_string_in_file",
+    "multi_replace_string_in_file",
 }
 EXECUTE_TOOL_NAMES = {
     "run_in_terminal",

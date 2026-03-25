@@ -1321,13 +1321,13 @@ def export_review_workspace(iteration_dir: Path, workspace_root: Path, skill_nam
             continue
         grading_item = get_eval_entry(grading_definition, int(eval_id))
         for configuration in ("with_skill", "without_skill"):
-            response_path = legacy_response_path(skill_dir, int(eval_id), configuration)
-            if not response_path.exists():
+            response_path = resolve_response_path(skill_dir, int(eval_id), configuration, 1)
+            if response_path is None:
                 missing_runs.append(
                     {
                         "eval_id": eval_id,
                         "configuration": configuration,
-                        "expected_path": response_path.relative_to(workspace_root).as_posix(),
+                        "expected_path": legacy_response_path(skill_dir, int(eval_id), configuration).relative_to(workspace_root).as_posix(),
                     }
                 )
                 continue
@@ -1463,6 +1463,334 @@ def build_benchmark_analysis_bundle(iteration_dir: Path, workspace_root: Path, s
             "Which blind wins or losses should drive the next skill revision?",
         ],
     }
+
+
+# ---------------------------------------------------------------------------
+# Synthesis bundle & writer
+# ---------------------------------------------------------------------------
+
+
+def build_synthesis_bundle(
+    iteration_dir: Path,
+    workspace_root: Path,
+    skill_name: str,
+) -> dict[str, Any]:
+    """Build a comprehensive data bundle for generating a critical synthesis report.
+
+    The bundle includes all quantitative metrics, per-eval blind comparison
+    details, executable validity data, and eval definitions.  An LLM agent
+    reads this bundle to produce the synthesis markdown.
+    """
+    skill_dir = iteration_dir / skill_name
+    if not skill_dir.exists():
+        raise FileNotFoundError(f"Missing skill results directory for '{skill_name}': {skill_dir}")
+
+    # -- eval definitions --
+    eval_bundle = load_skill_eval_bundle(workspace_root, skill_name)
+    public_evals = eval_bundle["public"].get("evals", [])
+    grading_evals = {int(e["id"]): e for e in eval_bundle["grading"].get("evals", []) if e.get("id") is not None}
+
+    # -- summaries --
+    with_summary = read_json(skill_dir / "with_skill-summary.json") if (skill_dir / "with_skill-summary.json").exists() else {}
+    without_summary = read_json(skill_dir / "without_skill-summary.json") if (skill_dir / "without_skill-summary.json").exists() else {}
+    with_metrics = load_summary_metrics(skill_dir / "with_skill-summary.json") if (skill_dir / "with_skill-summary.json").exists() else {}
+    without_metrics = load_summary_metrics(skill_dir / "without_skill-summary.json") if (skill_dir / "without_skill-summary.json").exists() else {}
+
+    # -- blind comparisons --
+    comparisons_path = skill_dir / "blind-comparisons.json"
+    comparison_items = load_comparisons(comparisons_path) if comparisons_path.exists() else []
+
+    # Build per-eval mapping: eval_id -> {winner_config, reasoning, rubric, expectations}
+    per_eval_comparisons: list[dict[str, Any]] = []
+    for item in comparison_items:
+        eval_id = item.get("eval_id")
+        if eval_id is None:
+            continue
+        eval_id = int(eval_id)
+        run_number = coerce_int(item.get("run_number")) or 1
+        mapping_path = blind_map_path(skill_dir / f"eval-{eval_id}", run_number)
+        if not mapping_path.exists() and run_number == 1:
+            mapping_path = skill_dir / f"eval-{eval_id}" / "blind-map.json"
+        mapping = read_json(mapping_path) if mapping_path.exists() else {}
+        reverse_mapping = {config: side for side, config in mapping.items()}
+
+        winner_raw = item.get("winner")
+        winner_config = mapping.get(winner_raw, "TIE") if winner_raw != "TIE" else "TIE"
+
+        rubric = item.get("rubric", {})
+        with_side = reverse_mapping.get("with_skill")
+        without_side = reverse_mapping.get("without_skill")
+        with_rubric = rubric.get(with_side, {}).get("overall_score") if with_side else None
+        without_rubric = rubric.get(without_side, {}).get("overall_score") if without_side else None
+        with_notes = rubric.get(with_side, {}).get("notes", "") if with_side else ""
+        without_notes = rubric.get(without_side, {}).get("notes", "") if without_side else ""
+
+        exp_results = item.get("expectation_results", {})
+        with_exp = exp_results.get(with_side, {}) if with_side else {}
+        without_exp = exp_results.get(without_side, {}) if without_side else {}
+
+        # Determine confidence from rubric delta
+        rubric_delta = (with_rubric - without_rubric) if with_rubric is not None and without_rubric is not None else 0
+        confidence = "high" if abs(rubric_delta) >= 3 else "medium" if abs(rubric_delta) >= 1 else "low"
+
+        # Grab eval prompt & expected output for context
+        eval_prompt = ""
+        expected_output = ""
+        grading_entry = grading_evals.get(eval_id, {})
+        for pub in public_evals:
+            if int(pub.get("id", -1)) == eval_id:
+                eval_prompt = pub.get("prompt", "")
+                break
+        expected_output = grading_entry.get("expected_output", "")
+        expectations = grading_entry.get("expectations", [])
+
+        per_eval_comparisons.append({
+            "eval_id": eval_id,
+            "run_number": run_number,
+            "eval_prompt": eval_prompt,
+            "expected_output": expected_output,
+            "expectations": expectations,
+            "winner": winner_config,
+            "confidence": confidence,
+            "reasoning": item.get("reasoning", ""),
+            "with_skill_rubric_score": with_rubric,
+            "without_skill_rubric_score": without_rubric,
+            "with_skill_rubric_notes": with_notes,
+            "without_skill_rubric_notes": without_notes,
+            "with_skill_expectations": {
+                "passed": with_exp.get("passed", 0),
+                "total": with_exp.get("total", 0),
+            },
+            "without_skill_expectations": {
+                "passed": without_exp.get("passed", 0),
+                "total": without_exp.get("total", 0),
+            },
+        })
+
+    per_eval_comparisons.sort(key=lambda x: (x["eval_id"], x["run_number"]))
+
+    # -- executable validity --
+    with_executable = load_executable_check_metrics(skill_dir / "with_skill-executable-checks.json")
+    without_executable = load_executable_check_metrics(skill_dir / "without_skill-executable-checks.json")
+
+    # -- suite-level data --
+    suite_summary_path = iteration_dir / "suite-summary.json"
+    suite_summary = read_json(suite_summary_path) if suite_summary_path.exists() else {}
+
+    # -- quantitative overview --
+    with_s = with_summary.get("summary", {})
+    without_s = without_summary.get("summary", {})
+    cap = comparison_metrics(skill_dir, comparison_items)
+    eval_count = len(public_evals)
+    run_count = max(with_metrics.get("run_count", 1), without_metrics.get("run_count", 1))
+
+    # -- protocol metadata --
+    protocol_lock_path = iteration_dir / "_meta" / "protocol-lock.json"
+    protocol_lock = read_json(protocol_lock_path) if protocol_lock_path.exists() else {}
+
+    return {
+        "iteration": iteration_dir.name,
+        "skill_name": skill_name,
+        "protocol_version": protocol_lock.get("protocol_version"),
+        "generated_at": utc_now_iso(),
+        "eval_count": eval_count,
+        "run_count": run_count,
+        "quantitative": {
+            "blind": {
+                "with_skill_wins": cap["blind"]["with_skill_wins"],
+                "without_skill_wins": cap["blind"]["without_skill_wins"],
+                "ties": cap["blind"]["ties"],
+                "with_skill_win_rate": cap["blind"]["with_skill_win_rate"],
+            },
+            "expectation_pass_rate": {
+                "with_skill": cap["expectation_pass_rate"]["with_skill"],
+                "without_skill": cap["expectation_pass_rate"]["without_skill"],
+                "delta": cap["expectation_pass_rate"]["delta"],
+            },
+            "rubric_score": {
+                "with_skill": cap["rubric_score"]["with_skill"],
+                "without_skill": cap["rubric_score"]["without_skill"],
+                "delta": cap["rubric_score"]["delta"],
+            },
+            "time_per_eval": {
+                "with_skill": with_s.get("elapsed_seconds_per_eval"),
+                "without_skill": without_s.get("elapsed_seconds_per_eval"),
+                "delta": delta_or_none(with_s.get("elapsed_seconds_per_eval"), without_s.get("elapsed_seconds_per_eval")),
+            },
+            "words_per_eval": {
+                "with_skill": with_s.get("response_words_per_eval"),
+                "without_skill": without_s.get("response_words_per_eval"),
+                "delta": delta_or_none(with_s.get("response_words_per_eval"), without_s.get("response_words_per_eval")),
+            },
+            "files_read": {
+                "with_skill": with_s.get("files_read_count"),
+                "without_skill": without_s.get("files_read_count"),
+                "delta": delta_or_none(with_s.get("files_read_count"), without_s.get("files_read_count")),
+            },
+            "executable_validity": {
+                "with_skill": with_executable.get("valid_eval_rate") if with_executable else None,
+                "without_skill": without_executable.get("valid_eval_rate") if without_executable else None,
+                "delta": delta_or_none(
+                    with_executable.get("valid_eval_rate") if with_executable else None,
+                    without_executable.get("valid_eval_rate") if without_executable else None,
+                ),
+            },
+        },
+        "per_eval_comparisons": per_eval_comparisons,
+        "executable_details": {
+            "with_skill": with_executable,
+            "without_skill": without_executable,
+        },
+        "high_variance_evals": cap.get("high_variance_evals", []),
+        "synthesis_template": SYNTHESIS_TEMPLATE,
+    }
+
+
+SYNTHESIS_TEMPLATE = """# Critical Synthesis — `{skill_name}` Benchmark
+
+**Iteration:** `{iteration}`
+**Protocol:** {protocol_version}
+**Evals:** {eval_count} (ids {eval_id_range}), {run_count} run(s) per configuration
+**Generated:** {date}
+
+---
+
+## 1. Quantitative results
+
+| Metric | `with_skill` | `without_skill` | Δ |
+|---|---|---|---|
+| **Blind win rate** | **{with_wins}/{total_comparisons} = {with_win_pct}** | {without_wins}/{total_comparisons} = {without_win_pct} | {win_rate_delta} |
+| **Expectation pass rate** | **{with_exp_rate}** | {without_exp_rate} | **{exp_delta}** |
+| **Rubric score (0–10)** | **{with_rubric}** | {without_rubric} | **{rubric_delta}** |
+| Seconds / eval | {with_time} s | {without_time} s | {time_delta} |
+| Words / eval | {with_words} | {without_words} | {words_delta} |
+| Files read | {with_files} | {without_files} | {files_delta} |
+| Executable validity | {with_exec} | {without_exec} | {exec_delta} |
+
+[Interpret the quantitative results: what is the overall signal? Is it strong, weak, mixed?]
+
+---
+
+## 2. Eval-by-eval analysis
+
+| Eval | Topic | Winner | Exp with | Exp without | Key discriminator |
+|---|---|---|---|---|---|
+[One row per eval — fill in from per_eval_comparisons data]
+
+### Observations
+
+[For each notable eval, explain WHY the winner won. Use the blind comparison reasoning and rubric notes. Identify the strongest signals and the weakest discriminators.]
+
+---
+
+## 3. Executable validity analysis
+
+[Analyze the executable validity delta. If skill scores lower despite winning blind comparisons, explain the paradox (e.g. shell commands vs DSL blocks). State whether this metric is reliable for this skill.]
+
+---
+
+## 4. Skill design assessment
+
+### Strengths
+[Based on eval-by-eval wins: what does the skill teach that the baseline cannot infer? List 3-4 concrete strengths.]
+
+### Weak areas
+[Based on narrow wins, ties, or low-confidence comparisons: where could the skill improve? List 3-4 areas with specific eval references.]
+
+---
+
+## 5. Priority recommendations
+
+**P1 — Critical (direct impact on baseline failures)**
+[Actions that would fix the largest baseline gaps]
+
+**P2 — Important (improved precision)**
+[Actions that would strengthen narrow wins]
+
+**P3 — Nice to have (robustness)**
+[Follow-up experiments or eval additions]
+
+---
+
+## 6. Verdict
+
+[State whether the skill is effective, with a 2-3 sentence summary citing the key metrics. Note any caveats.]
+"""
+
+
+def render_synthesis_quantitative_section(bundle: dict[str, Any]) -> str:
+    """Pre-render the quantitative table from a synthesis bundle."""
+    q = bundle["quantitative"]
+
+    def fmt(v: Any, decimals: int = 3, suffix: str = "") -> str:
+        if v is None:
+            return "—"
+        return f"{round(float(v), decimals)}{suffix}"
+
+    def fmt_pct(v: Any) -> str:
+        if v is None:
+            return "—"
+        return f"{round(float(v) * 100, 1)}%"
+
+    def fmt_delta(v: Any, decimals: int = 3) -> str:
+        if v is None:
+            return "—"
+        val = round(float(v), decimals)
+        return f"+{val}" if val > 0 else str(val)
+
+    blind = q["blind"]
+    total = blind["with_skill_wins"] + blind.get("without_skill_wins", 0) + blind.get("ties", 0)
+
+    lines = [
+        f"| **Blind win rate** | **{blind['with_skill_wins']}/{total} = {fmt_pct(blind['with_skill_win_rate'])}** | {blind.get('without_skill_wins', 0)}/{total} = {fmt_pct(1.0 - float(blind['with_skill_win_rate']) if blind['with_skill_win_rate'] is not None else None)} | {fmt_delta(float(blind['with_skill_win_rate'] or 0) - (1.0 - float(blind['with_skill_win_rate'] or 0)))} |",
+        f"| **Expectation pass rate** | **{fmt(q['expectation_pass_rate']['with_skill'])} ({fmt_pct(q['expectation_pass_rate']['with_skill'])})** | {fmt(q['expectation_pass_rate']['without_skill'])} ({fmt_pct(q['expectation_pass_rate']['without_skill'])}) | **{fmt_delta(q['expectation_pass_rate']['delta'])}** |",
+        f"| **Rubric score (0–10)** | **{fmt(q['rubric_score']['with_skill'])}** | {fmt(q['rubric_score']['without_skill'])} | **{fmt_delta(q['rubric_score']['delta'])}** |",
+        f"| Seconds / eval | {fmt(q['time_per_eval']['with_skill'], 1)} s | {fmt(q['time_per_eval']['without_skill'], 1)} s | {fmt_delta(q['time_per_eval']['delta'], 1)} s |",
+        f"| Words / eval | {fmt(q['words_per_eval']['with_skill'], 1)} | {fmt(q['words_per_eval']['without_skill'], 1)} | {fmt_delta(q['words_per_eval']['delta'], 1)} |",
+        f"| Files read | {fmt(q['files_read']['with_skill'], 1)} | {fmt(q['files_read']['without_skill'], 1)} | {fmt_delta(q['files_read']['delta'], 1)} |",
+        f"| Executable validity | {fmt(q['executable_validity']['with_skill'])} | {fmt(q['executable_validity']['without_skill'])} | {fmt_delta(q['executable_validity']['delta'])} |",
+    ]
+    return "\n".join(lines)
+
+
+def render_synthesis_eval_table(bundle: dict[str, Any]) -> str:
+    """Pre-render the eval-by-eval comparison table from a synthesis bundle."""
+    rows: list[str] = []
+    for comp in bundle["per_eval_comparisons"]:
+        winner = comp["winner"]
+        confidence = comp["confidence"]
+        with_p = comp["with_skill_expectations"]["passed"]
+        with_t = comp["with_skill_expectations"]["total"]
+        without_p = comp["without_skill_expectations"]["passed"]
+        without_t = comp["without_skill_expectations"]["total"]
+        rows.append(
+            f"| **{comp['eval_id']}** | [topic] | {winner} ({confidence}) | {with_p}/{with_t} | {without_p}/{without_t} | [key discriminator] |"
+        )
+    return "\n".join(rows)
+
+
+def cmd_synthesis_bundle(args: argparse.Namespace) -> None:
+    bundle = build_synthesis_bundle(args.iteration, args.workspace_root, args.skill)
+    print(json.dumps(bundle, indent=2, ensure_ascii=False))
+
+
+def cmd_write_synthesis(args: argparse.Namespace) -> None:
+    skill_dir = args.iteration / args.skill
+    if not skill_dir.exists():
+        raise FileNotFoundError(f"Missing skill results directory for '{args.skill}': {skill_dir}")
+    if args.content_file:
+        content = args.content_file.resolve().read_text(encoding="utf-8")
+    else:
+        content = sys.stdin.read()
+    output_path = (args.output.resolve() if args.output else None) or (skill_dir / "synthesis.md")
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    write_text(output_path, content)
+    print(json.dumps({
+        "iteration": args.iteration.name,
+        "skill_name": args.skill,
+        "output_path": output_path.relative_to(args.workspace_root).as_posix(),
+        "content_length": len(content),
+    }, indent=2, ensure_ascii=False))
 
 
 def write_static_review(iteration_dir: Path, workspace_root: Path, skill_name: str, output_html: Path) -> dict[str, Any]:
@@ -3581,12 +3909,30 @@ def build_parser() -> argparse.ArgumentParser:
     benchmark_export_parser.add_argument("--output", type=Path, help="Optional output path for the generated benchmark JSON")
     benchmark_export_parser.set_defaults(func=cmd_write_skill_creator_benchmark)
 
+    synthesis_bundle_parser = subparsers.add_parser("synthesis-bundle", help="Build the complete data bundle for generating a critical synthesis report for one benchmarked skill")
+    synthesis_bundle_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    synthesis_bundle_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    synthesis_bundle_parser.add_argument("--skill", required=True, help="Target skill name")
+    synthesis_bundle_parser.set_defaults(func=cmd_synthesis_bundle)
+
+    write_synthesis_parser = subparsers.add_parser("write-synthesis", help="Write a critical synthesis markdown report for one benchmarked skill")
+    write_synthesis_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    write_synthesis_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    write_synthesis_parser.add_argument("--skill", required=True, help="Target skill name")
+    write_synthesis_parser.add_argument("--content-file", type=Path, help="Path to a markdown file with the synthesis content (if omitted, reads from stdin)")
+    write_synthesis_parser.add_argument("--output", type=Path, help="Optional output path for the synthesis markdown")
+    write_synthesis_parser.set_defaults(func=cmd_write_synthesis)
+
     return parser
 
 
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
+    if hasattr(args, "iteration") and isinstance(args.iteration, Path):
+        args.iteration = args.iteration.resolve()
+    if hasattr(args, "workspace_root") and isinstance(args.workspace_root, Path):
+        args.workspace_root = args.workspace_root.resolve()
     args.func(args)
 
 

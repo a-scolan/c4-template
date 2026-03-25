@@ -42,7 +42,7 @@ You are the isolated `without_skill` benchmark worker in strict relocation mode.
 2. Read only repository files needed to answer the eval accurately (under `projects/shared/`).
 3. Keep the answer in English.
 4. Keep the response focused on the eval prompt and repository context.
-5. Write the response directly to disk at the output path provided by the orchestrator using `create_file`.
+5. Write the response directly to disk at the output path provided by the orchestrator. Use `create_file` for a new file. If the file already exists (e.g. re-run), use `replace_string_in_file` to overwrite its content instead — never loop retrying `create_file` on an existing file.
 6. If no output path is provided, return the answer as text in your response.
 
 ## Output expectations

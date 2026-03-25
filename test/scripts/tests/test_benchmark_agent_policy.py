@@ -921,6 +921,55 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(output), "deny")
 
+    def test_with_skill_worker_allows_replace_string_in_file_under_iteration(self) -> None:
+        output = self.run_hook_payload(
+            self.payload(
+                session_id="with-skill-replace-session",
+                tool_name="replace_string_in_file",
+                tool_input={
+                    "filePath": (self.workspace_root / "test/iteration-2/create-element/eval-0/with_skill/run-1/response.md").as_posix(),
+                    "oldString": "old content",
+                    "newString": "new content",
+                },
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_with_skill_worker_allows_multi_replace_under_iteration(self) -> None:
+        output = self.run_hook_payload(
+            self.payload(
+                session_id="with-skill-multi-replace-session",
+                tool_name="multi_replace_string_in_file",
+                tool_input={
+                    "replacements": [
+                        {
+                            "filePath": (self.workspace_root / "test/iteration-2/create-element/eval-0/with_skill/run-1/response.md").as_posix(),
+                            "oldString": "old",
+                            "newString": "new",
+                        },
+                    ],
+                },
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_with_skill_worker_denies_replace_outside_iteration(self) -> None:
+        output = self.run_hook_payload(
+            self.payload(
+                session_id="with-skill-replace-outside-session",
+                tool_name="replace_string_in_file",
+                tool_input={
+                    "filePath": (self.workspace_root / "projects/shared/spec-code.c4").as_posix(),
+                    "oldString": "old",
+                    "newString": "new",
+                },
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
 
 if __name__ == "__main__":
     unittest.main()

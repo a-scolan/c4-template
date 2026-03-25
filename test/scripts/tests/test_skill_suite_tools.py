@@ -707,6 +707,126 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertFalse((hook_root / "anonymous-blind_compare-iteration-3-create-element.json").exists())
         self.assertFalse((hook_root / "default.json").exists())
 
+    def test_build_synthesis_bundle_returns_quantitative_and_per_eval(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        with_response = skill_dir / "eval-0" / "with_skill" / "response.md"
+        without_response = skill_dir / "eval-0" / "without_skill" / "response.md"
+        with_response.parent.mkdir(parents=True, exist_ok=True)
+        without_response.parent.mkdir(parents=True, exist_ok=True)
+        with_response.write_text("with skill answer\n", encoding="utf-8")
+        without_response.write_text("without skill answer\n", encoding="utf-8")
+
+        self._write_json(
+            skill_dir / "with_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:00:00Z",
+                "finished_at": "2026-03-13T10:00:05Z",
+                "elapsed_seconds_total": 5.0,
+                "files_read_count": 1,
+                "files_written_count": 1,
+            },
+        )
+        self._write_json(
+            skill_dir / "without_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "without_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:01:00Z",
+                "finished_at": "2026-03-13T10:01:08Z",
+                "elapsed_seconds_total": 8.0,
+                "files_read_count": 0,
+                "files_written_count": 1,
+            },
+        )
+
+        self._write_json(skill_dir / "eval-0" / "blind-map.json", {"A": "with_skill", "B": "without_skill"})
+        self._write_json(
+            skill_dir / "blind-comparisons.json",
+            {
+                "schema_version": 2,
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "schema_version": 2,
+                        "eval_id": 0,
+                        "run_number": 1,
+                        "winner": "A",
+                        "reasoning": "A provides the correct Container_Api kind.",
+                        "rubric": {
+                            "A": {"content_score": 9, "structure_score": 9, "overall_score": 9, "notes": "Correct kind"},
+                            "B": {"content_score": 5, "structure_score": 5, "overall_score": 5, "notes": "Wrong kind"},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                            "B": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                        },
+                    }
+                ],
+            },
+        )
+
+        # Build config summaries needed by the bundle
+        evals_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "evals-public.json"
+        tools.summarize_config(skill_dir, "with_skill", evals_path)
+        tools.summarize_config(skill_dir, "without_skill", evals_path)
+
+        bundle = tools.build_synthesis_bundle(self.iteration_dir, self.workspace_root, "create-element")
+
+        # Structural checks
+        self.assertEqual(bundle["skill_name"], "create-element")
+        self.assertEqual(bundle["eval_count"], 1)
+        self.assertIn("quantitative", bundle)
+        self.assertIn("per_eval_comparisons", bundle)
+        self.assertIn("synthesis_template", bundle)
+
+        # Quantitative checks
+        q = bundle["quantitative"]
+        self.assertEqual(q["blind"]["with_skill_wins"], 1)
+        self.assertEqual(q["blind"]["with_skill_win_rate"], 1.0)
+        self.assertEqual(q["expectation_pass_rate"]["with_skill"], 1.0)
+        self.assertEqual(q["expectation_pass_rate"]["without_skill"], 0.5)
+        self.assertEqual(q["rubric_score"]["with_skill"], 9.0)
+        self.assertEqual(q["rubric_score"]["without_skill"], 5.0)
+
+        # Per-eval comparison checks
+        self.assertEqual(len(bundle["per_eval_comparisons"]), 1)
+        comp = bundle["per_eval_comparisons"][0]
+        self.assertEqual(comp["eval_id"], 0)
+        self.assertEqual(comp["winner"], "with_skill")
+        self.assertEqual(comp["confidence"], "high")
+        self.assertIn("Container_Api", comp["reasoning"])
+        self.assertEqual(comp["eval_prompt"], "Add an API container.")
+        self.assertEqual(comp["with_skill_expectations"]["passed"], 2)
+        self.assertEqual(comp["without_skill_expectations"]["passed"], 1)
+        self.assertEqual(comp["with_skill_rubric_notes"], "Correct kind")
+
+    def test_write_synthesis_saves_content(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        skill_dir.mkdir(parents=True, exist_ok=True)
+        content = "# Test Synthesis\nSome content here."
+        content_file = self.workspace_root / "tmp-synthesis.md"
+        content_file.write_text(content, encoding="utf-8")
+
+        import argparse
+        args = argparse.Namespace(
+            iteration=self.iteration_dir,
+            workspace_root=self.workspace_root,
+            skill="create-element",
+            content_file=content_file,
+            output=None,
+        )
+        tools.cmd_write_synthesis(args)
+
+        output_path = skill_dir / "synthesis.md"
+        self.assertTrue(output_path.exists())
+        self.assertEqual(output_path.read_text(encoding="utf-8"), content)
+
 
 if __name__ == "__main__":
     unittest.main()
