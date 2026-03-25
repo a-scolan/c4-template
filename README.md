@@ -96,7 +96,7 @@ The benchmark guide now centralizes workflow, trust rules, hook modes, trace lev
 - Keep all canonical outputs under `test/<iteration>/`.
 - Treat review exports and hook traces as disposable by default.
 - Prefer JSON as the machine source of truth; `suite-summary.md` remains the human-facing rendering of suite results.
-- For each benchmarked skill, complete a mandatory Anthropic/Claude quality pass in `test/<iteration>/<skill>/synthesis.md` (evidence-first conclusions, anti-overfitting stance, eval discriminating-power checks, quality-vs-verbosity analysis, prioritized actions).
+- For each benchmarked skill, complete a mandatory Anthropic skill-authoring best-practices pass in `test/<iteration>/<skill>/synthesis.md` (concision, degrees-of-freedom fit, triggerability metadata quality, progressive disclosure quality, workflow/validation loop quality, anti-pattern scan with prioritized fixes).
 
 ### Trace policy
 

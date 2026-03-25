@@ -1722,13 +1722,14 @@ SYNTHESIS_TEMPLATE = """# Critical Synthesis — `{skill_name}` Benchmark
 
 ---
 
-## 6. Anthropic/Claude quality pass
+## 6. Anthropic skill-authoring best-practices pass
 
-- **Evidence-first judgment:** [Confirm every major conclusion is backed by blind reasoning/rubric/expectation evidence]
-- **Single-loss handling:** [If exactly one eval is lost, label it as a disagreement to verify]
-- **Discriminating power:** [List weak/flaky/non-discriminating expectations and concrete improvements]
-- **Quality vs verbosity:** [State whether wins reflect better outcomes or only more verbose formatting]
-- **Actionability:** [Confirm P1/P2/P3 actions are specific, testable, and tied to eval IDs]
+- **Concision / token economy:** [Identify instructions to trim because they restate model-common knowledge instead of adding task-critical guidance]
+- **Degrees of freedom fit:** [Assess where guidance should be looser (context-driven) vs stricter (fragile sequences) and why]
+- **Triggerability metadata quality:** [Assess whether `name` + `description` clearly communicate capability and trigger contexts]
+- **Progressive disclosure quality:** [Check whether SKILL.md stays focused and references remain one level deep to detailed files]
+- **Workflow + feedback-loop quality:** [Confirm complex tasks include a clear sequence and a validate/fix/retry loop]
+- **Anti-pattern scan + rewrites:** [Flag vague wording, option overload, stale/time-sensitive guidance, or path/platform pitfalls; propose concrete rewrite edits]
 
 ---
 
