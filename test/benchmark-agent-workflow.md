@@ -23,6 +23,7 @@ Internal helpers now live under `test/scripts/benchmark/`. This refactor must re
 - blind comparison starts only after `with_skill` completes
 - `materialize-comparisons` must refresh `suite-summary.json` and `suite-summary.md` immediately
 - Never reuse an older `blind-comparisons.json` as fresh evidence
+- Blind comparator workers must receive explicit evidence paths from `blind-compare-bundle` (A, B, grading spec). Do not rely on broad repository search during blind runs.
 
 If raw hook payloads omit `sessionId`, the wrapper must derive stable anonymous sessions per scope for stateful phases. If that derivation is ambiguous, reset hook state and serialize that phase as a safety fallback.
 
@@ -67,6 +68,8 @@ Shared hook entrypoint: `test/scripts/benchmark_access_hook.py`
 | `blind_compare` | blinded `A.md` / `B.md` + target `grading-spec.json`; no MCP |
 
 Narrow LikeC4 grounding is allowed only for scored answer-generation workers. Project listing, project summaries, and view browsing remain denied.
+
+For robustness in skill-series iterations (for example `likec4-dsl-test4`), blind mode now also supports tightly scoped searches inside the active eval blind directory (such as `.../blind/run-1/**`). Broad blind-phase search scopes remain denied.
 
 ## Worker write access
 
@@ -122,6 +125,14 @@ When a human review is needed:
 3. `write-static-review`
 
 These outputs are derived from canonical JSON results and should normally be regenerated locally rather than committed.
+
+## Blind comparison robustness checklist
+
+Before launching comparator workers for an eval:
+
+1. Run `blind-compare-bundle` for that exact `<iteration, skill, eval_id, run_number>`.
+2. Pass the returned `blind_artifacts.A`, `blind_artifacts.B`, and `eval_artifacts.grading_spec_path` directly in the delegation prompt.
+3. If any of these files are missing, fail fast and repair artifacts before dispatching comparator workers.
 
 ## Diagnostics
 

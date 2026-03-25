@@ -615,6 +615,36 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(blind_run), "allow")
 
+    def test_blind_compare_allows_scoped_search_within_blind_directory(self) -> None:
+        output = self.run_hook_payload(
+            self.payload(
+                session_id=None,
+                tool_name="grep_search",
+                tool_input={
+                    "query": "blind artifact",
+                    "isRegexp": False,
+                    "includePattern": "test/likec4-dsl-test4/likec4-dsl/eval-0/blind/run-1/**",
+                },
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_blind_compare_denies_search_outside_blind_scope(self) -> None:
+        output = self.run_hook_payload(
+            self.payload(
+                session_id=None,
+                tool_name="grep_search",
+                tool_input={
+                    "query": "benchmark",
+                    "isRegexp": False,
+                    "includePattern": "test/likec4-dsl-test4/likec4-dsl/**",
+                },
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
     def test_blind_compare_missing_session_id_uses_skill_series_scoped_anonymous_state(self) -> None:
         output = self.run_hook_payload(
             self.read_payload(None, "test/likec4-dsl-test4/likec4-dsl/eval-0/blind/A.md", end_line=40),

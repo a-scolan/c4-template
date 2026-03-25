@@ -136,6 +136,14 @@ def blind_compare_iteration_override(payload: dict[str, Any], workspace_root: Pa
                 and parts[-1] in {"A.md", "B.md"}
             ):
                 iteration_name = parts[1]
+            elif (
+                len(parts) >= 5
+                and parts[0] == "test"
+                and legacy.is_benchmark_iteration_dir(parts[1])
+                and "blind" in parts
+                and parts.index("blind") >= 4
+            ):
+                iteration_name = parts[1]
 
         if iteration_name:
             iterations.add(iteration_name)

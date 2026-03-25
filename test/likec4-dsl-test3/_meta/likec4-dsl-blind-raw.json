@@ -1,0 +1,299 @@
+{
+  "skill_name": "likec4-dsl",
+  "comparisons": [
+    {
+      "eval_id": 0,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Blocked by benchmark-mode access restrictions: reading required blind evidence was denied.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Not evaluated due to inaccessible A.md" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Not evaluated due to inaccessible B.md" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 1,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0 },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0 }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 2,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0 },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0 }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Blocked comparison due to denied blind evidence access.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Evidence inaccessible" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Evidence inaccessible" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 4,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0 },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0 }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 5,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Blocked by benchmark mode; required evidence files inaccessible.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Not scorable without A.md" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Not scorable without B.md" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 6,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Unable to perform blind comparison because bundle paths were denied.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Input inaccessible" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Input inaccessible" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 7,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0 },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0 }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 8,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Evidence files unavailable in blind sandbox; fallback used.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "A inaccessible" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "B inaccessible" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 9,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0 },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0 }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 10,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Fallback due to inaccessible evidence" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Fallback due to inaccessible evidence" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 11,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "A and B inaccessible; returned neutral fallback.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "A.md inaccessible" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "B.md inaccessible" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 5, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 5, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 12,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Sandbox denied blind inputs; valid comparison unavailable.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Unavailable evidence" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Unavailable evidence" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 13,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Fallback due to inaccessible bundle" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Fallback due to inaccessible bundle" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 14,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Blind evidence unavailable in sandbox; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Inaccessible" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Inaccessible" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 15,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Fallback due to inaccessible files" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Fallback due to inaccessible files" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 16,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Blind inputs denied by sandbox; no factual comparison possible.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "No content access" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "No content access" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 17,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Blind evidence inaccessible; neutral fallback used.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Inaccessible evidence" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "Inaccessible evidence" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 18,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Bundle files inaccessible in blind mode; fallback comparator result.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0 },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0 }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 19,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Blind compare mode denied evidence reads; technical tie fallback.",
+      "rubric": {
+        "A": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "No evidence access" },
+        "B": { "content_score": 0, "structure_score": 0, "overall_score": 0, "notes": "No evidence access" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 0, "pass_rate": 0.0 },
+        "B": { "passed": 0, "total": 0, "pass_rate": 0.0 }
+      }
+    },
+    {
+      "eval_id": 20,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B provides the required command shape and explicit filtered-field verification; A does not.",
+      "rubric": {
+        "A": { "content_score": 2.0, "structure_score": 6.0, "overall_score": 3.0, "notes": "Incorrect flags/verification focus" },
+        "B": { "content_score": 9.5, "structure_score": 8.5, "overall_score": 9.2, "notes": "Accurate and directly usable" }
+      },
+      "expectation_results": {
+        "A": { "passed": 0, "total": 5, "pass_rate": 0.0 },
+        "B": { "passed": 5, "total": 5, "pass_rate": 1.0 }
+      }
+    }
+  ]
+}

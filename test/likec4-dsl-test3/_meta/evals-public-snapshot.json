@@ -1,0 +1,118 @@
+{
+  "generated_at": "2026-03-25T19:04:01Z",
+  "iteration": "likec4-dsl-test3",
+  "skill_count": 1,
+  "skills": [
+    {
+      "skill_name": "likec4-dsl",
+      "evals_public_path": ".github/skills/likec4-dsl/evals/evals-public.json",
+      "evals": [
+        {
+          "id": 0,
+          "prompt": "I just edited `projects/template/system-model.c4` and I only want syntax and semantic validation for that file, not layout drift. What exact LikeC4 CLI command should I run from the repo root, and which JSON fields tell me whether only my file failed versus the whole project being broken?",
+          "files": []
+        },
+        {
+          "id": 1,
+          "prompt": "I’m creating `projects/template/likec4.config.json` and I want that project to reuse shared specs from `projects/shared/`. Show a minimal JSON config snippet and explain how LikeC4 decides which project a `.c4` file belongs to when multiple config files exist in the workspace.",
+          "files": []
+        },
+        {
+          "id": 2,
+          "prompt": "I want to export only views matching `overview*` as dark PNGs into `./images`, flattened, for the current project. What exact LikeC4 CLI command should I run?",
+          "files": []
+        },
+        {
+          "id": 3,
+          "prompt": "Give me a minimal LikeC4 dynamic view snippet that renders as a UML-style sequence for `client -> gateway -> orders -> db`, and includes response arrows back out to the client.",
+          "files": []
+        },
+        {
+          "id": 4,
+          "prompt": "I only want `cloud.backend.*` highlighted in one view while everything else stays muted. Should that styling live in the model/spec or in the view? Give me a minimal LikeC4 view snippet.",
+          "files": []
+        },
+        {
+          "id": 5,
+          "prompt": "Assume `deploymentNode vm` already exists and `cloud.api` already exists in the logical model. Show a minimal deployment snippet that creates two named instances of `cloud.api` inside one VM node.",
+          "files": []
+        },
+        {
+          "id": 6,
+          "prompt": "In a view scoped `of cloud.backend`, I want to show only the direct children of `cloud.backend` that have at least one relationship with the elements already included in the view — not ALL children. Which predicate should I use: `cloud.backend.*`, `cloud.backend._`, or `cloud.backend.**`? Give me a minimal view snippet using the right one and explain what the other two would have selected instead.",
+          "files": []
+        },
+        {
+          "id": 7,
+          "prompt": "I have this base view:\n```likec4\nview backend-overview of cloud.backend {\n  include *\n}\n```\nWrite a `detail` view that: (1) extends `backend-overview`, (2) adds just `include api` — relying on scope inheritance so I don't need the full FQN `cloud.backend.api`, and (3) adds all incoming relationships to `cloud.backend` from the rest of the model using a relationship predicate. Show the DSL and explain what scope inheritance means here.",
+          "files": []
+        },
+        {
+          "id": 8,
+          "prompt": "I want to define a reusable predicate group called `core-services` that includes all `service`-kind elements from `cloud.*` but excludes those tagged `#deprecated`. Define it in the correct `global` block, then show two different views that both apply it: one that adds a per-view style rule on top, and another that adds an extra `include` rule.",
+          "files": []
+        },
+        {
+          "id": 9,
+          "prompt": "Write a dynamic view `checkout-flow` that satisfies all of the following:\n- The chain `customer -> frontend -> api` is written using LikeC4's chained step syntax (a single compound expression, not three separate lines).\n- The `frontend -> api` step has a body block with `technology 'HTTPS'` and `navigateTo payment-detail`.\n- After the chain, `api` fans out simultaneously to `payments`, `inventory`, and `notifications` using the parallel blocks syntax.\nKeep the snippet minimal and immediately usable.",
+          "files": []
+        },
+        {
+          "id": 10,
+          "prompt": "My deployment has `instanceOf frontend` inside zone `prod.eu` with an extra tag `#gamma`. The logical model element `frontend` itself has tag `#next`. In a deployment view I write:\n```likec4\ninclude prod.eu -> prod.db where source.tag is #next\n```\nWill this match the relation originating from `prod.eu.frontend`? What about `where source.tag is #gamma`? Explain the tag-inheritance rule for deployment instances.",
+          "files": []
+        },
+        {
+          "id": 11,
+          "prompt": "My `base.c4` defines:\n```likec4\nmodel {\n  cloud = system 'Cloud' {\n    api = service 'API' {\n      metadata { port '8080' }\n    }\n  }\n}\n```\nIn `ops.c4` I use `extend cloud.api` to add `metadata { port '9090'; region 'us-east-1' }` and a nested `health = component 'Health Check'`. Show the correct `ops.c4` snippet and state exactly what value `port` holds in the merged model, and why.",
+          "files": []
+        },
+        {
+          "id": 12,
+          "prompt": "In a `deployment view`, can I use `include * with { color red }` and `global style myTheme` to style nodes the same way as in element views? Provide a minimal corrected snippet and explicitly call out what is not supported in deployment views.",
+          "files": []
+        },
+        {
+          "id": 13,
+          "prompt": "Fix this invalid LikeC4 snippet and explain why it is invalid:\n```likec4\nmodel {\n  api = service 'API' {\n    technology 'Node.js'\n    #critical\n  }\n}\n```\nKeep the corrected snippet minimal.",
+          "files": []
+        },
+        {
+          "id": 14,
+          "prompt": "Someone proposed this file:\n```likec4\nstyles {\n  theme dark\n}\n```\nExplain why this fails and provide a minimal valid file that captures the same intent using allowed top-level statements only.",
+          "files": []
+        },
+        {
+          "id": 15,
+          "prompt": "Which identifiers are valid in LikeC4 and why: `payment.api`, `1backend`, `payment_api`, `payment-api`? Then rewrite the invalid ones into valid identifiers while preserving meaning.",
+          "files": []
+        },
+        {
+          "id": 16,
+          "prompt": "Is this relationship valid in LikeC4?\n```likec4\nmodel {\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n    cloud -> backend 'contains traffic'\n  }\n}\n```\nIf invalid, provide a corrected minimal pattern that keeps hierarchy and adds a valid relationship elsewhere.",
+          "files": []
+        },
+        {
+          "id": 17,
+          "prompt": "`base.c4` defines `cloud = system { backend = container { api = service } }`. In `ops.c4` I wrote `backend.api -> cloud.db` and validation says unresolved reference. Explain exactly why this happens across files and provide the corrected cross-file relationship using FQNs.",
+          "files": []
+        },
+        {
+          "id": 18,
+          "prompt": "Given an existing relationship `frontend -[async]-> api 'streams'`, can I extend it with `extend frontend -> api 'streams' { metadata { qos 'high' } }`? Explain the matching rules for `extend` on relationships and provide the correct extension snippet.",
+          "files": []
+        },
+        {
+          "id": 19,
+          "prompt": "In `view backend of cloud.backend { include * }`, what exactly does `*` include in scoped view semantics? Does it include the whole model? Provide a minimal snippet that also adds only incoming and outgoing relationships around `cloud.backend`.",
+          "files": []
+        },
+        {
+          "id": 20,
+          "prompt": "I need to validate only two edited files in one command: `projects/template/system-model.c4` and `projects/template/system-views.c4`, without layout drift checks. Give the exact command and explain how to confirm both files were actually filtered in JSON output.",
+          "files": []
+        }
+      ]
+    }
+  ]
+}

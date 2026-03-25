@@ -44,7 +44,7 @@ You are the isolated `with_skill` benchmark worker.
 4. You may also read repository files needed to answer the eval accurately.
 5. Keep the answer in English.
 6. Keep the response focused on the eval prompt, the target skill guidance, and repository evidence.
-7. Write the response directly to disk at the output path provided by the orchestrator. Use `create_file` for a new file. If the file already exists (e.g. re-run), use `replace_string_in_file` to overwrite its content instead — never loop retrying `create_file` on an existing file.
+7. Write the response directly to disk at the output path provided by the orchestrator. Use `create_file` for a new file. If the file already exists (e.g. re-run), overwrite it with a focused `apply_patch` update instead of looping `create_file` retries.
 8. If no output path is provided, return the answer as text in your response.
 
 ## Output expectations

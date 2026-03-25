@@ -106,7 +106,7 @@ PATHISH_KEYS = {
     "paths",
     "dirpath",
     "uri",
-    "includePattern",
+    "includepattern",
     "query",
     "old_path",
     "new_path",
@@ -598,7 +598,13 @@ def is_read_allowed(
             if not lock_skill(state, skill_name, workspace_root):
                 return False
             return skill_name == state.get("locked_skill")
-        if rel_path.endswith("/blind/A.md") or rel_path.endswith("/blind/B.md") or re.search(r"/blind/run-\d+/(A|B)\.md$", rel_path):
+        blind_artifact_path = (
+            rel_path.endswith("/blind/A.md")
+            or rel_path.endswith("/blind/B.md")
+            or re.search(r"/blind/run-\d+/(A|B)\.md$", rel_path)
+        )
+        blind_directory_prefix = is_prefix and bool(re.search(r"/blind(?:/run-\d+)?/?$", rel_path))
+        if blind_artifact_path or blind_directory_prefix:
             skill_name = extract_skill_from_iteration_path(rel_path)
             iteration_name = extract_iteration_from_iteration_path(rel_path)
             current_iteration = latest_iteration_name(workspace_root)
@@ -800,18 +806,27 @@ def latest_iteration_name(workspace_root: Path) -> str | None:
     if not test_root.exists():
         return None
     candidates: list[tuple[int, str]] = []
+    skill_series_candidates: list[tuple[int, str]] = []
     for child in test_root.iterdir():
         if not child.is_dir():
             continue
-        if not ITERATION_RE.match(child.name):
+        if ITERATION_RE.match(child.name):
+            try:
+                number = int(child.name.split("-", 1)[1])
+            except (IndexError, ValueError):
+                continue
+            candidates.append((number, child.name))
             continue
-        try:
-            number = int(child.name.split("-", 1)[1])
-        except (IndexError, ValueError):
-            continue
-        candidates.append((number, child.name))
+        if SERIES_ITERATION_RE.match(child.name):
+            series_number = re.search(r"(\d+)$", child.name)
+            if not series_number:
+                continue
+            skill_series_candidates.append((int(series_number.group(1)), child.name))
     if not candidates:
-        return None
+        if not skill_series_candidates:
+            return None
+        skill_series_candidates.sort()
+        return skill_series_candidates[-1][1]
     candidates.sort()
     return candidates[-1][1]
 
