@@ -1059,8 +1059,6 @@ def build_blind_compare_bundle(
 ) -> dict[str, Any]:
     eval_dir = iteration_dir / skill_name / f"eval-{eval_id}"
     bundle = load_skill_eval_bundle(workspace_root, skill_name)
-    public_entry = get_eval_entry(bundle["public"], eval_id)
-    grading_entry = get_eval_entry(bundle["grading"], eval_id)
 
     blind_dir = blind_dir_for_run(eval_dir, run_number)
     a_path = blind_dir / "A.md"
@@ -1085,12 +1083,8 @@ def build_blind_compare_bundle(
             "B": b_path.relative_to(workspace_root).as_posix(),
         },
         "eval_artifacts": {
-            "evals_public_path": bundle["paths"]["public"].relative_to(workspace_root).as_posix(),
             "grading_spec_path": bundle["paths"]["grading"].relative_to(workspace_root).as_posix(),
         },
-        "eval_prompt": public_entry.get("prompt"),
-        "expected_output": grading_entry.get("expected_output"),
-        "expectations": grading_entry.get("expectations", []),
         "comparator_method": {
             "primary_signal": "task-specific rubric score",
             "secondary_signal": "expectation pass rate",

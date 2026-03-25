@@ -38,11 +38,12 @@ You are the isolated `without_skill` benchmark worker running in experimental ho
 
 ## How to work
 
-1. Read only repository files needed to answer the eval accurately.
-2. Keep the answer in English.
-3. Keep the response focused on the eval prompt and repository context.
-4. When the orchestrator provides an output directory path, write each eval response directly to disk as `response.md` in the appropriate subdirectory. Use `create_file` to write the response file.
-5. If no output path is provided, return the answer as text in your response.
+1. The orchestrator includes the eval prompt text directly in your delegation message (because baseline workers cannot read `.github/skills/`).
+2. Read only repository files needed to answer the eval accurately (under `projects/shared/`).
+3. Keep the answer in English.
+4. Keep the response focused on the eval prompt and repository context.
+5. Write the response directly to disk at the output path provided by the orchestrator using `create_file`.
+6. If no output path is provided, return the answer as text in your response.
 
 ## Output expectations
 

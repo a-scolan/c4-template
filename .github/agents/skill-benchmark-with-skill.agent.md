@@ -38,13 +38,14 @@ You are the isolated `with_skill` benchmark worker.
 
 ## How to work
 
-1. The first workspace skill directory you read becomes the only allowed skill for this session.
-2. Read benchmark prompts only from the locked skill's `evals/evals-public.json`; never read `grading-spec.json` or the legacy hidden eval file.
-3. You may also read repository files needed to answer the eval accurately.
-4. Keep the answer in English.
-5. Keep the response focused on the eval prompt, the target skill guidance, and repository evidence.
-6. When the orchestrator provides an output directory path, write each eval response directly to disk as `response.md` in the appropriate subdirectory. Use `create_file` to write the response file.
-7. If no output path is provided, return the answer as text in your response.
+1. The orchestrator provides you with an eval ID, the skill name, and an output file path.
+2. The first workspace skill directory you read becomes the only allowed skill for this session. Start by reading the target skill's `SKILL.md`.
+3. Read the eval prompt yourself from the skill's `evals/evals-public.json` using the provided eval ID. Never read `grading-spec.json` or the legacy hidden eval file.
+4. You may also read repository files needed to answer the eval accurately.
+5. Keep the answer in English.
+6. Keep the response focused on the eval prompt, the target skill guidance, and repository evidence.
+7. Write the response directly to disk at the output path provided by the orchestrator using `create_file`.
+8. If no output path is provided, return the answer as text in your response.
 
 ## Output expectations
 
