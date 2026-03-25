@@ -1,0 +1,581 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "likec4-dsl",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-24T16:52:43Z",
+  "run_count": 1,
+  "summary": {
+    "applicable_eval_count": 15,
+    "valid_eval_count": 2,
+    "valid_eval_rate": 0.1333,
+    "snippet_count_total": 28,
+    "error_count_total": 51,
+    "warning_count_total": 14
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "{",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 6,
+      "snippets": [
+        {
+          "snippet": "views {\n  dynamic order_flow {\n    title 'Client → Gateway → Orders → DB'\n\n    client -> gateway 'request'\n    gateway -> orders 'forward order request'\n    orders -> db 'read/write order'\n\n    db --> orders 'result'\n    orders --> gateway 'service response'\n    gateway --> client 'HTTP response'\n  }\n}",
+          "valid": false,
+          "error_count": 3,
+          "warning_count": 6,
+          "errors": [
+            "Unknown relationship kind ''request''.",
+            "Unknown relationship kind ''forward'.",
+            "Unknown relationship kind ''read/write'."
+          ],
+          "warnings": [
+            "Reference 'client' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'db' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 5,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view cloud_backend_focus of cloud {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}\n  }\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "run_number": 1,
+      "response_path": "eval-5/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "api1 = instanceOf cloud.api\n  api2 = instanceOf cloud.api\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced.",
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown LikeC4 kind 'instanceOf'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "run_number": 1,
+      "response_path": "eval-6/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view of cloud.backend backend_related_children {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "run_number": 1,
+      "response_path": "eval-7/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "view backend-detail extends backend-overview {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "run_number": 1,
+      "response_path": "eval-8/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 5,
+      "valid_snippet_count": 0,
+      "error_count": 8,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "}\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view core-services-styled of cloud {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}\n  }",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "view core-services-plus-extra of cloud {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "run_number": 1,
+      "response_path": "eval-9/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 6,
+      "warning_count": 8,
+      "snippets": [
+        {
+          "snippet": "customer -> frontend -> api {",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 2,
+          "errors": [
+            "Braces are not balanced.",
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 6,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": [
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "run_number": 1,
+      "response_path": "eval-10/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 11,
+      "run_number": 1,
+      "response_path": "eval-11/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 5,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "health = component 'Health Check'\n}",
+          "valid": false,
+          "error_count": 3,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced.",
+            "Unknown LikeC4 kind 'component'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "run_number": 1,
+      "response_path": "eval-12/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "global {\n  style myTheme {\n    color red\n  }\n}\n\ndeployment {\n  environment prod {\n    deploymentNode web myTheme {\n      instance app\n    }\n  }\n}\n\nviews {\n  deployment prod {\n    include *\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "run_number": 1,
+      "response_path": "eval-13/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model { api = service 'API' #critical { technology 'Node.js' } }",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "run_number": 1,
+      "response_path": "eval-14/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "run_number": 1,
+      "response_path": "eval-15/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 16,
+      "run_number": 1,
+      "response_path": "eval-16/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  user = person 'User'\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n  }\n  user -> backend 'uses'\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'person'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown relationship kind ''uses''."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "run_number": 1,
+      "response_path": "eval-17/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 18,
+      "run_number": 1,
+      "response_path": "eval-18/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "}\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "run_number": 1,
+      "response_path": "eval-19/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "view backend of cloud.backend {",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "run_number": 1,
+      "response_path": "eval-20/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    }
+  ]
+}

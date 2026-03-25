@@ -1,0 +1,187 @@
+{
+  "generated_at": "2026-03-24T16:29:17Z",
+  "iteration": "iteration-2",
+  "protocol_version": "benchmark-v2",
+  "manifest_path": "test/benchmark-protocol.json",
+  "manifest_sha256": "429d521c960fc81d189c6d81f5f72a7d99384576a0e53942717c2b5f31d44cb3",
+  "tracked_files": [
+    {
+      "path": ".github/agents/skill-benchmark-manager.agent.md",
+      "sha256": "27810750afd1ccaef9873da7dd3f3bf385bf8428d4c8813b21ae5707a9198966"
+    },
+    {
+      "path": ".github/agents/skill-benchmark-baseline.agent.md",
+      "sha256": "dd32ca24790fc636738517e78936811403085b3ecb969f88747a115f70eae7bb"
+    },
+    {
+      "path": ".github/agents/skill-benchmark-baseline-hook-only.agent.md",
+      "sha256": "aefb4a7c03612d6a83aed53c619dc417892719bd00eb7d96d2f6223c653408c7"
+    },
+    {
+      "path": ".github/agents/skill-benchmark-with-skill.agent.md",
+      "sha256": "e80baae976fac0e108b0f62098ad6b9edceffdd914fe32d6dbae21b8ba737252"
+    },
+    {
+      "path": ".github/agents/skill-blind-comparator.agent.md",
+      "sha256": "147c1783b61deec42f3f95d16a320c3110ced04b0757df344bace8cda0264471"
+    },
+    {
+      "path": "test/scripts/benchmark_access_hook.py",
+      "sha256": "6d97c0b80b0b6406f17f70147fed7e9e1c21525fc2e3b3144f390e4f32bb322e"
+    },
+    {
+      "path": "test/benchmark-agent-workflow.md",
+      "sha256": "45c80a3fc39a34fa468dc2c9ab3000060d51adb69882b1f41127c2fa01b6a9a1"
+    },
+    {
+      "path": "test/skill-suite-eval-prompt.md",
+      "sha256": "2ef2402dfd865a6b7f33d83350702bec7ee9641f989a4c90b2682bca919857d1"
+    },
+    {
+      "path": "test/scripts/skill_suite_tools.py",
+      "sha256": "9305e19c3ab83e02a7d94f66117b3b2e79cee68719cd11067cc2641f1f298fde"
+    }
+  ],
+  "skill_eval_artifacts": [
+    {
+      "skill": "c4-modeling-process",
+      "evals_public_path": ".github/skills/c4-modeling-process/evals/evals-public.json",
+      "evals_public_sha256": "be3e0c70ccd09f37233fc330209f777d3b574212026b45a8efae00b9e05107de",
+      "grading_spec_path": ".github/skills/c4-modeling-process/evals/grading-spec.json",
+      "grading_spec_sha256": "af9a6c4ddeac4b746f4cdae944f8db896f85549c5f82d3f5a056bdd92abdf468"
+    },
+    {
+      "skill": "configure-project-includes",
+      "evals_public_path": ".github/skills/configure-project-includes/evals/evals-public.json",
+      "evals_public_sha256": "be0d4cd0773d72fa251ed78b7f46c97bbd7c989bf42db9cd1328d8180593639e",
+      "grading_spec_path": ".github/skills/configure-project-includes/evals/grading-spec.json",
+      "grading_spec_sha256": "2ccf1e0b9fe3b0681b805aec6d19a5a08e25767a19f7c6d7b79e119e14b1f302"
+    },
+    {
+      "skill": "create-element",
+      "evals_public_path": ".github/skills/create-element/evals/evals-public.json",
+      "evals_public_sha256": "0ea0c4495f125b3d5fc36ec3bfea355aa80ce1e0c55f75f7d8e631c5eb9201fa",
+      "grading_spec_path": ".github/skills/create-element/evals/grading-spec.json",
+      "grading_spec_sha256": "90f7bf2189de437d5cd71576f17854caf13f0bf93db92ddc1f2d007020d56ed8"
+    },
+    {
+      "skill": "create-relationship",
+      "evals_public_path": ".github/skills/create-relationship/evals/evals-public.json",
+      "evals_public_sha256": "f0d8f185219b19a62e3a2d7885bef52931b567f87aa4e3fe241142771a35f5b5",
+      "grading_spec_path": ".github/skills/create-relationship/evals/grading-spec.json",
+      "grading_spec_sha256": "537ecb0cec7e5adc11c21c355dc8699b7c4ad0000f6919ad3bfc062634bdc86e"
+    },
+    {
+      "skill": "create-sequence-view",
+      "evals_public_path": ".github/skills/create-sequence-view/evals/evals-public.json",
+      "evals_public_sha256": "a752d241162e07e9dbddbc91cf2610e62d0fd4732d13c03499f1d6d8fc0ec15d",
+      "grading_spec_path": ".github/skills/create-sequence-view/evals/grading-spec.json",
+      "grading_spec_sha256": "c9e2dd0e8d58aaf245e46907c2efb0e51fe2842a00d9b73e34f05174d3866ac3"
+    },
+    {
+      "skill": "customize-view",
+      "evals_public_path": ".github/skills/customize-view/evals/evals-public.json",
+      "evals_public_sha256": "052832b55ae56309b5d7e098ac0e410dab9b568e6e10caa7953a7567b614ec17",
+      "grading_spec_path": ".github/skills/customize-view/evals/grading-spec.json",
+      "grading_spec_sha256": "18c9d11110db6d7c530f774fccdb673030e7b0fd3e2974ac6df17523fa7438d9"
+    },
+    {
+      "skill": "design-view",
+      "evals_public_path": ".github/skills/design-view/evals/evals-public.json",
+      "evals_public_sha256": "ca166165dc791dcca0537307f9193ba9c06ea8373e7b66816554a2422524fdb9",
+      "grading_spec_path": ".github/skills/design-view/evals/grading-spec.json",
+      "grading_spec_sha256": "f2d84d35b71c7e193948e7c8298836db92157cd859c5dc104d47be89b809edd2"
+    },
+    {
+      "skill": "document-decision",
+      "evals_public_path": ".github/skills/document-decision/evals/evals-public.json",
+      "evals_public_sha256": "4e50553ffa6281dbf8ed24cc04525b700324b68a0825494a64e818d602b9b7b6",
+      "grading_spec_path": ".github/skills/document-decision/evals/grading-spec.json",
+      "grading_spec_sha256": "ac8b8a699d3ddb65029c5bb206336ccdba61a513a0b4e1310e93c2570cb1e52f"
+    },
+    {
+      "skill": "implement-pattern",
+      "evals_public_path": ".github/skills/implement-pattern/evals/evals-public.json",
+      "evals_public_sha256": "3c603da55bfc25dac5bf549a05c947c99e45a81af20614186197211cfc678587",
+      "grading_spec_path": ".github/skills/implement-pattern/evals/grading-spec.json",
+      "grading_spec_sha256": "6bd6213d7a6821413758da28fb4a6b4c987ffe7bf76298ea57bd9efb5f59f001"
+    },
+    {
+      "skill": "likec4-dsl",
+      "evals_public_path": ".github/skills/likec4-dsl/evals/evals-public.json",
+      "evals_public_sha256": "ace9fab78d9fa52bf726bde7d74f119fcc28d199288901e5c162ebeac0d4b98f",
+      "grading_spec_path": ".github/skills/likec4-dsl/evals/grading-spec.json",
+      "grading_spec_sha256": "e9d3be78e966e3f6955c6a5dc007d3177d142029adc880b7937c1b8e858fba7b"
+    },
+    {
+      "skill": "lookup-element-kinds",
+      "evals_public_path": ".github/skills/lookup-element-kinds/evals/evals-public.json",
+      "evals_public_sha256": "500f2a618208390d2b947b47d5a0f13408e6350d77ed0f43d26a9270492b88c0",
+      "grading_spec_path": ".github/skills/lookup-element-kinds/evals/grading-spec.json",
+      "grading_spec_sha256": "ed0a78cf848abef3abd43f68e6c6fff45fe244e3ba425f60a73b3cc2b7e9bb0d"
+    },
+    {
+      "skill": "model-deployment-infrastructure",
+      "evals_public_path": ".github/skills/model-deployment-infrastructure/evals/evals-public.json",
+      "evals_public_sha256": "c6b65d06c5b8424d658886293d512b75c9494dfa0f2b899aaae4da416ef41024",
+      "grading_spec_path": ".github/skills/model-deployment-infrastructure/evals/grading-spec.json",
+      "grading_spec_sha256": "41d14a3b1a66094e9c1da86e444746a7c6ed8ca423e97adfa2bcac62e2c401b3"
+    },
+    {
+      "skill": "name-deployment-nodes",
+      "evals_public_path": ".github/skills/name-deployment-nodes/evals/evals-public.json",
+      "evals_public_sha256": "5f184dd8628a009efaccd69720196f04123a66900a0295d892d973149cc4e948",
+      "grading_spec_path": ".github/skills/name-deployment-nodes/evals/grading-spec.json",
+      "grading_spec_sha256": "12f89a1a28bb6874a2949525595db50f0c1aae47191fe8fb9d9e984d11774a9a"
+    },
+    {
+      "skill": "organize-multi-project",
+      "evals_public_path": ".github/skills/organize-multi-project/evals/evals-public.json",
+      "evals_public_sha256": "01763f882c14fb7e1ba809a53d6b983329a90e65278403f35ed1b6998494de06",
+      "grading_spec_path": ".github/skills/organize-multi-project/evals/grading-spec.json",
+      "grading_spec_sha256": "11e876d5f85880323c7fda4897b8184832ab0d11c924161ad3251d7f28864e5d"
+    },
+    {
+      "skill": "structure-deployment-tiers",
+      "evals_public_path": ".github/skills/structure-deployment-tiers/evals/evals-public.json",
+      "evals_public_sha256": "3b0fc01b2bd721ad6d5f33c3b4952278246f73efb95a9b525619d371c75a9c8e",
+      "grading_spec_path": ".github/skills/structure-deployment-tiers/evals/grading-spec.json",
+      "grading_spec_sha256": "5191e552412bcb6ae14fa21577cd374eb0333fa68f6b59c2636751f928a3910a"
+    },
+    {
+      "skill": "sync-with-template",
+      "evals_public_path": ".github/skills/sync-with-template/evals/evals-public.json",
+      "evals_public_sha256": "1d1e4085016eeaaddcd9314e9d1a7d85a4af84a49daf74696a6a29eeb6f73771",
+      "grading_spec_path": ".github/skills/sync-with-template/evals/grading-spec.json",
+      "grading_spec_sha256": "e3284afd918b6de7f8f68100d38a2e77041a43375a626dfacbf9356c09371916"
+    },
+    {
+      "skill": "test-model",
+      "evals_public_path": ".github/skills/test-model/evals/evals-public.json",
+      "evals_public_sha256": "9fe7a608755a7f9567c8e71b77aa960b1094daaa5cfb00f610933c39953cb302",
+      "grading_spec_path": ".github/skills/test-model/evals/grading-spec.json",
+      "grading_spec_sha256": "91c1e36866e65ceec1f984125c12dd5a43b080fc77427a2317b28b7c0e6cbdee"
+    },
+    {
+      "skill": "troubleshoot-errors",
+      "evals_public_path": ".github/skills/troubleshoot-errors/evals/evals-public.json",
+      "evals_public_sha256": "b74af1d3c43eb047830722f259d8a10a2907cfd6e355f90490a68cbd655635d2",
+      "grading_spec_path": ".github/skills/troubleshoot-errors/evals/grading-spec.json",
+      "grading_spec_sha256": "a5e77736d1861150131b1b6149064c4ee31c7a1cfa1c6bb029c927bd8b794e2c"
+    },
+    {
+      "skill": "understand-project-structure",
+      "evals_public_path": ".github/skills/understand-project-structure/evals/evals-public.json",
+      "evals_public_sha256": "ec029195f74e8216c526dff141e69a60edcf5cbb5d5e9c3daf461e5d0c0e3266",
+      "grading_spec_path": ".github/skills/understand-project-structure/evals/grading-spec.json",
+      "grading_spec_sha256": "ed3b7fa51b5115a256367aaf675728b71bf7ea38dc7c5c6bac50e6db64cff2af"
+    },
+    {
+      "skill": "write-rich-descriptions",
+      "evals_public_path": ".github/skills/write-rich-descriptions/evals/evals-public.json",
+      "evals_public_sha256": "c95e9ab53d574c60a241a11d7f9328ba335152512b087fff82c99e8a7651710d",
+      "grading_spec_path": ".github/skills/write-rich-descriptions/evals/grading-spec.json",
+      "grading_spec_sha256": "6e90aa09e5dd0cb37fa5d879a4c75b7fa7d95928d20713bcaa4bbf142b08bf6e"
+    }
+  ]
+}

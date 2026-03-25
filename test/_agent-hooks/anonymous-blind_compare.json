@@ -1,5 +1,6 @@
 {
   "mode": "blind_compare",
   "session_id": "anonymous-blind_compare",
-  "locked_skill": "likec4-dsl"
+  "locked_skill": "likec4-dsl",
+  "locked_iteration": "iteration-2"
 }
