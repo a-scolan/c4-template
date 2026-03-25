@@ -7,4 +7,4 @@ model {
 }
 ```
 
-The original snippet is invalid because in an element body, tags must appear before properties. Here, `technology 'Node.js'` (a property) was placed before `#critical` (a tag), which violates LikeC4 ordering rules.
+It is invalid because inside an element body, tags must appear before properties. In the original snippet, `technology` (a property) comes before `#critical` (a tag), which violates LikeC4 ordering rules.

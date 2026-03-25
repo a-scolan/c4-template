@@ -1,14 +1,10 @@
-Use this single command:
+```bash
+npx likec4 validate --files projects/template/system-model.c4 projects/template/system-views.c4 --no-layout-drift --json
+```
 
-`npx likec4 validate --format json --no-layout-drift --files projects/template/system-model.c4 projects/template/system-views.c4`
-
-To confirm filtering in JSON output, verify that the file-list field (for example `files`, `filteredFiles`, or similarly named array in the result) contains **exactly** these two paths and no others:
+To confirm both files were truly filtered in JSON output, verify that the **only** file paths present in reported diagnostics/results are:
 
 - `projects/template/system-model.c4`
 - `projects/template/system-views.c4`
 
-A valid confirmation is:
-
-1. Array length is `2`
-2. Both exact paths are present
-3. No additional file paths appear
+If any additional path appears in the JSON, the file filter was not applied correctly.

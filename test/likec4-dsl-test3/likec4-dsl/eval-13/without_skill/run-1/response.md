@@ -7,4 +7,4 @@ model {
 }
 ```
 
-It is invalid because `service` is not a valid built-in element kind in LikeC4 unless it is declared in `specification` first. Replacing it with a valid kind (`component`) is the minimal fix.
+It is invalid because `service` is not a valid built-in element kind in this snippet. In LikeC4, element kinds must be recognized (built-in like `component`, `container`, etc., or explicitly defined in a specification). Replacing `service` with a valid kind fixes the model while keeping the change minimal.

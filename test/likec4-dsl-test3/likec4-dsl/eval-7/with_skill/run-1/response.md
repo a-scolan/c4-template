@@ -6,11 +6,11 @@ views {
 
   view detail extends backend-overview {
     include api
-    include * -> cloud.backend
+    include -> cloud.backend
   }
 }
 ```
 
-`detail` inherits the parent view’s scope (`of cloud.backend`). That means unqualified references are resolved relative to `cloud.backend`, so `include api` is interpreted as `include cloud.backend.api`.
+`detail` inherits from `backend-overview`, including its scope (`of cloud.backend`). That scope inheritance means unqualified references inside `detail` are resolved relative to `cloud.backend`, so `include api` is equivalent to `include cloud.backend.api`.
 
-The relationship predicate `* -> cloud.backend` adds incoming relationships targeting `cloud.backend` (and includes matching source elements as needed).
+The relationship predicate `include -> cloud.backend` adds incoming relationships to `cloud.backend` (and pulls in the source neighbors from outside the scoped subtree as needed).

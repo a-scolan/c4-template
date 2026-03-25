@@ -1,8 +1,11 @@
-- `payment.api` ✅ **Valid** as a qualified identifier (dot-separated path), where each segment (`payment`, `api`) is a valid identifier.
-- `1backend` ❌ **Invalid** because identifiers cannot start with a digit.
-- `payment_api` ✅ **Valid** because underscores are allowed.
-- `payment-api` ❌ **Invalid** because `-` is not allowed in identifiers.
+En LikeC4 :
 
-Rewrites of invalid identifiers:
+- `payment.api` ✅ **valide comme identifiant qualifié (FQN)** : chaque segment (`payment`, `api`) est un identifiant valide, séparé par `.`.
+- `1backend` ❌ **invalide** : un identifiant ne peut pas commencer par un chiffre.
+- `payment_api` ✅ **valide** : lettres + underscore autorisés.
+- `payment-api` ❌ **invalide** : `-` n’est pas autorisé dans un identifiant (interprété comme opérateur/séparateur, pas comme nom).
+
+Réécriture des invalides en conservant le sens :
+
 - `1backend` → `backend1`
 - `payment-api` → `payment_api`

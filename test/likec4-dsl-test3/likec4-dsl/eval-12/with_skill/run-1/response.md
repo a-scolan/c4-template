@@ -1,23 +1,18 @@
-No — in a `deployment view`, you should **not** use element-view customization/style features like:
+No — not in the same way as element views.
 
-- `include * with { color red }`
-- `global style myTheme`
-
-A minimal corrected snippet is:
+Use a plain `include` plus a separate `style` rule inside the deployment view:
 
 ```likec4
 views {
-  deployment view runtime {
-    include *
-    autoLayout LeftRight
+  deployment view prod_deploy {
+    include prod.**
+    style * { color red }
   }
 }
 ```
 
 What is **not supported** in deployment views:
+- `include ... with { ... }` (customize predicate on `include`)
+- `global style myTheme` (applying global style groups)
 
-- Predicate customization blocks (`with { ... }`) for deployment includes
-- `style ... { ... }` view styling rules
-- `global style <styleGroup>` application
-
-If you need consistent coloring for deployment nodes, define style on deployment kinds (in `specification`) or on deployment nodes/instances themselves (in `deployment`), rather than in deployment-view rules.
+So for deployment views, keep styling as explicit `style ... { ... }` rules in the view itself.

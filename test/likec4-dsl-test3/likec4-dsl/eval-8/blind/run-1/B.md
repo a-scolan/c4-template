@@ -1,29 +1,27 @@
 ```likec4
 global {
   predicates {
-    core-services = element.kind == service and element.id like 'cloud.*' and not (element.tag == #deprecated)
+    core-services = element.kind == 'service'
+      && element.id startsWith 'cloud.'
+      && !element.tag == #deprecated
   }
 }
 
 views {
-  view core_services_styled {
-    title 'Core services (styled)'
-    include * where @core-services
+  view cloud_core_services_styled of cloud {
+    include @core-services
 
-    style {
-      element where @core-services {
-        color blue
-        border solid
-      }
+    style @core-services {
+      color modern
+      border dashed
     }
 
-    autoLayout TopBottom
+    autoLayout LeftRight
   }
 
-  view core_services_with_extra_include {
-    title 'Core services (+ extra include)'
-    include * where @core-services
-    include cloud.shared-auth
+  view cloud_core_services_with_dependencies of cloud {
+    include @core-services
+    include -> @core-services
 
     autoLayout LeftRight
   }

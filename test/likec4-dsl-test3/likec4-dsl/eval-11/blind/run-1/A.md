@@ -11,6 +11,6 @@ model {
 }
 ```
 
-In the merged model, `port` is **an array with both values**: `['8080', '9090']`.
+In the merged model, `port` is **both values** (an array): `['8080', '9090']`.
 
-Why: `extend` merges metadata with the existing element, and when the same metadata key appears multiple times across files, LikeC4 keeps both values by converting that key to an array rather than overwriting the original value.
+Why: `extend` merges metadata (it does not replace the original metadata object), and when the same metadata key appears multiple times across files, LikeC4 keeps all values by turning that key into an array.

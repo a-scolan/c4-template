@@ -4,15 +4,14 @@ Run this from the repo root:
 npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template 2>/dev/null
 ```
 
-Use these JSON fields:
+Use these JSON fields to interpret scope of failure:
 
-- `stats.filteredFiles` — should be `1` (confirms your `--file` filter matched exactly that file).
-- `stats.filteredErrors` — errors in your edited file only.
-- `stats.totalErrors` — errors across the whole project.
-- `valid` — global project validity.
+- `stats.filteredFiles` should be `1` (confirms your `--file` filter matched exactly one file).
+- `stats.filteredErrors` tells whether your edited file failed validation.
+- `stats.totalErrors` tells total project errors.
 
-How to interpret:
+How to read it:
 
-- **Your file failed:** `stats.filteredErrors > 0`.
-- **Your file is clean but project is broken elsewhere:** `stats.filteredErrors == 0` and `stats.totalErrors > 0`.
-- **Likely only your file is failing:** `stats.filteredErrors > 0` and `stats.totalErrors == stats.filteredErrors` (with `filteredFiles == 1`).
+- `filteredErrors > 0` → your target file has syntax/semantic errors.
+- `filteredErrors == 0` and `totalErrors > 0` → your file is clean; other files/project parts are broken.
+- `totalErrors == 0` → project is fully valid.

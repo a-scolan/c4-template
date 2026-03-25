@@ -1,9 +1,11 @@
-Yes—`where source.tag is #next` **will match** the relation from `prod.eu.frontend`.
+Yes—`where source.tag is #next` can match the relation from `prod.eu.frontend`.
 
-It will also match with `where source.tag is #gamma`.
+Reason: for deployed instances (`instanceOf frontend`), the instance’s effective tags include:
+- tags defined on the logical element (`frontend` has `#next`), and
+- tags defined on the deployment instance itself (here `#gamma`).
 
-Reason: a deployed instance created with `instanceOf frontend` has an effective tag set that includes:
-- tags from the referenced logical element (`frontend`, so `#next`), and
-- tags declared on the deployment instance itself (here `#gamma`).
+So for the same relation source (`prod.eu.frontend`):
+- `where source.tag is #next` → **matches** (inherited from logical `frontend`)
+- `where source.tag is #gamma` → **also matches** (tag set directly on the deployment instance)
 
-So in deployment-view predicates, `source.tag` can match either inherited logical tags or deployment-instance-local tags.
+In short, deployment instances use a merged tag set: **logical element tags + instance tags**.

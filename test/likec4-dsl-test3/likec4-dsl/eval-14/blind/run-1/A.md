@@ -1,13 +1,20 @@
-`styles { ... }` fails because `styles` is **not** an allowed top-level statement in LikeC4.
+`styles { ... }` fails because `styles` is **not** a valid top-level statement in LikeC4 DSL files. Only these top-level blocks are allowed: `import`, `specification`, `model`, `deployment`, `views`, `global`.
 
-Allowed top-level blocks are: `import`, `specification`, `model`, `deployment`, `views`, and `global`.
+Also, `theme dark` is a **project config** concern (in `likec4.config.*`), not a standalone top-level DSL block.
 
-To keep the same intent (set dark theme), put styling under a valid top-level `global` block:
+A minimal valid `.c4` file with similar intent (reusable “dark-ish” styling) is:
 
 ```likec4
 global {
-  styles {
-    theme dark
+  styleGroup darkTheme {
+    style * { color slate }
+  }
+}
+
+views {
+  view index {
+    include *
+    global style darkTheme
   }
 }
 ```

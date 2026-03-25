@@ -27,6 +27,7 @@ Internal helpers now live under `test/scripts/benchmark/`. This refactor must re
 - Cross-iteration comparisons must support both numeric iterations (`iteration-N`) and named benchmark series (`<skill>-test`, `<skill>-test2`, `<skill>-test3`, ...)
 - Never reuse an older `blind-comparisons.json` as fresh evidence
 - Blind comparator workers must receive explicit evidence paths from `blind-compare-bundle` (A, B, grading spec). Do not rely on broad repository search during blind runs.
+- Blind artifacts are run-scoped only: `.../blind/run-<N>/A.md|B.md` plus `blind-map.run-<N>.json` beside the eval directory. Legacy flat `blind/A.md`, `blind/B.md`, and `blind-map.json` are no longer generated.
 
 If raw hook payloads omit `sessionId`, the wrapper must derive stable anonymous sessions per scope for stateful phases. If that derivation is ambiguous, reset hook state and serialize that phase as a safety fallback.
 
@@ -44,6 +45,7 @@ If raw hook payloads omit `sessionId`, the wrapper must derive stable anonymous 
 10. run blind comparison in parallel waves
 11. `validate-executable-checks`
 12. aggregate suite outputs
+13. run an explicit Anthropic/Claude quality pass per benchmarked skill (inside each `synthesis.md`)
 
 ## Agent map
 
@@ -57,6 +59,7 @@ If raw hook payloads omit `sessionId`, the wrapper must derive stable anonymous 
 
 Hard rule: workers set `agents: []`. No unconstrained subagent hops.
 Hard rule: workers may write files only under `test/<iteration>/<skill>/`, scoped by the hook. No writes to scripts, hooks, or meta directories.
+Hard rule: hook state now locks each worker or manager session to a single benchmark iteration once the first write/sensitive command is observed. Switching to another iteration requires a fresh session.
 
 ## Hook modes
 
@@ -72,7 +75,7 @@ Shared hook entrypoint: `test/scripts/benchmark_access_hook.py`
 
 Narrow LikeC4 grounding is allowed only for scored answer-generation workers. Project listing, project summaries, and view browsing remain denied.
 
-For robustness in skill-series iterations (for example `likec4-dsl-test4`), blind mode now also supports tightly scoped searches inside the active eval blind directory (such as `.../blind/run-1/**`). Broad blind-phase search scopes remain denied.
+For robustness in skill-series iterations (for example `likec4-dsl-test4`), blind mode supports tightly scoped searches inside the active eval blind run directory (such as `.../blind/run-1/**`). Broad blind-phase search scopes remain denied.
 
 ## Worker write access
 
@@ -81,6 +84,12 @@ Worker agents (baseline, baseline_hook_only, with_skill_targeted) can write resp
 - Writes must be under `test/` and target a valid benchmark iteration directory
 - Writes under `test/scripts/`, `test/_agent-hooks/`, and `test/_meta/` are denied
 - Writes to `_`-prefixed skill directories (e.g. `_disabled-skills/`) are denied
+- Each worker session is iteration-locked after its first allowed write; a later write to another iteration is denied
+
+Manager safeguard:
+
+- Sensitive harness commands (for example `aggregate`, `clean-benchmark-artifacts`, `prepare-blind`, `write-run-metrics`, `summarize-phase`) must include an explicit `--iteration test/<iteration>` argument
+- Manager session is iteration-locked after the first sensitive command/edit that targets an iteration; cross-iteration writes/commands in the same session are denied
 
 The manager instructs each worker with the exact output file path (e.g. `test/<iteration>/<skill>/eval-<id>/<config>/run-<N>/response.md`). After a phase completes, the manager uses `summarize-phase` and `aggregate` to build summaries from the written files.
 
@@ -128,6 +137,20 @@ When a human review is needed:
 3. `write-static-review`
 
 These outputs are derived from canonical JSON results and should normally be regenerated locally rather than committed.
+
+## Anthropic/Claude quality pass (mandatory)
+
+After suite summaries are regenerated, each benchmarked skill must receive a dedicated quality pass documented in `test/<iteration>/<skill>/synthesis.md`.
+
+This pass must remain evidence-based and use only benchmark artifacts (blind comparisons, summaries, executable checks, eval definitions). It should explicitly cover:
+
+1. **Evidence-first judgment**: decisions cite rubric/expectation evidence, not intuition.
+2. **Anti-overfitting stance**: a single losing eval is treated as a disagreement to verify.
+3. **Eval discriminating power**: identify weak/flaky/non-discriminating assertions and propose concrete follow-up fixes.
+4. **Quality vs verbosity**: separate real outcome improvements from superficial verbosity/formatting gains.
+5. **Actionable prioritization**: recommendations are concrete and ranked P1/P2/P3 with eval references.
+
+The quality pass is considered incomplete if these five checks are not explicitly addressed.
 
 ## Blind comparison robustness checklist
 

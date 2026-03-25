@@ -1,6 +1,8 @@
-`backend.api` fails in `ops.c4` because LikeC4 references are resolved by lexical scope, and across files you don’t automatically inherit the nested scope from where an element was originally declared. In `base.c4`, `backend` exists only as `cloud.backend` (nested under `cloud`), so `backend.api` is not a globally resolvable name in another file.
+`backend.api` fails in `ops.c4` because LikeC4 name resolution is lexical and file-local by scope: `backend` is **not** a top-level symbol in that file. It is nested under `cloud` (as `cloud.backend`), and cross-file references should use an unambiguous FQN.
 
-For cross-file references, use fully qualified names (FQNs):
+So in another file, reference the service as `cloud.backend.api` (not `backend.api`).
+
+Correct cross-file relationship:
 
 ```likec4
 model {
@@ -8,4 +10,7 @@ model {
 }
 ```
 
-That works because both endpoints are resolved from the project-global hierarchy using their full dot path.
+Why this works:
+- `cloud.backend.api` is the full path (FQN) to the nested element defined in `base.c4`.
+- `cloud.db` is also an FQN.
+- FQNs are the safe/expected way to reference elements across files in a merged LikeC4 project.

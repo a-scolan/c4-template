@@ -2,15 +2,15 @@
   "iteration": "likec4-dsl-test3",
   "skill_name": "likec4-dsl",
   "configuration": "without_skill",
-  "checked_at": "2026-03-25T20:03:28Z",
+  "checked_at": "2026-03-25T21:25:26Z",
   "run_count": 1,
   "summary": {
-    "applicable_eval_count": 15,
+    "applicable_eval_count": 14,
     "valid_eval_count": 8,
-    "valid_eval_rate": 0.5333,
-    "snippet_count_total": 16,
-    "error_count_total": 16,
-    "warning_count_total": 14
+    "valid_eval_rate": 0.5714,
+    "snippet_count_total": 15,
+    "error_count_total": 12,
+    "warning_count_total": 20
   },
   "evals": [
     {
@@ -79,7 +79,7 @@
       "warning_count": 12,
       "snippets": [
         {
-          "snippet": "dynamic view client_gateway_orders_db_seq {\n  client  -> gateway \"Request\"\n  gateway -> orders  \"Forward request\"\n  orders  -> db      \"Query/Write\"\n\n  db      -> orders  \"Result\"\n  orders  -> gateway \"Response\"\n  gateway -> client  \"HTTP response\"\n}",
+          "snippet": "dynamic view seq_client_gateway_orders_db {\n  client -> gateway \"request\"\n  gateway -> orders \"forward\"\n  orders -> db \"query\"\n\n  db -> orders \"result\"\n  orders -> gateway \"response\"\n  gateway -> client \"response\"\n}",
           "valid": true,
           "error_count": 0,
           "warning_count": 12,
@@ -112,7 +112,7 @@
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "view cloud_backend_focus of cloud {\n  include *\n\n  // mute everything\n  style * {\n    opacity 20\n  }\n\n  // highlight only backend subtree\n  style cloud.backend.* {\n    opacity 100\n  }\n}",
+          "snippet": "view cloud_backend_focus of cloud {\n  include cloud.*\n\n  style * {\n    opacity 20\n  }\n\n  style cloud.backend.* {\n    opacity 100\n  }\n}",
           "valid": true,
           "error_count": 0,
           "warning_count": 0,
@@ -127,16 +127,19 @@
       "response_path": "eval-5/without_skill/run-1/response.md",
       "status": "checked",
       "snippet_count": 1,
-      "valid_snippet_count": 1,
-      "error_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 2,
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "deployment {\n  deploymentNode vm {\n    instance api1 cloud.api\n    instance api2 cloud.api\n  }\n}",
-          "valid": true,
-          "error_count": 0,
+          "snippet": "deployment {\n  deploymentNode vm {\n    api1 = instanceOf cloud.api\n    api2 = instanceOf cloud.api\n  }\n}",
+          "valid": false,
+          "error_count": 2,
           "warning_count": 0,
-          "errors": [],
+          "errors": [
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown LikeC4 kind 'instanceOf'."
+          ],
           "warnings": []
         }
       ]
@@ -152,7 +155,7 @@
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "view backend_filtered of cloud.backend {\n  include cloud.frontend\n  include cloud.backend._\n}",
+          "snippet": "view of cloud.backend {\n  include cloud.backend._\n}",
           "valid": true,
           "error_count": 0,
           "warning_count": 0,
@@ -172,7 +175,7 @@
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "detail view backend-detail extends backend-overview {\n  include api\n  include relationship where target == cloud.backend and source != cloud.backend\n}",
+          "snippet": "view detail extends backend-overview {\n  include api\n  include * -> cloud.backend\n}",
           "valid": true,
           "error_count": 0,
           "warning_count": 0,
@@ -192,7 +195,7 @@
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "global {\n  predicates {\n    core-services = element.kind == service and element.id like 'cloud.*' and not (element.tag == #deprecated)\n  }\n}\n\nviews {\n  view core_services_styled {\n    title 'Core services (styled)'\n    include * where @core-services\n\n    style {\n      element where @core-services {\n        color blue\n        border solid\n      }\n    }\n\n    autoLayout TopBottom\n  }\n\n  view core_services_with_extra_include {\n    title 'Core services (+ extra include)'\n    include * where @core-services\n    include cloud.shared-auth\n\n    autoLayout LeftRight\n  }\n}",
+          "snippet": "global {\n  predicates {\n    core-services = element.kind == 'service'\n      && element.id startsWith 'cloud.'\n      && !element.tag == #deprecated\n  }\n}\n\nviews {\n  view cloud_core_services_styled of cloud {\n    include @core-services\n\n    style @core-services {\n      color modern\n      border dashed\n    }\n\n    autoLayout LeftRight\n  }\n\n  view cloud_core_services_with_dependencies of cloud {\n    include @core-services\n    include -> @core-services\n\n    autoLayout LeftRight\n  }\n}",
           "valid": true,
           "error_count": 0,
           "warning_count": 0,
@@ -209,19 +212,25 @@
       "snippet_count": 1,
       "valid_snippet_count": 0,
       "error_count": 1,
-      "warning_count": 2,
+      "warning_count": 8,
       "snippets": [
         {
-          "snippet": "dynamic view checkout-flow {\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  api -> {\n    payments\n    inventory\n    notifications\n  }\n}",
+          "snippet": "dynamic checkout-flow {\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  parallel {\n    api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
           "valid": false,
           "error_count": 1,
-          "warning_count": 2,
+          "warning_count": 8,
           "errors": [
             "Unknown relationship kind '->'."
           ],
           "warnings": [
             "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
-            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context)."
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
           ]
         }
       ]
@@ -270,7 +279,7 @@
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "// define reusable style rule\nstyle \"#hot\" {\n  color red\n}\n\ndeployment view prod of mySystem {\n  include *          // ✅ supported\n  // include * with { color red }   // ❌ not supported in deployment view\n  // global style myTheme           // ❌ not supported in deployment view\n}\n\n// tag deployment nodes/instances in the model so style rules can apply\n// e.g. node/instance tagged with #hot",
+          "snippet": "global {\n  style myTheme {\n    // define reusable/global style rules here (by kind/tag)\n  }\n}\n\ndeployment view prod {\n  include *\n}",
           "valid": true,
           "error_count": 0,
           "warning_count": 0,
@@ -312,7 +321,7 @@
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "global {\n  styles {\n    theme dark\n  }\n}",
+          "snippet": "specification {\n  theme dark\n}",
           "valid": true,
           "error_count": 0,
           "warning_count": 0,
@@ -343,15 +352,15 @@
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "model {\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n  }\n\n  user = system 'User'\n  user -> cloud.backend 'sends traffic'\n}",
+          "snippet": "model {\n  user = person 'User'\n\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n  }\n\n  user -> cloud.backend 'uses'\n}",
           "valid": false,
           "error_count": 4,
           "warning_count": 0,
           "errors": [
+            "Unknown LikeC4 kind 'person'.",
             "Unknown LikeC4 kind 'system'.",
             "Unknown LikeC4 kind 'container'.",
-            "Unknown LikeC4 kind 'system'.",
-            "Unknown relationship kind ''sends'."
+            "Unknown relationship kind ''uses''."
           ],
           "warnings": []
         }
@@ -372,24 +381,12 @@
       "id": 18,
       "run_number": 1,
       "response_path": "eval-18/without_skill/run-1/response.md",
-      "status": "checked",
-      "snippet_count": 1,
+      "status": "not_applicable",
+      "snippet_count": 0,
       "valid_snippet_count": 0,
-      "error_count": 2,
+      "error_count": 0,
       "warning_count": 0,
-      "snippets": [
-        {
-          "snippet": "}",
-          "valid": false,
-          "error_count": 2,
-          "warning_count": 0,
-          "errors": [
-            "Closing brace appears before a matching opening brace.",
-            "Braces are not balanced."
-          ],
-          "warnings": []
-        }
-      ]
+      "snippets": []
     },
     {
       "id": 19,
@@ -397,21 +394,16 @@
       "response_path": "eval-19/without_skill/run-1/response.md",
       "status": "checked",
       "snippet_count": 1,
-      "valid_snippet_count": 0,
-      "error_count": 4,
+      "valid_snippet_count": 1,
+      "error_count": 0,
       "warning_count": 0,
       "snippets": [
         {
-          "snippet": "model {\n  cloud = system \"Cloud\" {\n    backend = container \"Backend\"\n    frontend = container \"Frontend\"\n    db = container \"Database\"\n\n    frontend -> backend \"calls\"\n    backend -> db \"reads/writes\"\n  }\n}\n\nviews {\n  view backend of cloud.backend {\n    include *\n    include * -> cloud.backend\n    include cloud.backend -> *\n  }\n}",
-          "valid": false,
-          "error_count": 4,
+          "snippet": "view backend of cloud.backend {\n  include *\n  include * -> cloud.backend\n  include cloud.backend -> *\n}",
+          "valid": true,
+          "error_count": 0,
           "warning_count": 0,
-          "errors": [
-            "Unknown LikeC4 kind 'system'.",
-            "Unknown LikeC4 kind 'container'.",
-            "Unknown LikeC4 kind 'container'.",
-            "Unknown LikeC4 kind 'container'."
-          ],
+          "errors": [],
           "warnings": []
         }
       ]

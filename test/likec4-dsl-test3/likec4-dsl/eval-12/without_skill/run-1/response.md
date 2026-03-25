@@ -1,23 +1,23 @@
-No—**not in deployment views**.
+No—`deployment view` does **not** support per-include inline styling like:
 
-`deployment view` does **not** support:
-- `include * with { ... }` (inline per-include styling)
-- `global style myTheme` (theme switching from inside a deployment view)
+- `include * with { color red }` ❌
 
-Use plain `include` in the deployment view, and define styling via regular `style` rules (typically tag/kind-based) outside the view.
+And `global style myTheme` is **not declared inside a deployment view**; global styles must be defined in the global/specification area and are then applied by kind/tag matching.
+
+Minimal corrected snippet:
 
 ```likec4
-// define reusable style rule
-style "#hot" {
-  color red
+global {
+  style myTheme {
+    // define reusable/global style rules here (by kind/tag)
+  }
 }
 
-deployment view prod of mySystem {
-  include *          // ✅ supported
-  // include * with { color red }   // ❌ not supported in deployment view
-  // global style myTheme           // ❌ not supported in deployment view
+deployment view prod {
+  include *
 }
-
-// tag deployment nodes/instances in the model so style rules can apply
-// e.g. node/instance tagged with #hot
 ```
+
+What is not supported in deployment views (explicitly):
+- Inline `with { ... }` styling on `include` statements.
+- Declaring global style blocks inside the deployment view body.

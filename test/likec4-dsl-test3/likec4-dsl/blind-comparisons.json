@@ -3,22 +3,21 @@
   "skill_name": "likec4-dsl",
   "comparisons": [
     {
+      "schema_version": 2,
       "eval_id": 0,
       "run_number": 1,
       "winner": "B",
-      "reasoning": "B aligns closely with the grading spec: it provides the focused `likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template 2>/dev/null` command, centers the interpretation on `filteredFiles` and `filteredErrors`, and distinguishes those from `totalErrors` and overall validity. A is materially weaker because it uses a different command shape, omits the required `--no-layout` and `--file` workflow, and relies on per-diagnostic file paths rather than the targeted filtered counters the eval explicitly asks for.",
+      "reasoning": "B matches required validate command and filtered-fields interpretation; A misses key flags/fields.",
       "rubric": {
         "A": {
-          "content_score": 2,
+          "content_score": 3,
           "structure_score": 6,
-          "overall_score": 3,
-          "notes": "Readable and concise, but substantially misses the required command form and key interpretation fields."
+          "overall_score": 4
         },
         "B": {
-          "content_score": 9,
+          "content_score": 8,
           "structure_score": 8,
-          "overall_score": 9,
-          "notes": "Strong task fit with the expected command and the right JSON fields; only minor gap is not explicitly explaining that `--no-layout` skips layout drift checks."
+          "overall_score": 8
         }
       },
       "expectation_results": {
@@ -32,26 +31,24 @@
           "total": 5,
           "pass_rate": 0.8
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
       "eval_id": 1,
       "run_number": 1,
       "winner": "A",
-      "reasoning": "A is stronger overall because it preserves the more important parts of the target answer: it provides a JSON snippet, includes `$schema` and `name`, and gives the expected nearest-config hierarchy explanation. Its main miss is using a plain `include` array instead of `include.paths`. B gets the `include.paths` shape right, but it omits `$schema` and gives the wrong project-scope explanation by claiming membership is determined by include/exclude matching rather than the nearest config in the directory hierarchy. Since correctness of the explanation is a primary rubric factor and B is materially wrong there, A wins despite its config-shape mistake.",
+      "reasoning": "A better matches expected config snippet and ownership explanation.",
       "rubric": {
         "A": {
-          "content_score": 7,
+          "content_score": 8,
           "structure_score": 8,
-          "overall_score": 7.5,
-          "notes": "Good minimal JSON and correct hierarchy explanation; loses points for using `include` array instead of `include.paths`."
+          "overall_score": 8
         },
         "B": {
-          "content_score": 4,
+          "content_score": 6,
           "structure_score": 7,
-          "overall_score": 5.0,
-          "notes": "Reasonably organized and uses `include.paths`, but missing `$schema` and, more importantly, gives an incorrect explanation of project ownership for this eval."
+          "overall_score": 6
         }
       },
       "expectation_results": {
@@ -65,59 +62,55 @@
           "total": 5,
           "pass_rate": 0.6
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
       "eval_id": 2,
       "run_number": 1,
       "winner": "A",
-      "reasoning": "A is materially closer to the expected output. It uses the expected `npx ... export png` form, includes `--theme dark`, `--flat`, a focused filter for `overview*`, and an output directory option. Its main omission is the required project path argument. B also omits the project path, but it diverges further from the target form by using `likec4` directly instead of `npx likec4`, and it substitutes different option names (`--views`, `--output`, `--flatten`) that are less aligned with the grading spec’s expected command shape. Structurally both are concise and usable one-liners, but A is more correct and better aligned with the eval prompt.",
-      "rubric": {
-        "A": {
-          "content_score": 8,
-          "structure_score": 8,
-          "overall_score": 8,
-          "notes": "Strong match on command shape and required flags; missing only the project path argument."
-        },
-        "B": {
-          "content_score": 5,
-          "structure_score": 8,
-          "overall_score": 6,
-          "notes": "Usable one-liner, but less aligned with the expected command form and still missing the project path argument."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 4,
-          "total": 5,
-          "pass_rate": 0.8
-        },
-        "B": {
-          "passed": 2,
-          "total": 5,
-          "pass_rate": 0.4
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 3,
-      "run_number": 1,
-      "winner": "A",
-      "reasoning": "A est nettement supérieur : il fournit un bloc `dynamic view` directement réutilisable, inclut explicitement `variant sequence`, modélise bien le flux aller `client -> gateway -> orders -> db`, puis le flux retour avec des flèches inversées `<-`, ce qui correspond exactement au résultat attendu. B reste utilisable mais manque deux exigences clés : il n’indique pas `variant sequence` et n’utilise aucune flèche `<-` pour les réponses, donc il ne couvre qu’une partie du comportement demandé.",
+      "reasoning": "A aligns exactly with expected CLI form and flags.",
       "rubric": {
         "A": {
           "content_score": 10,
           "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Respecte toutes les attentes de l’éval avec un snippet LikeC4 minimal et directement collable."
+          "overall_score": 10
+        },
+        "B": {
+          "content_score": 8,
+          "structure_score": 8,
+          "overall_score": 8
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 3,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A includes sequence variant and backward arrows as expected.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
+          "structure_score": 9,
+          "overall_score": 9
         },
         "B": {
           "content_score": 6,
           "structure_score": 8,
-          "overall_score": 6,
-          "notes": "Snippet clair et compact, mais il manque `variant sequence` et les réponses en `<-`, qui sont centrales pour cet exercice."
+          "overall_score": 7
         }
       },
       "expectation_results": {
@@ -131,26 +124,24 @@
           "total": 5,
           "pass_rate": 0.6
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
       "eval_id": 4,
       "run_number": 1,
-      "winner": "B",
-      "reasoning": "Both responses identify that this one-off styling belongs in the view rather than the model/specification and both provide usable LikeC4 snippets. B is stronger because its snippet follows the intended muting-then-highlighting pattern directly: it first mutes the whole view with `style *` and then highlights `cloud.backend.*`, which better matches the eval’s expected behavior and minimizes ambiguity. A is close, but it applies the highlight rule before the broad `style *` rule, which makes the final visual effect less certain and slightly weakens correctness for a presentation-focused DSL answer.",
+      "winner": "A",
+      "reasoning": "Both good; A slightly closer to minimal expected pattern.",
       "rubric": {
         "A": {
-          "content_score": 8,
-          "structure_score": 8,
-          "overall_score": 8,
-          "notes": "Covers the key guidance and includes a valid view snippet, but the style rule order may undermine the intended highlight-over-muted effect."
+          "content_score": 10,
+          "structure_score": 9.5,
+          "overall_score": 9.8
         },
         "B": {
-          "content_score": 9,
-          "structure_score": 9,
-          "overall_score": 9,
-          "notes": "Directly matches the requested view-only customization with a minimal, clear snippet that mutes all then highlights `cloud.backend.*`."
+          "content_score": 9.6,
+          "structure_score": 9.4,
+          "overall_score": 9.5
         }
       },
       "expectation_results": {
@@ -164,323 +155,24 @@
           "total": 5,
           "pass_rate": 1.0
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
       "eval_id": 5,
       "run_number": 1,
       "winner": "B",
-      "reasoning": "B matches the expected LikeC4 deployment DSL closely: it uses a `deployment` block, a concrete `vm` node, and two named `instanceOf cloud.api` declarations with no drift into unrelated topics. A has the right high-level intent but misses the required `instanceOf` form and appears to use non-target syntax (`deploymentNode vm` and `instance ...`) rather than the minimal expected deployment snippet.",
-      "rubric": {
-        "A": {
-          "content_score": 4,
-          "structure_score": 5,
-          "overall_score": 4,
-          "notes": "Partially aligned intent, but the core DSL form for named instances does not match the expected `instanceOf` syntax."
-        },
-        "B": {
-          "content_score": 10,
-          "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Direct, minimal, and paste-ready; satisfies the requested deployment DSL without extra noise."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 3,
-          "total": 5,
-          "pass_rate": 0.6
-        },
-        "B": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 6,
-      "run_number": 1,
-      "winner": "B",
-      "reasoning": "B is more correct against the eval expectations. Both answers correctly choose `cloud.backend._`, explain `cloud.backend.*` as all direct children regardless of relationships, and provide a scoped view snippet. The deciding difference is `cloud.backend.**`: B correctly says it selects recursive descendants that relate to already included elements, while A incorrectly says it selects all descendants regardless of relationship. Structurally both are clear and usable, but B is the only one that fully matches the grading spec.",
-      "rubric": {
-        "A": {
-          "content_score": 7,
-          "structure_score": 8,
-          "overall_score": 7,
-          "notes": "Correct predicate and good scoped snippet, but the explanation of `cloud.backend.**` conflicts with the eval's expected semantics."
-        },
-        "B": {
-          "content_score": 10,
-          "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Fully aligns with the expected predicate semantics, includes a minimal scoped snippet, and clearly distinguishes `_`, `*`, and `**`."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 4,
-          "total": 5,
-          "pass_rate": 0.8
-        },
-        "B": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 7,
-      "run_number": 1,
-      "winner": "B",
-      "reasoning": "B is the stronger response because it matches the expected LikeC4 pattern much more closely: it uses the exact `view detail extends backend-overview` form, keeps `include api` unqualified so scope inheritance is demonstrated directly, explicitly explains that the child view inherits the parent's `of cloud.backend` scope, and includes an inbound relationship predicate targeting `cloud.backend`. A shows the core idea of inherited scope correctly, but its DSL is less aligned with the target output: it uses a different declaration form (`detail view backend-detail`) and a less direct relationship expression instead of the expected inbound predicate style. On both rubric quality and expectation coverage, B is clearly better.",
-      "rubric": {
-        "A": {
-          "content_score": 7,
-          "structure_score": 6,
-          "overall_score": 7,
-          "notes": "Correctly explains scope inheritance and uses bare `include api`, but the snippet is not closely aligned to the target form and uses a less expected relationship inclusion style."
-        },
-        "B": {
-          "content_score": 9,
-          "structure_score": 9,
-          "overall_score": 9,
-          "notes": "Directly matches the expected structure, uses the intended inherited-scope example, and provides a clear inbound relationship predicate with concise explanation."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 4,
-          "total": 5,
-          "pass_rate": 0.8
-        },
-        "B": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 8,
-      "run_number": 1,
-      "winner": "A",
-      "reasoning": "A correspond presque exactement à la sortie attendue : bloc top-level `global { predicateGroup core-services { ... } }`, filtres include/exclude corrects, puis deux vues qui appliquent explicitement `global predicate core-services` avec une règle additionnelle différente dans chaque vue (`style` puis `include`). B reste partiellement pertinent sur l’intention de filtrage, mais remplace le mécanisme demandé par une syntaxe différente (`predicates`, `@core-services`, `include * where ...`) et manque donc le cœur de l’éval, qui vérifie l’usage d’un `predicateGroup` global réutilisé via `global predicate ...`. En qualité rubricée, A est nettement plus correct, complet et directement utilisable.",
-      "rubric": {
-        "A": {
-          "content_score": 10,
-          "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Très fidèle à l’attendu, minimal, clair, et chaque vue montre bien une règle additionnelle distincte."
-        },
-        "B": {
-          "content_score": 4,
-          "structure_score": 7,
-          "overall_score": 5,
-          "notes": "Présentation lisible, mais la réponse n’utilise pas le DSL attendu pour cette tâche : pas de `predicateGroup`, pas de `global predicate core-services`, donc elle rate le mécanisme principal demandé."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        },
-        "B": {
-          "passed": 3,
-          "total": 5,
-          "pass_rate": 0.6
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 9,
-      "run_number": 1,
-      "winner": "B",
-      "reasoning": "B better matches the eval’s required DSL shape and semantics. It keeps the chained dynamic-flow syntax, places the HTTPS/navigateTo body on the frontend-to-api step, and explicitly models the API fan-out inside a valid `parallel { ... }` block with the three required concurrent steps. A is close, but its `api -> { payments inventory notifications }` fan-out is not the requested parallel block, so it misses a key expectation from the grading spec.",
-      "rubric": {
-        "A": {
-          "content_score": 7,
-          "structure_score": 8,
-          "overall_score": 7.5,
-          "notes": "Clear, minimal DSL snippet with the required dynamic view and chained expression, but it omits the explicit `parallel`/`par` block required by the eval."
-        },
-        "B": {
-          "content_score": 10,
-          "structure_score": 9,
-          "overall_score": 9.5,
-          "notes": "Fully aligned with the expected output: valid dynamic view, chained flow, correct body block, and explicit parallel fan-out. Extra step labels are acceptable and do not reduce usability."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 4,
-          "total": 5,
-          "pass_rate": 0.8
-        },
-        "B": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 10,
-      "run_number": 1,
-      "winner": "TIE",
-      "reasoning": "A and B both fully satisfy the eval: each explicitly says both `where source.tag is #next` and `where source.tag is #gamma` match the `prod.eu.frontend` relation, explains that deployment instances inherit tags from the logical element, and states that tags added directly on the deployment instance are also available to tag filtering. Neither answer implies overriding or replacement of tags. Structurally, A is slightly more explicit with a bulletized union explanation, while B is slightly more concise, but the practical quality and expectation coverage are effectively equivalent.",
-      "rubric": {
-        "A": {
-          "content_score": 10,
-          "structure_score": 10,
-          "overall_score": 10,
-          "notes": "Fully correct and complete; especially clear on tag union via inherited plus instance-local tags."
-        },
-        "B": {
-          "content_score": 10,
-          "structure_score": 10,
-          "overall_score": 10,
-          "notes": "Fully correct and complete; concise but still clearly explains inherited and instance-local tag visibility."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        },
-        "B": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 11,
-      "run_number": 1,
-      "winner": "A",
-      "reasoning": "A is the clear winner. Both answers provide the correct `extend cloud.api` snippet with the required metadata and nested `health` component, and both are well-structured and directly usable. The decisive difference is content correctness: A correctly states that duplicate metadata keys are merged into an array, so `port` becomes `['8080', '9090']`, which exactly matches the grading spec. B instead claims the extension overrides the original value and that `port` becomes `'9090'`, which contradicts the expected LikeC4 merge semantics. Since the core semantic question of the eval is the metadata merge result, B fails the most important expectations despite otherwise clean formatting.",
-      "rubric": {
-        "A": {
-          "content_score": 10,
-          "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Fully correct snippet and explanation; directly matches the expected merge semantics for duplicate metadata keys."
-        },
-        "B": {
-          "content_score": 4,
-          "structure_score": 9,
-          "overall_score": 5,
-          "notes": "Well formatted and mostly complete structurally, but the central claim about metadata overriding instead of array merge is incorrect."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        },
-        "B": {
-          "passed": 3,
-          "total": 5,
-          "pass_rate": 0.6
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 12,
-      "run_number": 1,
-      "winner": "A",
-      "reasoning": "Both responses satisfy all five expectations: each clearly states that `include * with { ... }` and `global style ...` are unsupported in deployment views, provides a valid deployment-view snippet using supported rules, and distinguishes deployment-view limitations from other styling/customization mechanisms. A wins on rubric quality because it is more focused, more explicit about the element-view vs deployment-view distinction, and gives a cleaner minimal correction without introducing extra styling constructs that are not needed for the asked fix.",
-      "rubric": {
-        "A": {
-          "content_score": 10,
-          "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Directly answers the limitation, explicitly contrasts with element-view customization, and provides a minimal valid deployment view snippet."
-        },
-        "B": {
-          "content_score": 9,
-          "structure_score": 8,
-          "overall_score": 8,
-          "notes": "Correct and complete, but slightly less focused: it adds extra style-rule context outside the deployment view, which is valid but noisier than necessary for this eval."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        },
-        "B": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 13,
-      "run_number": 1,
-      "winner": "B",
-      "reasoning": "B matches the eval’s target exactly: it preserves `api = service 'API'`, moves `#critical` before `technology 'Node.js'`, and explicitly explains the required ordering rule that tags must come before properties. A makes the wrong fix by changing the element kind from `service` to `component`, which misses the actual issue and fails the core expectation even though its snippet is otherwise minimal and ordered correctly.",
-      "rubric": {
-        "A": {
-          "content_score": 3,
-          "structure_score": 7,
-          "overall_score": 4,
-          "notes": "Readable and minimal, but it fixes the wrong problem by changing the element kind instead of correcting tag/property order."
-        },
-        "B": {
-          "content_score": 10,
-          "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Directly addresses the ordering error with a minimal corrected snippet and a precise explanation of the rule."
-        }
-      },
-      "expectation_results": {
-        "A": {
-          "passed": 3,
-          "total": 5,
-          "pass_rate": 0.6
-        },
-        "B": {
-          "passed": 5,
-          "total": 5,
-          "pass_rate": 1.0
-        }
-      },
-      "schema_version": 2
-    },
-    {
-      "eval_id": 14,
-      "run_number": 1,
-      "winner": "A",
-      "reasoning": "Both responses correctly identify that `styles` is not a valid top-level block and both offer a compact replacement using an allowed top-level wrapper. However, A is stronger on completeness because it explicitly enumerates the allowed top-level statements (`import`, `specification`, `model`, `deployment`, `views`, and `global`), which aligns more directly with the grading spec. B only gives partial examples of allowed roots, so it is slightly less complete and less clearly matched to the eval expectations. Structure and usability are good in both, but A edges out B on content accuracy/completeness.",
+      "reasoning": "B uses clearer VM-node style aligned with eval expectation.",
       "rubric": {
         "A": {
           "content_score": 8,
-          "structure_score": 9,
-          "overall_score": 8,
-          "notes": "Clear diagnosis, full allowed top-level list, and a minimal corrective snippet. Slight deduction because the replacement does not explicitly demonstrate `styleGroup`/view application as suggested by the expected output."
+          "structure_score": 8,
+          "overall_score": 8
         },
         "B": {
-          "content_score": 7,
+          "content_score": 9,
           "structure_score": 9,
-          "overall_score": 7,
-          "notes": "Correct core diagnosis and readable snippet, but it only mentions examples of allowed top-level blocks rather than the full set requested by the expectation."
+          "overall_score": 9
         }
       },
       "expectation_results": {
@@ -490,30 +182,276 @@
           "pass_rate": 0.8
         },
         "B": {
-          "passed": 3,
+          "passed": 5,
           "total": 5,
-          "pass_rate": 0.6
+          "pass_rate": 1.0
         }
-      },
-      "schema_version": 2
+      }
     },
     {
-      "eval_id": 15,
+      "schema_version": 2,
+      "eval_id": 6,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B better matches scoped predicate semantics and expected explanation.",
+      "rubric": {
+        "A": {
+          "content_score": 7.8,
+          "structure_score": 8.2,
+          "overall_score": 8.0
+        },
+        "B": {
+          "content_score": 9.8,
+          "structure_score": 9.2,
+          "overall_score": 9.5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 7,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B uses expected incoming predicate form and clearer inheritance explanation.",
+      "rubric": {
+        "A": {
+          "content_score": 8.5,
+          "structure_score": 8.5,
+          "overall_score": 8.5
+        },
+        "B": {
+          "content_score": 9.5,
+          "structure_score": 9.0,
+          "overall_score": 9.3
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 8,
       "run_number": 1,
       "winner": "A",
-      "reasoning": "A matches the grading target exactly: it marks `payment.api` and `1backend` invalid for the right reasons, marks `payment_api` and `payment-api` valid, and provides appropriate rewrites for the invalid identifiers. B gets the core DSL rules wrong by treating `payment.api` as a valid identifier path and `payment-api` as invalid, which directly contradicts the expected output and multiple expectations. Both answers are readable, but A is decisively superior on correctness.",
+      "reasoning": "A matches required global predicateGroup pattern and dual-view application.",
       "rubric": {
         "A": {
           "content_score": 10,
           "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Fully correct, concise, and directly aligned with the expected identifier rules and rewrite guidance."
+          "overall_score": 9.7
         },
         "B": {
-          "content_score": 3,
+          "content_score": 5,
+          "structure_score": 6,
+          "overall_score": 5.4
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 9,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B is overall closer to dynamic-view target syntax.",
+      "rubric": {
+        "A": {
+          "content_score": 7.6,
+          "structure_score": 7.8,
+          "overall_score": 7.7
+        },
+        "B": {
+          "content_score": 8.6,
+          "structure_score": 8.7,
+          "overall_score": 8.7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        },
+        "B": {
+          "passed": 4,
+          "total": 5,
+          "pass_rate": 0.8
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 10,
+      "run_number": 1,
+      "winner": "TIE",
+      "reasoning": "Both outputs are equivalent and fully correct on tag inheritance behavior.",
+      "rubric": {
+        "A": {
+          "content_score": 10,
+          "structure_score": 9,
+          "overall_score": 10
+        },
+        "B": {
+          "content_score": 10,
+          "structure_score": 9,
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 11,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A better matches expected merge result and explanation than B.",
+      "rubric": {
+        "A": {
+          "content_score": 10,
+          "structure_score": 9,
+          "overall_score": 10
+        },
+        "B": {
+          "content_score": 4,
+          "structure_score": 9,
+          "overall_score": 5
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 12,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A explicitly covers unsupported deployment styling constructs and corrected snippet.",
+      "rubric": {
+        "A": {
+          "content_score": 9,
           "structure_score": 8,
-          "overall_score": 4,
-          "notes": "Clear formatting, but major correctness errors on dot and hyphen identifier validity undermine the answer."
+          "overall_score": 9
+        },
+        "B": {
+          "content_score": 6,
+          "structure_score": 8,
+          "overall_score": 7
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 3,
+          "total": 5,
+          "pass_rate": 0.6
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 13,
+      "run_number": 1,
+      "winner": "B",
+      "reasoning": "B correctly fixes tag/property order while A drifts from the asked fix.",
+      "rubric": {
+        "A": {
+          "content_score": 2,
+          "structure_score": 5,
+          "overall_score": 3
+        },
+        "B": {
+          "content_score": 10,
+          "structure_score": 9,
+          "overall_score": 10
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 2,
+          "total": 5,
+          "pass_rate": 0.4
+        },
+        "B": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        }
+      }
+    },
+    {
+      "schema_version": 2,
+      "eval_id": 14,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A provides valid top-level replacement with allowed styling constructs.",
+      "rubric": {
+        "A": {
+          "content_score": 10,
+          "structure_score": 9,
+          "overall_score": 10
+        },
+        "B": {
+          "content_score": 5,
+          "structure_score": 8,
+          "overall_score": 6
         }
       },
       "expectation_results": {
@@ -527,26 +465,55 @@
           "total": 5,
           "pass_rate": 0.4
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
+      "eval_id": 15,
+      "run_number": 1,
+      "winner": "A",
+      "reasoning": "A classifies identifiers according to expected validity and rewrites.",
+      "rubric": {
+        "A": {
+          "content_score": 10,
+          "structure_score": 9,
+          "overall_score": 9.7
+        },
+        "B": {
+          "content_score": 3,
+          "structure_score": 8,
+          "overall_score": 4.6
+        }
+      },
+      "expectation_results": {
+        "A": {
+          "passed": 5,
+          "total": 5,
+          "pass_rate": 1.0
+        },
+        "B": {
+          "passed": 2,
+          "total": 5,
+          "pass_rate": 0.4
+        }
+      }
+    },
+    {
+      "schema_version": 2,
       "eval_id": 16,
       "run_number": 1,
       "winner": "A",
-      "reasoning": "Both answers satisfy all five expectations: they explicitly reject `cloud -> backend` as an invalid parent-child relationship, preserve the nesting hierarchy, and replace the invalid edge with a valid relationship between non-parent/child elements in a minimal DSL snippet. A wins narrowly on rubric quality because it explains the underlying rule a bit more precisely: nesting already expresses containment, so explicit relationships should be between separate elements rather than parent-to-child. B is also correct and usable, but its explanation is slightly less complete and a touch more redundant.",
+      "reasoning": "Both pass, A slightly clearer on containment-vs-relationship rule.",
       "rubric": {
         "A": {
           "content_score": 10,
-          "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Fully correct, concise, and directly addresses the invalid parent-child edge with a strong explanation of hierarchy vs. relationships."
+          "structure_score": 10,
+          "overall_score": 10
         },
         "B": {
           "content_score": 9,
           "structure_score": 9,
-          "overall_score": 9,
-          "notes": "Also fully usable and correct, but slightly less precise in explaining why containment already models the parent-child connection."
+          "overall_score": 9
         }
       },
       "expectation_results": {
@@ -560,26 +527,24 @@
           "total": 5,
           "pass_rate": 1.0
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
       "eval_id": 17,
       "run_number": 1,
       "winner": "B",
-      "reasoning": "Both answers satisfy the task well: they explain that `backend.api` fails across files because the nested reference is not globally resolvable, they require fully qualified names for cross-file nested references, and they rewrite the relationship using full paths. Output B is slightly stronger on rubric quality because it explicitly names lexical scope, directly contrasts file-local nesting with project-global resolution, and provides the corrected DSL in a clean code block, which makes it a bit clearer and more usable. Output A is also correct and complete, but it is marginally less precise and slightly less polished structurally.",
+      "reasoning": "Both pass; B is slightly better structured and copy-ready.",
       "rubric": {
         "A": {
-          "content_score": 9,
+          "content_score": 10,
           "structure_score": 8,
-          "overall_score": 9,
-          "notes": "Correct and complete; explains scope/root-path issue and gives the corrected FQN relationship. Slightly less explicit about lexical scope and presented less cleanly than B."
+          "overall_score": 9
         },
         "B": {
           "content_score": 10,
           "structure_score": 9,
-          "overall_score": 10,
-          "notes": "Fully correct, explicitly explains lexical scope across files, states the FQN requirement clearly, and provides a minimal paste-ready DSL snippet."
+          "overall_score": 10
         }
       },
       "expectation_results": {
@@ -593,59 +558,55 @@
           "total": 5,
           "pass_rate": 1.0
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
       "eval_id": 18,
       "run_number": 1,
-      "winner": "B",
-      "reasoning": "Both responses understand that relationship extension must match the original relationship identity and both provide the correct kinded `extend` snippet with metadata. B is stronger because it more explicitly frames the extension as needing to match the original relationship identity, clearly lists the matching parts, and presents a cleaner paste-ready DSL example. A is correct overall, but its wording is a bit softer on why the non-kinded matcher is wrong, describing it mainly as potentially ambiguous rather than clearly rejecting it for this case.",
+      "winner": "A",
+      "reasoning": "Both pass; A is more precise on strict extension matching behavior.",
       "rubric": {
         "A": {
-          "content_score": 8,
-          "structure_score": 7,
-          "overall_score": 8,
-          "notes": "Correct core guidance and correct snippet, but the rejection of the non-kinded matcher is less explicit and the presentation is slightly less usable."
+          "content_score": 10,
+          "structure_score": 9,
+          "overall_score": 10
         },
         "B": {
           "content_score": 9,
           "structure_score": 9,
-          "overall_score": 9,
-          "notes": "Meets the task closely with a clear corrected snippet, explicit matching rules, and better organization/usability."
+          "overall_score": 9
         }
       },
       "expectation_results": {
         "A": {
-          "passed": 4,
+          "passed": 5,
           "total": 5,
-          "pass_rate": 0.8
+          "pass_rate": 1.0
         },
         "B": {
           "passed": 5,
           "total": 5,
           "pass_rate": 1.0
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
       "eval_id": 19,
       "run_number": 1,
       "winner": "A",
-      "reasoning": "A is more accurate on the key semantic point of eval 19: it explicitly states that scoped `*` in `view ... of cloud.backend` is not whole-model include, and it correctly defines the scope as `cloud.backend` plus its direct children plus relationships among included elements. Its snippet is minimal and directly shows `include *` plus an around-the-scope relationship predicate. B is still usable, but it weakens correctness by describing `*` as including \"in-scope descendants (depending on nesting),\" which is less precise than the expected direct-children semantics and risks implying recursive inclusion. Structure is good in both, but A is the stronger rubric fit on correctness.",
+      "reasoning": "A more accurately states scoped `*` semantics and relationship predicates.",
       "rubric": {
         "A": {
-          "content_score": 9,
-          "structure_score": 9,
-          "overall_score": 9,
-          "notes": "Precisely matches expected scoped-wildcard semantics; concise, focused snippet with correct relationship predicate."
+          "content_score": 9.5,
+          "structure_score": 9.0,
+          "overall_score": 9.3
         },
         "B": {
-          "content_score": 7,
-          "structure_score": 8,
-          "overall_score": 7,
-          "notes": "Good example and clear not-whole-model explanation, but the description of descendants is less precise than the expected direct-children behavior."
+          "content_score": 7.8,
+          "structure_score": 8.8,
+          "overall_score": 8.2
         }
       },
       "expectation_results": {
@@ -659,26 +620,24 @@
           "total": 5,
           "pass_rate": 0.8
         }
-      },
-      "schema_version": 2
+      }
     },
     {
+      "schema_version": 2,
       "eval_id": 20,
       "run_number": 1,
       "winner": "B",
-      "reasoning": "B aligns directly with the eval requirements: it provides the correct `likec4 validate` command using `--json`, `--no-layout`, two repeated `--file` flags, and the `projects/template` path, then explains how to verify scope using `filteredFiles` and how to interpret `filteredErrors` versus project-wide totals. A is materially off-spec: it uses different flags (`--format json`, `--no-layout-drift`, `--files`), omits the project path, and focuses on a generic file-list check instead of the expected `filteredFiles`/`filteredErrors` guidance.",
+      "reasoning": "B gives the expected two-file validate command and JSON-field verification method.",
       "rubric": {
         "A": {
           "content_score": 2,
           "structure_score": 6,
-          "overall_score": 3,
-          "notes": "Readable, but the command and verification guidance do not match the required LikeC4 CLI pattern or expected JSON fields."
+          "overall_score": 3
         },
         "B": {
           "content_score": 10,
-          "structure_score": 8,
-          "overall_score": 9,
-          "notes": "Accurate and task-focused. Includes the expected command shape and the exact validation fields the eval asks for."
+          "structure_score": 9,
+          "overall_score": 10
         }
       },
       "expectation_results": {
@@ -692,8 +651,7 @@
           "total": 5,
           "pass_rate": 1.0
         }
-      },
-      "schema_version": 2
+      }
     }
   ]
 }

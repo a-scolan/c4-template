@@ -1,6 +1,6 @@
 # Skill Suite Summary — likec4-dsl-test2
 
-Generated at: 2026-03-25T08:42:26Z
+Generated at: 2026-03-25T20:45:14Z
 Previous iteration: likec4-dsl-test
 Protocol version: benchmark-v2
 Skill count: 1
@@ -65,4 +65,4 @@ No high-variance evals were flagged.
 
 | Skill | Prev win rate | Curr win rate | Δ win rate | Prev expectation Δ | Curr expectation Δ | Δ expectation Δ | Prev time Δ / eval | Curr time Δ / eval | Δ time Δ / eval |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| likec4-dsl | 100.0% | 95.2% | -0.048 | 0.300 | 0.324 | 0.024 | -8.167 | -4.810 | 3.357 |
+| likec4-dsl | 100.0% | 95.2% | -0.048 | 0.300 | 0.324 | 0.024 | -8.167 | -4.809 | 3.357 |

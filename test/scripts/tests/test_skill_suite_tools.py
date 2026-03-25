@@ -355,7 +355,7 @@ class SkillSuiteToolsTests(unittest.TestCase):
             },
         )
 
-        self._write_json(skill_dir / "eval-0" / "blind-map.json", {"A": "with_skill", "B": "without_skill"})
+        self._write_json(skill_dir / "eval-0" / "blind-map.run-1.json", {"A": "with_skill", "B": "without_skill"})
         self._write_json(
             skill_dir / "blind-comparisons.json",
             {
@@ -763,7 +763,7 @@ class SkillSuiteToolsTests(unittest.TestCase):
             },
         )
 
-        self._write_json(skill_dir / "eval-0" / "blind-map.json", {"A": "with_skill", "B": "without_skill"})
+        self._write_json(skill_dir / "eval-0" / "blind-map.run-1.json", {"A": "with_skill", "B": "without_skill"})
         self._write_json(
             skill_dir / "blind-comparisons.json",
             {

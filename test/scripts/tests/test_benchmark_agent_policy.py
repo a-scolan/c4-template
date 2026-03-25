@@ -821,6 +821,37 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(output), "deny")
 
+    def test_manager_denies_sensitive_skill_suite_command_without_iteration(self) -> None:
+        output = self.run_hook_payload(
+            self.command_payload(
+                "manager-session-no-iteration",
+                "python test/scripts/skill_suite_tools.py aggregate --workspace-root .",
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(output), "deny")
+        self.assertIn("must provide an explicit --iteration", output["hookSpecificOutput"]["permissionDecisionReason"])
+
+    def test_manager_locks_iteration_across_sensitive_commands(self) -> None:
+        first = self.run_hook_payload(
+            self.command_payload(
+                "manager-session-iteration-lock",
+                "python test/scripts/skill_suite_tools.py aggregate --iteration test/likec4-dsl-test2 --workspace-root .",
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(first), "allow")
+
+        second = self.run_hook_payload(
+            self.command_payload(
+                "manager-session-iteration-lock",
+                "python test/scripts/skill_suite_tools.py aggregate --iteration test/iteration-2 --workspace-root .",
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(second), "deny")
+        self.assertIn("Iteration scope is locked", second["hookSpecificOutput"]["permissionDecisionReason"])
+
     def test_manager_create_file_allows_json_content_with_path_like_strings(self) -> None:
         output = self.run_hook_payload(
             self.create_file_payload(
@@ -927,6 +958,29 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             mode="with_skill_targeted",
         )
         self.assertEqual(self.decision(output), "deny")
+
+    def test_worker_write_lock_denies_switching_iteration_in_same_session(self) -> None:
+        self.clear_workspace_skills()
+        first = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-lock-session",
+                "test/likec4-dsl-test4/create-element/eval-0/without_skill/run-1/response.md",
+                "# First response\n",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(first), "allow")
+
+        second = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-lock-session",
+                "test/iteration-2/create-element/eval-0/without_skill/run-1/response.md",
+                "# Second response\n",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(second), "deny")
+        self.assertIn("Iteration scope is locked", second["hookSpecificOutput"]["permissionDecisionReason"])
 
     def test_baseline_worker_allows_write_to_skill_series_iteration(self) -> None:
         self.clear_workspace_skills()

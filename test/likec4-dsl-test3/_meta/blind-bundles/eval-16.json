@@ -1,0 +1,63 @@
+{
+  "iteration": "likec4-dsl-test3",
+  "skill_name": "likec4-dsl",
+  "eval_id": 16,
+  "run_number": 1,
+  "blind_artifacts": {
+    "A": "test/likec4-dsl-test3/likec4-dsl/eval-16/blind/run-1/A.md",
+    "B": "test/likec4-dsl-test3/likec4-dsl/eval-16/blind/run-1/B.md"
+  },
+  "eval_artifacts": {
+    "grading_spec_path": ".github/skills/likec4-dsl/evals/grading-spec.json"
+  },
+  "comparator_method": {
+    "primary_signal": "task-specific rubric score",
+    "secondary_signal": "expectation pass rate",
+    "tie_policy": "Use TIE only when outputs are genuinely equivalent after rubric and expectation review.",
+    "recommended_rubric_dimensions": {
+      "content": [
+        "correctness",
+        "completeness",
+        "accuracy"
+      ],
+      "structure": [
+        "organization",
+        "formatting",
+        "usability"
+      ]
+    }
+  },
+  "output_schema_hint": {
+    "schema_version": 2,
+    "eval_id": "integer",
+    "run_number": 1,
+    "winner": "A | B | TIE",
+    "reasoning": "string",
+    "rubric": {
+      "A": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      },
+      "B": {
+        "content_score": "0-10 number",
+        "structure_score": "0-10 number",
+        "overall_score": "0-10 number",
+        "notes": "string (optional)"
+      }
+    },
+    "expectation_results": {
+      "A": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      },
+      "B": {
+        "passed": "integer",
+        "total": "integer",
+        "pass_rate": "0-1 number"
+      }
+    }
+  }
+}

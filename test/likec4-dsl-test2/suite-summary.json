@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-25T08:42:26Z",
+  "generated_at": "2026-03-25T20:45:14Z",
   "iteration": "likec4-dsl-test2",
   "previous_iteration": "likec4-dsl-test",
   "protocol_version": "benchmark-v2",
@@ -57,7 +57,7 @@
     }
   },
   "metric_validation": {
-    "generated_at": "2026-03-25T08:42:25Z",
+    "generated_at": "2026-03-25T20:45:14Z",
     "iteration": "likec4-dsl-test2",
     "status": "passed",
     "expected_files": 2,
@@ -68,7 +68,7 @@
     "issues": []
   },
   "executable_checks": {
-    "generated_at": "2026-03-25T08:42:26Z",
+    "generated_at": "2026-03-25T20:45:14Z",
     "iteration": "likec4-dsl-test2",
     "summary_count": 2,
     "summaries": [

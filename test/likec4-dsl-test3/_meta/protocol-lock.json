@@ -1,13 +1,13 @@
 {
-  "generated_at": "2026-03-25T20:03:28Z",
+  "generated_at": "2026-03-25T21:05:12Z",
   "iteration": "likec4-dsl-test3",
   "protocol_version": "benchmark-v3",
   "manifest_path": "test/benchmark-protocol.json",
-  "manifest_sha256": "ef0fdd01081e8b5c49fd5089b58fc592d61eb2228a613743df5c0b7212d9da33",
+  "manifest_sha256": "c09d744e2458c81045676088b47f6504ae835a8738f9aa04629e806b50cd4128",
   "tracked_files": [
     {
       "path": ".github/agents/skill-benchmark-manager.agent.md",
-      "sha256": "db0bf3705ef80a0fd0ee36b034fcb26d11ef47ee022a38b6c263ebef3656cd2c"
+      "sha256": "ff0158c53d2e7dcef0f5dc23f5824d873faae1ed932b0f12f9df76dfc3b97d1a"
     },
     {
       "path": ".github/agents/skill-benchmark-baseline.agent.md",
@@ -31,11 +31,11 @@
     },
     {
       "path": "test/benchmark-agent-workflow.md",
-      "sha256": "140e40ed41c1f55729a436fc74c793cb86baa415a49a40fc46d14e28367228d1"
+      "sha256": "645ad81dd75c29eae5e473df223d43908dce9c1bb11eac44377e8b87c8ce5776"
     },
     {
       "path": "test/scripts/skill_suite_tools.py",
-      "sha256": "151e7220f8e87bba1a208064d62e1b59997ff734c7cc6f4f9b1384e9458f4fad"
+      "sha256": "a07587f362748d45c4584fd29377a86c011e239cacecdbcf448623dd00c87876"
     }
   ],
   "skill_eval_artifacts": [

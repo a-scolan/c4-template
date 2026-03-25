@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-03-25T21:04:33Z",
+  "removed_count": 1,
+  "removed": [
+    "test/scripts/__pycache__"
+  ],
+  "skipped_count": 3,
+  "skipped": [
+    "test/iteration-1",
+    "test/likec4-dsl-test2",
+    "test/_agent-hooks"
+  ],
+  "skipped_reason": "git-tracked directories are preserved to avoid data loss",
+  "missing_count": 1,
+  "missing": [
+    "test/_live-mcp-probe"
+  ]
+}

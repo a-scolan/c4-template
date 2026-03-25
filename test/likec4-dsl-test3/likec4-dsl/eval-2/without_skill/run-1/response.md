@@ -1,3 +1,3 @@
 ```bash
-likec4 export png --views "overview*" --theme dark --output ./images --flatten
+likec4 export --views "overview*" --format png --theme dark --output ./images --flat
 ```

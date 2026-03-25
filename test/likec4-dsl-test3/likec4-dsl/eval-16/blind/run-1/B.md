@@ -1,19 +1,17 @@
 No — that relationship is **invalid**.
 
-`cloud` is the parent of `backend`, and LikeC4 does not allow relationships between parent/child elements.
+In LikeC4, you cannot create relationships between a parent element and its direct child. Here, `cloud` is the parent of `backend`, so `cloud -> backend` is not allowed.
 
-A minimal valid pattern is to keep the hierarchy, then add relationships between non-parent-child elements (for example, from an external actor to `backend`):
+A minimal valid pattern is to keep the hierarchy and add relationships between non-parent/child elements, for example from an external actor to `backend`:
 
 ```likec4
 model {
-  customer = actor 'Customer'
+  user = actor 'User'
 
   cloud = system 'Cloud' {
     backend = container 'Backend'
   }
 
-  customer -> cloud.backend 'uses'
+  user -> cloud.backend 'uses'
 }
 ```
-
-This preserves the `cloud -> backend` containment structurally (via nesting) and adds a valid behavioral relationship elsewhere.

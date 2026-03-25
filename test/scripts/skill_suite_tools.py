@@ -358,8 +358,6 @@ def legacy_blind_dir(eval_dir: Path) -> Path:
 
 
 def blind_map_path(eval_dir: Path, run_number: int) -> Path:
-    if run_number == 1:
-        return eval_dir / "blind-map.json"
     return eval_dir / f"blind-map.{run_label(run_number)}.json"
 
 
@@ -367,9 +365,6 @@ def resolve_blind_dir(eval_dir: Path, run_number: int) -> Path | None:
     run_dir = blind_dir_for_run(eval_dir, run_number)
     if (run_dir / "A.md").exists() and (run_dir / "B.md").exists():
         return run_dir
-    legacy_dir = legacy_blind_dir(eval_dir)
-    if run_number == 1 and (legacy_dir / "A.md").exists() and (legacy_dir / "B.md").exists():
-        return legacy_dir
     return None
 
 
@@ -1086,10 +1081,6 @@ def build_blind_compare_bundle(
     blind_dir = blind_dir_for_run(eval_dir, run_number)
     a_path = blind_dir / "A.md"
     b_path = blind_dir / "B.md"
-    if run_number == 1 and (not a_path.exists() or not b_path.exists()):
-        blind_dir = legacy_blind_dir(eval_dir)
-        a_path = blind_dir / "A.md"
-        b_path = blind_dir / "B.md"
 
     if not a_path.exists() or not b_path.exists():
         raise FileNotFoundError(
@@ -1159,8 +1150,6 @@ def load_comparison_index(skill_dir: Path) -> dict[tuple[int, int], dict[str, An
 
 def configuration_side_for_eval(skill_dir: Path, eval_id: int, run_number: int = 1) -> dict[str, str]:
     mapping_path = blind_map_path(skill_dir / f"eval-{eval_id}", run_number)
-    if not mapping_path.exists() and run_number == 1:
-        mapping_path = skill_dir / f"eval-{eval_id}" / "blind-map.json"
     if not mapping_path.exists():
         return {}
     mapping = read_json(mapping_path)
@@ -1532,8 +1521,6 @@ def build_synthesis_bundle(
         eval_id = int(eval_id)
         run_number = coerce_int(item.get("run_number")) or 1
         mapping_path = blind_map_path(skill_dir / f"eval-{eval_id}", run_number)
-        if not mapping_path.exists() and run_number == 1:
-            mapping_path = skill_dir / f"eval-{eval_id}" / "blind-map.json"
         mapping = read_json(mapping_path) if mapping_path.exists() else {}
         reverse_mapping = {config: side for side, config in mapping.items()}
 
@@ -1735,7 +1722,17 @@ SYNTHESIS_TEMPLATE = """# Critical Synthesis — `{skill_name}` Benchmark
 
 ---
 
-## 6. Verdict
+## 6. Anthropic/Claude quality pass
+
+- **Evidence-first judgment:** [Confirm every major conclusion is backed by blind reasoning/rubric/expectation evidence]
+- **Single-loss handling:** [If exactly one eval is lost, label it as a disagreement to verify]
+- **Discriminating power:** [List weak/flaky/non-discriminating expectations and concrete improvements]
+- **Quality vs verbosity:** [State whether wins reflect better outcomes or only more verbose formatting]
+- **Actionability:** [Confirm P1/P2/P3 actions are specific, testable, and tied to eval IDs]
+
+---
+
+## 7. Verdict
 
 [State whether the skill is effective, with a 2-3 sentence summary citing the key metrics. Note any caveats.]
 """
@@ -1991,20 +1988,39 @@ def validate_blind_isolation(iteration_dir: Path) -> dict[str, Any]:
                 continue
             checked_evals += 1
 
-            run_dirs: list[Path] = []
-            if (blind_root / "A.md").exists() or (blind_root / "B.md").exists():
-                run_dirs.append(blind_root)
-            run_dirs.extend(
+            run_dirs: list[Path] = sorted(
                 sorted(
                     [child for child in blind_root.iterdir() if child.is_dir() and RUN_DIR_RE.match(child.name)],
                     key=lambda path: int(path.name.split("-", 1)[1]),
                 )
             )
+
+            legacy_files = sorted(
+                child.name
+                for child in blind_root.iterdir()
+                if child.is_file() and child.name in {"A.md", "B.md", "blind-map.json"}
+            )
+            if legacy_files:
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "path": blind_root.relative_to(iteration_dir).as_posix(),
+                        "issue": f"legacy blind files are no longer allowed at blind root: {', '.join(legacy_files)}",
+                    }
+                )
+
             if not run_dirs:
-                run_dirs = [blind_root]
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "path": blind_root.relative_to(iteration_dir).as_posix(),
+                        "issue": "missing run-* blind directory",
+                    }
+                )
+                continue
 
             for run_dir in run_dirs:
-                if run_dir != blind_root and run_dir.parent != blind_root:
+                if run_dir.parent != blind_root:
                     continue
 
                 run_number = 1
@@ -2462,13 +2478,6 @@ def prepare_blind(iteration_dir: Path) -> dict[str, Any]:
                 write_text(blind_dir / "B.md", source_by_config[mapping["B"]].read_text(encoding="utf-8"))
                 write_json(blind_map_path(eval_dir, run_number), mapping)
 
-                if run_number == 1:
-                    legacy_dir = legacy_blind_dir(eval_dir)
-                    legacy_dir.mkdir(parents=True, exist_ok=True)
-                    write_text(legacy_dir / "A.md", source_by_config[mapping["A"]].read_text(encoding="utf-8"))
-                    write_text(legacy_dir / "B.md", source_by_config[mapping["B"]].read_text(encoding="utf-8"))
-                    write_json(eval_dir / "blind-map.json", mapping)
-
                 prepared.append(
                     {
                         "skill": skill_dir.name,
@@ -2866,8 +2875,6 @@ def comparison_metrics(skill_dir: Path, comparison_items: list[dict[str, Any]]) 
         run_number = coerce_int(item.get("run_number")) or 1
         eval_dir = skill_dir / f"eval-{eval_id}"
         mapping_path = blind_map_path(eval_dir, run_number)
-        if not mapping_path.exists() and run_number == 1:
-            mapping_path = eval_dir / "blind-map.json"
         if not mapping_path.exists():
             continue
         mapping = read_json(mapping_path)

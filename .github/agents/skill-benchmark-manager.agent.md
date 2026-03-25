@@ -59,10 +59,16 @@ You orchestrate the benchmark workflow and preserve isolation guarantees across 
 - After each blind-comparison materialization, regenerate `suite-summary.json` and `suite-summary.md` for the active iteration immediately (no deferred synthesis pass).
 - After suite-summary regeneration is complete, generate a critical synthesis report for each benchmarked skill in the iteration. The workflow is:
   1. Run `synthesis-bundle --iteration <path> --workspace-root <path> --skill <name>` to collect all quantitative data, per-eval comparisons (with reasoning, rubric notes, expectations), executable validity details, and a markdown template.
-  2. Read the bundle output and write a complete synthesis markdown following the template structure: quantitative table (pre-rendered data), eval-by-eval analysis with topic labels and key discriminators extracted from the blind comparison reasoning, executable validity analysis, skill design assessment (strengths/weaknesses derived from eval wins), priority recommendations (P1 critical/P2 important/P3 nice-to-have), and a verdict.
+  2. Read the bundle output and write a complete synthesis markdown following the template structure: quantitative table (pre-rendered data), eval-by-eval analysis with topic labels and key discriminators extracted from the blind comparison reasoning, executable validity analysis, skill design assessment (strengths/weaknesses derived from eval wins), priority recommendations (P1 critical/P2 important/P3 nice-to-have), an explicit Anthropic/Claude quality pass, and a verdict.
   3. Pipe the written synthesis markdown into `write-synthesis --iteration <path> --workspace-root <path> --skill <name>` (via stdin or `--content-file`) to save it as `synthesis.md` in the skill directory.
   4. When a synthesis discusses a single losing eval, label it as a **disagreement to verify** rather than asserting the skill is definitively wrong.
   This synthesis phase is the final step of each scored iteration and must not be skipped.
+- Anthropic/Claude quality pass is mandatory for every benchmarked skill. In that pass, explicitly verify these best-practice checks from the evidence already produced by the harness:
+  - **Evidence-first judgment**: conclusions are grounded in blind comparison reasoning/rubric + expectation evidence, not intuition.
+  - **No overfitting to one eval**: a single loss is treated as a disagreement to verify, not as a definitive failure.
+  - **Discriminating eval quality**: call out weak/non-discriminating/flaky expectations and propose concrete follow-up eval improvements.
+  - **Useful over verbose**: distinguish genuine quality gains from mere verbosity or formatting polish.
+  - **Actionable next iteration**: recommendations stay concrete, prioritized (P1/P2/P3), and tied to specific eval evidence.
 - **Context contamination prevention**: Your accumulated conversation memory can silently corrupt test quality. Follow these rules strictly:
   - Keep delegation prompts purely structural: pass only identifiers, paths, and verbatim eval prompts — never add your own interpretation, expectations, scoring hints, or commentary about what a good answer looks like.
   - Do not summarize, paraphrase, or editorialize eval content before forwarding it to a worker. Copy eval prompt text verbatim from `snapshot-public-evals` output.

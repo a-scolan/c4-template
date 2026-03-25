@@ -112,6 +112,22 @@ PATHISH_KEYS = {
     "new_path",
 }
 COMMAND_KEYS = {"command", "args"}
+COMMAND_ITERATION_ARG_RE = re.compile(r"--iteration(?:=|\s+)(\"[^\"]+\"|'[^']+'|[^\s]+)")
+COMMAND_TEST_ITERATION_RE = re.compile(r"test[\\/](iteration-\d+|[^\\/\s\"']+-test\d+)(?:[\\/]|$)")
+SKILL_SUITE_SUBCOMMAND_RE = re.compile(r"skill_suite_tools\.py\s+([a-z0-9-]+)")
+ITERATION_REQUIRED_MANAGER_SUBCOMMANDS = {
+    "aggregate",
+    "clean-benchmark-artifacts",
+    "materialize-comparisons",
+    "materialize-comparisons-stdin",
+    "write-run-metrics",
+    "summarize-phase",
+    "summarize-config",
+    "prepare-blind",
+    "protocol-preflight",
+    "synthesis-bundle",
+    "write-synthesis",
+}
 STATE_FILENAME_RE = re.compile(r"[^A-Za-z0-9_.-]+")
 
 
@@ -287,7 +303,7 @@ def handle_pre_tool_use(payload: dict[str, Any], mode: str) -> dict[str, Any]:
     if category == "agent":
         return handle_agent_invocation(tool_input, mode)
     if category == "execute":
-        return handle_execute(tool_input, mode)
+        return handle_execute(tool_input, workspace_root, mode, state)
     if category == "edit":
         return handle_edit(tool_name, tool_input, workspace_root, mode, state)
     if category == "search":
@@ -387,7 +403,7 @@ def extract_subagent_name(tool_input: Any) -> str | None:
     return None
 
 
-def handle_execute(tool_input: Any, mode: str) -> dict[str, Any]:
+def handle_execute(tool_input: Any, workspace_root: Path, mode: str, state: dict[str, Any]) -> dict[str, Any]:
     if mode != "benchmark_manager":
         return deny("Terminal and task execution are disabled for benchmark worker agents.")
 
@@ -401,6 +417,19 @@ def handle_execute(tool_input: Any, mode: str) -> dict[str, Any]:
             return deny(
                 f"Command '{normalized}' is outside the benchmark-manager allowlist. Use test/scripts helpers, pytest under test/scripts, or harmless git inspection only."
             )
+
+    iteration_candidates = extract_iteration_candidates_from_commands(commands, workspace_root)
+    for command in commands:
+        subcommand = extract_skill_suite_subcommand(command)
+        if subcommand in ITERATION_REQUIRED_MANAGER_SUBCOMMANDS and not iteration_candidates:
+            return deny(
+                f"Command '{subcommand}' must provide an explicit --iteration test/<iteration> argument. "
+                "Implicit/default iteration resolution is denied to avoid writing benchmark artifacts to the wrong folder."
+            )
+
+    iteration_scope_failure = enforce_iteration_scope(state, workspace_root, iteration_candidates, mode)
+    if iteration_scope_failure:
+        return deny(iteration_scope_failure)
     return allow()
 
 
@@ -420,6 +449,36 @@ def extract_commands(tool_input: Any) -> list[str]:
         for item in tool_input:
             commands.extend(extract_commands(item))
     return commands
+
+
+def extract_skill_suite_subcommand(command: str) -> str | None:
+    match = SKILL_SUITE_SUBCOMMAND_RE.search(command)
+    if not match:
+        return None
+    return match.group(1)
+
+
+def unquote_token(value: str) -> str:
+    if len(value) >= 2 and ((value.startswith('"') and value.endswith('"')) or (value.startswith("'") and value.endswith("'"))):
+        return value[1:-1]
+    return value
+
+
+def extract_iteration_candidates_from_commands(commands: list[str], workspace_root: Path) -> set[str]:
+    iterations: set[str] = set()
+    for command in commands:
+        for match in COMMAND_ITERATION_ARG_RE.finditer(command):
+            raw_value = unquote_token(match.group(1).strip())
+            rel_path = normalize_to_repo_relative(raw_value, workspace_root)
+            if rel_path:
+                iteration_name = extract_iteration_from_iteration_path(rel_path)
+                if iteration_name:
+                    iterations.add(iteration_name)
+        for match in COMMAND_TEST_ITERATION_RE.finditer(command):
+            iteration_name = match.group(1)
+            if is_benchmark_iteration_dir(iteration_name):
+                iterations.add(iteration_name)
+    return iterations
 
 
 def handle_edit(
@@ -442,6 +501,15 @@ def handle_edit(
                 return deny(
                     f"Editing '{rel_path}' is outside the benchmark-manager allowlist. Only README.md, test/, and .github/agents/*.agent.md are editable from this agent."
                 )
+
+        iteration_scope_failure = enforce_iteration_scope(
+            state,
+            workspace_root,
+            extract_iteration_candidates_from_paths(paths),
+            mode,
+        )
+        if iteration_scope_failure:
+            return deny(iteration_scope_failure)
         return allow()
 
     for rel_path in paths:
@@ -449,6 +517,16 @@ def handle_edit(
             return deny(
                 f"Editing '{rel_path}' is outside the worker write scope. Workers may only write under test/<iteration>/<skill>/ directories."
             )
+
+    iteration_scope_failure = enforce_iteration_scope(
+        state,
+        workspace_root,
+        extract_iteration_candidates_from_paths(paths),
+        mode,
+    )
+    if iteration_scope_failure:
+        return deny(iteration_scope_failure)
+
     return allow(
         additional_context="Worker write allowed under test/ iteration scope for response materialization."
     )
@@ -532,6 +610,75 @@ def is_worker_write_allowed(rel_path: str) -> bool:
     if len(parts) >= 3 and parts[2].startswith("_"):
         return False
     return True
+
+
+def configured_allowed_iteration() -> str | None:
+    raw = os.environ.get("BENCH_ALLOWED_ITERATION", "").strip()
+    if not raw:
+        return None
+    normalized = normalize_rel_path(raw)
+    if normalized.startswith("test/"):
+        parts = normalized.split("/")
+        if len(parts) >= 2:
+            normalized = parts[1]
+    if not is_benchmark_iteration_dir(normalized):
+        return None
+    return normalized
+
+
+def extract_iteration_candidates_from_paths(paths: list[str]) -> set[str]:
+    iterations: set[str] = set()
+    for rel_path in paths:
+        iteration_name = extract_iteration_from_iteration_path(rel_path)
+        if iteration_name:
+            iterations.add(iteration_name)
+    return iterations
+
+
+def enforce_iteration_scope(
+    state: dict[str, Any],
+    workspace_root: Path,
+    iteration_candidates: set[str],
+    mode: str,
+) -> str | None:
+    if not iteration_candidates:
+        return None
+
+    configured_iteration = configured_allowed_iteration()
+    if configured_iteration:
+        unexpected = sorted(candidate for candidate in iteration_candidates if candidate != configured_iteration)
+        if unexpected:
+            return (
+                f"Writes/commands target iteration(s) {', '.join(unexpected)} but BENCH_ALLOWED_ITERATION is locked to '{configured_iteration}'."
+            )
+
+    if len(iteration_candidates) > 1:
+        return (
+            "A single tool call may not target multiple benchmark iterations. "
+            f"Found: {', '.join(sorted(iteration_candidates))}."
+        )
+
+    requested = next(iter(iteration_candidates))
+    locked = state.get("locked_iteration")
+    if locked and locked != requested:
+        return (
+            f"Iteration scope is locked to '{locked}' for this session, but this operation targets '{requested}'. "
+            "Start a fresh session to switch iteration targets."
+        )
+
+    if configured_iteration and requested != configured_iteration:
+        return (
+            f"Iteration '{requested}' is denied because BENCH_ALLOWED_ITERATION is '{configured_iteration}'."
+        )
+
+    if not locked:
+        state["locked_iteration"] = requested
+        save_state(workspace_root, state)
+
+    if mode == "benchmark_manager":
+        return None
+
+    return None
 
 
 def is_read_allowed(

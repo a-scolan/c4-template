@@ -1,11 +1,11 @@
 ```likec4
-dynamic view client_gateway_orders_db_seq {
-  client  -> gateway "Request"
-  gateway -> orders  "Forward request"
-  orders  -> db      "Query/Write"
+dynamic view seq_client_gateway_orders_db {
+  client -> gateway "request"
+  gateway -> orders "forward"
+  orders -> db "query"
 
-  db      -> orders  "Result"
-  orders  -> gateway "Response"
-  gateway -> client  "HTTP response"
+  db -> orders "result"
+  orders -> gateway "response"
+  gateway -> client "response"
 }
 ```

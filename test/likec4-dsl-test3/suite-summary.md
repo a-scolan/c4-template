@@ -1,6 +1,6 @@
 # Skill Suite Summary — likec4-dsl-test3
 
-Generated at: 2026-03-25T20:03:28Z
+Generated at: 2026-03-25T21:25:26Z
 Previous iteration: likec4-dsl-test2
 Protocol version: benchmark-v3
 Skill count: 1
@@ -37,10 +37,10 @@ Issues: 0
 | Metric | Mean | Stddev | Min | Max |
 | --- | --- | --- | --- | --- |
 | With-skill win rate | 0.857 | 0.000 | 0.857 | 0.857 |
-| Expectation Δ | 0.295 | 0.000 | 0.295 | 0.295 |
-| Rubric Δ | 2.881 | 0.000 | 2.881 | 2.881 |
-| Time Δ / eval | 5.333 | 0.000 | 5.333 | 5.333 |
-| Executable Δ | 0.092 | 0.000 | 0.092 | 0.092 |
+| Expectation Δ | 0.305 | 0.000 | 0.305 | 0.305 |
+| Rubric Δ | 2.338 | 0.000 | 2.338 | 2.338 |
+| Time Δ / eval | -1.048 | 0.000 | -1.048 | -1.048 |
+| Executable Δ | 0.116 | 0.000 | 0.116 | 0.116 |
 
 
 ## Suite overview
@@ -49,13 +49,13 @@ All required run-metrics files were present and complete.
 
 | Skill | Evals | Runs | With-skill win rate | Expectation Δ | Rubric Δ | Time Δ / eval (s) | Executable Δ | Words Δ / eval | Files read Δ | High-var evals |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| likec4-dsl | 21 | 1 | 85.7% | 0.295 | 2.881 | 5.333 | 0.092 | 1.3 | 21.0 | 0 |
+| likec4-dsl | 21 | 1 | 85.7% | 0.305 | 2.338 | -1.048 | 0.116 | 4.9 | 6.0 | 0 |
 
 ## Per-skill detailed comparison
 
 | Skill | Runs | Exp pass with | Exp pass without | Rubric with | Rubric without | Sec/eval with | Sec/eval without | Exec with | Exec without | Words/eval with | Words/eval without | Files read with | Files read without |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| likec4-dsl | 1 | 0.962 | 0.667 | 9.286 | 6.405 | 16.238 | 10.905 | 0.625 | 0.533 | 68.3 | 67.0 | 21.0 | 0.0 |
+| likec4-dsl | 1 | 0.971 | 0.667 | 9.381 | 7.043 | 8.429 | 9.476 | 0.688 | 0.571 | 72.6 | 67.7 | 6.0 | 0.0 |
 
 ## High-variance evals
 
@@ -65,4 +65,4 @@ No high-variance evals were flagged.
 
 | Skill | Prev win rate | Curr win rate | Δ win rate | Prev expectation Δ | Curr expectation Δ | Δ expectation Δ | Prev time Δ / eval | Curr time Δ / eval | Δ time Δ / eval |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| likec4-dsl | 95.2% | 85.7% | -0.095 | 0.324 | 0.295 | -0.029 | -4.809 | 5.333 | 10.143 |
+| likec4-dsl | 95.2% | 85.7% | -0.095 | 0.324 | 0.305 | -0.019 | -4.809 | -1.048 | 3.762 |

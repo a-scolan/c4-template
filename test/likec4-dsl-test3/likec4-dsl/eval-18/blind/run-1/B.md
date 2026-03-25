@@ -1,10 +1,10 @@
-Yes—**but only if the `extend` selector matches the original relationship identity**.
+Not reliably — you should match the original relationship identity as precisely as possible.
 
-Given the original relationship:
+For `extend` on relationships, the matcher is based on the relationship identity (source, target, and when present/needed to disambiguate, kind and title). Since the original is:
 
 `frontend -[async]-> api 'streams'`
 
-the safest/correct extension is:
+the safest/correct extension is to include the same kind (and title):
 
 ```likec4
 model {
@@ -14,12 +14,4 @@ model {
 }
 ```
 
-### Matching rules for `extend` on relationships
-
-`extend` is not just a loose “same endpoints” match when multiple relationships can exist between the same source/target.
-Use the same relationship identity as the declaration:
-- `source`
-- `target`
-- and, when present/needed to disambiguate, **kind** and **title**.
-
-So `extend frontend -> api 'streams' { ... }` may be ambiguous or fail to match the intended `async` relationship. Including `-[async]->` makes the match explicit.
+Using `extend frontend -> api 'streams'` may fail or become ambiguous if there are multiple relationships between `frontend` and `api` (different kinds/titles).

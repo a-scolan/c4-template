@@ -1,13 +1,15 @@
 ```likec4
-dynamic view client-orders-sequence {
-  variant sequence
+views {
+  dynamic view request-flow {
+    variant sequence
 
-  client -> gateway "Request"
-  gateway -> orders "Place order"
-  orders -> db "Write order"
+    client -> gateway "Request"
+    gateway -> orders "Forward request"
+    orders -> db "Query/Write"
 
-  db <- orders "Ack"
-  orders <- gateway "Order result"
-  gateway <- client "Response"
+    db <- orders "Result"
+    orders <- gateway "Response"
+    gateway <- client "Response"
+  }
 }
 ```

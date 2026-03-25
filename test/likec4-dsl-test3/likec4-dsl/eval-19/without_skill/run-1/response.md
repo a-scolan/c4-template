@@ -1,30 +1,17 @@
-`*` in a scoped view means **all elements within that scope**, not the whole model.
-
-So in:
+`*` in a scoped view like:
 
 `view backend of cloud.backend { include * }`
 
-`*` includes `cloud.backend` and its in-scope descendants (depending on nesting), **not every element in `cloud` or the entire workspace model**.
+means **all elements inside the scope of `cloud.backend`** (the scoped element and its descendants, according to the scoped-view rules), not the entire model.
 
-A minimal example that keeps scoped contents and adds only direct incoming/outgoing neighbors of `cloud.backend`:
+So no — it does **not** include the whole model by default.
+
+Minimal snippet that keeps scoped elements and adds only 1-hop incoming/outgoing around `cloud.backend`:
 
 ```likec4
-model {
-  cloud = system "Cloud" {
-    backend = container "Backend"
-    frontend = container "Frontend"
-    db = container "Database"
-
-    frontend -> backend "calls"
-    backend -> db "reads/writes"
-  }
-}
-
-views {
-  view backend of cloud.backend {
-    include *
-    include * -> cloud.backend
-    include cloud.backend -> *
-  }
+view backend of cloud.backend {
+  include *
+  include * -> cloud.backend
+  include cloud.backend -> *
 }
 ```

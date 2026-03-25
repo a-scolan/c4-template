@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-25T20:03:28Z",
+  "generated_at": "2026-03-25T21:25:26Z",
   "iteration": "likec4-dsl-test3",
   "summary_count": 2,
   "summaries": [
@@ -8,14 +8,14 @@
       "configuration": "with_skill",
       "output_path": "test/likec4-dsl-test3/likec4-dsl/with_skill-executable-checks.json",
       "applicable_eval_count": 16,
-      "valid_eval_rate": 0.625
+      "valid_eval_rate": 0.6875
     },
     {
       "skill": "likec4-dsl",
       "configuration": "without_skill",
       "output_path": "test/likec4-dsl-test3/likec4-dsl/without_skill-executable-checks.json",
-      "applicable_eval_count": 15,
-      "valid_eval_rate": 0.5333
+      "applicable_eval_count": 14,
+      "valid_eval_rate": 0.5714
     }
   ]
 }

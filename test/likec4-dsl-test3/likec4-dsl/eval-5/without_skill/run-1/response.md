@@ -1,8 +1,8 @@
-```c4
+```likec4
 deployment {
   deploymentNode vm {
-    instance api1 cloud.api
-    instance api2 cloud.api
+    api1 = instanceOf cloud.api
+    api2 = instanceOf cloud.api
   }
 }
 ```

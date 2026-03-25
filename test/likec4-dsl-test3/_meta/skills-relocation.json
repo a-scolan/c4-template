@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-25T19:06:23Z",
+  "generated_at": "2026-03-25T21:05:43Z",
   "operation": "disable-workspace-skills",
   "skills_root": ".github/skills",
   "disabled_root": "test/likec4-dsl-test3/_disabled-skills",

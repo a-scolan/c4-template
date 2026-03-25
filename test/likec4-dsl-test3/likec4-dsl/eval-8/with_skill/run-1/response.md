@@ -7,21 +7,19 @@ global {
 }
 
 views {
-  // View 1: applies the reusable predicate group + per-view styling
   view core-services-styled {
     global predicate core-services
     style * { color primary }
   }
 
-  // View 2: applies the same group + an extra include rule
-  view core-services-plus {
+  view core-services-with-neighbors {
     global predicate core-services
-    include cloud.*
+    include cloud.* -> * where source.kind is service and source.tag is not #deprecated
   }
 }
 ```
 
-- `core-services` is defined in the `global { ... }` block as a reusable `predicateGroup`.
-- Both views apply it via `global predicate core-services`.
-- The first view adds a **per-view `style` rule**.
-- The second view adds an **additional `include` rule** on top of the group.
+- `core-services` is defined once in the `global { ... }` block as a reusable `predicateGroup`.
+- Both views apply it with `global predicate core-services`.
+- `core-services-styled` adds a **per-view style rule** (`style * { ... }`).
+- `core-services-with-neighbors` adds an **extra include rule** on top of the group (`include cloud.* -> * ...`).

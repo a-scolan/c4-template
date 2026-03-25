@@ -1,11 +1,9 @@
-`styles { ... }` fails because `styles` is **not** a valid top-level statement in LikeC4. Top-level blocks must be allowed roots (for example `global`, `model`, `views`, `specification`).
+`styles { ... }` fails because `styles` is **not** a valid top-level statement in LikeC4 DSL. The parser only accepts specific top-level blocks (such as `specification`, `model`, `views`, etc.), so `theme dark` inside `styles` is rejected.
 
-To express the same intent (dark theme) with valid top-level structure, wrap it in `global`:
+A minimal valid file with the same intent is:
 
 ```likec4
-global {
-  styles {
-    theme dark
-  }
+specification {
+  theme dark
 }
 ```

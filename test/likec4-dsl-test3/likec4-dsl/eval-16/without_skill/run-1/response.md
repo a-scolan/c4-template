@@ -1,16 +1,17 @@
-No — this is invalid.
+No — this is invalid in LikeC4.
 
-`cloud -> backend` is a relationship from a parent element to its own nested child. In LikeC4, nesting already expresses hierarchy/containment, and explicit relationships should be between separate elements (typically siblings or elements in different branches), not parent-to-child.
+`cloud -> backend` tries to create a relationship between a parent element and its own child. Containment is modeled by nesting, not by a relationship.
 
-A corrected minimal pattern that keeps the hierarchy and adds a valid relationship elsewhere:
+A corrected minimal pattern (same hierarchy, valid relationship elsewhere):
 
 ```likec4
 model {
+  user = person 'User'
+
   cloud = system 'Cloud' {
     backend = container 'Backend'
   }
 
-  user = system 'User'
-  user -> cloud.backend 'sends traffic'
+  user -> cloud.backend 'uses'
 }
 ```

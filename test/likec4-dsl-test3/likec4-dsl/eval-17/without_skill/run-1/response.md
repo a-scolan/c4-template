@@ -1,15 +1,16 @@
-`backend.api` is unresolved in `ops.c4` because that path is **not a valid global identifier** across files.
+`ops.c4` is validated in the same global model as `base.c4`, but name resolution is still scope-based.
 
-In LikeC4, nested names such as `backend.api` are relative to a parent scope. Here, `api` is defined under:
+Why `backend.api -> cloud.db` fails:
 
-- `cloud` (system)
-- `cloud.backend` (container)
-- `cloud.backend.api` (service)
+1. `backend.api` is **not** a valid top-level reference.  
+   In `base.c4`, `api` is nested under `cloud.backend`, so its FQN is `cloud.backend.api`.  
+   From another file at top level, `backend.api` cannot be resolved because there is no root element named `backend`.
 
-So from another file, `backend.api` has no top-level `backend` to resolve from. Cross-file references must use the element’s fully qualified name (FQN), rooted at the top element.
+2. `cloud.db` must exist as that exact FQN.  
+   With your shown definition (`cloud = system { backend = container { api = service } }`), no `db` is declared, so `cloud.db` is also unresolved unless defined elsewhere.
 
-Use the relationship as:
+Correct cross-file relationship (using FQNs):
 
 `cloud.backend.api -> cloud.db`
 
-(assuming `db` is also a child of `cloud`; if not, use its actual full FQN).
+(And if `cloud.db` is not defined yet, define it first, then keep the relationship above.)

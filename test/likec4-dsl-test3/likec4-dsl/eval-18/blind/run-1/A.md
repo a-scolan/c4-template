@@ -1,19 +1,11 @@
-`extend` on relationships matches an **existing** relationship; it does not create a new one.
+No — not as written.
 
-For relationship matching, LikeC4 uses the same identifying parts as the relationship declaration:
-- source (`frontend`)
-- target (`api`)
-- and, when needed to disambiguate, relationship kind and title/label
+For relationship `extend`, LikeC4 matches an existing relationship by its **full relationship signature** (source, target, and relationship identity such as kind/label tuple). If multiple relationships could match, extension must be specific enough to resolve to exactly one. If nothing matches exactly, the `extend` fails.
 
-So with an existing relationship:
+Your existing relationship is:
+
 `frontend -[async]-> api 'streams'`
 
-you should extend it with the same signature (especially when there could be multiple `frontend -> api` relationships):
+So the extension should include the same relationship identity:
 
-`extend frontend -[async]-> api 'streams' {
-  metadata {
-    qos 'high'
-  }
-}`
-
-Using `extend frontend -> api 'streams' { ... }` may be ambiguous if multiple relationships exist between the same endpoints; include `-[async]->` for a precise match.
+`extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }`

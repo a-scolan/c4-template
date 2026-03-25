@@ -1,15 +1,25 @@
-In `view backend of cloud.backend { include * }`, `*` is **scoped** — it includes:
-- `cloud.backend` itself,
-- its **direct children**,
-- and relationships involving those included elements.
+In a scoped view like:
 
-It does **not** include the whole model.
+```likec4
+view backend of cloud.backend {
+  include *
+}
+```
+
+`*` **does not include the whole model**.
+In scoped-view semantics, `*` includes:
+- the scoped element itself (`cloud.backend`),
+- its **direct children**,
+- and relationships involving that included set.
+
+A minimal snippet that keeps that scope and then adds only incoming/outgoing relationships around `cloud.backend` is:
 
 ```likec4
 views {
   view backend of cloud.backend {
     include *
-    include -> cloud.backend ->   // only incoming + outgoing around cloud.backend
+    include * -> cloud.backend
+    include cloud.backend -> *
   }
 }
 ```

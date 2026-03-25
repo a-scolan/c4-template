@@ -1,12 +1,11 @@
-`payment.api` → **Invalid** (dots are reserved as FQN separators, not allowed inside a single identifier)
+`payment.api` → **Invalid**: dot (`.`) is not allowed in a single identifier (it is used as an FQN separator).
 
-`1backend` → **Invalid** (identifiers cannot start with a digit)
+`1backend` → **Invalid**: identifiers cannot start with a digit.
 
-`payment_api` → **Valid** (letters/digits/underscore are allowed)
+`payment_api` → **Valid**: uses allowed characters (letters, digits, underscore), and does not start with a digit.
 
-`payment-api` → **Valid** (letters/digits/hyphen are allowed)
+`payment-api` → **Valid**: uses allowed characters (letters, digits, hyphen), and does not start with a digit.
 
-### Rewrites for invalid identifiers (same meaning)
-
+Rewrites for invalid ones (preserving meaning):
 - `payment.api` → `payment_api` (or `payment-api`)
-- `1backend` → `backend1` (or `backend`)
+- `1backend` → `backend1`
