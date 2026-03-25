@@ -79,6 +79,17 @@ MANAGER_EDIT_ALLOWLIST = (
 MANAGER_EDIT_DENY_PREFIXES = (
     ".github/agents/scripts/",
 )
+WORKER_WRITE_MODES = {
+    "baseline",
+    "baseline_hook_only",
+    "with_skill_targeted",
+}
+WORKER_WRITE_PREFIX = "test/"
+WORKER_WRITE_DENY_PREFIXES = (
+    "test/scripts/",
+    "test/_agent-hooks/",
+    "test/_meta/",
+)
 ALLOWED_MANAGER_COMMANDS = (
     re.compile(r"^(python|python3|py(?:\s+-3)?)\s+test/scripts/skill_suite_tools\.py\b"),
     re.compile(r"^(python|python3|py(?:\s+-3)?)\s+\.github/agents/scripts/enforce-test-access\.py\b"),
@@ -416,19 +427,29 @@ def handle_edit(
     mode: str,
     state: dict[str, Any],
 ) -> dict[str, Any]:
-    if mode != "benchmark_manager":
+    if mode not in {"benchmark_manager"} and mode not in WORKER_WRITE_MODES:
         return deny("Editing tools are disabled for benchmark worker agents.")
 
     paths = extract_paths(tool_name, tool_input, workspace_root)
     if not paths:
-        return deny("Could not determine which files would be edited; benchmark manager edits must be explicitly path-scoped.")
+        return deny("Could not determine which files would be edited; benchmark edits must be explicitly path-scoped.")
+
+    if mode == "benchmark_manager":
+        for rel_path in paths:
+            if not is_manager_edit_allowed(rel_path):
+                return deny(
+                    f"Editing '{rel_path}' is outside the benchmark-manager allowlist. Only README.md, test/, and .github/agents/*.agent.md are editable from this agent."
+                )
+        return allow()
 
     for rel_path in paths:
-        if not is_manager_edit_allowed(rel_path):
+        if not is_worker_write_allowed(rel_path):
             return deny(
-                f"Editing '{rel_path}' is outside the benchmark-manager allowlist. Only README.md, test/, and .github/agents/*.agent.md are editable from this agent."
+                f"Editing '{rel_path}' is outside the worker write scope. Workers may only write under test/<iteration>/<skill>/ directories."
             )
-    return allow()
+    return allow(
+        additional_context="Worker write allowed under test/ iteration scope for response materialization."
+    )
 
 
 def handle_search(
@@ -493,6 +514,22 @@ def is_manager_edit_allowed(rel_path: str) -> bool:
     if rel_path.startswith(".github/agents/") and rel_path.endswith(".agent.md"):
         return True
     return False
+
+
+def is_worker_write_allowed(rel_path: str) -> bool:
+    if not rel_path.startswith(WORKER_WRITE_PREFIX):
+        return False
+    if any(rel_path.startswith(prefix) for prefix in WORKER_WRITE_DENY_PREFIXES):
+        return False
+    parts = rel_path.split("/")
+    if len(parts) < 3:
+        return False
+    iteration_name = parts[1]
+    if not is_benchmark_iteration_dir(iteration_name):
+        return False
+    if len(parts) >= 3 and parts[2].startswith("_"):
+        return False
+    return True
 
 
 def is_read_allowed(

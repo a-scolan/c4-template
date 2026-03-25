@@ -7,6 +7,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
+_SCRIPTS_DIR = str(Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in sys.path:
+    sys.path.insert(0, _SCRIPTS_DIR)
+
 from benchmark.hook_runtime import (
     anonymous_session_context,
     append_additional_context,

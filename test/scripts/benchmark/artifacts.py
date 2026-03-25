@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import re
 import shutil
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -30,10 +31,26 @@ def remove_path(path: Path) -> None:
         path.unlink()
 
 
+def _is_git_tracked(path: Path, workspace_root: Path) -> bool:
+    """Check if a directory contains any git-tracked files."""
+    try:
+        rel = path.relative_to(workspace_root).as_posix()
+        result = subprocess.run(
+            ["git", "ls-files", "--error-unmatch", rel],
+            cwd=workspace_root,
+            capture_output=True,
+            timeout=10,
+        )
+        return result.returncode == 0
+    except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+        return True  # assume tracked on error to avoid data loss
+
+
 def clean_benchmark_artifacts(workspace_root: Path) -> dict[str, Any]:
     test_root = workspace_root / "test"
     removed: list[str] = []
     missing: list[str] = []
+    skipped: list[str] = []
 
     targets: list[Path] = []
     if test_root.exists():
@@ -60,6 +77,9 @@ def clean_benchmark_artifacts(workspace_root: Path) -> dict[str, Any]:
         if not path.exists():
             missing.append(relative)
             continue
+        if _is_git_tracked(path, workspace_root):
+            skipped.append(relative)
+            continue
         remove_path(path)
         removed.append(relative)
 
@@ -67,6 +87,9 @@ def clean_benchmark_artifacts(workspace_root: Path) -> dict[str, Any]:
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "removed_count": len(removed),
         "removed": removed,
+        "skipped_count": len(skipped),
+        "skipped": skipped,
+        "skipped_reason": "git-tracked directories are preserved to avoid data loss",
         "missing_count": len(missing),
         "missing": missing,
     }

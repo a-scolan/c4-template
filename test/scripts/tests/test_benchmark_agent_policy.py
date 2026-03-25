@@ -802,6 +802,125 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(output), "allow")
 
+    # --- Worker write access tests ---
+
+    def test_baseline_worker_allows_write_under_iteration_skill(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-session",
+                "test/iteration-2/create-element/eval-0/without_skill/run-1/response.md",
+                "# Benchmark response\n",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_baseline_worker_denies_write_under_scripts(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-scripts-session",
+                "test/scripts/malicious.py",
+                "import os; os.system('evil')\n",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_worker_denies_write_under_agent_hooks(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-hooks-session",
+                "test/_agent-hooks/injected.json",
+                "{}",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_worker_denies_write_under_meta(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-meta-session",
+                "test/_meta/injected.json",
+                "{}",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_worker_denies_write_outside_test(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-outside-session",
+                "projects/shared/injected.c4",
+                "specification {}",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_worker_denies_write_to_disabled_skills(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-disabled-session",
+                "test/iteration-2/_disabled-skills/create-element/SKILL.md",
+                "# injected\n",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_with_skill_worker_allows_write_under_iteration_skill(self) -> None:
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "with-skill-write-session",
+                "test/iteration-2/create-element/eval-0/with_skill/run-1/response.md",
+                "# Skill-assisted response\n",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_with_skill_worker_denies_write_to_non_iteration_dir(self) -> None:
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "with-skill-write-noniter-session",
+                "test/random-folder/response.md",
+                "# Response\n",
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_worker_allows_write_to_skill_series_iteration(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "baseline-write-series-session",
+                "test/likec4-dsl-test4/likec4-dsl/eval-0/without_skill/run-1/response.md",
+                "# Series iteration response\n",
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_blind_compare_denies_write(self) -> None:
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "blind-write-session",
+                "test/iteration-2/create-element/eval-0/blind/result.json",
+                "{}",
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
 
 if __name__ == "__main__":
     unittest.main()

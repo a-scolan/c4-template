@@ -28,7 +28,7 @@ If raw hook payloads omit `sessionId`, the wrapper must derive stable anonymous 
 
 ## Phase order
 
-1. `clean-benchmark-artifacts`
+1. `clean-benchmark-artifacts` (skips git-tracked iteration directories)
 2. `write-protocol-manifest`
 3. `protocol-preflight`
 4. relocate skills
@@ -52,6 +52,7 @@ If raw hook payloads omit `sessionId`, the wrapper must derive stable anonymous 
 | `skill-blind-comparator` | Blind A/B judge |
 
 Hard rule: workers set `agents: []`. No unconstrained subagent hops.
+Hard rule: workers may write files only under `test/<iteration>/<skill>/`, scoped by the hook. No writes to scripts, hooks, or meta directories.
 
 ## Hook modes
 
@@ -60,12 +61,22 @@ Shared hook entrypoint: `test/scripts/benchmark_access_hook.py`
 | Mode | Allowed scope |
 | --- | --- |
 | `benchmark_manager` | benchmark orchestration only; no MCP |
-| `baseline` | `projects/shared/` only; narrow LikeC4 grounding only |
-| `baseline_hook_only` | same read scope as baseline, but skills remain present; probe only |
-| `with_skill_targeted` | locked target skill + `projects/shared/`; prompts from `evals/evals-public.json` only |
+| `baseline` | `projects/shared/` only; narrow LikeC4 grounding only; writes under `test/<iteration>/<skill>/` |
+| `baseline_hook_only` | same read scope as baseline, but skills remain present; probe only; writes under `test/<iteration>/<skill>/` |
+| `with_skill_targeted` | locked target skill + `projects/shared/`; prompts from `evals/evals-public.json` only; writes under `test/<iteration>/<skill>/` |
 | `blind_compare` | blinded `A.md` / `B.md` + target `grading-spec.json`; no MCP |
 
 Narrow LikeC4 grounding is allowed only for scored answer-generation workers. Project listing, project summaries, and view browsing remain denied.
+
+## Worker write access
+
+Worker agents (baseline, baseline_hook_only, with_skill_targeted) can write response files directly to disk under `test/<iteration>/<skill>/` paths. This avoids the overhead of the manager having to materialize worker text output. The hook enforces:
+
+- Writes must be under `test/` and target a valid benchmark iteration directory
+- Writes under `test/scripts/`, `test/_agent-hooks/`, and `test/_meta/` are denied
+- Writes to `_`-prefixed skill directories (e.g. `_disabled-skills/`) are denied
+
+The manager instructs each worker with the exact output file path (e.g. `test/<iteration>/<skill>/eval-<id>/<config>/run-<N>/response.md`). After a phase completes, the manager uses `summarize-phase` and `aggregate` to build summaries from the written files.
 
 ## Trace levels
 

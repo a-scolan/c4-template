@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+import sys as _sys
+from pathlib import Path as _Path
+
+_SCRIPTS_DIR = str(_Path(__file__).resolve().parent)
+if _SCRIPTS_DIR not in _sys.path:
+    _sys.path.insert(0, _SCRIPTS_DIR)
+
 """Deterministic harness helpers for the benchmark custom-agent workflow."""
 
 import argparse

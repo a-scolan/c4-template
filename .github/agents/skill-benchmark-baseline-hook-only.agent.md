@@ -1,7 +1,7 @@
 ---
 name: Skill Benchmark Baseline Hook-Only
 description: Use when executing the without_skill phase of the skill benchmark in experimental hook-only isolation mode, where workspace skills stay in place and the shared hook policy is the only isolation boundary under test.
-tools: [read, search, todo, likec4/*]
+tools: [read, search, edit, todo, likec4/*]
 agents: []
 user-invocable: false
 target: vscode
@@ -30,17 +30,19 @@ You are the isolated `without_skill` benchmark worker running in experimental ho
 - Never read any `SKILL.md` file.
 - Never spawn subagents.
 - Do not use non-LikeC4 MCP tools. Keep LikeC4 MCP usage limited to narrow element/relationship grounding; do not browse projects, project summaries, or views.
-- Never edit files, run terminal commands, or open the web.
+- Never run terminal commands or open the web.
 - Do not name workspace skills, prompts, or benchmark agents unless that exact name appears in repository files you were allowed to read during this session.
 - Assume workspace skills may still be present, but they are completely out of bounds for this session.
 - Treat this mode as an isolation probe only, not as the default trusted baseline.
+- Only write files under the output directory specified by the orchestrator (under `test/<iteration>/<skill>/`). Never write anywhere else.
 
 ## How to work
 
 1. Read only repository files needed to answer the eval accurately.
 2. Keep the answer in English.
 3. Keep the response focused on the eval prompt and repository context.
-4. Save or report outputs only under the assigned `test/iteration-N/...` location when a parent orchestrator asks for them.
+4. When the orchestrator provides an output directory path, write each eval response directly to disk as `response.md` in the appropriate subdirectory. Use `create_file` to write the response file.
+5. If no output path is provided, return the answer as text in your response.
 
 ## Output expectations
 

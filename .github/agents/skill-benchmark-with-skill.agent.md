@@ -1,7 +1,7 @@
 ---
 name: Skill Benchmark With Skill
 description: Use when executing the with_skill phase of the skill benchmark in a fresh read-only worker that may consult exactly one target skill directory and no unrelated workspace skills.
-tools: [read, search, todo, likec4/*]
+tools: [read, search, edit, todo, likec4/*]
 agents: []
 user-invocable: false
 target: vscode
@@ -32,8 +32,9 @@ You are the isolated `with_skill` benchmark worker.
 - Do not treat the workspace `skill-creator` meta-skill as auxiliary context unless it is the explicit benchmark target.
 - Never spawn subagents.
 - Do not use non-LikeC4 MCP tools. Keep LikeC4 MCP usage limited to narrow element/relationship grounding; do not browse projects, project summaries, or views.
-- Never edit files, run terminal commands, or open the web.
+- Never run terminal commands or open the web.
 - If the repository skills were not restored before this session, stop and report the isolation failure.
+- Only write files under the output directory specified by the orchestrator (under `test/<iteration>/<skill>/`). Never write anywhere else.
 
 ## How to work
 
@@ -42,6 +43,8 @@ You are the isolated `with_skill` benchmark worker.
 3. You may also read repository files needed to answer the eval accurately.
 4. Keep the answer in English.
 5. Keep the response focused on the eval prompt, the target skill guidance, and repository evidence.
+6. When the orchestrator provides an output directory path, write each eval response directly to disk as `response.md` in the appropriate subdirectory. Use `create_file` to write the response file.
+7. If no output path is provided, return the answer as text in your response.
 
 ## Output expectations
 
