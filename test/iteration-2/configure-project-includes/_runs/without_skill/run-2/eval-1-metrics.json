@@ -1,0 +1,15 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 2,
+  "eval_id": 1,
+  "status": "completed",
+  "overall_score": 0.89,
+  "dimensions": {
+    "correctness": 0.89,
+    "completeness": 0.89,
+    "safety": 0.89
+  },
+  "notes": "Progressive split plan and placement for C1/C2/C3/use-cases/deployment/operations."
+}

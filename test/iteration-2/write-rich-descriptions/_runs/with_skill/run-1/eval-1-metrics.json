@@ -1,0 +1,15 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "run": 1,
+  "eval_id": 1,
+  "started_at": "2026-03-26T10:00:39Z",
+  "finished_at": "2026-03-26T10:01:21Z",
+  "elapsed_seconds": 42,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "status": "completed",
+  "output_path": "test/iteration-2/write-rich-descriptions/eval-1/with_skill/run-1/response.md"
+}

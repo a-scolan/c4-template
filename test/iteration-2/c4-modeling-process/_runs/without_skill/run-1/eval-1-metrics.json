@@ -1,0 +1,14 @@
+{
+  "eval_id": "eval-1",
+  "skill": "c4-modeling-process",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "success": true,
+  "score": 1.0,
+  "required_keys_present": true,
+  "required_keys_non_null": true,
+  "response_file": "test/iteration-2/c4-modeling-process/eval-1/without_skill/run-1/response.md",
+  "notes": "Decision rule for when C3 is needed provided.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

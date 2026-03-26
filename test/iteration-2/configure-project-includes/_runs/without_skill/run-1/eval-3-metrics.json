@@ -1,0 +1,26 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": 3,
+  "status": "completed",
+  "overall_score": 0.86,
+  "dimensions": {
+    "correctness": 0.86,
+    "completeness": 0.86,
+    "safety": 0.86
+  },
+  "notes": "Explains when to combine with broader multi-project workflow."
+}{
+  "iteration": "iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": "eval-3",
+  "status": "completed",
+  "prompt_used_verbatim": true,
+  "language": "en",
+  "response_path": "test/iteration-2/configure-project-includes/eval-3/without_skill/run-1/response.md",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

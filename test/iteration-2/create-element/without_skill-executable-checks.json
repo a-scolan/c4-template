@@ -1,0 +1,275 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "create-element",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 9,
+    "valid_eval_count": 5,
+    "valid_eval_rate": 0.5556,
+    "snippet_count_total": 9,
+    "error_count_total": 8,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "fileIngestionApi = Container_Api 'File Ingestion API'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Model **two elements** (prod + mock) with the same existing kind, then distinguish them with names/tags/metadata.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "identityProvider = System_External 'Identity Provider'\nportalApi = Container_Api 'Portal API'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  yourSystem = system \"Your System\" {\n    fileIngestionApi = container \"File Ingestion API\"\n  }\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/without_skill/run-2/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/without_skill/run-2/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Model two **elements** with the same appropriate base kind (usually `externalSystem` for the real third-party payment API and either `externalSystem` or `container` for your internal mock, depending on placement). Then distinguish them with clear names and tags/metadata (for example `env=prod` vs `env=test`, `mock=true`).",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 2,
+      "response_path": "eval-4/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  identityProvider = externalSystem \"Identity Provider\"\n  portalApi = container \"Portal API\"\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'externalSystem'.",
+            "Unknown LikeC4 kind 'container'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  yourSystem = system \"Your System\" {\n    fileIngestionApi = container \"File Ingestion API\"\n  }\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/without_skill/run-3/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/without_skill/run-3/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Model two **elements** with the same appropriate base kind (usually `externalSystem` for the real third-party payment API and either `externalSystem` or `container` for your internal mock, depending on placement). Then distinguish them with clear names and tags/metadata (for example `env=prod` vs `env=test`, `mock=true`).",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 3,
+      "response_path": "eval-4/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  identityProvider = externalSystem \"Identity Provider\"\n  portalApi = container \"Portal API\"\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'externalSystem'.",
+            "Unknown LikeC4 kind 'container'."
+          ],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

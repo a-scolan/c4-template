@@ -1,0 +1,458 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "create-relationship",
+  "configuration": "with_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 15,
+    "valid_eval_count": 12,
+    "valid_eval_rate": 0.8,
+    "snippet_count_total": 30,
+    "error_count_total": 3,
+    "warning_count_total": 12
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 1,
+      "warning_count": 4,
+      "snippets": [
+        {
+          "snippet": "webApp -[calls]-> api 'Sends request' {\n  technology 'HTTPS'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: relationship kind belongs inline, not inside the block\nwebApp -> api {\n  calls 'Sends request'\n  technology 'HTTPS'\n}\n\n// ❌ Wrong: no kind specified at all\nwebApp -> api 'Sends request'",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 4,
+          "errors": [
+            "Unknown relationship kind ''Sends'."
+          ],
+          "warnings": [
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "uploadService -[async]-> jobQueue 'Publishes job' {\n  technology 'AMQP'\n}\n\nworker -[async]-> jobQueue 'Consumes job' {\n  technology 'AMQP'\n}\n\nworker -[writes]-> primaryDatabase 'Stores processing result' {\n  technology 'PostgreSQL'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: fake return path from async worker to producer\nworker -[calls]-> uploadService 'Send completion'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "retrievalService -[reads]-> redisCache 'Checks cache'\nretrievalService -[reads]-> primaryDatabase 'Fetches on cache miss'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: databases and caches are not generic service calls\nretrievalService -[calls]-> primaryDatabase 'Fetch data'\nretrievalService -[calls]-> redisCache 'Get value'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "api -[reads]-> redisCache 'Checks cache'\napi -[reads]-> primaryDatabase 'Fetches on cache miss'\napi -[writes]-> redisCache 'Refreshes cached value'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: invented composite kind encodes behavior in the kind name\napi -[reads_with_fallback]-> primaryDatabase\n\n// ❌ Wrong: collapsing both data stores into one ambiguous relationship\napi -[reads]-> redisCache 'Cache or DB'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "user -[calls]-> webApp 'Uses UI' {\n  technology 'Manual'\n}\n\nwebApp -[calls]-> api 'Sends request' {\n  technology 'HTTPS'\n}\n\napi -[calls]-> internalService 'Routes request' {\n  technology 'HTTP/8080'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: duplicating normal app traffic in deployment\nProd.Web.webApp -[https]-> Prod.App.apiApp 'Browser traffic'\n\n// ❌ Wrong: protocol as relationship kind in logical model\nwebApp -[https]-> api 'Sends request'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 1,
+      "warning_count": 4,
+      "snippets": [
+        {
+          "snippet": "webApp -[calls]-> api 'Sends request' {\n  technology 'HTTPS'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: relationship kind belongs inline, not inside the block\nwebApp -> api {\n  calls 'Sends request'\n  technology 'HTTPS'\n}\n\n// ❌ Wrong: no kind specified at all\nwebApp -> api 'Sends request'",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 4,
+          "errors": [
+            "Unknown relationship kind ''Sends'."
+          ],
+          "warnings": [
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "uploadService -[async]-> jobQueue 'Publishes job' {\n  technology 'AMQP'\n}\n\nworker -[async]-> jobQueue 'Consumes job' {\n  technology 'AMQP'\n}\n\nworker -[writes]-> primaryDatabase 'Stores processing result' {\n  technology 'PostgreSQL'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: fake return path from async worker to producer\nworker -[calls]-> uploadService 'Send completion'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "retrievalService -[reads]-> redisCache 'Checks cache'\nretrievalService -[reads]-> primaryDatabase 'Fetches on cache miss'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: databases and caches are not generic service calls\nretrievalService -[calls]-> primaryDatabase 'Fetch data'\nretrievalService -[calls]-> redisCache 'Get value'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "api -[reads]-> redisCache 'Checks cache'\napi -[reads]-> primaryDatabase 'Fetches on cache miss'\napi -[writes]-> redisCache 'Refreshes cached value'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: invented composite kind encodes behavior in the kind name\napi -[reads_with_fallback]-> primaryDatabase\n\n// ❌ Wrong: collapsing both data stores into one ambiguous relationship\napi -[reads]-> redisCache 'Cache or DB'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 2,
+      "response_path": "eval-4/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "user -[calls]-> webApp 'Uses UI' {\n  technology 'Manual'\n}\n\nwebApp -[calls]-> api 'Sends request' {\n  technology 'HTTPS'\n}\n\napi -[calls]-> internalService 'Routes request' {\n  technology 'HTTP/8080'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: duplicating normal app traffic in deployment\nProd.Web.webApp -[https]-> Prod.App.apiApp 'Browser traffic'\n\n// ❌ Wrong: protocol as relationship kind in logical model\nwebApp -[https]-> api 'Sends request'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 1,
+      "warning_count": 4,
+      "snippets": [
+        {
+          "snippet": "webApp -[calls]-> api 'Sends request' {\n  technology 'HTTPS'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: relationship kind belongs inline, not inside the block\nwebApp -> api {\n  calls 'Sends request'\n  technology 'HTTPS'\n}\n\n// ❌ Wrong: no kind specified at all\nwebApp -> api 'Sends request'",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 4,
+          "errors": [
+            "Unknown relationship kind ''Sends'."
+          ],
+          "warnings": [
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "uploadService -[async]-> jobQueue 'Publishes job' {\n  technology 'AMQP'\n}\n\nworker -[async]-> jobQueue 'Consumes job' {\n  technology 'AMQP'\n}\n\nworker -[writes]-> primaryDatabase 'Stores processing result' {\n  technology 'PostgreSQL'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: fake return path from async worker to producer\nworker -[calls]-> uploadService 'Send completion'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "retrievalService -[reads]-> redisCache 'Checks cache'\nretrievalService -[reads]-> primaryDatabase 'Fetches on cache miss'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: databases and caches are not generic service calls\nretrievalService -[calls]-> primaryDatabase 'Fetch data'\nretrievalService -[calls]-> redisCache 'Get value'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "api -[reads]-> redisCache 'Checks cache'\napi -[reads]-> primaryDatabase 'Fetches on cache miss'\napi -[writes]-> redisCache 'Refreshes cached value'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: invented composite kind encodes behavior in the kind name\napi -[reads_with_fallback]-> primaryDatabase\n\n// ❌ Wrong: collapsing both data stores into one ambiguous relationship\napi -[reads]-> redisCache 'Cache or DB'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 3,
+      "response_path": "eval-4/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "user -[calls]-> webApp 'Uses UI' {\n  technology 'Manual'\n}\n\nwebApp -[calls]-> api 'Sends request' {\n  technology 'HTTPS'\n}\n\napi -[calls]-> internalService 'Routes request' {\n  technology 'HTTP/8080'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// ❌ Wrong: duplicating normal app traffic in deployment\nProd.Web.webApp -[https]-> Prod.App.apiApp 'Browser traffic'\n\n// ❌ Wrong: protocol as relationship kind in logical model\nwebApp -[https]-> api 'Sends request'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

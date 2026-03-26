@@ -1,0 +1,33 @@
+{
+  "skill_name": "design-view",
+  "configuration": "without_skill",
+  "language": "en",
+  "mcp_used": false,
+  "run_number": 1,
+  "eval_id": 3,
+  "started_at": "2026-03-26T09:00:27Z",
+  "finished_at": "2026-03-26T09:00:32Z",
+  "elapsed_seconds_total": 5,
+  "files_read_count": 0,
+  "files_written_count": 2
+}{
+  "eval_id": "eval-3",
+  "iteration": "test/iteration-2",
+  "skill": "design-view",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "response_path": "test/iteration-2/design-view/eval-3/without_skill/run-1/response.md",
+  "status": "completed",
+  "language": "en",
+  "prompt_used_verbatim": true,
+  "scores": {
+    "instruction_following": 0.95,
+    "technical_quality": 0.94,
+    "workspace_alignment": 0.93,
+    "completeness": 0.95,
+    "clarity": 0.93,
+    "overall": 0.94
+  },
+  "notes": "Recommends both C2 and Deployment for SecZone documentation.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

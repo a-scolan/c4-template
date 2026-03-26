@@ -1,0 +1,26 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": 1,
+  "status": "completed",
+  "overall_score": 0.88,
+  "dimensions": {
+    "correctness": 0.88,
+    "completeness": 0.88,
+    "safety": 0.88
+  },
+  "notes": "Progressive split plan and placement for C1/C2/C3/use-cases/deployment/operations."
+}{
+  "iteration": "iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": "eval-1",
+  "status": "completed",
+  "prompt_used_verbatim": true,
+  "language": "en",
+  "response_path": "test/iteration-2/configure-project-includes/eval-1/without_skill/run-1/response.md",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

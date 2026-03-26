@@ -1,0 +1,15 @@
+{
+  "eval_id": 2,
+  "run": 3,
+  "skill_name": "implement-pattern",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "status": "success",
+  "started_at": "2026-03-26T10:02:23Z",
+  "finished_at": "2026-03-26T10:02:36Z",
+  "elapsed_seconds": 13,
+  "files_read_count": 0,
+  "files_written_count": 2,
+  "response_path": "test/iteration-2/implement-pattern/eval-2/with_skill/run-3/response.md"
+}

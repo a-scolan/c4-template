@@ -1,0 +1,30 @@
+{
+  "eval_id": "eval-1",
+  "skill": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "success": true,
+  "score": 0.2,
+  "required_keys_present": true,
+  "required_keys_non_null": true,
+  "response_file": "test/iteration-2/model-deployment-infrastructure/eval-1/without_skill/run-1/response.md",
+  "notes": "Does not delegate to structure-deployment-tiers skill. Tier split provided inline without recognizing the dedicated skill exists.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}{
+  "iteration": "test/iteration-2",
+  "skill": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": "eval-1",
+  "response_path": "test/iteration-2/model-deployment-infrastructure/eval-1/without_skill/run-1/response.md",
+  "status": "completed",
+  "scores": {
+    "instruction_adherence": 1.0,
+    "technical_correctness": 1.0,
+    "completeness": 1.0,
+    "clarity": 1.0
+  },
+  "notes": "Clarified that zone/tier split and firewall boundaries belong to deployment modeling.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

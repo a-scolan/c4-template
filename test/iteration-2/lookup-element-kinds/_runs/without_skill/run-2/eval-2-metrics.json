@@ -1,0 +1,30 @@
+{
+  "eval_id": 2,
+  "run": 2,
+  "config": "without_skill",
+  "score": 75,
+  "max_score": 100,
+  "criteria": {
+    "correct_kind": {
+      "score": 1,
+      "max": 1,
+      "notes": "Correctly identified Container_Api for a REST API backend"
+    },
+    "includes_example": {
+      "score": 1,
+      "max": 1,
+      "notes": "LikeC4 code example with technology property provided"
+    },
+    "mentions_tags": {
+      "score": 1,
+      "max": 1,
+      "notes": "Tags #Container #Api mentioned"
+    },
+    "spec_file_referenced": {
+      "score": 0,
+      "max": 1,
+      "notes": "spec-containers.c4 not explicitly referenced without skill guidance"
+    }
+  },
+  "notes": "Without-skill baseline run-2: correct Container_Api identification with geo variant note"
+}

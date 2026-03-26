@@ -1,0 +1,13 @@
+{
+  "eval_id": "eval-4",
+  "iteration": "test/iteration-2",
+  "skill": "lookup-element-kinds",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "response_path": "test/iteration-2/lookup-element-kinds/eval-4/without_skill/run-1/response.md",
+  "grounding_source": "projects/shared/spec-global.c4, projects/shared/spec-deployment.c4",
+  "answered_prompt_verbatim": true,
+  "required_keys_non_null": true,
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

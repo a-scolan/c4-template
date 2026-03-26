@@ -1,0 +1,19 @@
+{
+  "eval_id": "eval-2",
+  "run_id": 3,
+  "skill": "implement-pattern",
+  "config": "without_skill",
+  "iteration": "iteration-2",
+  "prompt_summary": "Implement cache-aside pattern with Redis cache between API and database",
+  "scores": {
+    "syntax_valid": 1,
+    "element_kinds_idiomatic": 0,
+    "relationship_kinds_typed": 0,
+    "tags_applied": 0,
+    "completeness": 1,
+    "view_provided": 1
+  },
+  "score": 54,
+  "pass": false,
+  "notes": "Cache node present and cache-set relationship modeled. Container used for Redis. Missing -[reads]-> / -[writes]-> typed relationships and #Persistence tag."
+}

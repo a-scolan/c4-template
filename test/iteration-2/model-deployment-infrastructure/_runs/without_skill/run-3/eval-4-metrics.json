@@ -1,0 +1,14 @@
+{
+  "eval_id": "eval-4",
+  "skill": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "run_number": 3,
+  "status": "completed",
+  "success": true,
+  "score": 0.6,
+  "required_keys_present": true,
+  "required_keys_non_null": true,
+  "response_file": "test/iteration-2/model-deployment-infrastructure/eval-4/without_skill/run-3/response.md",
+  "notes": "Correctly adds Prometheus as infrastructure-only deployment relationship. Correctly avoids duplicating logical model app traffic through instanceOf.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

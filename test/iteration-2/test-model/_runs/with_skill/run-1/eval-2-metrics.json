@@ -1,0 +1,15 @@
+{
+  "skill_name": "test-model",
+  "configuration": "with_skill",
+  "language": "en",
+  "run": 1,
+  "eval_id": 2,
+  "mcp_used": false,
+  "started_at": "2026-03-26T10:02:00Z",
+  "finished_at": "2026-03-26T10:03:00Z",
+  "elapsed_seconds": 60,
+  "files_read_count": 0,
+  "files_written_count": 1,
+  "response_path": "test/iteration-2/test-model/eval-2/with_skill/run-1/response.md",
+  "status": "completed"
+}

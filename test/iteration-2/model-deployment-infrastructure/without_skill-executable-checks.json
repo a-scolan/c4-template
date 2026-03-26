@@ -1,0 +1,449 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 15,
+    "valid_eval_count": 13,
+    "valid_eval_rate": 0.8667,
+    "snippet_count_total": 30,
+    "error_count_total": 10,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 2,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n\n    Dmz = Zone_Vlan 'DMZ' {\n      ProdApigwVm = Node_Vm 'prod-apigw-vm' {\n        technology 'Kong'\n        apiApp = Node_App 'API Gateway' {\n          instanceOf platform.apiGateway\n        }\n      }\n    }\n\n    App = Zone_Vlan 'Application Tier' {\n      ProdUploadVm = Node_Vm 'prod-upload-vm' {\n        technology 'Node.js'\n        uploadApp = Node_App 'Upload Service' {\n          instanceOf platform.uploadService\n        }\n      }\n      ProdWorkerVm = Node_Vm 'prod-worker-vm' {\n        technology 'Go'\n        workerApp = Node_App 'Processing Worker' {\n          instanceOf platform.worker\n        }\n      }\n    }\n\n    Data = Zone_Vlan 'Data Tier' {\n      ProdDbVm = Node_Vm 'prod-db-vm' {\n        technology 'MongoDB'\n        dbApp = Node_App 'MongoDB' {\n          instanceOf platform.database\n        }\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "model {\n  platform = system 'Document Platform' {\n    apiGateway = Container_Api 'API Gateway' { ... }\n    uploadService = Container_Service 'Upload Service' { ... }\n  }\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'Container_Service'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "Prod.App.ProdUploadVm -[amqp]-> Prod.App.ProdWorkerVm 'Queue jobs'\nProd.App.ProdWorkerVm -[tcp]-> Prod.Data.ProdDbVm 'Write results'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n    Dmz = Zone_Vlan 'DMZ' {\n      // API Gateway, Web Server\n    }\n    AppTier = Zone_Vlan 'Application Tier' {\n      // Microservices: Upload, Retrieval\n    }\n    ProcTier = Zone_Vlan 'Processing Tier' {\n      // Message Queue, Workers\n    }\n    DataTier = Zone_Vlan 'Data Tier' {\n      // Database, Object Storage\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// DMZ to AppTier\nProd.Dmz.ApiVm -[https]-> Prod.AppTier.UploadVm 'Route upload requests'\n\n// AppTier to ProcTier (async message publishing)\nProd.AppTier.UploadVm -[amqp]-> Prod.ProcTier.QueueVm 'Enqueue job'\n\n// AppTier to DataTier\nProd.AppTier.UploadVm -[tcp]-> Prod.DataTier.DbVm 'Query metadata'\n\n// ProcTier to DataTier\nProd.ProcTier.WorkerVm -[tcp]-> Prod.DataTier.DbVm 'Write results'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 3,
+      "error_count": 8,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n    K8s = Node_Cluster 'Kubernetes Cluster' {\n      apiPod = Node_App 'API Gateway' {\n        instanceOf platform.apiGateway\n      }\n      uploadPod = Node_App 'Upload Service' {\n        instanceOf platform.uploadService\n      }\n      workerPod = Node_App 'Processing Worker' {\n        instanceOf platform.worker\n      }\n      dbPod = Node_App 'MongoDB' {\n        instanceOf platform.database\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "apiPod = Node_App 'API Gateway' {\n  instanceOf platform.apiGateway  // must exist in model {}\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "K8s = Node_Cluster 'Kubernetes Cluster' {\n  ProdNs = Node_Cluster 'production' {\n    apiPod = Node_App 'API Gateway' {\n      instanceOf platform.apiGateway\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "deployment {\n  Prod = deploymentNode 'Production' {\n    k8s = deploymentNode 'Managed Kubernetes Cluster' {\n      apiNs = deploymentNode 'api-namespace' {\n        apiPod = instanceOf documentPlatform.apiGateway\n      }\n      uploadNs = deploymentNode 'upload-namespace' {\n        uploadPod = instanceOf documentPlatform.uploadService\n      }\n      workerNs = deploymentNode 'worker-namespace' {\n        workerPod = instanceOf documentPlatform.processingWorker\n      }\n    }\n  }\n}",
+          "valid": false,
+          "error_count": 8,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'deploymentNode'.",
+            "Unknown LikeC4 kind 'deploymentNode'.",
+            "Unknown LikeC4 kind 'deploymentNode'.",
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown LikeC4 kind 'deploymentNode'.",
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown LikeC4 kind 'deploymentNode'.",
+            "Unknown LikeC4 kind 'instanceOf'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  webApp -[calls]-> apiApp 'Browser requests' {\n    technology 'HTTPS'\n  }\n  apiApp -[reads]-> dbApp 'Query database' {\n    technology 'TCP / MongoDB wire protocol'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Prod.SecZone.PrometheusVm -[tcp]-> Prod.App.ApiVm 'Scrape metrics :9090'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// Do NOT add — this duplicates a logical relationship\n// Prod.Web.webApp -[https]-> Prod.App.apiApp",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n\n    Dmz = Zone_Vlan 'DMZ' {\n      ApiVm = Node_Vm 'prod-apigw-vm' {\n        technology 'Kong / Nginx'\n        apiApp = Node_App 'API Gateway' {\n          instanceOf docPlatform.apiGateway\n        }\n      }\n    }\n\n    AppTier = Zone_Vlan 'Application Tier' {\n      UploadVm = Node_Vm 'prod-upload-vm' {\n        technology 'Node.js'\n        uploadApp = Node_App 'Upload Service' {\n          instanceOf docPlatform.uploadService\n        }\n      }\n      WorkerVm = Node_Vm 'prod-worker-vm' {\n        technology 'Python'\n        workerApp = Node_App 'Processing Worker' {\n          instanceOf docPlatform.processingWorker\n        }\n      }\n    }\n\n    DataTier = Zone_Vlan 'Data Tier' {\n      DbVm = Node_Vm 'prod-db-vm' {\n        technology 'MongoDB 6'\n        dbApp = Node_App 'MongoDB' {\n          instanceOf docPlatform.documentDb\n        }\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "Prod.AppTier.UploadVm -[amqp]-> Prod.AppTier.WorkerVm 'Enqueue job'\nProd.AppTier.WorkerVm -[tcp]-> Prod.DataTier.DbVm 'Persist result'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n    Dmz     = Zone_Vlan 'DMZ' { }\n    AppTier = Zone_Vlan 'Application Tier' { }\n    ProcTier = Zone_Vlan 'Processing Tier' { }\n    DataTier = Zone_Vlan 'Data Tier' { }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// Internet → DMZ\nProd.Dmz.ApiVm -[https]-> Prod.AppTier.UploadVm 'Route requests'\n\n// AppTier → ProcTier\nProd.AppTier.UploadVm -[amqp]-> Prod.ProcTier.QueueVm 'Enqueue processing'\n\n// AppTier → DataTier\nProd.AppTier.UploadVm -[tcp]-> Prod.DataTier.DbVm 'Query database'\n\n// ProcTier → DataTier\nProd.ProcTier.WorkerVm -[tcp]-> Prod.DataTier.DbVm 'Write results'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n    Cluster = Node_Cluster 'k8s-prod' {\n      apigwApp = Node_App 'API Gateway' {\n        instanceOf mySystem.apiGateway\n      }\n      uploadApp = Node_App 'Upload Service' {\n        instanceOf mySystem.uploadService\n      }\n      workerApp = Node_App 'Worker' {\n        instanceOf mySystem.worker\n      }\n      dbApp = Node_App 'MongoDB' {\n        instanceOf mySystem.database\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  webApp -[calls]-> apiApp 'Requests API' {\n    technology 'HTTPS'\n  }\n  apiApp -[reads]-> dbApp 'Queries database' {\n    technology 'TCP / MongoDB'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// Avoid in deployment.c4\nProd.Web.webApp -[https]-> Prod.App.apiApp\nProd.App.apiApp -[tcp]-> Prod.Data.dbApp",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 2,
+      "response_path": "eval-4/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Prod.Monitoring.PrometheusVm -[tcp]-> Prod.App.ApiVm 'Metrics scrape :9090'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// Remove these if you have them:\n// Prod.Web.webApp -[https]-> Prod.App.apiApp\n// Prod.App.apiApp -[sql]-> Prod.Data.dbApp",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n\n    Web = Zone_Vlan 'DMZ' {\n      GwVm = Node_Vm 'prod-gateway-vm' {\n        technology 'Kong'\n        gwApp = Node_App 'API Gateway' {\n          instanceOf docs.api\n        }\n      }\n    }\n\n    Services = Zone_Vlan 'App Tier' {\n      UpVm = Node_Vm 'prod-upload-vm' {\n        technology 'Node.js'\n        upApp = Node_App 'Upload' {\n          instanceOf docs.uploadService\n        }\n      }\n      WrkVm = Node_Vm 'prod-worker-vm' {\n        technology 'Go'\n        wrkApp = Node_App 'Worker' {\n          instanceOf docs.processingWorker\n        }\n      }\n    }\n\n    Persistence = Zone_Vlan 'Data Tier' {\n      DbVm = Node_Vm 'prod-mongo-vm' {\n        technology 'MongoDB'\n        mongoApp = Node_App 'MongoDB' {\n          instanceOf docs.database\n        }\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "Prod.Services.UpVm -[amqp]-> Prod.Services.WrkVm 'Enqueue processing job'\nProd.Services.WrkVm -[tcp]-> Prod.Persistence.DbVm 'Write result to MongoDB'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n    Dmz      = Zone_Vlan 'DMZ' { }\n    AppTier  = Zone_Vlan 'Application Tier' { }\n    ProcTier = Zone_Vlan 'Processing Tier' { }\n    DataTier = Zone_Vlan 'Data Tier' { }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "Prod.Dmz.ApiVm      -[https]-> Prod.AppTier.ServiceVm   'Route external requests'\nProd.AppTier.ServiceVm -[amqp]-> Prod.ProcTier.QueueVm  'Publish job'\nProd.ProcTier.WorkerVm -[tcp]-> Prod.DataTier.DbVm      'Write processed data'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment 'Production' {\n\n    KubeProd = Node_Cluster 'prod-cluster' {\n      technology 'Google Kubernetes Engine'\n\n      gatewayPod = Node_App 'API Gateway' {\n        instanceOf app.apiGateway\n      }\n      uploadPod = Node_App 'Upload Service' {\n        instanceOf app.uploadService\n      }\n      workerPod = Node_App 'Worker' {\n        instanceOf app.worker\n      }\n      mongoPod = Node_App 'MongoDB' {\n        instanceOf app.database\n      }\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  // Application-level with protocol as technology\n  webApp -[calls]-> apiApp 'Opens session' {\n    technology 'HTTPS / REST'\n  }\n  apiApp -[reads]-> dbApp 'Fetches document' {\n    technology 'TCP / MongoDB wire'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 3,
+      "response_path": "eval-4/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Prod.Sec.MonitoringVm -[tcp]-> Prod.App.ApiVm 'Prometheus scrape :9090'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "model {\n  webApp -[calls]-> api 'Browser requests' { technology 'HTTPS' }\n  api -[reads]-> db 'Fetch data'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// Avoid: duplicates what instanceOf propagates\n// Prod.Web.webApp -[https]-> Prod.App.apiApp",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

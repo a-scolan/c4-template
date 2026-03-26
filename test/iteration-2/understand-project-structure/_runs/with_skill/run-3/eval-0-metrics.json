@@ -1,0 +1,15 @@
+{
+  "skill_name": "understand-project-structure",
+  "configuration": "with_skill",
+  "language": "en",
+  "eval_id": 0,
+  "run": 3,
+  "mcp_used": false,
+  "started_at": "2026-03-26T10:04:00Z",
+  "finished_at": "2026-03-26T10:04:20Z",
+  "elapsed_seconds": 20.0,
+  "files_read_count": 7,
+  "files_written_count": 2,
+  "response_path": "test/iteration-2/understand-project-structure/eval-0/with_skill/run-3/response.md",
+  "status": "completed"
+}

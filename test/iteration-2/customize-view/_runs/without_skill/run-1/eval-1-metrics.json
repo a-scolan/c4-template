@@ -1,0 +1,12 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "customize-view",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "eval_id": "eval-1",
+  "status": "completed",
+  "success": true,
+  "response_file": "test/iteration-2/customize-view/eval-1/without_skill/run-1/response.md",
+  "timestamp_utc": "2026-03-25T00:00:00Z",
+  "notes": "Used tag-based emphasis for API and opacity de-emphasis for others without custom palette."
+}

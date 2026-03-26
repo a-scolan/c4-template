@@ -1,0 +1,19 @@
+{
+  "eval_id": "eval-0",
+  "run_id": 3,
+  "skill": "implement-pattern",
+  "config": "without_skill",
+  "iteration": "iteration-2",
+  "prompt_summary": "Implement async messaging pattern with message queue decoupling API from workers",
+  "scores": {
+    "syntax_valid": 1,
+    "element_kinds_idiomatic": 0,
+    "relationship_kinds_typed": 0,
+    "tags_applied": 0,
+    "completeness": 1,
+    "view_provided": 1
+  },
+  "score": 63,
+  "pass": false,
+  "notes": "Correct AMQP technology on relationships. Container_Api used for upload API. Queue and DB still use generic Container. Missing typed async relationship and #Queue tag."
+}

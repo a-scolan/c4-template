@@ -1,0 +1,12 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "customize-view",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "eval_id": "eval-3",
+  "status": "completed",
+  "success": true,
+  "response_file": "test/iteration-2/customize-view/eval-3/without_skill/run-1/response.md",
+  "timestamp_utc": "2026-03-25T00:00:00Z",
+  "notes": "Combined API highlighting, stable drill-down, docs link, and scope boundary statement."
+}

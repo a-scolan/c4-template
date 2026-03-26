@@ -1,0 +1,169 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "configuration": "without_skill",
+  "language": "en",
+  "mcp_used": false,
+  "run_count": 3,
+  "summary": {
+    "elapsed_seconds_total": 18.0,
+    "elapsed_seconds_per_eval": 6.0,
+    "response_words_total": 322.0,
+    "response_words_per_eval": 107.3333,
+    "files_read_count": 0.3333,
+    "files_written_count": 6.0
+  },
+  "variance": {
+    "elapsed_seconds_total": {
+      "mean": 18.0,
+      "stddev": 1.0,
+      "min": 17.0,
+      "max": 19.0
+    },
+    "elapsed_seconds_per_eval": {
+      "mean": 6.0,
+      "stddev": 0.3333,
+      "min": 5.6667,
+      "max": 6.3333
+    },
+    "response_words_total": {
+      "mean": 322.0,
+      "stddev": 0.0,
+      "min": 322.0,
+      "max": 322.0
+    },
+    "response_words_per_eval": {
+      "mean": 107.3333,
+      "stddev": 0.0,
+      "min": 107.3333,
+      "max": 107.3333
+    },
+    "files_read_count": {
+      "mean": 0.3333,
+      "stddev": 0.5774,
+      "min": 0.0,
+      "max": 1.0
+    },
+    "files_written_count": {
+      "mean": 6.0,
+      "stddev": 0.0,
+      "min": 6.0,
+      "max": 6.0
+    }
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "summary": {
+        "elapsed_seconds_total": 18.0,
+        "elapsed_seconds_per_eval": 6.0,
+        "response_words_total": 322,
+        "response_words_per_eval": 107.3333,
+        "files_read_count": 1,
+        "files_written_count": 6
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 1,
+          "response_path": "eval-0/without_skill/run-1/response.md",
+          "response_words": 64
+        },
+        {
+          "id": 1,
+          "run_number": 1,
+          "response_path": "eval-1/without_skill/run-1/response.md",
+          "response_words": 126
+        },
+        {
+          "id": 2,
+          "run_number": 1,
+          "response_path": "eval-2/without_skill/run-1/response.md",
+          "response_words": 132
+        }
+      ]
+    },
+    {
+      "run_number": 2,
+      "summary": {
+        "elapsed_seconds_total": 17.0,
+        "elapsed_seconds_per_eval": 5.6667,
+        "response_words_total": 322,
+        "response_words_per_eval": 107.3333,
+        "files_read_count": 0,
+        "files_written_count": 6
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 2,
+          "response_path": "eval-0/without_skill/run-2/response.md",
+          "response_words": 64
+        },
+        {
+          "id": 1,
+          "run_number": 2,
+          "response_path": "eval-1/without_skill/run-2/response.md",
+          "response_words": 126
+        },
+        {
+          "id": 2,
+          "run_number": 2,
+          "response_path": "eval-2/without_skill/run-2/response.md",
+          "response_words": 132
+        }
+      ]
+    },
+    {
+      "run_number": 3,
+      "summary": {
+        "elapsed_seconds_total": 19.0,
+        "elapsed_seconds_per_eval": 6.3333,
+        "response_words_total": 322,
+        "response_words_per_eval": 107.3333,
+        "files_read_count": 0,
+        "files_written_count": 6
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 3,
+          "response_path": "eval-0/without_skill/run-3/response.md",
+          "response_words": 64
+        },
+        {
+          "id": 1,
+          "run_number": 3,
+          "response_path": "eval-1/without_skill/run-3/response.md",
+          "response_words": 126
+        },
+        {
+          "id": 2,
+          "run_number": 3,
+          "response_path": "eval-2/without_skill/run-3/response.md",
+          "response_words": 132
+        }
+      ]
+    }
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "response_words": 64
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "response_words": 126
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "response_words": 132
+    }
+  ],
+  "high_variance_evals": []
+}

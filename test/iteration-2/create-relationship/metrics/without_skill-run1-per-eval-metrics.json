@@ -1,0 +1,19 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-relationship",
+  "run": 1,
+  "eval_count": 5,
+  "per_eval": [
+    { "eval_id": 0, "prompt_verbatim": true, "status": "pass", "score": 1.0 },
+    { "eval_id": 1, "prompt_verbatim": true, "status": "pass", "score": 1.0 },
+    { "eval_id": 2, "prompt_verbatim": true, "status": "pass", "score": 1.0 },
+    { "eval_id": 3, "prompt_verbatim": true, "status": "pass", "score": 1.0 },
+    { "eval_id": 4, "prompt_verbatim": true, "status": "pass", "score": 1.0 }
+  ],
+  "summary": {
+    "pass_count": 5,
+    "fail_count": 0,
+    "average_score": 1.0
+  }
+}

@@ -1,0 +1,380 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "design-view",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 12,
+    "valid_eval_count": 8,
+    "valid_eval_rate": 0.6667,
+    "snippet_count_total": 24,
+    "error_count_total": 23,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 6,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "specification {\n  element person\n  element system\n  element container\n}\n\nmodel {\n  user = person \"User\"\n\n  mySystem = system \"My System\" {\n    webapp = container \"Web Application\" \"Handles UI and upload flow\"\n    api = container \"API Service\"\n    db = container \"Database\"\n  }\n\n  emailSvc = system \"External Email Service\"\n\n  user -> mySystem.webapp \"Uses\"\n  mySystem.webapp -> mySystem.api \"Calls\"\n  mySystem.api -> mySystem.db \"Reads/Writes\"\n  mySystem.api -> emailSvc \"Sends notifications\"\n}\n\nviews {\n  view landscape of mySystem {\n    include user\n    include mySystem\n    include emailSvc\n    title \"System Landscape\"\n  }\n\n  view containers of mySystem {\n    include *\n    include user\n    include emailSvc\n    title \"C2 - Containers\"\n    description \"Container view with drill-down anchored on Web Application\"\n  }\n\n  view webapp_drilldown of mySystem.webapp {\n    include *\n    title \"Web Application Drill-down\"\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'person'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'system'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 6,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  user = person \"User\"\n\n  systemA = system \"Platform\" {\n    web = container \"Web App\"\n    api = container \"API\"\n    db = container \"PostgreSQL\"\n  }\n\n  extMail = system \"External Email Service\"\n\n  user -> systemA.web \"Uses\"\n  systemA.api -> extMail \"Sends email\"\n}\n\ndeployment {\n  environment prod {\n    node internet \"Internet\" {\n      instance user\n    }\n\n    node dmz \"DMZ\" {\n      node lb \"Load Balancer\"\n      instance systemA.web\n    }\n\n    node app_tier \"App Tier\" {\n      node app_cluster \"Kubernetes Cluster\" {\n        instance systemA.api\n      }\n    }\n\n    node data_tier \"Data Tier\" {\n      node db_host \"DB Host\" {\n        instance systemA.db\n      }\n    }\n\n    node external \"External Services\" {\n      instance extMail\n    }\n  }\n}\n\nviews {\n  deployment view prod_infra {\n    title \"Production Infrastructure - DMZ / App / Data\"\n    include prod.*\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'person'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'system'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 7,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  user = person \"User\"\n\n  platform = system \"Platform\" {\n    web = container \"Web App\"\n    uploadApi = container \"Upload API\"\n    storage = container \"Object Storage\"\n    scanner = container \"Malware Scanner\"\n    notifier = container \"Notification Service\"\n  }\n\n  user -> platform.web \"Uploads file\"\n  platform.web -> platform.uploadApi \"POST /upload\"\n  platform.uploadApi -> platform.storage \"Store blob\" #critical\n  platform.uploadApi -> platform.scanner \"Scan file\" #critical\n  platform.uploadApi -> platform.notifier \"Emit upload event\"\n}\n\nviews {\n  dynamic view upload_journey {\n    title \"Upload Journey\"\n\n    user -> platform.web \"1. Select and submit file\"\n    platform.web -> platform.uploadApi \"2. Send upload request\"\n    platform.uploadApi -> platform.storage \"3. Persist file\"\n    platform.uploadApi -> platform.scanner \"4. Run security scan\"\n    platform.uploadApi -> platform.notifier \"5. Publish completion event\"\n    platform.web -> user \"6. Show success/failure\"\n  }\n}\n\nstyles {\n  element.tag \"critical\" {\n    color red\n  }\n  relationship.tag \"critical\" {\n    color red\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'person'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  platform = system \"Platform\" {\n    secGateway = container \"Security Access Gateway\"\n    secSvcA = container \"Dedicated Security Service A\"\n    secSvcB = container \"Dedicated Security Service B\"\n  }\n\n  secGateway -> secSvcA \"Routes secured traffic\"\n  secGateway -> secSvcB \"Routes secured traffic\"\n}\n\ndeployment {\n  environment prod {\n    node seczone \"SecZone\" {\n      node bastion \"Bastion\"\n      node firewall \"Firewall\"\n      node secure_apps \"Secure Services Cluster\" {\n        instance platform.secGateway\n        instance platform.secSvcA\n        instance platform.secSvcB\n      }\n    }\n  }\n}\n\nviews {\n  view c2_seczone of platform {\n    include platform.*\n    title \"C2 - SecZone Services\"\n  }\n\n  deployment view deploy_prod_seczone {\n    include prod.seczone.*\n    title \"Production Deployment - SecZone\"\n  }\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view index {\n    title 'System Landscape'\n\n    include *\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view system_context {\n    title 'System Context View'\n\n    include\n      element.kind == Actor_Person,\n      element.kind == Actor_Staff,\n      element.kind == Actor_Admin,\n      element.kind == System_New,\n      element.kind == System_Existing,\n      element.kind == System_Legacy,\n      element.kind == System_External\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view mySystem_containers of mySystem {\n    title 'MySystem – Container View'\n\n    include mySystem, mySystem.*\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view mySystem_containers of mySystem {\n    title 'MySystem – Containers with External Users'\n\n    include mySystem.*\n    include element.tag == #Actor -> mySystem.*\n    include mySystem.* -> element.tag == #System_External\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view cloud_services {\n    title 'Cloud Services'\n    description 'Elements tagged #Cloud'\n\n    include element.tag == #Cloud\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view external_services {\n    title 'External Cloud & SaaS'\n\n    include element.tag == #Cloud\n    include element.tag == #Saas\n    include element.tag == #External\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view cloud_containers {\n    title 'Cloud Containers'\n\n    include element.tag == #Cloud and element.tag == #Container\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view myContainer_components of mySystem.myContainer {\n    title 'MyContainer – Component View'\n\n    include mySystem.myContainer.*\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view myContainer_components of mySystem.myContainer {\n    title 'MyContainer – Components with Roles'\n\n    include mySystem.myContainer.*\n\n    style mySystem.myContainer.controller {\n      color blue\n    }\n\n    style mySystem.myContainer.validator {\n      color green\n    }\n\n    style mySystem.myContainer.repository {\n      color amber\n    }\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view system_landscape {\n    title 'System Landscape'\n    description 'All actors and systems at context level'\n\n    include *\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view context_explicit {\n    title 'Context – Explicit'\n\n    include element.tag == #Actor\n    include element.tag == #System\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view containers_mySystem of mySystem {\n    title 'MySystem – Container Detail'\n    description 'Shows all application containers within MySystem'\n\n    include mySystem.*\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view containers_mySystem of mySystem {\n    title 'MySystem – Full Data Flows'\n\n    include mySystem.*\n\n    // Show what calls the API container from outside\n    include * -> mySystem.api\n\n    // Show what the queue consumers write to\n    include mySystem.consumer -> *\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view cloud_landscape {\n    title 'Cloud-Hosted Components'\n\n    include element.tag == #Cloud\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view prod_cloud {\n    title 'Production Cloud Services'\n\n    include element.tag == #Cloud and element.tag == #Production\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view cloud_with_context {\n    title 'Cloud Services with Dependencies'\n\n    include element.tag == #Cloud\n    include element.tag == #Cloud -> *    // what cloud elements call\n    include * -> element.tag == #Cloud    // what calls into cloud elements\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 4,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  view detail_myContainer of mySystem.myContainer {\n    title 'MyContainer – Component Detail'\n    description 'Shows the internal components of MyContainer'\n\n    include mySystem.myContainer.*\n\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view detail_myContainer of mySystem.myContainer {\n    title 'MyContainer – Deep Components'\n\n    include mySystem.myContainer.**   // all descendants recursively\n\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "myContainer = Container_Api 'My Container' {\n  link detail_myContainer\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "style mySystem.myContainer.authService {\n  color red  // highlight security-critical component\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

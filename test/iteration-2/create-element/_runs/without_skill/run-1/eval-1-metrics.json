@@ -1,0 +1,15 @@
+{
+  "eval_id": "eval-1",
+  "iteration": "test/iteration-2",
+  "skill": "create-element",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "response_path": "test/iteration-2/create-element/eval-1/without_skill/run-1/response.md",
+  "prompt_chars": 184,
+  "response_chars": 603,
+  "started_at": "2026-03-25T00:00:01Z",
+  "finished_at": "2026-03-25T00:00:02Z",
+  "duration_ms": 1000,
+  "error": ""
+}

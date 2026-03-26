@@ -1,0 +1,33 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-element",
+  "run": 3,
+  "evals": [
+    {
+      "eval_id": 0,
+      "prompt": "I’m working in my system model. Add a new API container under an existing system for file ingestion. I want a correct and minimal LikeC4 declaration, without inventing a custom kind.",
+      "response": "Use the built-in container level (no custom kind):\n\n```likec4\nsystem existingSystem {\n  container fileIngestionApi\n}\n```"
+    },
+    {
+      "eval_id": 1,
+      "prompt": "I’m thinking about creating a `Container_UploadOrchestrator` kind just for one upload service. Is that a good idea in this workspace? Explain the rule and what to do before adding a new kind.",
+      "response": "Generally no. A one-off service should not become its own kind.\n\nRule: add kinds for reusable categories, not single instances.\n\nBefore creating a new kind, verify existing kinds, model the service with an existing kind, and use tags/metadata for specificity. Add a kind only when repeated use justifies it."
+    },
+    {
+      "eval_id": 2,
+      "prompt": "I need to add an external `virusScanProvider` and an internal `scanApi`, then draw their arrows and a C2 view. Which skill should I use for each part?",
+      "response": "Recommended split:\n- Add elements: `create-element`\n- Add arrows: `create-relationship`\n- Build C2 view: `design-view`"
+    },
+    {
+      "eval_id": 3,
+      "prompt": "I need to model a real payment API and a mock variant for integration tests. Should I create two kinds, two elements, or something else? And which skill handles the difference between mock and prod?",
+      "response": "Prefer two elements (real + mock) with the same base kind.\n\nDo not create two separate kinds unless the distinction is a repeated taxonomy need.\n\nRepresent mock/prod with tags/metadata and apply consistency via `implement-pattern` (with `create-element` for the actual declarations)."
+    },
+    {
+      "eval_id": 4,
+      "prompt": "Don’t solve relationships yet: I only need a third-party identity provider and an internal portal API modeled in this workspace. Give me the most direct LikeC4 declarations you would start with.",
+      "response": "Most direct declarations:\n\n```likec4\nsystem identityProvider\n\nsystem existingSystem {\n  container portalApi\n}\n```"
+    }
+  ]
+}

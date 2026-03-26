@@ -1,0 +1,65 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-element",
+  "run": 2,
+  "eval_metrics": [
+    {
+      "eval_id": 0,
+      "passed": true,
+      "scores": {
+        "correctness": 1,
+        "minimality": 1,
+        "constraint_following": 1
+      },
+      "notes": "Uses standard container declaration under an existing system."
+    },
+    {
+      "eval_id": 1,
+      "passed": true,
+      "scores": {
+        "correctness": 1,
+        "reasoning": 1,
+        "workspace_rule_alignment": 1
+      },
+      "notes": "Explains why one-off kind is discouraged and what checks to do first."
+    },
+    {
+      "eval_id": 2,
+      "passed": true,
+      "scores": {
+        "task_mapping": 1,
+        "skill_selection": 1,
+        "completeness": 1
+      },
+      "notes": "Assigns create-element, create-relationship, and design-view appropriately."
+    },
+    {
+      "eval_id": 3,
+      "passed": true,
+      "scores": {
+        "modeling_strategy": 1,
+        "kind_governance": 1,
+        "pattern_guidance": 1
+      },
+      "notes": "Recommends two elements over two kinds and uses tags/metadata for variants."
+    },
+    {
+      "eval_id": 4,
+      "passed": true,
+      "scores": {
+        "directness": 1,
+        "correctness": 1,
+        "scope_control": 1
+      },
+      "notes": "Declaration-only answer with third-party provider and internal API."
+    }
+  ],
+  "summary": {
+    "eval_count": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": 1.0,
+    "avg_score": 1.0
+  }
+}

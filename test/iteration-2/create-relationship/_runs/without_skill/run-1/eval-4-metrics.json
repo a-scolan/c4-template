@@ -1,0 +1,14 @@
+{
+  "eval_id": "eval-4",
+  "iteration": "test/iteration-2",
+  "skill": "create-relationship",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "success": true,
+  "score": 1.0,
+  "prompt": "I added `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment because I wanted the diagram to show browser traffic. Should I keep that there, and where should `Manual`, `HTTPS`, and `HTTP/8080` actually live?",
+  "response_file": "test/iteration-2/create-relationship/eval-4/without_skill/run-1/response.md",
+  "error": "",
+  "generated_at": "2026-03-25T00:00:00Z"
+}

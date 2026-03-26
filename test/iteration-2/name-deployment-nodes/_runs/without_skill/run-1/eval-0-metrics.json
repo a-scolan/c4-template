@@ -1,0 +1,19 @@
+{
+  "eval_id": "eval-0",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "instruction_following": 1.0,
+  "task_completion": 1.0,
+  "technical_correctness": 0.95,
+  "domain_alignment": 0.95,
+  "completeness": 0.95,
+  "clarity": 0.95,
+  "conciseness": 0.9,
+  "format_compliance": 1.0,
+  "safety": 1.0,
+  "groundedness": 0.9,
+  "overall_score": 0.96,
+  "passed": true,
+  "notes": "Provided consistent naming convention and corrected all candidate names."
+}

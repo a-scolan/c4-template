@@ -1,0 +1,244 @@
+{
+  "skill_name": "lookup-element-kinds",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "run_count": 3,
+  "summary": {
+    "elapsed_seconds_total": null,
+    "elapsed_seconds_per_eval": null,
+    "response_words_total": 1154.3333,
+    "response_words_per_eval": 230.8667,
+    "files_read_count": null,
+    "files_written_count": null
+  },
+  "variance": {
+    "response_words_total": {
+      "mean": 1154.3333,
+      "stddev": 561.5775,
+      "min": 507.0,
+      "max": 1511.0
+    },
+    "response_words_per_eval": {
+      "mean": 230.8667,
+      "stddev": 112.3155,
+      "min": 101.4,
+      "max": 302.2
+    }
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "summary": {
+        "elapsed_seconds_total": null,
+        "elapsed_seconds_per_eval": null,
+        "response_words_total": 507,
+        "response_words_per_eval": 101.4,
+        "files_read_count": null,
+        "files_written_count": null
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 1,
+          "response_path": "eval-0/without_skill/run-1/response.md",
+          "response_words": 114
+        },
+        {
+          "id": 1,
+          "run_number": 1,
+          "response_path": "eval-1/without_skill/run-1/response.md",
+          "response_words": 95
+        },
+        {
+          "id": 2,
+          "run_number": 1,
+          "response_path": "eval-2/without_skill/run-1/response.md",
+          "response_words": 68
+        },
+        {
+          "id": 3,
+          "run_number": 1,
+          "response_path": "eval-3/without_skill/run-1/response.md",
+          "response_words": 119
+        },
+        {
+          "id": 4,
+          "run_number": 1,
+          "response_path": "eval-4/without_skill/run-1/response.md",
+          "response_words": 111
+        }
+      ]
+    },
+    {
+      "run_number": 2,
+      "summary": {
+        "elapsed_seconds_total": null,
+        "elapsed_seconds_per_eval": null,
+        "response_words_total": 1445,
+        "response_words_per_eval": 289.0,
+        "files_read_count": null,
+        "files_written_count": null
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 2,
+          "response_path": "eval-0/without_skill/run-2/response.md",
+          "response_words": 283
+        },
+        {
+          "id": 1,
+          "run_number": 2,
+          "response_path": "eval-1/without_skill/run-2/response.md",
+          "response_words": 282
+        },
+        {
+          "id": 2,
+          "run_number": 2,
+          "response_path": "eval-2/without_skill/run-2/response.md",
+          "response_words": 288
+        },
+        {
+          "id": 3,
+          "run_number": 2,
+          "response_path": "eval-3/without_skill/run-2/response.md",
+          "response_words": 303
+        },
+        {
+          "id": 4,
+          "run_number": 2,
+          "response_path": "eval-4/without_skill/run-2/response.md",
+          "response_words": 289
+        }
+      ]
+    },
+    {
+      "run_number": 3,
+      "summary": {
+        "elapsed_seconds_total": null,
+        "elapsed_seconds_per_eval": null,
+        "response_words_total": 1511,
+        "response_words_per_eval": 302.2,
+        "files_read_count": null,
+        "files_written_count": null
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 3,
+          "response_path": "eval-0/without_skill/run-3/response.md",
+          "response_words": 292
+        },
+        {
+          "id": 1,
+          "run_number": 3,
+          "response_path": "eval-1/without_skill/run-3/response.md",
+          "response_words": 279
+        },
+        {
+          "id": 2,
+          "run_number": 3,
+          "response_path": "eval-2/without_skill/run-3/response.md",
+          "response_words": 303
+        },
+        {
+          "id": 3,
+          "run_number": 3,
+          "response_path": "eval-3/without_skill/run-3/response.md",
+          "response_words": 315
+        },
+        {
+          "id": 4,
+          "run_number": 3,
+          "response_path": "eval-4/without_skill/run-3/response.md",
+          "response_words": 322
+        }
+      ]
+    }
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "response_words": 114
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "response_words": 95
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "response_words": 68
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "response_words": 119
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/without_skill/run-1/response.md",
+      "response_words": 111
+    }
+  ],
+  "high_variance_evals": [
+    {
+      "id": 0,
+      "metric": "response_words",
+      "stats": {
+        "mean": 229.6667,
+        "stddev": 100.2713,
+        "min": 114.0,
+        "max": 292.0
+      }
+    },
+    {
+      "id": 1,
+      "metric": "response_words",
+      "stats": {
+        "mean": 218.6667,
+        "stddev": 107.109,
+        "min": 95.0,
+        "max": 282.0
+      }
+    },
+    {
+      "id": 2,
+      "metric": "response_words",
+      "stats": {
+        "mean": 219.6667,
+        "stddev": 131.5611,
+        "min": 68.0,
+        "max": 303.0
+      }
+    },
+    {
+      "id": 3,
+      "metric": "response_words",
+      "stats": {
+        "mean": 245.6667,
+        "stddev": 109.8605,
+        "min": 119.0,
+        "max": 315.0
+      }
+    },
+    {
+      "id": 4,
+      "metric": "response_words",
+      "stats": {
+        "mean": 240.6667,
+        "stddev": 113.5004,
+        "min": 111.0,
+        "max": 322.0
+      }
+    }
+  ]
+}

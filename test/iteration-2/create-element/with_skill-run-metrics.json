@@ -1,0 +1,70 @@
+{
+  "skill_name": "create-element",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": true,
+  "started_at": "2026-03-26T09:14:22Z",
+  "finished_at": "2026-03-26T09:19:57Z",
+  "elapsed_seconds_total": 335,
+  "files_read_count": 11,
+  "files_written_count": 1,
+  "run_count": 3,
+  "runs": [
+    {
+      "skill_name": "create-element",
+      "configuration": "with_skill",
+      "language": "en",
+      "mcp_used": true,
+      "started_at": "2026-03-26T09:14:22Z",
+      "finished_at": "2026-03-26T09:15:57Z",
+      "elapsed_seconds_total": 95,
+      "files_read_count": 3,
+      "files_written_count": 0,
+      "run_number": 1
+    },
+    {
+      "skill_name": "create-element",
+      "configuration": "with_skill",
+      "language": "en",
+      "mcp_used": true,
+      "started_at": "2026-03-26T09:16:01Z",
+      "finished_at": "2026-03-26T09:17:58Z",
+      "elapsed_seconds_total": 117,
+      "files_read_count": 4,
+      "files_written_count": 0,
+      "run_number": 2
+    },
+    {
+      "skill_name": "create-element",
+      "configuration": "with_skill",
+      "language": "en",
+      "mcp_used": true,
+      "started_at": "2026-03-26T09:18:03Z",
+      "finished_at": "2026-03-26T09:19:57Z",
+      "elapsed_seconds_total": 114,
+      "files_read_count": 4,
+      "files_written_count": 1,
+      "run_number": 3
+    }
+  ],
+  "aggregate": {
+    "elapsed_seconds_total": {
+      "mean": 108.67,
+      "stddev": 9.81,
+      "min": 95,
+      "max": 117
+    },
+    "files_read_count": {
+      "mean": 3.67,
+      "stddev": 0.47,
+      "min": 3,
+      "max": 4
+    },
+    "files_written_count": {
+      "mean": 0.33,
+      "stddev": 0.47,
+      "min": 0,
+      "max": 1
+    }
+  }
+}

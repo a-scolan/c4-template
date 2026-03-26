@@ -1,0 +1,70 @@
+{
+  "skill_name": "write-rich-descriptions",
+  "configuration": "without_skill",
+  "language": "en",
+  "mcp_used": false,
+  "started_at": "2026-03-26T10:00:00Z",
+  "finished_at": "2026-03-26T10:02:21Z",
+  "elapsed_seconds_total": 141,
+  "files_read_count": 1,
+  "files_written_count": 19,
+  "run_count": 3,
+  "runs": [
+    {
+      "run_number": 1,
+      "skill_name": "write-rich-descriptions",
+      "configuration": "without_skill",
+      "language": "en",
+      "mcp_used": false,
+      "started_at": "2026-03-26T10:00:00Z",
+      "finished_at": "2026-03-26T10:00:20Z",
+      "elapsed_seconds_total": 18,
+      "files_read_count": 1,
+      "files_written_count": 6
+    },
+    {
+      "run_number": 2,
+      "skill_name": "write-rich-descriptions",
+      "configuration": "without_skill",
+      "language": "en",
+      "mcp_used": false,
+      "started_at": "2026-03-26T10:01:00Z",
+      "finished_at": "2026-03-26T10:01:19Z",
+      "elapsed_seconds_total": 17,
+      "files_read_count": 0,
+      "files_written_count": 6
+    },
+    {
+      "run_number": 3,
+      "skill_name": "write-rich-descriptions",
+      "configuration": "without_skill",
+      "language": "en",
+      "mcp_used": false,
+      "started_at": "2026-03-26T10:02:00Z",
+      "finished_at": "2026-03-26T10:02:21Z",
+      "elapsed_seconds_total": 19,
+      "files_read_count": 0,
+      "files_written_count": 6
+    }
+  ],
+  "aggregate": {
+    "elapsed_seconds_total": {
+      "mean": 18,
+      "stddev": 0.816496580927726,
+      "min": 17,
+      "max": 19
+    },
+    "files_read_count": {
+      "mean": 0.3333333333333333,
+      "stddev": 0.4714045207910317,
+      "min": 0,
+      "max": 1
+    },
+    "files_written_count": {
+      "mean": 6,
+      "stddev": 0,
+      "min": 6,
+      "max": 6
+    }
+  }
+}

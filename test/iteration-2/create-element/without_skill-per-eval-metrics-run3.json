@@ -1,0 +1,65 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-element",
+  "run": 3,
+  "eval_metrics": [
+    {
+      "eval_id": 0,
+      "passed": true,
+      "scores": {
+        "correctness": 1,
+        "minimality": 1,
+        "constraint_following": 1
+      },
+      "notes": "Compliant minimal container declaration with no custom kind."
+    },
+    {
+      "eval_id": 1,
+      "passed": true,
+      "scores": {
+        "correctness": 1,
+        "reasoning": 1,
+        "workspace_rule_alignment": 1
+      },
+      "notes": "States reusable-kind rule and preconditions before introducing a new kind."
+    },
+    {
+      "eval_id": 2,
+      "passed": true,
+      "scores": {
+        "task_mapping": 1,
+        "skill_selection": 1,
+        "completeness": 1
+      },
+      "notes": "Correct skill split: elements, arrows, and C2 view."
+    },
+    {
+      "eval_id": 3,
+      "passed": true,
+      "scores": {
+        "modeling_strategy": 1,
+        "kind_governance": 1,
+        "pattern_guidance": 1
+      },
+      "notes": "Uses two elements for real/mock and keeps kind taxonomy clean."
+    },
+    {
+      "eval_id": 4,
+      "passed": true,
+      "scores": {
+        "directness": 1,
+        "correctness": 1,
+        "scope_control": 1
+      },
+      "notes": "Most direct declarations and no relationships added."
+    }
+  ],
+  "summary": {
+    "eval_count": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": 1.0,
+    "avg_score": 1.0
+  }
+}

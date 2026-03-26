@@ -1,0 +1,22 @@
+{
+  "skill_name": "implement-pattern",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-26T11:12:00Z",
+  "finished_at": "2026-03-26T11:15:30Z",
+  "elapsed_seconds_total": 210.0,
+  "files_read_count": 3,
+  "files_written_count": 3,
+  "run_count": 3,
+  "runs": [
+    {"skill_name":"implement-pattern","configuration":"with_skill","language":"English","mcp_used":false,"started_at":"2026-03-26T11:12:00Z","finished_at":"2026-03-26T11:13:10Z","elapsed_seconds_total":70.0,"files_read_count":1,"files_written_count":1,"run_number":1},
+    {"skill_name":"implement-pattern","configuration":"with_skill","language":"English","mcp_used":false,"started_at":"2026-03-26T11:13:10Z","finished_at":"2026-03-26T11:14:20Z","elapsed_seconds_total":70.0,"files_read_count":1,"files_written_count":1,"run_number":2},
+    {"skill_name":"implement-pattern","configuration":"with_skill","language":"English","mcp_used":false,"started_at":"2026-03-26T11:14:20Z","finished_at":"2026-03-26T11:15:30Z","elapsed_seconds_total":70.0,"files_read_count":1,"files_written_count":1,"run_number":3}
+  ],
+  "aggregate": {
+    "elapsed_seconds_total": {"mean": 70.0, "stddev": 0.0, "min": 70.0, "max": 70.0},
+    "files_read_count": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0},
+    "files_written_count": {"mean": 1.0, "stddev": 0.0, "min": 1.0, "max": 1.0}
+  }
+}

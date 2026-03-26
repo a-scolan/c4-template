@@ -1,0 +1,325 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "create-element",
+  "configuration": "with_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 15,
+    "valid_eval_count": 15,
+    "valid_eval_rate": 1.0,
+    "snippet_count_total": 16,
+    "error_count_total": 0,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  fileIngestionSystem = System_New 'File Ingestion System' {\n\n    ingestionApi = Container_Api 'Ingestion API' {\n      technology 'Node.js, Fastify'\n      description 'Receives uploaded files and starts the ingestion workflow.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  uploadSystem = System_New 'Upload System' {\n\n    uploadOrchestrator = Container_Api 'Upload Orchestrator' {\n      technology 'Node.js, Express'\n      description 'Coordinates file upload steps: validation, storage, and downstream notification.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  virusScanProvider = System_External 'Virus Scan Provider' {\n    technology 'HTTPS API'\n    description 'Third-party malware scanning service used before file acceptance.'\n  }\n\n  uploadSystem = System_New 'Upload System' {\n\n    scanApi = Container_Api 'Scan API' {\n      technology 'Node.js, Fastify'\n      description 'Internal adapter that submits files to the virus scan provider and returns the verdict.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  paymentSystem = System_New 'Payment System' {\n\n    paymentApi = Container_Api 'Payment API' {\n      technology 'Java, Spring Boot'\n      description 'Processes real payment transactions via the payment gateway.'\n    }\n\n    paymentApiMock = Container_Api 'Payment API Mock' {\n      technology 'Node.js, WireMock'\n      description 'Stub of the payment API used in integration test environments.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  identityProvider = System_External 'Identity Provider' {\n    technology 'OIDC / OAuth 2.0'\n    description 'Third-party identity and access management service handling authentication and token issuance.'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "model {\n  portalSystem = System_New 'Portal System' {\n\n    portalApi = Container_Api 'Portal API' {\n      technology 'Node.js, Express'\n      description 'Backend API for the user portal, serving authenticated requests and delegating auth to the identity provider.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  fileIngestionSystem = System_New 'File Ingestion System' {\n\n    ingestionApi = Container_Api 'Ingestion API' {\n      technology 'Node.js, Fastify'\n      description 'Receives uploaded files and triggers the ingestion workflow.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "uploadOrchestrator = Container_Api 'Upload Orchestrator' {\n  technology 'Node.js'\n  description 'Orchestrates upload steps: validates files, persists to object storage, and triggers processing.'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  virusScanProvider = System_External 'Virus Scan Provider' {\n    technology 'HTTPS API'\n    description 'Third-party malware detection service integrated before file acceptance.'\n  }\n\n  ingestionSystem = System_New 'Ingestion System' {\n\n    scanApi = Container_Api 'Scan API' {\n      technology 'Node.js'\n      description 'Internal container that proxies scan requests to the external virus scan provider.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  paymentSystem = System_New 'Payment System' {\n\n    paymentApi = Container_Api 'Payment API' {\n      technology 'Java, Spring Boot'\n      description 'Processes real-money transactions through the external payment gateway.'\n    }\n\n    paymentApiMock = Container_Api 'Payment API Mock' {\n      technology 'Node.js, Hoverfly'\n      description 'Test double simulating payment API responses for integration test environments.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 2,
+      "response_path": "eval-4/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  // Third-party identity provider — Context level (C1)\n  identityProvider = System_External 'Identity Provider' {\n    technology 'SAML 2.0 / OIDC'\n    description 'External identity and access management platform responsible for authentication and SSO token issuance.'\n  }\n\n  portalSystem = System_New 'Portal System' {\n\n    // Internal portal API — Container level (C2)\n    portalApi = Container_Api 'Portal API' {\n      technology 'Node.js, Fastify'\n      description 'Core backend API for the portal, enforces authorization and proxies identity tokens from the identity provider.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  fileIngestionSystem = System_New 'File Ingestion System' {\n\n    ingestionApi = Container_Api 'Ingestion API' {\n      technology 'Node.js, Fastify'\n      description 'Receives uploaded files and starts the ingestion workflow.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "uploadOrchestrator = Container_Api 'Upload Orchestrator' {\n  technology 'Node.js, Fastify'\n  description 'Coordinates file validation, storage, and downstream event emission during upload.'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  // External system — C1 level\n  virusScanProvider = System_External 'Virus Scan Provider' {\n    technology 'HTTPS API'\n    description 'Third-party malware scanning service called before accepting uploaded files.'\n  }\n\n  uploadSystem = System_New 'Upload System' {\n\n    // Internal container — C2 level\n    scanApi = Container_Api 'Scan API' {\n      technology 'Node.js, Fastify'\n      description 'Submits file hashes to the external virus scan provider and enforces the accept/reject verdict.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  paymentSystem = System_New 'Payment System' {\n\n    paymentApi = Container_Api 'Payment API' {\n      technology 'Java, Spring Boot'\n      description 'Handles live payment transactions through the payment provider gateway.'\n    }\n\n    paymentApiMock = Container_Api 'Payment API Mock' {\n      technology 'Node.js, MockServer'\n      description 'Simulates payment API responses for integration and regression test runs.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 3,
+      "response_path": "eval-4/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  identityProvider = System_External 'Identity Provider' {\n    technology 'OIDC, OAuth 2.0'\n    description 'Third-party identity platform that issues access tokens and manages user authentication.'\n  }\n\n  portalSystem = System_New 'Portal System' {\n\n    portalApi = Container_Api 'Portal API' {\n      technology 'Node.js, Express'\n      description 'Internal portal backend API; validates tokens issued by the identity provider and serves portal data.'\n    }\n\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

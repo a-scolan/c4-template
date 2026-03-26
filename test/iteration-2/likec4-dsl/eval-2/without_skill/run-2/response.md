@@ -1,0 +1,1 @@
+`npx likec4 export --format png --view "overview*" --theme dark --output ./images --flat`

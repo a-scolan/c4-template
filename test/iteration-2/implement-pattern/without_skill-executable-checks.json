@@ -1,0 +1,487 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "implement-pattern",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 12,
+    "valid_eval_count": 0,
+    "valid_eval_rate": 0.0,
+    "snippet_count_total": 31,
+    "error_count_total": 64,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 2,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  system MySystem 'My System' {\n    api = Container 'Upload API' {\n      technology 'Node.js'\n      description 'Publishes jobs for asynchronous processing'\n    }\n\n    queue = Container 'Job Queue' {\n      technology 'RabbitMQ'\n      description 'Buffers processing jobs between API and workers'\n      style { shape queue }\n    }\n\n    worker = Container 'Processing Worker' {\n      technology 'Python'\n      description 'Consumes jobs from the queue'\n    }\n\n    db = Container 'Database' {\n      technology 'PostgreSQL'\n      style { shape storage }\n    }\n\n    api -> queue 'Publishes job' { technology 'AMQP' }\n    queue -> worker 'Delivers job' { technology 'AMQP' }\n    worker -> db 'Saves result' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 3,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Publishes'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Saves'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view async_pattern of MySystem {\n    title 'Async Messaging Pattern'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "paymentsApi = Container_Api 'Payments API' {\n  #Internal\n  technology 'Node.js'\n}\n\npaymentProvider = System_External 'Payment Provider' {\n  #External\n  #Saas\n}\n\npaymentsApi -[calls]-> paymentProvider 'Create payment' {\n  technology 'HTTPS'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 6,
+      "valid_snippet_count": 3,
+      "error_count": 21,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  customer = Actor_Person 'Customer' {\n    description 'External user accessing the system'\n  }\n\n  system Platform 'Platform' {\n    gateway = Container 'API Gateway' {\n      technology 'Kong'\n      description 'Single entry point routing requests to downstream services'\n    }\n\n    authService = Container_Api 'Auth Service' {\n      technology 'OAuth2'\n    }\n\n    userService = Container_Api 'User Service' {\n      technology 'Node.js'\n    }\n\n    dataService = Container_Api 'Data Service' {\n      technology 'Python'\n    }\n\n    database = Container_Database 'Main Database' {\n      technology 'PostgreSQL'\n    }\n\n    customer -> gateway 'Sends requests' { technology 'HTTPS' }\n    gateway -> authService 'Routes auth' { technology 'HTTP' }\n    gateway -> userService 'Routes user ops' { technology 'HTTP' }\n    gateway -> dataService 'Routes data ops' { technology 'HTTP' }\n    authService -> database 'Reads' { technology 'SQL' }\n    userService -> database 'Reads/writes' { technology 'SQL' }\n    dataService -> database 'Reads/writes' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Reads''.",
+            "Unknown relationship kind ''Reads/writes''.",
+            "Unknown relationship kind ''Reads/writes''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view gateway_view of Platform {\n    title 'API Gateway Pattern'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "model {\n  customer = Actor_Person 'Customer' {\n    description 'External user accessing the system'\n  }\n\n  system Platform 'Platform' {\n    gateway = Container 'API Gateway' {\n      technology 'Kong'\n      description 'Single entry point routing requests to downstream services'\n    }\n\n    authService = Container_Api 'Auth Service' {\n      technology 'OAuth2'\n    }\n\n    userService = Container_Api 'User Service' {\n      technology 'Node.js'\n    }\n\n    dataService = Container_Api 'Data Service' {\n      technology 'Python'\n    }\n\n    database = Container_Database 'Main Database' {\n      technology 'PostgreSQL'\n    }\n\n    customer -> gateway 'Sends requests' { technology 'HTTPS' }\n    gateway -> authService 'Routes auth' { technology 'HTTP' }\n    gateway -> userService 'Routes user ops' { technology 'HTTP' }\n    gateway -> dataService 'Routes data ops' { technology 'HTTP' }\n    authService -> database 'Reads' { technology 'SQL' }\n    userService -> database 'Reads/writes' { technology 'SQL' }\n    dataService -> database 'Reads/writes' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Reads''.",
+            "Unknown relationship kind ''Reads/writes''.",
+            "Unknown relationship kind ''Reads/writes''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view gateway_view of Platform {\n    title 'API Gateway Pattern'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "model {\n  customer = Actor_Person 'Customer' {\n    description 'External user accessing the system'\n  }\n\n  system Platform 'Platform' {\n    gateway = Container 'API Gateway' {\n      technology 'Kong'\n      description 'Single entry point routing requests to downstream services'\n    }\n\n    authService = Container_Api 'Auth Service' {\n      technology 'OAuth2'\n    }\n\n    userService = Container_Api 'User Service' {\n      technology 'Node.js'\n    }\n\n    dataService = Container_Api 'Data Service' {\n      technology 'Python'\n    }\n\n    database = Container_Database 'Main Database' {\n      technology 'PostgreSQL'\n    }\n\n    customer -> gateway 'Sends requests' { technology 'HTTPS' }\n    gateway -> authService 'Routes auth' { technology 'HTTP' }\n    gateway -> userService 'Routes user ops' { technology 'HTTP' }\n    gateway -> dataService 'Routes data ops' { technology 'HTTP' }\n    authService -> database 'Reads' { technology 'SQL' }\n    userService -> database 'Reads/writes' { technology 'SQL' }\n    dataService -> database 'Reads/writes' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Reads''.",
+            "Unknown relationship kind ''Reads/writes''.",
+            "Unknown relationship kind ''Reads/writes''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view gateway_view of Platform {\n    title 'API Gateway Pattern'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 2,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  system CachingDemo 'Caching Demo' {\n    api = Container_Api 'API Service' {\n      technology 'Node.js'\n      description 'Serves data to clients with cache-aside logic'\n    }\n\n    cache = Container 'Redis Cache' {\n      technology 'Redis'\n      description 'In-memory cache for frequent reads'\n    }\n\n    database = Container_Database 'Primary Database' {\n      technology 'PostgreSQL'\n      description 'Source of truth for persistent data'\n    }\n\n    api -> cache 'Reads cached data' { technology 'Redis' }\n    api -> database 'Falls back on cache miss' { technology 'SQL' }\n    api -> database 'Writes data' { technology 'SQL' }\n    api -> cache 'Invalidates on write' { technology 'Redis' }\n  }\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Reads'.",
+            "Unknown relationship kind ''Falls'.",
+            "Unknown relationship kind ''Writes'.",
+            "Unknown relationship kind ''Invalidates'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view cache_pattern of CachingDemo {\n    title 'Cache-Aside Pattern'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "api = Container_Api 'Catalog API'\nredis = Container_Database 'Redis Cache' {\n  technology 'Redis'\n}\npostgres = Container_Database 'Postgres' {\n  technology 'PostgreSQL'\n}\n\napi -[reads]-> redis 'Lookup cached data' {\n  technology 'Redis'\n}\n\napi -[reads]-> postgres 'Cache miss fallback' {\n  technology 'PostgreSQL'\n}\n\napi -[writes]-> postgres 'Persist source of truth' {\n  technology 'PostgreSQL'\n}\n\napi -[writes]-> redis 'Refresh/invalidate cache entries' {\n  technology 'Redis'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 2,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  internet = Actor_Person 'Internet User' {\n    description 'Public user accessing the system over internet'\n  }\n\n  system SecurePlatform 'Secure Platform' {\n    waf = Container 'Web Application Firewall' {\n      technology 'ModSecurity'\n      description 'Inspects and filters HTTP traffic'\n    }\n\n    reverseProxy = Container 'Reverse Proxy' {\n      technology 'Nginx'\n      description 'Terminates SSL and forwards clean traffic'\n    }\n\n    appServer = Container_Webapp 'Application Server' {\n      technology 'Spring Boot'\n      description 'Business logic'\n    }\n\n    db = Container_Database 'Database' {\n      technology 'PostgreSQL'\n    }\n\n    internet -> waf 'HTTPS request' { technology 'HTTPS' }\n    waf -> reverseProxy 'Filtered traffic' { technology 'HTTP' }\n    reverseProxy -> appServer 'Forwarded request' { technology 'HTTP' }\n    appServer -> db 'Data access' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''HTTPS'.",
+            "Unknown relationship kind ''Filtered'.",
+            "Unknown relationship kind ''Forwarded'.",
+            "Unknown relationship kind ''Data'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view dmz_view of SecurePlatform {\n    title 'DMZ Security Zone'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "paymentsApi = Container_Api 'Payments API' {\n  #Internal\n}\n\nwebhookApi = Container_Api 'Payment Webhook Endpoint' {\n  #Internal\n}\n\nstripe = System_External 'Stripe' {\n  #External\n  #Saas\n}\n\npaymentsApi -[calls]-> stripe 'Create payment intent' {\n  technology 'HTTPS'\n}\n\nstripe -[calls]-> webhookApi 'Payment confirmation webhook' {\n  technology 'HTTPS'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  system App 'Application' {\n    apiService = Container_Api 'API Service' {\n      technology 'Express.js'\n      description 'Handles HTTP requests and enqueues processing jobs'\n    }\n\n    messageQueue = Container 'Message Queue' {\n      technology 'Apache Kafka'\n      description 'Async event stream between producer and consumer'\n    }\n\n    workerService = Container 'Worker Service' {\n      technology 'Java'\n      description 'Processes events from the message queue'\n    }\n\n    dataStore = Container_Database 'Data Store' {\n      technology 'MySQL'\n    }\n\n    apiService -> messageQueue 'Enqueues event' { technology 'AMQP' }\n    messageQueue -> workerService 'Dispatches event' { technology 'AMQP' }\n    workerService -> dataStore 'Writes result' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 3,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Dispatches'.",
+            "Unknown relationship kind ''Writes'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view messaging_view of App {\n    title 'Async Messaging'\n    include *\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 5,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  webUser = Actor_Person 'Web User' {\n    description 'Browser-based user'\n  }\n\n  system BackendPlatform 'Backend Platform' {\n    apiGateway = Container_ReverseProxy 'API Gateway' {\n      technology 'AWS API Gateway'\n      description 'Routes requests to microservices'\n    }\n\n    orderService = Container_Api 'Order Service' {\n      technology 'Spring Boot'\n    }\n\n    inventoryService = Container_Api 'Inventory Service' {\n      technology 'Node.js'\n    }\n\n    sharedDb = Container_Database 'Shared Database' {\n      technology 'PostgreSQL'\n    }\n\n    webUser -> apiGateway 'API calls' { technology 'HTTPS' }\n    apiGateway -> orderService 'Routes /orders' { technology 'HTTP' }\n    apiGateway -> inventoryService 'Routes /inventory' { technology 'HTTP' }\n    orderService -> sharedDb 'Reads/writes orders' { technology 'SQL' }\n    inventoryService -> sharedDb 'Reads/writes inventory' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 5,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''API'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Reads/writes'.",
+            "Unknown relationship kind ''Reads/writes'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view api_gw_view of BackendPlatform {\n    title 'API Gateway — Entry Point'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  system App 'Application' {\n    apiLayer = Container_Api 'API Layer' {\n      technology 'Express'\n      description 'REST API with cache-aside implementation'\n    }\n\n    redisCache = Container 'Cache' {\n      technology 'Redis'\n      description 'Key-value store for cached responses'\n      style { shape storage }\n    }\n\n    mainDb = Container_Database 'Main DB' {\n      technology 'MySQL'\n      description 'Relational database for persistent storage'\n    }\n\n    // Cache read path\n    apiLayer -> redisCache 'Checks cache' { technology 'Redis' }\n\n    // Cache miss path\n    apiLayer -> mainDb 'Reads on miss' { technology 'SQL' }\n\n    // Write path\n    apiLayer -> mainDb 'Writes data' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 3,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Checks'.",
+            "Unknown relationship kind ''Reads'.",
+            "Unknown relationship kind ''Writes'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view caching_view of App {\n    title 'Caching Layer'\n    include *\n    autoLayout LeftRight\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  externalUser = Actor_Person 'External User'\n\n  system AppSystem 'App System' {\n    loadBalancer = Container_Loadbalancer 'Load Balancer' {\n      technology 'HAProxy'\n      description 'Distributes incoming traffic'\n    }\n\n    wafLayer = Container_Waf 'WAF' {\n      technology 'AWS WAF'\n      description 'Blocks malicious requests'\n    }\n\n    webApp = Container_Webapp 'Web Application' {\n      technology 'Django'\n    }\n\n    dbServer = Container_Database 'DB Server' {\n      technology 'MySQL'\n    }\n\n    externalUser -> loadBalancer 'HTTPS' { technology 'HTTPS' }\n    loadBalancer -> wafLayer 'Forwards traffic' { technology 'HTTP' }\n    wafLayer -> webApp 'Filtered requests' { technology 'HTTP' }\n    webApp -> dbServer 'Queries' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''HTTPS''.",
+            "Unknown relationship kind ''Forwards'.",
+            "Unknown relationship kind ''Filtered'.",
+            "Unknown relationship kind ''Queries''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view security_view of AppSystem {\n    title 'DMZ / Security Tier'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  system Backend 'Backend System' {\n    uploadApi = Container_Api 'Upload API' {\n      technology 'FastAPI'\n      description 'Receives upload requests and publishes to queue'\n    }\n\n    jobQueue = Container 'Job Queue' {\n      technology 'RabbitMQ'\n      description 'Message broker decoupling uploads from processing'\n      style { shape queue }\n    }\n\n    fileProcessor = Container 'File Processor' {\n      technology 'Go'\n      description 'Subscribes to queue and processes files'\n    }\n\n    resultDb = Container_Database 'Result DB' {\n      technology 'MongoDB'\n    }\n\n    uploadApi -> jobQueue 'Publishes job' { technology 'AMQP' }\n    jobQueue -> fileProcessor 'Delivers job' { technology 'AMQP' }\n    fileProcessor -> resultDb 'Stores result' { technology 'MongoDB' }\n  }\n}",
+          "valid": false,
+          "error_count": 3,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Publishes'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Stores'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view queue_pattern of Backend {\n    title 'Message Queue Pattern'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 6,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  externalUser = Actor_Person 'External User'\n\n  system ServicePlatform 'Service Platform' {\n    gw = Container 'Gateway' {\n      technology 'Nginx'\n      description 'Reverse-proxy and router'\n    }\n\n    serviceA = Container_Api 'Service A' {\n      technology 'Python'\n    }\n\n    serviceB = Container_Api 'Service B' {\n      technology 'Go'\n    }\n\n    cache = Container 'Cache' {\n      technology 'Redis'\n    }\n\n    db = Container_Database 'Database' {\n      technology 'MySQL'\n    }\n\n    externalUser -> gw 'HTTP request' { technology 'HTTPS' }\n    gw -> serviceA 'Routes /a' { technology 'HTTP' }\n    gw -> serviceB 'Routes /b' { technology 'HTTP' }\n    serviceA -> cache 'Reads cache' { technology 'Redis' }\n    serviceA -> db 'Queries' { technology 'SQL' }\n    serviceB -> db 'Queries' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''HTTP'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Reads'.",
+            "Unknown relationship kind ''Queries''.",
+            "Unknown relationship kind ''Queries''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view svc_platform of ServicePlatform {\n    title 'Gateway + Services'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  system DataPlatform 'Data Platform' {\n    service = Container_Api 'Data Service' {\n      technology 'FastAPI'\n    }\n\n    redisNode = Container 'Redis' {\n      technology 'Redis 7'\n      description 'Cache node for query results'\n    }\n\n    postgres = Container_Database 'PostgreSQL' {\n      technology 'PostgreSQL 16'\n    }\n\n    service -> redisNode 'Cache lookup' { technology 'Redis' }\n    service -> postgres 'DB query (miss)' { technology 'SQL' }\n    service -> redisNode 'Cache set' { technology 'Redis' }\n    service -> postgres 'Write' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''Cache'.",
+            "Unknown relationship kind ''DB'.",
+            "Unknown relationship kind ''Cache'.",
+            "Unknown relationship kind ''Write''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view data_tier of DataPlatform {\n    title 'Cache-Aside — Data Tier'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  user = Actor_Person 'User'\n\n  system Portal 'Customer Portal' {\n    proxy = Container_ReverseProxy 'Reverse Proxy' {\n      technology 'Caddy'\n      description 'TLS termination and routing'\n    }\n\n    firewall = Container 'WAF' {\n      technology 'CloudFlare WAF'\n      description 'Web application firewall for threat protection'\n    }\n\n    api = Container_Api 'API' {\n      technology 'Go'\n    }\n\n    store = Container_Database 'Store' {\n      technology 'PostgreSQL'\n    }\n\n    user -> firewall 'HTTPS request' { technology 'HTTPS' }\n    firewall -> proxy 'Allowed traffic' { technology 'HTTPS' }\n    proxy -> api 'Routes to API' { technology 'HTTP' }\n    api -> store 'Reads/writes' { technology 'SQL' }\n  }\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown relationship kind ''HTTPS'.",
+            "Unknown relationship kind ''Allowed'.",
+            "Unknown relationship kind ''Routes'.",
+            "Unknown relationship kind ''Reads/writes''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view portal_view of Portal {\n    title 'Security Boundary Pattern'\n    include *\n    autoLayout TopBottom\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

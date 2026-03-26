@@ -1,0 +1,38 @@
+{
+  "skill": "c4-modeling-process",
+  "configuration": "with_skill",
+  "run": 1,
+  "generated_at": "2026-03-26",
+  "responses": [
+    {
+      "eval_id": 0,
+      "prompt": "I’m starting from a blank page to model a new SaaS product. Give me the LikeC4 design approach to follow, in the right order, and tell me what is optional.",
+      "response": "Use a top-down sequence: (0) understand workspace rules first, then (1) C1 context, (2) C2 containers, (3) C3 only where needed, then optionally (4) dynamic use-case views and (5) deployment views, and finally (6) validation. C3 is optional and should be created only for complex/risky/central containers. Dynamic views are optional and only for time-ordered flows. Deployment is optional and only when runtime topology matters."
+    },
+    {
+      "eval_id": 1,
+      "prompt": "I have a very simple API container. Do I really need to create a detailed C3 view? Explain the decision rule.",
+      "response": "No, not by default. Decision rule: create C3 only when C2 is no longer explanatory (high complexity, architectural risk, or central internals worth documenting). If the API container is simple and well understood at C2, skip C3."
+    },
+    {
+      "eval_id": 2,
+      "prompt": "I want to show a user journey in C1 with temporal arrows between the user, the webapp, and the API. Is that correct? If not, where should this diagram go and why?",
+      "response": "That is not correct for C1. C1 is static context (system boundary and environment). A user journey is temporal behavior, so model it as a dynamic view under views 'Use Cases' with ordered arrows. Keep C1 focused on actors/systems and relationships without sequence semantics."
+    },
+    {
+      "eval_id": 3,
+      "prompt": "I’m taking over a LikeC4 workspace I don’t know, and I need to design a new C2 view properly. In what order should I approach this, and which complementary skills should I call?",
+      "response": "First call understand-project-structure to re-establish valid kinds, relationships, tags, and current organization. Then confirm C1 boundary, model or refine C2 containers/relationships, and build the C2 view. Use create-element for declarations, create-relationship for typed links, and design-view for the static view. Validate with test-model before finishing."
+    },
+    {
+      "eval_id": 4,
+      "prompt": "I already have my C2. I now want to document production infrastructure and a nominal user scenario. Should this skill detail everything itself, or rely on other skills?",
+      "response": "This orchestration skill should not detail everything itself. Use it to choose order and handoff: after stable C2, create the nominal scenario with create-sequence-view (dynamic view) and production topology with model-deployment-infrastructure. Then validate with test-model."
+    },
+    {
+      "eval_id": 5,
+      "prompt": "I’m resuming this multi-project workspace after changes to shared specs. I need to add a sensitive C3 view, then document a nominal user scenario. Without skipping steps, what order should I follow, and which skills should take over?",
+      "response": "Order: (1) understand-project-structure first to refresh workspace rules after shared-spec changes, (2) verify C1/C2 are still valid, (3) add targeted C3 only for the sensitive container(s), (4) add nominal user scenario as a dynamic view, (5) validate. Skill handoff: understand-project-structure -> create-element/create-relationship -> design-view (for C3 static view) -> create-sequence-view (for nominal flow) -> test-model."
+    }
+  ]
+}

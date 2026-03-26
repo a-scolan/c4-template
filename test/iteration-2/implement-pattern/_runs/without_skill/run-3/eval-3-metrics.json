@@ -1,0 +1,19 @@
+{
+  "eval_id": "eval-3",
+  "run_id": 3,
+  "skill": "implement-pattern",
+  "config": "without_skill",
+  "iteration": "iteration-2",
+  "prompt_summary": "Implement DMZ security zone pattern with WAF and reverse proxy",
+  "scores": {
+    "syntax_valid": 1,
+    "element_kinds_idiomatic": 1,
+    "relationship_kinds_typed": 0,
+    "tags_applied": 0,
+    "completeness": 1,
+    "view_provided": 1
+  },
+  "score": 57,
+  "pass": false,
+  "notes": "Container_ReverseProxy used for proxy but generic Container used for WAF. Traffic traversal order slightly inverted (WAF should precede proxy). Missing #Dmz, #Security, #Ingress tags."
+}

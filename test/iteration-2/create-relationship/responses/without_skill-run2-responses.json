@@ -1,0 +1,33 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-relationship",
+  "run": 2,
+  "evals": [
+    {
+      "eval_id": 0,
+      "prompt": "I need to connect a web application container to an API container in my system model. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
+      "response": "Define a relationship in the model between the two containers, e.g. `webApp -> api \"Uses API\" { technology \"HTTPS\" }`. Relationship kind/type should be defined in the spec (relationship kinds), while each concrete edge is declared in the system/container model. Use deployment relationships only for deployment-level/runtime topology links."
+    },
+    {
+      "eval_id": 1,
+      "prompt": "I’m modeling an async upload flow: `uploadService` publishes to `jobQueue`, then `worker` consumes and writes to the database. Should I also draw a return relationship from worker back to upload service?",
+      "response": "Not by default. Draw only concrete dependencies: producer->queue, worker->queue (consume), worker->database (write). Add worker->uploadService only if there is an explicit callback/notification/API call back to uploadService."
+    },
+    {
+      "eval_id": 2,
+      "prompt": "My `retrievalService` reads Redis and then PostgreSQL. Should I use `calls`, `reads`, or something else? Give me the rule and a short example.",
+      "response": "Use `reads` when the dependency is reading data from a store/cache. Use `calls` when invoking a service endpoint/operation. Here, model two reads: `retrievalService -> redis \"Reads\"` and `retrievalService -> postgres \"Reads\"`."
+    },
+    {
+      "eval_id": 3,
+      "prompt": "My API reads Redis as cache, then PostgreSQL as fallback on cache miss. Should I model this with one “smart” relationship, two `reads`, or something else?",
+      "response": "Model two `reads` relationships. Keep the fallback logic in labels/description (e.g., `cache miss fallback`) rather than compressing into one abstract edge. Two explicit edges are clearer and align better with architecture analysis."
+    },
+    {
+      "eval_id": 4,
+      "prompt": "I added `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment because I wanted the diagram to show browser traffic. Should I keep that there, and where should `Manual`, `HTTPS`, and `HTTP/8080` actually live?",
+      "response": "Use deployment relations for real runtime connections between deployed instances/nodes. Browser traffic is generally a logical interaction (actor/browser -> web app) in the model views. `Manual` belongs to relationship label/description when representing human action. `HTTPS` and `HTTP/8080` belong to relationship technology/protocol on whichever relationship actually uses that transport."
+    }
+  ]
+}

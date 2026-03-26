@@ -1,0 +1,30 @@
+{
+  "eval_id": "eval-2",
+  "skill": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "success": true,
+  "score": 0.5,
+  "required_keys_present": true,
+  "required_keys_non_null": true,
+  "response_file": "test/iteration-2/model-deployment-infrastructure/eval-2/without_skill/run-1/response.md",
+  "notes": "Node_Cluster used correctly to avoid inventing VM details. instanceOf wiring explained. Namespace layer mentioned as optional. Good baseline.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}{
+  "iteration": "test/iteration-2",
+  "skill": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": "eval-2",
+  "response_path": "test/iteration-2/model-deployment-infrastructure/eval-2/without_skill/run-1/response.md",
+  "status": "completed",
+  "scores": {
+    "instruction_adherence": 1.0,
+    "technical_correctness": 1.0,
+    "completeness": 1.0,
+    "clarity": 1.0
+  },
+  "notes": "Explained honest managed-K8s hierarchy and instanceOf wiring without inventing VMs.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

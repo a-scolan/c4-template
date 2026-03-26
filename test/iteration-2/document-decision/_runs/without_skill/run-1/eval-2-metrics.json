@@ -1,0 +1,17 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "document-decision",
+  "configuration": "without_skill",
+  "run": "run-1",
+  "eval_id": "eval-2",
+  "prompt": "We are replacing an internal payment orchestration service with a direct SaaS integration to Stripe, keeping only a small internal adapter boundary. This is a real architecture decision. Help me frame the ADR.",
+  "response_path": "test/iteration-2/document-decision/eval-2/without_skill/run-1/response.md",
+  "status": "completed",
+  "used_skill": false,
+  "error": "",
+  "started_at": "2026-03-25T00:00:02Z",
+  "completed_at": "2026-03-25T00:00:03Z",
+  "duration_ms": 1000,
+  "response_language": "en",
+  "prompt_verbatim_used": true
+}

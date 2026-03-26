@@ -1,0 +1,13 @@
+{
+  "skill_name": "c4-modeling-process",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "run_number": 1,
+  "eval_id": 5,
+  "started_at": "2026-03-26T10:00:15Z",
+  "finished_at": "2026-03-26T10:00:18Z",
+  "elapsed_seconds_total": 3,
+  "files_read_count": 2,
+  "files_written_count": 2
+}

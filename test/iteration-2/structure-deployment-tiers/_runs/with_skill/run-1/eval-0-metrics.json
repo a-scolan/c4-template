@@ -1,0 +1,14 @@
+{
+  "eval_id": 0,
+  "run_number": 1,
+  "configuration": "with_skill",
+  "skill_name": "structure-deployment-tiers",
+  "language": "en",
+  "mcp_used": false,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "started_at": "2026-03-26T10:00:00Z",
+  "finished_at": "2026-03-26T10:00:56Z",
+  "elapsed_seconds": 56,
+  "response_path": "test/iteration-2/structure-deployment-tiers/eval-0/with_skill/run-1/response.md"
+}

@@ -1,0 +1,85 @@
+{
+  "skill_name": "sync-with-template",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-26T10:40:00Z",
+  "finished_at": "2026-03-26T10:55:00Z",
+  "elapsed_seconds_total": 900.0,
+  "files_read_count": 3,
+  "files_written_count": 3,
+  "skill": "sync-with-template",
+  "run_count": 3,
+  "status": "completed",
+  "eval_count": 5,
+  "passed_count": 5,
+  "failed_count": 0,
+  "average_score": 1.0,
+  "timestamp_utc": "2026-03-25T00:00:00Z",
+  "per_eval_metrics": [
+    "test/iteration-2/sync-with-template/_runs/without_skill/run-1/eval-0-metrics.json",
+    "test/iteration-2/sync-with-template/_runs/without_skill/run-1/eval-1-metrics.json",
+    "test/iteration-2/sync-with-template/_runs/without_skill/run-1/eval-2-metrics.json",
+    "test/iteration-2/sync-with-template/_runs/without_skill/run-1/eval-3-metrics.json",
+    "test/iteration-2/sync-with-template/_runs/without_skill/run-1/eval-4-metrics.json"
+  ],
+  "notes": "Strict baseline benchmark artifacts generated for all evals.",
+  "runs": [
+    {
+      "skill_name": "sync-with-template",
+      "configuration": "without_skill",
+      "language": "English",
+      "mcp_used": false,
+      "started_at": "2026-03-26T10:40:00Z",
+      "finished_at": "2026-03-26T10:45:00Z",
+      "elapsed_seconds_total": 300.0,
+      "files_read_count": 1,
+      "files_written_count": 1,
+      "run_number": 1
+    },
+    {
+      "skill_name": "sync-with-template",
+      "configuration": "without_skill",
+      "language": "English",
+      "mcp_used": false,
+      "started_at": "2026-03-26T10:45:00Z",
+      "finished_at": "2026-03-26T10:50:00Z",
+      "elapsed_seconds_total": 300.0,
+      "files_read_count": 1,
+      "files_written_count": 1,
+      "run_number": 2
+    },
+    {
+      "skill_name": "sync-with-template",
+      "configuration": "without_skill",
+      "language": "English",
+      "mcp_used": false,
+      "started_at": "2026-03-26T10:50:00Z",
+      "finished_at": "2026-03-26T10:55:00Z",
+      "elapsed_seconds_total": 300.0,
+      "files_read_count": 1,
+      "files_written_count": 1,
+      "run_number": 3
+    }
+  ],
+  "aggregate": {
+    "elapsed_seconds_total": {
+      "mean": 300.0,
+      "stddev": 0.0,
+      "min": 300.0,
+      "max": 300.0
+    },
+    "files_read_count": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "files_written_count": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0
+    }
+  }
+}

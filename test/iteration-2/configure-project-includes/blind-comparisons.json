@@ -1,0 +1,12 @@
+{
+  "schema_version": 2,
+  "skill_name": "configure-project-includes",
+  "comparisons": [
+    {"eval_id":0,"run_number":1,"winner":"A","reasoning":"A matches the expected minimal config outcome exactly.","rubric":{"A":{"content_score":9.8,"structure_score":9.2,"overall_score":9.6},"B":{"content_score":6.2,"structure_score":6.5,"overall_score":6.3}},"expectation_results":{"A":{"passed":5,"total":5,"pass_rate":1.0},"B":{"passed":2,"total":5,"pass_rate":0.4}}},
+    {"eval_id":1,"run_number":1,"winner":"B","reasoning":"B follows the intended progressive split pattern.","rubric":{"A":{"content_score":5.8,"structure_score":7.0,"overall_score":6.2},"B":{"content_score":9.9,"structure_score":9.3,"overall_score":9.7}},"expectation_results":{"A":{"passed":3,"total":5,"pass_rate":0.6},"B":{"passed":5,"total":5,"pass_rate":1.0}}},
+    {"eval_id":2,"run_number":1,"winner":"B","reasoning":"B is more directly aligned to append-not-replace and explicit safe JSON outcome.","rubric":{"A":{"content_score":8.4,"structure_score":7.8,"overall_score":8.1},"B":{"content_score":9.4,"structure_score":9.0,"overall_score":9.2}},"expectation_results":{"A":{"passed":4,"total":5,"pass_rate":0.8},"B":{"passed":5,"total":5,"pass_rate":1.0}}},
+    {"eval_id":3,"run_number":1,"winner":"A","reasoning":"A scopes this skill correctly and delegates to organize-multi-project.","rubric":{"A":{"content_score":9.8,"structure_score":9.1,"overall_score":9.6},"B":{"content_score":6.7,"structure_score":7.4,"overall_score":7.0}},"expectation_results":{"A":{"passed":5,"total":5,"pass_rate":1.0},"B":{"passed":3,"total":5,"pass_rate":0.6}}},
+    {"eval_id":4,"run_number":1,"winner":"B","reasoning":"B is explicit about path precedence and collision policy.","rubric":{"A":{"content_score":9.0,"structure_score":9.0,"overall_score":9.0},"B":{"content_score":9.3,"structure_score":8.8,"overall_score":9.1}},"expectation_results":{"A":{"passed":4,"total":5,"pass_rate":0.8},"B":{"passed":5,"total":5,"pass_rate":1.0}}},
+    {"eval_id":5,"run_number":1,"winner":"A","reasoning":"A best satisfies the smallest safe JSON edit target.","rubric":{"A":{"content_score":9.9,"structure_score":9.4,"overall_score":9.7},"B":{"content_score":7.1,"structure_score":7.5,"overall_score":7.3}},"expectation_results":{"A":{"passed":4,"total":4,"pass_rate":1.0},"B":{"passed":3,"total":4,"pass_rate":0.75}}}
+  ]
+}

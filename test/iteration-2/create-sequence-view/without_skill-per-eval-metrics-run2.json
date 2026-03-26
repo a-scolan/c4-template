@@ -1,0 +1,42 @@
+{
+  "configuration": "without_skill",
+  "iteration": "test/iteration-2",
+  "skill": "create-sequence-view",
+  "run": 2,
+  "metrics": {
+    "0": {
+      "score": 1.0,
+      "prompt_coverage": 1.0,
+      "technical_correctness": 1.0,
+      "format_compliance": 1.0,
+      "notes": "Dynamic login journey includes all actors/systems and ordered interactions."
+    },
+    "1": {
+      "score": 1.0,
+      "prompt_coverage": 1.0,
+      "technical_correctness": 1.0,
+      "format_compliance": 1.0,
+      "notes": "Explains correction clearly and proposes valid model+dynamic sequence."
+    },
+    "2": {
+      "score": 1.0,
+      "prompt_coverage": 1.0,
+      "technical_correctness": 1.0,
+      "format_compliance": 1.0,
+      "notes": "Represents async pipeline including ACK then background processing."
+    },
+    "3": {
+      "score": 1.0,
+      "prompt_coverage": 1.0,
+      "technical_correctness": 1.0,
+      "format_compliance": 1.0,
+      "notes": "Shows both immediate success and retry behavior in one valid sequence."
+    }
+  },
+  "summary": {
+    "eval_count": 4,
+    "mean_score": 1.0,
+    "passed": 4,
+    "failed": 0
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "eval_id": "eval-3",
+  "skill": "sync-with-template",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "passed": true,
+  "score": 1.0,
+  "response_path": "test/iteration-2/sync-with-template/eval-3/without_skill/run-1/response.md",
+  "timestamp_utc": "2026-03-25T00:00:00Z",
+  "notes": "Generated genericity verification checklist before upstream push."
+}

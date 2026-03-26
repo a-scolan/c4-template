@@ -1,0 +1,33 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-relationship",
+  "run": 1,
+  "evals": [
+    {
+      "eval_id": 0,
+      "prompt": "I need to connect a web application container to an API container in my system model. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
+      "response": "Use a model-level relationship between the two containers. Short example: `webApp -> api \"Calls API\" { technology \"HTTPS\" }`. Put relationship *types/kinds* in your specification (relationship kind definitions), then use those kinds consistently in model relationships. The concrete relationship line itself belongs in the system/container model, not in deployment unless you are explicitly modeling infrastructure/runtime links."
+    },
+    {
+      "eval_id": 1,
+      "prompt": "I’m modeling an async upload flow: `uploadService` publishes to `jobQueue`, then `worker` consumes and writes to the database. Should I also draw a return relationship from worker back to upload service?",
+      "response": "Usually no. Model the real dependencies/flow only: `uploadService -> jobQueue`, `worker -> jobQueue` (consume), and `worker -> database` (write). Add a return relationship to `uploadService` only if there is an actual callback/event/update path back. Don’t add implied control flow edges just for readability."
+    },
+    {
+      "eval_id": 2,
+      "prompt": "My `retrievalService` reads Redis and then PostgreSQL. Should I use `calls`, `reads`, or something else? Give me the rule and a short example.",
+      "response": "Rule: choose relationship meaning by interaction semantics. Use `reads` for data-access dependencies (cache/store reads), and `calls` for service/API invocation semantics. For your case, `reads` is the better default for both stores. Example: `retrievalService -> redis \"Reads cache\"` and `retrievalService -> postgres \"Reads fallback\"`."
+    },
+    {
+      "eval_id": 3,
+      "prompt": "My API reads Redis as cache, then PostgreSQL as fallback on cache miss. Should I model this with one “smart” relationship, two `reads`, or something else?",
+      "response": "Use two explicit `reads` relationships. One edge to Redis (cache read) and one to PostgreSQL (fallback read). Keep behavior details (cache miss fallback) in the relationship labels/descriptions, not in a single overloaded “smart” edge. This keeps the model queryable and clear."
+    },
+    {
+      "eval_id": 4,
+      "prompt": "I added `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment because I wanted the diagram to show browser traffic. Should I keep that there, and where should `Manual`, `HTTPS`, and `HTTP/8080` actually live?",
+      "response": "Keep deployment relationships only for deployment/runtime connectivity between deployed nodes/instances. Browser traffic is usually modeled in the logical model (actor/browser -> web app). Place `Manual` as relationship label/description when describing human-triggered interaction. Place `HTTPS` or `HTTP/8080` in relationship technology/protocol fields on the relevant logical or deployment relationship (external browser->web app likely HTTPS; internal web->api may be HTTP/8080 if that is the real runtime protocol)."
+    }
+  ]
+}

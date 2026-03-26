@@ -1,0 +1,26 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": 5,
+  "status": "completed",
+  "overall_score": 0.91,
+  "dimensions": {
+    "correctness": 0.91,
+    "completeness": 0.91,
+    "safety": 0.91
+  },
+  "notes": "Provides minimal safe JSON edit with collision avoidance."
+}{
+  "iteration": "iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": "eval-5",
+  "status": "completed",
+  "prompt_used_verbatim": true,
+  "language": "en",
+  "response_path": "test/iteration-2/configure-project-includes/eval-5/without_skill/run-1/response.md",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

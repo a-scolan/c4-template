@@ -1,0 +1,17 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "document-decision",
+  "configuration": "without_skill",
+  "run": "run-1",
+  "eval_id": "eval-0",
+  "prompt": "We’re choosing PostgreSQL instead of MongoDB for the main database container in our system. Help me frame the ADR to write.",
+  "response_path": "test/iteration-2/document-decision/eval-0/without_skill/run-1/response.md",
+  "status": "completed",
+  "used_skill": false,
+  "error": "",
+  "started_at": "2026-03-25T00:00:00Z",
+  "completed_at": "2026-03-25T00:00:01Z",
+  "duration_ms": 1000,
+  "response_language": "en",
+  "prompt_verbatim_used": true
+}

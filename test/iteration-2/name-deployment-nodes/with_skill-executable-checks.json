@@ -1,0 +1,143 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "name-deployment-nodes",
+  "configuration": "with_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 3,
+    "valid_eval_count": 3,
+    "valid_eval_rate": 1.0,
+    "snippet_count_total": 3,
+    "error_count_total": 0,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment \"Production\" {\n\n    Dmz = Zone \"DMZ (VLAN 100: 10.0.0.0/24)\" {\n      description \"\"\"\n        Edge ingress zone\n\n        | Property | Value |\n        |:---------|:------|\n        | Network | 10.0.0.0/24 |\n        | Gateway | 10.0.0.1 |\n      \"\"\"\n\n      ProdApigwVm = Node_Vm \"prod-apigw-vm\" {\n        technology \"Kong\"\n        description \"\"\"\n          TLS termination and edge routing\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.0.0.10/24 |\n          | CPU | 4 vCPU |\n          | RAM | 8 GB |\n          | Port | 443 |\n        \"\"\"\n\n        apigwApp = Node_App \"API Gateway\" {\n          instanceOf corePlatform.apiGateway\n        }\n      }\n    }\n\n    AppTier = Zone \"Application Tier (VLAN 101: 10.1.0.0/24)\" {\n      ProdUploadVm = Node_Vm \"prod-upload-vm\" {\n        technology \"Node.js + Docker\"\n        description \"\"\"\n          Upload API service\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.1.0.12/24 |\n          | CPU | 2 vCPU |\n          | RAM | 4 GB |\n          | Port | 3001 |\n        \"\"\"\n        uploadApp = Node_App \"Upload Service\" {\n          instanceOf corePlatform.uploadService\n        }\n      }\n    }\n\n    ProcTier = Zone \"Processing Tier (VLAN 102: 10.2.0.0/24)\" {\n      ProdWorkerVm = Node_Vm \"prod-worker-vm\" {\n        technology \"Python + Docker\"\n        description \"\"\"\n          Async worker\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.2.0.15/24 |\n          | CPU | 4 vCPU |\n          | RAM | 8 GB |\n          | Port | 8080 |\n        \"\"\"\n        workerApp = Node_App \"Worker\" {\n          instanceOf corePlatform.worker\n        }\n      }\n    }\n\n    DataTier = Zone \"Data Tier (VLAN 103: 10.3.0.0/24)\" {\n      ProdDatabaseVm = Node_Vm \"prod-database-vm\" {\n        technology \"MongoDB\"\n        description \"\"\"\n          Primary document database\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.3.0.16/24 |\n          | CPU | 4 vCPU |\n          | RAM | 16 GB |\n          | Port | 27017 |\n        \"\"\"\n        mongoApp = Node_App \"MongoDB\" {\n          instanceOf corePlatform.documentDb\n        }\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/with_skill/run-2/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment \"Production\" {\n\n    Dmz = Zone \"DMZ (VLAN 100: 10.0.0.0/24)\" {\n      ProdApigwVm = Node_Vm \"prod-apigw-vm\" {\n        technology \"Kong\"\n        description \"\"\"\n          Edge gateway\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.0.0.10/24 |\n          | CPU | 4 vCPU |\n          | RAM | 8 GB |\n        \"\"\"\n        apigwApp = Node_App \"API Gateway\" {\n          instanceOf corePlatform.apiGateway\n        }\n      }\n    }\n\n    AppTier = Zone \"Application Tier (VLAN 101: 10.1.0.0/24)\" {\n      ProdUploadVm = Node_Vm \"prod-upload-vm\" {\n        technology \"Node.js\"\n        description \"\"\"\n          Upload endpoint\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.1.0.12/24 |\n          | CPU | 2 vCPU |\n          | RAM | 4 GB |\n        \"\"\"\n        uploadApp = Node_App \"Upload Service\" {\n          instanceOf corePlatform.uploadService\n        }\n      }\n    }\n\n    ProcTier = Zone \"Processing Tier (VLAN 102: 10.2.0.0/24)\" {\n      ProdWorkerVm = Node_Vm \"prod-worker-vm\" {\n        technology \"Python\"\n        description \"\"\"\n          Async processing\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.2.0.15/24 |\n          | CPU | 4 vCPU |\n          | RAM | 8 GB |\n        \"\"\"\n        workerApp = Node_App \"Worker\" {\n          instanceOf corePlatform.worker\n        }\n      }\n    }\n\n    DataTier = Zone \"Data Tier (VLAN 103: 10.3.0.0/24)\" {\n      ProdDatabaseVm = Node_Vm \"prod-database-vm\" {\n        technology \"MongoDB\"\n        description \"\"\"\n          Database node\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.3.0.16/24 |\n          | CPU | 4 vCPU |\n          | RAM | 16 GB |\n        \"\"\"\n        mongoApp = Node_App \"MongoDB\" {\n          instanceOf corePlatform.documentDb\n        }\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/with_skill/run-2/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/with_skill/run-3/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  Prod = Node_Environment \"Production\" {\n    Dmz = Zone \"DMZ (VLAN 100: 10.0.0.0/24)\" {\n      ProdApigwVm = Node_Vm \"prod-apigw-vm\" {\n        technology \"API Gateway\"\n        description \"\"\"\n          Gateway and TLS termination\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.0.0.10/24 |\n          | CPU | 4 vCPU |\n          | RAM | 8 GB |\n          | Port | 443 |\n        \"\"\"\n        apigwApp = Node_App \"API Gateway\" {\n          instanceOf corePlatform.apiGateway\n        }\n      }\n    }\n\n    AppTier = Zone \"Application Tier (VLAN 101: 10.1.0.0/24)\" {\n      ProdUploadVm = Node_Vm \"prod-upload-vm\" {\n        technology \"Node.js\"\n        description \"\"\"\n          Upload service\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.1.0.12/24 |\n          | CPU | 2 vCPU |\n          | RAM | 4 GB |\n          | Port | 3001 |\n        \"\"\"\n        uploadApp = Node_App \"Upload Service\" {\n          instanceOf corePlatform.uploadService\n        }\n      }\n    }\n\n    ProcTier = Zone \"Processing Tier (VLAN 102: 10.2.0.0/24)\" {\n      ProdWorkerVm = Node_Vm \"prod-worker-vm\" {\n        technology \"Python\"\n        description \"\"\"\n          Worker processing jobs\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.2.0.15/24 |\n          | CPU | 4 vCPU |\n          | RAM | 8 GB |\n          | Port | 8080 |\n        \"\"\"\n        workerApp = Node_App \"Worker\" {\n          instanceOf corePlatform.worker\n        }\n      }\n    }\n\n    DataTier = Zone \"Data Tier (VLAN 103: 10.3.0.0/24)\" {\n      ProdDatabaseVm = Node_Vm \"prod-database-vm\" {\n        technology \"MongoDB\"\n        description \"\"\"\n          MongoDB primary\n\n          | Property | Value |\n          |:---------|:------|\n          | eth0 | 10.3.0.16/24 |\n          | CPU | 4 vCPU |\n          | RAM | 16 GB |\n          | Port | 27017 |\n        \"\"\"\n        mongoApp = Node_App \"MongoDB\" {\n          instanceOf corePlatform.documentDb\n        }\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/with_skill/run-3/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    }
+  ]
+}

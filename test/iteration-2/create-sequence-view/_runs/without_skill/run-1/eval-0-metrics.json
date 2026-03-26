@@ -1,0 +1,13 @@
+{
+  "eval_id": "eval-0",
+  "iteration": "test/iteration-2",
+  "skill": "create-sequence-view",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "prompt_verbatim_used": true,
+  "response_path": "test/iteration-2/create-sequence-view/eval-0/without_skill/run-1/response.md",
+  "metrics_version": "1.0",
+  "timestamp_utc": "2026-03-25T00:00:00Z",
+  "required_keys_non_null": true
+}

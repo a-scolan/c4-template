@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "skill_name": "customize-view",
+  "configuration": "with_skill",
+  "run_id": 2,
+  "generated_at": "2026-03-26T10:01:23.000Z",
+  "elapsed_seconds": 10,
+  "response_file": "test/iteration-2/customize-view/eval-1/with_skill/run-2/response.md",
+  "prompt_summary": "Highlight API elements, de-emphasize rest, no local palette",
+  "skill_applied": true,
+  "mcp_used": false
+}

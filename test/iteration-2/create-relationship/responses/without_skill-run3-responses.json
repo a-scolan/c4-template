@@ -1,0 +1,33 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-relationship",
+  "run": 3,
+  "evals": [
+    {
+      "eval_id": 0,
+      "prompt": "I need to connect a web application container to an API container in my system model. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
+      "response": "A standard model relationship is correct, for example: `webApp -> api \"Calls\" { technology \"HTTPS\" }`. Relationship type/kind belongs in your relationship-kind specification, while the instance relationship line belongs in the system/container model file."
+    },
+    {
+      "eval_id": 1,
+      "prompt": "I’m modeling an async upload flow: `uploadService` publishes to `jobQueue`, then `worker` consumes and writes to the database. Should I also draw a return relationship from worker back to upload service?",
+      "response": "Only if such a path really exists (callback/event/API call back). Otherwise, no. Keep edges to actual dependencies: uploadService->jobQueue, worker->jobQueue, worker->database."
+    },
+    {
+      "eval_id": 2,
+      "prompt": "My `retrievalService` reads Redis and then PostgreSQL. Should I use `calls`, `reads`, or something else? Give me the rule and a short example.",
+      "response": "Rule of thumb: data-store access => `reads`/`writes`; service invocation => `calls`. In your case: `retrievalService -> redis \"Reads cache\"` and `retrievalService -> postgres \"Reads fallback\"`."
+    },
+    {
+      "eval_id": 3,
+      "prompt": "My API reads Redis as cache, then PostgreSQL as fallback on cache miss. Should I model this with one “smart” relationship, two `reads`, or something else?",
+      "response": "Use two `reads` relationships (API->Redis and API->PostgreSQL). Put the conditional behavior (cache miss fallback) into edge titles/description, not into a single overloaded relationship."
+    },
+    {
+      "eval_id": 4,
+      "prompt": "I added `Prod.Web.webApp -[https]-> Prod.App.apiApp` in deployment because I wanted the diagram to show browser traffic. Should I keep that there, and where should `Manual`, `HTTPS`, and `HTTP/8080` actually live?",
+      "response": "Keep deployment links for runtime/deployment connectivity. Browser traffic is typically modeled in logical views (user/browser -> web app). `Manual` should be the interaction label/description (human-triggered). `HTTPS` and `HTTP/8080` should be technology/protocol values on the specific relationships that actually use them."
+    }
+  ]
+}

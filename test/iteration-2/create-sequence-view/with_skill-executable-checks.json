@@ -1,0 +1,987 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "create-sequence-view",
+  "configuration": "with_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 12,
+    "valid_eval_count": 0,
+    "valid_eval_rate": 0.0,
+    "snippet_count_total": 31,
+    "error_count_total": 183,
+    "warning_count_total": 333
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 14,
+      "warning_count": 26,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view loginJourney {\n    title 'Login Journey'\n    user -> webApplication 'Opens login page'\n    webApplication -> api 'POST /login'\n    api -> primaryDatabase 'Validates credentials'\n    api -> externalNotificationService 'Sends login notification'\n    api -> webApplication 'Returns session token'\n    webApplication -> user 'Shows signed-in state'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Opens'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Shows'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'externalNotificationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view loginFlow {\n    title 'Login Journey'\n    user -> webApp 'Opens login page'\n    webApp -> api 'POST /auth/login'\n    api -> primaryDatabase 'Validates credentials'\n    api -> webApp 'Returns auth token'\n    webApp -> user 'Redirects to dashboard'\n    api -> notificationService 'Sends login notification'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Opens'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Redirects'.",
+            "Unknown relationship kind ''Sends'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notificationService' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Wrong: parent → own-child\nwebApp -> webApp.loginForm 'Shows form'\n\n// ✅ Better: reference the child directly\nuser -> webApp.loginForm 'Fills login form'",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind ''Shows'.",
+            "Unknown relationship kind ''Fills'."
+          ],
+          "warnings": [
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 8,
+      "warning_count": 7,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n\tdynamic view authenticationFlow {\n\t\ttitle 'Authentication Flow'\n\t\tuser -> api_container.auth_component 'Submits credentials'\n\t\tapi_container.auth_component -> identityProvider 'Validates credentials'\n\t\tapi_container.auth_component -> sessionStore 'Creates session'\n\t\tapi_container.auth_component -> user 'Returns authenticated result'\n\t}\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 4,
+          "errors": [
+            "Unknown relationship kind ''Submits'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Creates'.",
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'identityProvider' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'sessionStore' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Wrong\napi_container -> api_container.auth_component 'Authenticates'\n\n// ✅ Correct: begin from the actual external caller\nuser -> api_container.auth_component 'Sends credentials'\napi_container.auth_component -> directoryService 'Validates token'\napi_container.auth_component -> api_container.sessionManager 'Creates session'",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 3,
+          "errors": [
+            "Unknown relationship kind ''Authenticates''.",
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Creates'."
+          ],
+          "warnings": [
+            "Reference 'api_container' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'directoryService' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 13,
+      "warning_count": 26,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view asyncProcessingFlow {\n    title 'Async Processing Flow'\n    externalUser -> webApp 'Submits request'\n    webApp -> api 'POST /process'\n    api -> jobQueue 'Enqueues job'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> database 'Stores processing result'\n    api -> webApp 'Returns accepted/tracking'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Submits'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Stores'.",
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view asyncProcessingFlow {\n    title 'Async Processing Flow'\n    externalUser -> webApp 'Submits request'\n    webApp -> api 'Forwards request'\n    api -> jobQueue 'Enqueues job'\n    api -> webApp 'Returns 202 Accepted'\n    webApp -> externalUser 'Returns tracking URL'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> database 'Persists result'\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 14,
+          "errors": [
+            "Unknown relationship kind ''Submits'.",
+            "Unknown relationship kind ''Forwards'.",
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Persists'."
+          ],
+          "warnings": [
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 24,
+      "warning_count": 48,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view asyncUploadWithRetry {\n    title 'Async Upload with Immediate Ack and Retry'\n    user -> webApp 'Uploads file'\n    webApp -> api 'POST /uploads'\n    api -> jobQueue 'Queues validation job'\n    api -> webApp 'Returns tracking URL immediately'\n    webApp -> user 'Displays tracking URL'\n\n    jobQueue -> validationWorker 'Delivers validation job'\n    validationWorker -> database 'Stores validation result (success)'\n\n    validationWorker -> retryScheduler 'Schedules retry on failure'\n    retryScheduler -> jobQueue 'Requeues validation job'\n    jobQueue -> validationWorker 'Delivers retried job'\n    validationWorker -> database 'Stores validation result after retry'\n  }\n}",
+          "valid": false,
+          "error_count": 11,
+          "warning_count": 22,
+          "errors": [
+            "Unknown relationship kind ''Uploads'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Queues'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Displays'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Stores'.",
+            "Unknown relationship kind ''Schedules'.",
+            "Unknown relationship kind ''Requeues'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Stores'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'retryScheduler' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'retryScheduler' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view uploadImmediateResponse {\n    title 'Upload – Immediate Response'\n    user -> webApp 'Uploads file'\n    webApp -> api 'POST /upload'\n    api -> jobQueue 'Enqueues processing job'\n    api -> webApp 'Returns 202 + tracking URL'\n    webApp -> user 'Shows tracking URL'\n  }\n\n  dynamic view uploadBackgroundValidation {\n    title 'Upload – Background Validation & Retry'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> validationService 'Validates file'\n    validationService -> processingWorker 'Returns validation error'\n    processingWorker -> jobQueue 'Re-enqueues with backoff'\n    jobQueue -> processingWorker 'Retries job'\n    processingWorker -> objectStorage 'Stores validated file'\n    processingWorker -> database 'Updates upload status'\n  }\n}",
+          "valid": false,
+          "error_count": 12,
+          "warning_count": 24,
+          "errors": [
+            "Unknown relationship kind ''Uploads'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Shows'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Re-enqueues'.",
+            "Unknown relationship kind ''Retries'.",
+            "Unknown relationship kind ''Stores'.",
+            "Unknown relationship kind ''Updates'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'objectStorage' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Don't annotate branching inline\napi -> webApp 'Returns 202 [if success] or 500 [if fail]'",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 0,
+      "error_count": 20,
+      "warning_count": 38,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view userLoginFlow {\n    title 'User Login Flow'\n    user -> webApplication 'Starts sign-in'\n    webApplication -> api 'Submit credentials'\n    api -> primaryDatabase 'Checks user/password'\n    api -> externalNotificationService 'Publishes login event'\n    api -> webApplication 'Auth result + token'\n    webApplication -> user 'Redirects to dashboard'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Starts'.",
+            "Unknown relationship kind ''Submit'.",
+            "Unknown relationship kind ''Checks'.",
+            "Unknown relationship kind ''Publishes'.",
+            "Unknown relationship kind ''Auth'.",
+            "Unknown relationship kind ''Redirects'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'externalNotificationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view userLoginFlow {\n    title 'User Login Flow'\n    user -> webApplication 'Starts sign-in'\n    webApplication -> api 'Submit credentials'\n    api -> primaryDatabase 'Checks user/password'\n    api -> externalNotificationService 'Publishes login event'\n    api -> webApplication 'Auth result + token'\n    webApplication -> user 'Redirects to dashboard'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Starts'.",
+            "Unknown relationship kind ''Submit'.",
+            "Unknown relationship kind ''Checks'.",
+            "Unknown relationship kind ''Publishes'.",
+            "Unknown relationship kind ''Auth'.",
+            "Unknown relationship kind ''Redirects'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'externalNotificationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view loginFlow {\n    title 'Login Journey'\n    user -> webApp 'Opens login page'\n    webApp -> api 'POST /auth/login'\n    api -> primaryDatabase 'Validates credentials'\n    api -> webApp 'Returns auth token'\n    webApp -> user 'Redirects to dashboard'\n    api -> notificationService 'Sends login notification'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Opens'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Redirects'.",
+            "Unknown relationship kind ''Sends'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notificationService' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Wrong: parent → own-child\nwebApp -> webApp.loginForm 'Shows form'\n\n// ✅ Better: reference the child directly\nuser -> webApp.loginForm 'Fills login form'",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind ''Shows'.",
+            "Unknown relationship kind ''Fills'."
+          ],
+          "warnings": [
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 8,
+      "warning_count": 7,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n\tdynamic view authJourney {\n\t\ttitle 'Auth Journey'\n\t\tuser -> api_container.auth_component 'Starts authentication'\n\t\tapi_container.auth_component -> identityProvider 'Checks identity'\n\t\tapi_container.auth_component -> sessionStore 'Persists session'\n\t\tapi_container.auth_component -> user 'Authentication outcome'\n\t}\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 4,
+          "errors": [
+            "Unknown relationship kind ''Starts'.",
+            "Unknown relationship kind ''Checks'.",
+            "Unknown relationship kind ''Persists'.",
+            "Unknown relationship kind ''Authentication'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'identityProvider' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'sessionStore' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Wrong\napi_container -> api_container.auth_component 'Authenticates'\n\n// ✅ Correct: begin from the actual external caller\nuser -> api_container.auth_component 'Sends credentials'\napi_container.auth_component -> directoryService 'Validates token'\napi_container.auth_component -> api_container.sessionManager 'Creates session'",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 3,
+          "errors": [
+            "Unknown relationship kind ''Authenticates''.",
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Creates'."
+          ],
+          "warnings": [
+            "Reference 'api_container' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'directoryService' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 13,
+      "warning_count": 26,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view externalRequestAsyncFlow {\n    title 'External Request Async Flow'\n    externalUser -> webApp 'Starts processing request'\n    webApp -> api 'Sends payload'\n    api -> jobQueue 'Queues background work'\n    jobQueue -> processingWorker 'Dispatches job'\n    processingWorker -> database 'Persists output'\n    api -> webApp 'Acknowledges request'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Starts'.",
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Queues'.",
+            "Unknown relationship kind ''Dispatches'.",
+            "Unknown relationship kind ''Persists'.",
+            "Unknown relationship kind ''Acknowledges'."
+          ],
+          "warnings": [
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view asyncProcessingFlow {\n    title 'Async Processing Flow'\n    externalUser -> webApp 'Submits request'\n    webApp -> api 'Forwards request'\n    api -> jobQueue 'Enqueues job'\n    api -> webApp 'Returns 202 Accepted'\n    webApp -> externalUser 'Returns tracking URL'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> database 'Persists result'\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 14,
+          "errors": [
+            "Unknown relationship kind ''Submits'.",
+            "Unknown relationship kind ''Forwards'.",
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Persists'."
+          ],
+          "warnings": [
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 24,
+      "warning_count": 48,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view uploadTrackingAndRetries {\n    title 'Upload Tracking and Background Retries'\n    user -> webApp 'Uploads content'\n    webApp -> api 'Submits upload'\n    api -> jobQueue 'Enqueues validation'\n    api -> webApp 'Returns tracking URL now'\n    webApp -> user 'Shows tracking URL'\n\n    jobQueue -> validationWorker 'Starts async validation'\n    validationWorker -> database 'Writes validation success'\n\n    validationWorker -> retryScheduler 'Requests retry after failure'\n    retryScheduler -> jobQueue 'Requeues failed validation'\n    jobQueue -> validationWorker 'Runs retry attempt'\n    validationWorker -> database 'Writes final validation state'\n  }\n}",
+          "valid": false,
+          "error_count": 11,
+          "warning_count": 22,
+          "errors": [
+            "Unknown relationship kind ''Uploads'.",
+            "Unknown relationship kind ''Submits'.",
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Shows'.",
+            "Unknown relationship kind ''Starts'.",
+            "Unknown relationship kind ''Writes'.",
+            "Unknown relationship kind ''Requests'.",
+            "Unknown relationship kind ''Requeues'.",
+            "Unknown relationship kind ''Runs'.",
+            "Unknown relationship kind ''Writes'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'retryScheduler' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'retryScheduler' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view uploadImmediateResponse {\n    title 'Upload – Immediate Response'\n    user -> webApp 'Uploads file'\n    webApp -> api 'POST /upload'\n    api -> jobQueue 'Enqueues processing job'\n    api -> webApp 'Returns 202 + tracking URL'\n    webApp -> user 'Shows tracking URL'\n  }\n\n  dynamic view uploadBackgroundValidation {\n    title 'Upload – Background Validation & Retry'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> validationService 'Validates file'\n    validationService -> processingWorker 'Returns validation error'\n    processingWorker -> jobQueue 'Re-enqueues with backoff'\n    jobQueue -> processingWorker 'Retries job'\n    processingWorker -> objectStorage 'Stores validated file'\n    processingWorker -> database 'Updates upload status'\n  }\n}",
+          "valid": false,
+          "error_count": 12,
+          "warning_count": 24,
+          "errors": [
+            "Unknown relationship kind ''Uploads'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Shows'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Re-enqueues'.",
+            "Unknown relationship kind ''Retries'.",
+            "Unknown relationship kind ''Stores'.",
+            "Unknown relationship kind ''Updates'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'objectStorage' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Don't annotate branching inline\napi -> webApp 'Returns 202 [if success] or 500 [if fail]'",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 14,
+      "warning_count": 26,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view loginFlow {\n    title 'Login Flow'\n    user -> webApplication 'Enters credentials'\n    webApplication -> api 'POST /auth/login'\n    api -> primaryDatabase 'Verifies account'\n    api -> externalNotificationService 'Triggers login alert'\n    api -> webApplication 'Returns JWT/session'\n    webApplication -> user 'Displays authenticated home'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Enters'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Verifies'.",
+            "Unknown relationship kind ''Triggers'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Displays'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'externalNotificationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApplication' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view loginFlow {\n    title 'Login Journey'\n    user -> webApp 'Opens login page'\n    webApp -> api 'POST /auth/login'\n    api -> primaryDatabase 'Validates credentials'\n    api -> webApp 'Returns auth token'\n    webApp -> user 'Redirects to dashboard'\n    api -> notificationService 'Sends login notification'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Opens'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Redirects'.",
+            "Unknown relationship kind ''Sends'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'primaryDatabase' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notificationService' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Wrong: parent → own-child\nwebApp -> webApp.loginForm 'Shows form'\n\n// ✅ Better: reference the child directly\nuser -> webApp.loginForm 'Fills login form'",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind ''Shows'.",
+            "Unknown relationship kind ''Fills'."
+          ],
+          "warnings": [
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 8,
+      "warning_count": 7,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n\tdynamic view loginAuthSequence {\n\t\ttitle 'Login Authentication Sequence'\n\t\tuser -> api_container.auth_component 'Provides credentials'\n\t\tapi_container.auth_component -> identityProvider 'Verifies credentials'\n\t\tapi_container.auth_component -> sessionStore 'Stores auth session'\n\t\tapi_container.auth_component -> user 'Returns success/failure'\n\t}\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 4,
+          "errors": [
+            "Unknown relationship kind ''Provides'.",
+            "Unknown relationship kind ''Verifies'.",
+            "Unknown relationship kind ''Stores'.",
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'identityProvider' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'sessionStore' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Wrong\napi_container -> api_container.auth_component 'Authenticates'\n\n// ✅ Correct: begin from the actual external caller\nuser -> api_container.auth_component 'Sends credentials'\napi_container.auth_component -> directoryService 'Validates token'\napi_container.auth_component -> api_container.sessionManager 'Creates session'",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 3,
+          "errors": [
+            "Unknown relationship kind ''Authenticates''.",
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Creates'."
+          ],
+          "warnings": [
+            "Reference 'api_container' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'directoryService' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 13,
+      "warning_count": 26,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view queuedProcessing {\n    title 'Queued Processing Sequence'\n    externalUser -> webApp 'Initiates flow'\n    webApp -> api 'Forwards request'\n    api -> jobQueue 'Publishes job'\n    jobQueue -> processingWorker 'Provides job message'\n    processingWorker -> database 'Writes final state'\n    api -> webApp 'Returns tracking info'\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 12,
+          "errors": [
+            "Unknown relationship kind ''Initiates'.",
+            "Unknown relationship kind ''Forwards'.",
+            "Unknown relationship kind ''Publishes'.",
+            "Unknown relationship kind ''Provides'.",
+            "Unknown relationship kind ''Writes'.",
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view asyncProcessingFlow {\n    title 'Async Processing Flow'\n    externalUser -> webApp 'Submits request'\n    webApp -> api 'Forwards request'\n    api -> jobQueue 'Enqueues job'\n    api -> webApp 'Returns 202 Accepted'\n    webApp -> externalUser 'Returns tracking URL'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> database 'Persists result'\n  }\n}",
+          "valid": false,
+          "error_count": 7,
+          "warning_count": 14,
+          "errors": [
+            "Unknown relationship kind ''Submits'.",
+            "Unknown relationship kind ''Forwards'.",
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Persists'."
+          ],
+          "warnings": [
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'externalUser' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 0,
+      "error_count": 24,
+      "warning_count": 48,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view asyncUploadValidationLifecycle {\n    title 'Async Upload Validation Lifecycle'\n    user -> webApp 'Sends upload'\n    webApp -> api 'POST /upload'\n    api -> jobQueue 'Queues validation task'\n    api -> webApp 'Responds with tracking URL'\n    webApp -> user 'Shows tracking URL immediately'\n\n    jobQueue -> validationWorker 'Processes validation task'\n    validationWorker -> database 'Stores success outcome'\n\n    validationWorker -> retryScheduler 'Signals failed attempt'\n    retryScheduler -> jobQueue 'Schedules retry attempt'\n    jobQueue -> validationWorker 'Dispatches retry task'\n    validationWorker -> database 'Stores post-retry outcome'\n  }\n}",
+          "valid": false,
+          "error_count": 11,
+          "warning_count": 22,
+          "errors": [
+            "Unknown relationship kind ''Sends'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Queues'.",
+            "Unknown relationship kind ''Responds'.",
+            "Unknown relationship kind ''Shows'.",
+            "Unknown relationship kind ''Processes'.",
+            "Unknown relationship kind ''Stores'.",
+            "Unknown relationship kind ''Signals'.",
+            "Unknown relationship kind ''Schedules'.",
+            "Unknown relationship kind ''Dispatches'.",
+            "Unknown relationship kind ''Stores'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'retryScheduler' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'retryScheduler' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view uploadImmediateResponse {\n    title 'Upload – Immediate Response'\n    user -> webApp 'Uploads file'\n    webApp -> api 'POST /upload'\n    api -> jobQueue 'Enqueues processing job'\n    api -> webApp 'Returns 202 + tracking URL'\n    webApp -> user 'Shows tracking URL'\n  }\n\n  dynamic view uploadBackgroundValidation {\n    title 'Upload – Background Validation & Retry'\n    jobQueue -> processingWorker 'Delivers job'\n    processingWorker -> validationService 'Validates file'\n    validationService -> processingWorker 'Returns validation error'\n    processingWorker -> jobQueue 'Re-enqueues with backoff'\n    jobQueue -> processingWorker 'Retries job'\n    processingWorker -> objectStorage 'Stores validated file'\n    processingWorker -> database 'Updates upload status'\n  }\n}",
+          "valid": false,
+          "error_count": 12,
+          "warning_count": 24,
+          "errors": [
+            "Unknown relationship kind ''Uploads'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Enqueues'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Shows'.",
+            "Unknown relationship kind ''Delivers'.",
+            "Unknown relationship kind ''Validates'.",
+            "Unknown relationship kind ''Returns'.",
+            "Unknown relationship kind ''Re-enqueues'.",
+            "Unknown relationship kind ''Retries'.",
+            "Unknown relationship kind ''Stores'.",
+            "Unknown relationship kind ''Updates'."
+          ],
+          "warnings": [
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'user' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'validationService' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'jobQueue' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'objectStorage' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'processingWorker' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'database' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "// ❌ Don't annotate branching inline\napi -> webApp 'Returns 202 [if success] or 500 [if fail]'",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind ''Returns'."
+          ],
+          "warnings": [
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'webApp' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    }
+  ]
+}

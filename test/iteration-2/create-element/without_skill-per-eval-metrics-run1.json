@@ -1,0 +1,65 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-element",
+  "run": 1,
+  "eval_metrics": [
+    {
+      "eval_id": 0,
+      "passed": true,
+      "scores": {
+        "correctness": 1,
+        "minimality": 1,
+        "constraint_following": 1
+      },
+      "notes": "Uses standard container under existing system; no custom kind invented."
+    },
+    {
+      "eval_id": 1,
+      "passed": true,
+      "scores": {
+        "correctness": 1,
+        "reasoning": 1,
+        "workspace_rule_alignment": 1
+      },
+      "notes": "Rejects one-off kind and explains pre-check/reuse rule before adding kinds."
+    },
+    {
+      "eval_id": 2,
+      "passed": true,
+      "scores": {
+        "task_mapping": 1,
+        "skill_selection": 1,
+        "completeness": 1
+      },
+      "notes": "Correctly maps element, relationship, and C2 view tasks to separate skills."
+    },
+    {
+      "eval_id": 3,
+      "passed": true,
+      "scores": {
+        "modeling_strategy": 1,
+        "kind_governance": 1,
+        "pattern_guidance": 1
+      },
+      "notes": "Chooses two elements with shared kind plus tags/metadata; avoids unnecessary kinds."
+    },
+    {
+      "eval_id": 4,
+      "passed": true,
+      "scores": {
+        "directness": 1,
+        "correctness": 1,
+        "scope_control": 1
+      },
+      "notes": "Provides direct declarations only and defers relationships as requested."
+    }
+  ],
+  "summary": {
+    "eval_count": 5,
+    "passed": 5,
+    "failed": 0,
+    "pass_rate": 1.0,
+    "avg_score": 1.0
+  }
+}

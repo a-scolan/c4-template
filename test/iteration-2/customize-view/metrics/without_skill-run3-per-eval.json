@@ -1,0 +1,18 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "customize-view",
+  "run": 3,
+  "per_eval": [
+    { "eval_id": 0, "response_file": "responses/run3/eval-0.md", "status": "present" },
+    { "eval_id": 1, "response_file": "responses/run3/eval-1.md", "status": "present" },
+    { "eval_id": 2, "response_file": "responses/run3/eval-2.md", "status": "present" },
+    { "eval_id": 3, "response_file": "responses/run3/eval-3.md", "status": "present" },
+    { "eval_id": 4, "response_file": "responses/run3/eval-4.md", "status": "present" }
+  ],
+  "required": {
+    "evals_expected": [0, 1, 2, 3, 4],
+    "evals_present": [0, 1, 2, 3, 4],
+    "complete": true
+  }
+}

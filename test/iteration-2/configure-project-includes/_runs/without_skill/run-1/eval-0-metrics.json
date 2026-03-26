@@ -1,0 +1,26 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": 0,
+  "status": "completed",
+  "overall_score": 0.9,
+  "dimensions": {
+    "correctness": 0.9,
+    "completeness": 0.9,
+    "safety": 0.9
+  },
+  "notes": "Includes ordering and alias-collision guidance provided."
+}{
+  "iteration": "iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 1,
+  "eval_id": "eval-0",
+  "status": "completed",
+  "prompt_used_verbatim": true,
+  "language": "en",
+  "response_path": "test/iteration-2/configure-project-includes/eval-0/without_skill/run-1/response.md",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

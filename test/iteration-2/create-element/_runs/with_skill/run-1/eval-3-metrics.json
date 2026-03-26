@@ -1,0 +1,9 @@
+{
+  "eval_id": 3,
+  "run": 1,
+  "skill": "create-element",
+  "configuration": "with_skill",
+  "score": 1.0,
+  "passed": true,
+  "notes": "Correctly recommended two elements same kind (Container_Api). Explicitly cited skill rule against Container_MockApi. Routed deployment concern to model-deployment-infrastructure."
+}

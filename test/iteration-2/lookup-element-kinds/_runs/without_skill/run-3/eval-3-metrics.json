@@ -1,0 +1,30 @@
+{
+  "eval_id": 3,
+  "run": 3,
+  "config": "without_skill",
+  "score": 75,
+  "max_score": 100,
+  "criteria": {
+    "correct_kind": {
+      "score": 1,
+      "max": 1,
+      "notes": "Correctly identified Container_Database for PostgreSQL"
+    },
+    "includes_example": {
+      "score": 1,
+      "max": 1,
+      "notes": "LikeC4 code example with technology property provided"
+    },
+    "mentions_tags": {
+      "score": 1,
+      "max": 1,
+      "notes": "Tags #Container #Database and orange-amber color mentioned"
+    },
+    "spec_file_referenced": {
+      "score": 0,
+      "max": 1,
+      "notes": "spec-containers.c4 not explicitly referenced without skill guidance"
+    }
+  },
+  "notes": "Without-skill baseline run-3: correct with full storage family explanation"
+}

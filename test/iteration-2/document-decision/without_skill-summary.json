@@ -1,0 +1,166 @@
+{
+  "skill_name": "document-decision",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "run_count": 3,
+  "summary": {
+    "elapsed_seconds_total": null,
+    "elapsed_seconds_per_eval": null,
+    "response_words_total": 806.3333,
+    "response_words_per_eval": 268.7778,
+    "files_read_count": null,
+    "files_written_count": null
+  },
+  "variance": {
+    "response_words_total": {
+      "mean": 806.3333,
+      "stddev": 78.8057,
+      "min": 716.0,
+      "max": 861.0
+    },
+    "response_words_per_eval": {
+      "mean": 268.7778,
+      "stddev": 26.2685,
+      "min": 238.6667,
+      "max": 287.0
+    }
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "summary": {
+        "elapsed_seconds_total": null,
+        "elapsed_seconds_per_eval": null,
+        "response_words_total": 716,
+        "response_words_per_eval": 238.6667,
+        "files_read_count": null,
+        "files_written_count": null
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 1,
+          "response_path": "eval-0/without_skill/run-1/response.md",
+          "response_words": 263
+        },
+        {
+          "id": 1,
+          "run_number": 1,
+          "response_path": "eval-1/without_skill/run-1/response.md",
+          "response_words": 128
+        },
+        {
+          "id": 2,
+          "run_number": 1,
+          "response_path": "eval-2/without_skill/run-1/response.md",
+          "response_words": 325
+        }
+      ]
+    },
+    {
+      "run_number": 2,
+      "summary": {
+        "elapsed_seconds_total": null,
+        "elapsed_seconds_per_eval": null,
+        "response_words_total": 842,
+        "response_words_per_eval": 280.6667,
+        "files_read_count": null,
+        "files_written_count": null
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 2,
+          "response_path": "eval-0/without_skill/run-2/response.md",
+          "response_words": 283
+        },
+        {
+          "id": 1,
+          "run_number": 2,
+          "response_path": "eval-1/without_skill/run-2/response.md",
+          "response_words": 256
+        },
+        {
+          "id": 2,
+          "run_number": 2,
+          "response_path": "eval-2/without_skill/run-2/response.md",
+          "response_words": 303
+        }
+      ]
+    },
+    {
+      "run_number": 3,
+      "summary": {
+        "elapsed_seconds_total": null,
+        "elapsed_seconds_per_eval": null,
+        "response_words_total": 861,
+        "response_words_per_eval": 287.0,
+        "files_read_count": null,
+        "files_written_count": null
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 3,
+          "response_path": "eval-0/without_skill/run-3/response.md",
+          "response_words": 281
+        },
+        {
+          "id": 1,
+          "run_number": 3,
+          "response_path": "eval-1/without_skill/run-3/response.md",
+          "response_words": 218
+        },
+        {
+          "id": 2,
+          "run_number": 3,
+          "response_path": "eval-2/without_skill/run-3/response.md",
+          "response_words": 362
+        }
+      ]
+    }
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "response_words": 263
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "response_words": 128
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "response_words": 325
+    }
+  ],
+  "high_variance_evals": [
+    {
+      "id": 1,
+      "metric": "response_words",
+      "stats": {
+        "mean": 200.6667,
+        "stddev": 65.7368,
+        "min": 128.0,
+        "max": 256.0
+      }
+    },
+    {
+      "id": 2,
+      "metric": "response_words",
+      "stats": {
+        "mean": 330.0,
+        "stddev": 29.8161,
+        "min": 303.0,
+        "max": 362.0
+      }
+    }
+  ]
+}

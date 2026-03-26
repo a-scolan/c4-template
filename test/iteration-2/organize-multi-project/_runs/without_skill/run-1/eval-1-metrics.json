@@ -1,0 +1,51 @@
+{
+  "eval_id": 1,
+  "run_number": 1,
+  "skill_name": "organize-multi-project",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-26T12:00:01Z",
+  "finished_at": "2026-03-26T12:00:03Z",
+  "elapsed_seconds_total": 1.5,
+  "files_read_count": 7,
+  "files_written_count": 1
+}{
+  "skill_name": "organize-multi-project",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "run_number": 1,
+  "eval_id": 1,
+  "started_at": "2026-03-26T10:00:01Z",
+  "finished_at": "2026-03-26T10:00:02Z",
+  "elapsed_seconds_total": 1,
+  "files_read_count": 3,
+  "files_written_count": 1
+}
+{
+  "eval_id": 1,
+  "run_number": 1,
+  "skill_name": "organize-multi-project",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-26T12:00:01Z",
+  "finished_at": "2026-03-26T12:00:03Z",
+  "elapsed_seconds_total": 1.5,
+  "files_read_count": 7,
+  "files_written_count": 1
+}
+{
+  "evalId": "eval-1",
+  "configuration": "without_skill",
+  "run": 1,
+  "status": "completed",
+  "responseFile": "test/iteration-2/organize-multi-project/eval-1/without_skill/run-1/response.md",
+  "quality": "acceptable",
+  "completeness": "high",
+  "groundedness": "medium",
+  "safety": "pass",
+  "score": 0.88,
+  "timestamp": "2026-03-25"
+}

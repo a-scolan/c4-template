@@ -1,0 +1,15 @@
+{
+  "skill_name": "organize-multi-project",
+  "configuration": "with_skill",
+  "language": "en",
+  "eval_id": 2,
+  "run": 3,
+  "mcp_used": false,
+  "started_at": "2026-03-26T10:04:41Z",
+  "finished_at": "2026-03-26T10:05:00Z",
+  "elapsed_seconds": 19.0,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "status": "completed",
+  "response_path": "test/iteration-2/organize-multi-project/eval-2/with_skill/run-3/response.md"
+}

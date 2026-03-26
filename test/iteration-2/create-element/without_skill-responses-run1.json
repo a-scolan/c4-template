@@ -1,0 +1,33 @@
+{
+  "iteration": "test/iteration-2",
+  "configuration": "without_skill",
+  "skill": "create-element",
+  "run": 1,
+  "evals": [
+    {
+      "eval_id": 0,
+      "prompt": "I’m working in my system model. Add a new API container under an existing system for file ingestion. I want a correct and minimal LikeC4 declaration, without inventing a custom kind.",
+      "response": "Use a standard C4 container kind under the existing system:\n\n```likec4\nsystem existingSystem {\n  container fileIngestionApi\n}\n```"
+    },
+    {
+      "eval_id": 1,
+      "prompt": "I’m thinking about creating a `Container_UploadOrchestrator` kind just for one upload service. Is that a good idea in this workspace? Explain the rule and what to do before adding a new kind.",
+      "response": "Short answer: no, not for a single element.\n\nRule: a new kind should represent a reusable modeling category, not a one-off instance name.\n\nBefore adding a new kind:\n1) Check existing kinds first and reuse one if it fits.\n2) If only one service differs, keep the same kind and express differences with element name/title/tags/metadata.\n3) Add a new kind only when multiple elements need distinct semantics/styling/constraints consistently."
+    },
+    {
+      "eval_id": 2,
+      "prompt": "I need to add an external `virusScanProvider` and an internal `scanApi`, then draw their arrows and a C2 view. Which skill should I use for each part?",
+      "response": "Use:\n- `create-element` for `virusScanProvider` and `scanApi`\n- `create-relationship` for the arrows\n- `design-view` for the C2/container view"
+    },
+    {
+      "eval_id": 3,
+      "prompt": "I need to model a real payment API and a mock variant for integration tests. Should I create two kinds, two elements, or something else? And which skill handles the difference between mock and prod?",
+      "response": "Model two elements, usually with the same kind (real + mock variants), not two new kinds.\n\nUse tags/metadata (for example `env: prod` vs `env: test`, or `variant: real` vs `variant: mock`) to capture the difference.\n\nUse `create-element` to define both elements, and `implement-pattern` to apply a consistent mock-vs-prod modeling pattern."
+    },
+    {
+      "eval_id": 4,
+      "prompt": "Don’t solve relationships yet: I only need a third-party identity provider and an internal portal API modeled in this workspace. Give me the most direct LikeC4 declarations you would start with.",
+      "response": "Start with direct element declarations:\n\n```likec4\nsystem identityProvider\n\nsystem existingSystem {\n  container portalApi\n}\n```"
+    }
+  ]
+}

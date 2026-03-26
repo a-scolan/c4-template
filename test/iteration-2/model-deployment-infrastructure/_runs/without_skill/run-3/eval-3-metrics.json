@@ -1,0 +1,14 @@
+{
+  "eval_id": "eval-3",
+  "skill": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "run_number": 3,
+  "status": "completed",
+  "success": true,
+  "score": 0.7,
+  "required_keys_present": true,
+  "required_keys_non_null": true,
+  "response_file": "test/iteration-2/model-deployment-infrastructure/eval-3/without_skill/run-3/response.md",
+  "notes": "Correctly identifies protocol technology placement in logical model. Deployment duplication issue clearly explained. instanceOf propagation mentioned.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

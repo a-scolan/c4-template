@@ -1,0 +1,19 @@
+{
+  "eval_id": "eval-2",
+  "run_id": 2,
+  "skill": "implement-pattern",
+  "config": "without_skill",
+  "iteration": "iteration-2",
+  "prompt_summary": "Implement cache-aside pattern with Redis cache between API and database",
+  "scores": {
+    "syntax_valid": 1,
+    "element_kinds_idiomatic": 0,
+    "relationship_kinds_typed": 0,
+    "tags_applied": 0,
+    "completeness": 1,
+    "view_provided": 1
+  },
+  "score": 57,
+  "pass": false,
+  "notes": "Read/write paths present but cache-invalidation not modeled. Container used for Redis. Missing -[reads]-> and -[writes]-> typed relationships."
+}

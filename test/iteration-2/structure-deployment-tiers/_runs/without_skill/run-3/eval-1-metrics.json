@@ -1,0 +1,11 @@
+{
+  "eval_id": "eval-1",
+  "run_number": 3,
+  "configuration": "without_skill",
+  "status": "completed",
+  "elapsed_seconds": 2.4,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "response_path": "test/iteration-2/structure-deployment-tiers/eval-1/without_skill/run-3/response.md",
+  "metrics_path": "test/iteration-2/structure-deployment-tiers/_runs/without_skill/run-3/eval-1-metrics.json"
+}

@@ -1,0 +1,14 @@
+{
+  "eval_id": "eval-1",
+  "skill": "model-deployment-infrastructure",
+  "configuration": "without_skill",
+  "run_number": 2,
+  "status": "completed",
+  "success": true,
+  "score": 0.2,
+  "required_keys_present": true,
+  "required_keys_non_null": true,
+  "response_file": "test/iteration-2/model-deployment-infrastructure/eval-1/without_skill/run-2/response.md",
+  "notes": "Does not delegate to structure-deployment-tiers skill. Attempts to answer the tier split directly without indicating the dedicated skill exists.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

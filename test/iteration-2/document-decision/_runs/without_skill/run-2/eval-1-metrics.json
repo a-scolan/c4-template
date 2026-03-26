@@ -1,0 +1,14 @@
+{
+  "eval_id": "eval-1",
+  "skill": "document-decision",
+  "configuration": "without_skill",
+  "run_number": 2,
+  "status": "completed",
+  "success": false,
+  "score": 0.33,
+  "required_keys_present": true,
+  "required_keys_non_null": true,
+  "response_file": "test/iteration-2/document-decision/eval-1/without_skill/run-2/response.md",
+  "notes": "Response correctly pointed toward 'no ADR for workflow change' but lacked a direct clear-cut answer. Partial credit.",
+  "timestamp_utc": "2026-03-25T00:00:00Z"
+}

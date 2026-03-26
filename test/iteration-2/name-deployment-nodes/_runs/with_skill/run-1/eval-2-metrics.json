@@ -1,0 +1,13 @@
+{
+  "eval_id": 2,
+  "run": 1,
+  "skill_name": "name-deployment-nodes",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "started_at": "2026-03-26T10:00:09Z",
+  "finished_at": "2026-03-26T10:00:14Z",
+  "elapsed_seconds": 5.2,
+  "files_read_count": 2,
+  "files_written_count": 1
+}

@@ -1,0 +1,12 @@
+{
+  "eval_id": 0,
+  "run": 3,
+  "skill_name": "configure-project-includes",
+  "configuration": "with_skill",
+  "started_at": "2026-03-26T10:10:00Z",
+  "finished_at": "2026-03-26T10:10:08Z",
+  "elapsed_seconds": 8,
+  "files_read_count": 2,
+  "files_written_count": 1,
+  "response_file": "test/iteration-2/configure-project-includes/eval-0/with_skill/run-3/response.md"
+}

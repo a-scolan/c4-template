@@ -1,0 +1,14 @@
+{
+  "skill_name": "model-deployment-infrastructure",
+  "configuration": "with_skill",
+  "run": 3,
+  "eval_id": 1,
+  "language": "en",
+  "mcp_used": false,
+  "started_at": "2026-03-26T10:02:13Z",
+  "finished_at": "2026-03-26T10:02:21Z",
+  "elapsed_seconds": 8.3,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "output_path": "test/iteration-2/model-deployment-infrastructure/eval-1/with_skill/run-3/response.md"
+}

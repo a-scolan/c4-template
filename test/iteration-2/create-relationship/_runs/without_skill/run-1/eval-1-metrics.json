@@ -1,0 +1,14 @@
+{
+  "eval_id": "eval-1",
+  "iteration": "test/iteration-2",
+  "skill": "create-relationship",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "success": true,
+  "score": 1.0,
+  "prompt": "I’m modeling an async upload flow: `uploadService` publishes to `jobQueue`, then `worker` consumes and writes to the database. Should I also draw a return relationship from worker back to upload service?",
+  "response_file": "test/iteration-2/create-relationship/eval-1/without_skill/run-1/response.md",
+  "error": "",
+  "generated_at": "2026-03-25T00:00:00Z"
+}

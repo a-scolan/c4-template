@@ -1,0 +1,299 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "design-view",
+  "configuration": "with_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 12,
+    "valid_eval_count": 9,
+    "valid_eval_rate": 0.75,
+    "snippet_count_total": 12,
+    "error_count_total": 15,
+    "warning_count_total": 15
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "views 'C2' {\n  view c2_corePlatform {\n    title 'Core Platform - Container View'\n\n    // Parent boundary + actor + external dependency\n    include customer\n    include corePlatform\n    include externalEmailService\n\n    // Focus internals (containers)\n    include corePlatform.*\n\n    // Neighbors (incoming + outgoing around the focus)\n    include -> corePlatform\n    include corePlatform ->\n\n    // Drill-down from the web app to a C3 detail\n    include corePlatform.webApplication with {\n      navigateTo c3_webApplication\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 2,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'corePlatform' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views 'Deployment' {\n  deployment view production_overview {\n    title 'Production Infrastructure'\n\n    // Environment\n    include production\n\n    // Zones / tiers\n    include production.dmzTier\n    include production.appTier\n    include production.dataTier\n\n    // VMs (explicit)\n    include production.dmzTier.webVm\n    include production.dmzTier.edgeFirewallVm\n    include production.appTier.apiVm\n    include production.appTier.workerVm\n    include production.dataTier.dbVm\n    include production.dataTier.backupVm\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 5,
+      "warning_count": 1,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view uc_uploadJourney {\n    title 'Upload Journey'\n\n    customer -> corePlatform.webApplication 'Select file and submit'\n    corePlatform.webApplication -> corePlatform.uploadService 'POST /uploads'\n    corePlatform.uploadService -> corePlatform.storageAdapter 'Store binary'\n    corePlatform.uploadService -> corePlatform.virusScanner 'Scan uploaded file'\n    corePlatform.uploadService -> corePlatform.notificationService 'Publish upload-complete event'\n  }\n}",
+          "valid": false,
+          "error_count": 5,
+          "warning_count": 1,
+          "errors": [
+            "Unknown relationship kind ''Select'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Store'.",
+            "Unknown relationship kind ''Scan'.",
+            "Unknown relationship kind ''Publish'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "views 'C2' {\n  view c2_security_boundary {\n    title 'Security-Relevant Container Context'\n    include operator\n    include corePlatform\n    include corePlatform.*\n    include externalIdentityProvider\n    include -> corePlatform\n    include corePlatform ->\n  }\n}\n\nviews 'Deployment' {\n  deployment view production_secZone {\n    title 'Production SecZone Topology'\n\n    include production\n    include production.secZone\n\n    include production.secZone.bastionVm\n    include production.secZone.firewallVm\n    include production.secZone.authServiceVm\n    include production.secZone.auditServiceVm\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 2,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'corePlatform' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "views 'C2' {\n  view c2_corePlatform {\n    title 'Core Platform - Container View'\n\n    // Parent boundary + actor + external dependency\n    include customer\n    include corePlatform\n    include externalEmailService\n\n    // Focus internals (containers)\n    include corePlatform.*\n\n    // Neighbors (incoming + outgoing around the focus)\n    include -> corePlatform\n    include corePlatform ->\n\n    // Drill-down from the web app to a C3 detail\n    include corePlatform.webApplication with {\n      navigateTo c3_webApplication\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 2,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'corePlatform' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views 'Deployment' {\n  deployment view production_overview {\n    title 'Production Infrastructure'\n\n    // Environment\n    include production\n\n    // Zones / tiers\n    include production.dmzTier\n    include production.appTier\n    include production.dataTier\n\n    // VMs (explicit)\n    include production.dmzTier.webVm\n    include production.dmzTier.edgeFirewallVm\n    include production.appTier.apiVm\n    include production.appTier.workerVm\n    include production.dataTier.dbVm\n    include production.dataTier.backupVm\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 5,
+      "warning_count": 1,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view uc_uploadJourney {\n    title 'Upload Journey'\n\n    customer -> corePlatform.webApplication 'Select file and submit'\n    corePlatform.webApplication -> corePlatform.uploadService 'POST /uploads'\n    corePlatform.uploadService -> corePlatform.storageAdapter 'Store binary'\n    corePlatform.uploadService -> corePlatform.virusScanner 'Scan uploaded file'\n    corePlatform.uploadService -> corePlatform.notificationService 'Publish upload-complete event'\n  }\n}",
+          "valid": false,
+          "error_count": 5,
+          "warning_count": 1,
+          "errors": [
+            "Unknown relationship kind ''Select'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Store'.",
+            "Unknown relationship kind ''Scan'.",
+            "Unknown relationship kind ''Publish'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/with_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "views 'C2' {\n  view c2_security_boundary {\n    title 'Security-Relevant Container Context'\n    include operator\n    include corePlatform\n    include corePlatform.*\n    include externalIdentityProvider\n    include -> corePlatform\n    include corePlatform ->\n  }\n}\n\nviews 'Deployment' {\n  deployment view production_secZone {\n    title 'Production SecZone Topology'\n\n    include production\n    include production.secZone\n\n    include production.secZone.bastionVm\n    include production.secZone.firewallVm\n    include production.secZone.authServiceVm\n    include production.secZone.auditServiceVm\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 2,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'corePlatform' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "views 'C2' {\n  view c2_corePlatform {\n    title 'Core Platform - Container View'\n\n    // Parent boundary + actor + external dependency\n    include customer\n    include corePlatform\n    include externalEmailService\n\n    // Focus internals (containers)\n    include corePlatform.*\n\n    // Neighbors (incoming + outgoing around the focus)\n    include -> corePlatform\n    include corePlatform ->\n\n    // Drill-down from the web app to a C3 detail\n    include corePlatform.webApplication with {\n      navigateTo c3_webApplication\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 2,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'corePlatform' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views 'Deployment' {\n  deployment view production_overview {\n    title 'Production Infrastructure'\n\n    // Environment\n    include production\n\n    // Zones / tiers\n    include production.dmzTier\n    include production.appTier\n    include production.dataTier\n\n    // VMs (explicit)\n    include production.dmzTier.webVm\n    include production.dmzTier.edgeFirewallVm\n    include production.appTier.apiVm\n    include production.appTier.workerVm\n    include production.dataTier.dbVm\n    include production.dataTier.backupVm\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 5,
+      "warning_count": 1,
+      "snippets": [
+        {
+          "snippet": "views 'Use Cases' {\n  dynamic view uc_uploadJourney {\n    title 'Upload Journey'\n\n    customer -> corePlatform.webApplication 'Select file and submit'\n    corePlatform.webApplication -> corePlatform.uploadService 'POST /uploads'\n    corePlatform.uploadService -> corePlatform.storageAdapter 'Store binary'\n    corePlatform.uploadService -> corePlatform.virusScanner 'Scan uploaded file'\n    corePlatform.uploadService -> corePlatform.notificationService 'Publish upload-complete event'\n  }\n}",
+          "valid": false,
+          "error_count": 5,
+          "warning_count": 1,
+          "errors": [
+            "Unknown relationship kind ''Select'.",
+            "Unknown relationship kind ''POST'.",
+            "Unknown relationship kind ''Store'.",
+            "Unknown relationship kind ''Scan'.",
+            "Unknown relationship kind ''Publish'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/with_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "views 'C2' {\n  view c2_security_boundary {\n    title 'Security-Relevant Container Context'\n    include operator\n    include corePlatform\n    include corePlatform.*\n    include externalIdentityProvider\n    include -> corePlatform\n    include corePlatform ->\n  }\n}\n\nviews 'Deployment' {\n  deployment view production_secZone {\n    title 'Production SecZone Topology'\n\n    include production\n    include production.secZone\n\n    include production.secZone.bastionVm\n    include production.secZone.firewallVm\n    include production.secZone.authServiceVm\n    include production.secZone.auditServiceVm\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 2,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'corePlatform' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    }
+  ]
+}

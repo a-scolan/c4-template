@@ -1,0 +1,14 @@
+{
+  "eval_id": "eval-0",
+  "iteration": "test/iteration-2",
+  "skill": "create-relationship",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "status": "completed",
+  "success": true,
+  "score": 1.0,
+  "prompt": "I need to connect a web application container to an API container in my system model. Show me the correct LikeC4 syntax and tell me where the relationship type belongs.",
+  "response_file": "test/iteration-2/create-relationship/eval-0/without_skill/run-1/response.md",
+  "error": "",
+  "generated_at": "2026-03-25T00:00:00Z"
+}

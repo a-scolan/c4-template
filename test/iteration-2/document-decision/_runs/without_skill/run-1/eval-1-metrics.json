@@ -1,0 +1,17 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "document-decision",
+  "configuration": "without_skill",
+  "run": "run-1",
+  "eval_id": "eval-1",
+  "prompt": "I just changed the repository’s GitHub Actions workflow. Should I write an ADR with this skill?",
+  "response_path": "test/iteration-2/document-decision/eval-1/without_skill/run-1/response.md",
+  "status": "completed",
+  "used_skill": false,
+  "error": "",
+  "started_at": "2026-03-25T00:00:01Z",
+  "completed_at": "2026-03-25T00:00:02Z",
+  "duration_ms": 1000,
+  "response_language": "en",
+  "prompt_verbatim_used": true
+}

@@ -1,0 +1,378 @@
+{
+  "iteration": "iteration-2",
+  "skill_name": "lookup-element-kinds",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-26T14:02:46Z",
+  "run_count": 3,
+  "summary": {
+    "applicable_eval_count": 10,
+    "valid_eval_count": 9,
+    "valid_eval_rate": 0.9,
+    "snippet_count_total": 23,
+    "error_count_total": 1,
+    "warning_count_total": 0
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "api = Container_Api 'Upload API' {\n\ttechnology 'Node.js'\n}\ndb = Container_Database 'Metadata DB' {\n\ttechnology 'PostgreSQL'\n}\napi -[reads]-> db 'Fetches metadata'\napi -[writes]-> db 'Persists record'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "customer = Actor_Person 'Customer'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "// Logical model (system-model.c4)\napi -[reads]-> db 'Fetch metadata'\napi -[writes]-> db 'Persist record'\n\n// Deployment model (deployment.c4)\nProd.AppTier.ApiVm -[sql]-> Prod.DataTier.DbVm 'Query database'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "backOfficeUser = Actor_Staff 'Back-Office User'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 1,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "// If Node_Infra is the correct kind:\nfirewall = Node_Infra 'Perimeter Firewall' {\n  technology 'pfSense'\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'Node_Infra'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "api = Container_Api 'Upload API' {\n  technology 'Node.js'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "api = Container_Api 'API Gateway' {\n  technology 'Node.js'\n}\nqueue = Container_Queue 'Job Queue' {\n  technology 'RabbitMQ'\n}\nworker = Container_ProcessingServer 'File Processor' {\n  technology 'Go'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "db = Container_Database 'Metadata DB' {\n  technology 'PostgreSQL'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 2,
+      "response_path": "eval-4/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "// ✅ Correct — logical model\nwebApp -[calls]-> api 'Browse files' {\n  technology 'HTTPS'\n}\n\n// ❌ Wrong — https used in logical model\nwebApp -[https]-> api 'Browse files'\n\n// ✅ Correct — deployment model\nProd.Dmz.WebVm -[https]-> Prod.AppTier.ApiVm 'Route requests'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "queue = Container_Queue 'Job Queue' {\n  technology 'RabbitMQ'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "api -[async]-> queue 'Publishes job' {\n  technology 'AMQP'\n}\nworker -[async]-> queue 'Consumes job' {\n  technology 'AMQP'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 3,
+      "response_path": "eval-0/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "service = Container_Api 'API Service' {\n\ttechnology 'Go'\n}\ndb = Container_Database 'Document Store' {\n\ttechnology 'MongoDB'\n}\nservice -[reads]-> db 'Query metadata'\nservice -[writes]-> db 'Persist document'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "customer = Actor_Person 'Customer'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 3,
+      "response_path": "eval-1/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "// Logical: business relationship\nuploadService -[writes]-> documentDb 'Persist file metadata'\nretrievalService -[reads]-> documentDb 'Query file metadata'\n\n// Deployment: physical connection\nProd.AppTier.UploadVm -[sql]-> Prod.DataTier.DbVm 'MongoDB wire protocol'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "backOfficeUser = Actor_Staff 'Back-Office User'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 3,
+      "response_path": "eval-2/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "// After confirming the correct kind in spec-deployment.c4:\npfwVm = Node_Vm 'pfw-vm' {\n  technology 'pfSense'\n  // instanceOf: depends on what's in the logical model for the firewall\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "api = Container_Api 'Upload API' {\n  technology 'Node.js'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 3,
+      "response_path": "eval-3/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "api = Container_Api 'REST API' { technology 'Go' }\nqueue = Container_Queue 'Job Queue' { technology 'RabbitMQ' }\nworker = Container_ProcessingServer 'Async Worker' { technology 'Python' }",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "db = Container_Database 'Metadata DB' {\n  technology 'PostgreSQL'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 3,
+      "response_path": "eval-4/without_skill/run-3/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 4,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "webApp -[calls]-> api 'Makes API requests' {\n  technology 'HTTPS'   // ← protocol goes in technology field, NOT as relationship kind\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "// deployment.c4\nProd.Dmz.webApp -[https]-> Prod.App.api 'Browser traffic'",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "queue = Container_Queue 'Job Queue' {\n  technology 'RabbitMQ'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "api -[async]-> queue 'Publishes job' {\n  technology 'AMQP'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

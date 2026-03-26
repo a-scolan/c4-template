@@ -1,0 +1,19 @@
+{
+  "eval_id": "eval-1",
+  "run_id": 2,
+  "skill": "implement-pattern",
+  "config": "without_skill",
+  "iteration": "iteration-2",
+  "prompt_summary": "Implement API Gateway pattern as single entry point routing to backend services",
+  "scores": {
+    "syntax_valid": 1,
+    "element_kinds_idiomatic": 1,
+    "relationship_kinds_typed": 0,
+    "tags_applied": 0,
+    "completeness": 1,
+    "view_provided": 1
+  },
+  "score": 68,
+  "pass": false,
+  "notes": "Container_ReverseProxy used correctly for gateway. Missing typed -[calls]-> relationships. Missing #Ingress, #Routing tags. Higher score due to idiomatic element kind."
+}

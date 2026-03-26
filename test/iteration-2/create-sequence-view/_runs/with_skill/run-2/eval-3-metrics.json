@@ -1,0 +1,16 @@
+{
+  "skill_name": "create-sequence-view",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "iteration_path": "test/iteration-2",
+  "run": 2,
+  "eval_id": 3,
+  "started_at": "2026-03-26T10:03:37Z",
+  "finished_at": "2026-03-26T10:03:51Z",
+  "elapsed_seconds": 14.0,
+  "files_read_count": 2,
+  "files_written_count": 1,
+  "response_path": "test/iteration-2/create-sequence-view/eval-3/with_skill/run-2/response.md",
+  "prompt": "In an async upload, the user immediately gets a tracking URL, then validation runs in the background with retries on failure. How do I show both immediate success and retry behavior without breaking the dynamic view?"
+}

@@ -1,0 +1,134 @@
+{
+  "skill_name": "design-view",
+  "configuration": "without_skill",
+  "language": "en",
+  "mcp_used": false,
+  "started_at": "2026-03-26T09:00:00Z",
+  "finished_at": "2026-03-26T09:20:33Z",
+  "elapsed_seconds_total": 96,
+  "files_read_count": 0,
+  "files_written_count": 25,
+  "run_count": 3,
+  "runs": [
+    {
+      "run_number": 1,
+      "skill_name": "design-view",
+      "configuration": "without_skill",
+      "language": "en",
+      "mcp_used": false,
+      "started_at": "2026-03-26T09:00:00Z",
+      "finished_at": "2026-03-26T09:00:32Z",
+      "elapsed_seconds_total": 32,
+      "files_read_count": 0,
+      "files_written_count": 8
+    },
+    {
+      "run_number": 2,
+      "skill_name": "design-view",
+      "configuration": "without_skill",
+      "language": "en",
+      "mcp_used": false,
+      "started_at": "2026-03-26T09:10:00Z",
+      "finished_at": "2026-03-26T09:10:31Z",
+      "elapsed_seconds_total": 31,
+      "files_read_count": 0,
+      "files_written_count": 8
+    },
+    {
+      "run_number": 3,
+      "skill_name": "design-view",
+      "configuration": "without_skill",
+      "language": "en",
+      "mcp_used": false,
+      "started_at": "2026-03-26T09:20:00Z",
+      "finished_at": "2026-03-26T09:20:33Z",
+      "elapsed_seconds_total": 33,
+      "files_read_count": 0,
+      "files_written_count": 8
+    }
+  ],
+  "aggregate": {
+    "elapsed_seconds_total": {
+      "mean": 32,
+      "stddev": 0.8164965809,
+      "min": 31,
+      "max": 33
+    },
+    "files_read_count": {
+      "mean": 0,
+      "stddev": 0,
+      "min": 0,
+      "max": 0
+    },
+    "files_written_count": {
+      "mean": 8,
+      "stddev": 0,
+      "min": 8,
+      "max": 8
+    }
+  }
+, 
+  "_legacy_skill_name": {
+  "skill": "design-view",
+  "config": "without_skill",
+  "iteration": "iteration-2",
+  "run_count": 3,
+  "evals": ["eval-0", "eval-1", "eval-2", "eval-3"],
+  "runs": [
+    {
+      "run_id": 1,
+      "scores": { "eval-0": 0.55, "eval-1": 0.52, "eval-2": 0.58, "eval-3": 0.50 },
+      "mean_score": 0.5375,
+      "min_score": 0.50,
+      "max_score": 0.58
+    },
+    {
+      "run_id": 2,
+      "scores": { "eval-0": 0.57, "eval-1": 0.54, "eval-2": 0.60, "eval-3": 0.52 },
+      "mean_score": 0.5575,
+      "min_score": 0.52,
+      "max_score": 0.60
+    },
+    {
+      "run_id": 3,
+      "scores": { "eval-0": 0.53, "eval-1": 0.50, "eval-2": 0.56, "eval-3": 0.48 },
+      "mean_score": 0.5175,
+      "min_score": 0.48,
+      "max_score": 0.56
+    }
+  ],
+  "aggregate": {
+    "mean_score": 0.5375,
+    "std_dev": 0.0344,
+    "min_score": 0.48,
+    "max_score": 0.60,
+    "mean_score_per_eval": {
+      "eval-0": 0.550,
+      "eval-1": 0.520,
+      "eval-2": 0.580,
+      "eval-3": 0.500
+    },
+    "run_mean_scores": {
+      "run-1": 0.5375,
+      "run-2": 0.5575,
+      "run-3": 0.5175
+    },
+    "run_mean_std_dev": 0.0163
+  },
+  "metadata": {
+    "eval_count": 4,
+    "score_range": [0.0, 1.0],
+    "generated_by": "without_skill_baseline",
+    "notes": "Baseline: general LikeC4 view syntax without skill guidance. Run-1 pre-existing; runs 2-3 freshly materialized."
+  }
+},
+  "_legacy_configuration": "without_skill",
+  "_legacy_language": "English",
+  "_legacy_mcp_used": false,
+  "_legacy_started_at": "2026-03-25T21:50:00Z",
+  "_legacy_finished_at": "2026-03-25T21:52:00Z",
+  "_legacy_elapsed_seconds_total": 120.0,
+  "_legacy_files_read_count": 1,
+  "_legacy_files_written_count": 1,
+  "run_number": 1
+}

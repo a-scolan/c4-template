@@ -1,0 +1,15 @@
+{
+  "skill_name": "sync-with-template",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "run": 3,
+  "eval_id": 3,
+  "started_at": "2026-03-26T10:07:56Z",
+  "finished_at": "2026-03-26T10:08:32Z",
+  "elapsed_seconds": 36,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "status": "completed",
+  "response_path": "test/iteration-2/sync-with-template/eval-3/with_skill/run-3/response.md"
+}

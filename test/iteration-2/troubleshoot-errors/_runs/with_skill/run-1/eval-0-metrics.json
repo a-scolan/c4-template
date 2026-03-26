@@ -1,0 +1,14 @@
+{
+  "skill_name": "troubleshoot-errors",
+  "configuration": "with_skill",
+  "language": "en",
+  "mcp_used": false,
+  "run": 1,
+  "eval_id": 0,
+  "started_at": "2026-03-26T00:00:00Z",
+  "finished_at": "2026-03-26T00:00:00Z",
+  "elapsed_seconds": 0,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "status": "completed"
+}

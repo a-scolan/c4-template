@@ -1,0 +1,24 @@
+{
+  "configuration": "without_skill",
+  "iteration": "test/iteration-2",
+  "skill": "create-sequence-view",
+  "run": 3,
+  "evals": {
+    "0": {
+      "prompt": "I want to document the login journey between a user, a web application, an API, a primary database, and an external notification service. Give me a LikeC4 skeleton for a dynamic view.",
+      "response": "```likec4\nmodel {\n  actor user 'User'\n  system webApp 'Web Application'\n  system api 'API Service'\n  system primaryDatabase 'Primary Database'\n  system externalNotification 'External Notification Service'\n}\n\nviews {\n  dynamic login_journey {\n    title 'Login Journey Dynamic View'\n\n    user -> webApp 'Provide credentials'\n    webApp -> api 'Authenticate request'\n    api -> primaryDatabase 'Validate identity data'\n    primaryDatabase -> api 'Validation result'\n    api -> externalNotification 'Publish login event'\n    api -> webApp 'Token/session response'\n    webApp -> user 'Authentication outcome'\n  }\n}\n```"
+    },
+    "1": {
+      "prompt": "I was planning to write `api_container -> api_container.auth_component` in a dynamic view to show authentication. Correct this approach.",
+      "response": "Better approach: reference elements using valid declared identifiers in scope, and model an interaction between distinct participants.\n\n```likec4\nmodel {\n  system api_container 'API Container'\n  component auth_component 'Auth Component'\n}\n\nviews {\n  dynamic auth_component_interaction {\n    title 'Auth Interaction'\n\n    api_container -> auth_component 'Request authentication check'\n    auth_component -> api_container 'Return auth verdict'\n  }\n}\n```\n\nThis keeps the dynamic sequence explicit and avoids invalid path-like shorthand usage." 
+    },
+    "2": {
+      "prompt": "I want to illustrate the async flow `externalUser` -> `webApp` -> `api` -> `jobQueue` -> `processingWorker` -> `database`. Propose the LikeC4 view.",
+      "response": "```likec4\nmodel {\n  actor externalUser 'External User'\n  system webApp 'Web Application'\n  system api 'API'\n  system jobQueue 'Job Queue'\n  system processingWorker 'Processing Worker'\n  system database 'Database'\n}\n\nviews {\n  dynamic async_job_pipeline {\n    title 'Async Job Pipeline'\n\n    externalUser -> webApp 'Send request'\n    webApp -> api 'Forward async operation'\n    api -> webApp '202 Accepted + tracking reference'\n    api -> jobQueue 'Enqueue job'\n    jobQueue -> processingWorker 'Job delivery'\n    processingWorker -> database 'Persist result'\n  }\n}\n```"
+    },
+    "3": {
+      "prompt": "In an async upload, the user immediately gets a tracking URL, then validation runs in the background with retries on failure. How do I show both immediate success and retry behavior without breaking the dynamic view?",
+      "response": "Show immediate user acknowledgement first, then the asynchronous validation pipeline with explicit retry attempts as separate ordered interactions.\n\n```likec4\nmodel {\n  actor user 'User'\n  system webApp 'Web App'\n  system api 'API'\n  system queue 'Queue'\n  system worker 'Validation Worker'\n  system database 'Database'\n}\n\nviews {\n  dynamic async_upload_tracking_and_retry {\n    title 'Async Upload: Tracking + Retry Behavior'\n\n    user -> webApp 'Upload file'\n    webApp -> api 'POST /upload'\n    api -> webApp '202 Accepted + trackingUrl'\n    webApp -> user 'Return tracking URL immediately'\n\n    api -> queue 'Schedule validation task'\n    queue -> worker 'Validation attempt #1'\n    worker -> queue 'Failure, requeue (retry #1)'\n    queue -> worker 'Validation attempt #2'\n    worker -> queue 'Failure, requeue (retry #2)'\n    queue -> worker 'Validation attempt #3'\n    worker -> database 'Validation success persisted'\n  }\n}\n```"
+    }
+  }
+}

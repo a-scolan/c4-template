@@ -1,0 +1,234 @@
+{
+  "skill_name": "create-sequence-view",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "run_count": 3,
+  "summary": {
+    "elapsed_seconds_total": 120.0,
+    "elapsed_seconds_per_eval": 30.0,
+    "response_words_total": 235.3333,
+    "response_words_per_eval": 58.8333,
+    "files_read_count": 1.0,
+    "files_written_count": 1.0
+  },
+  "variance": {
+    "elapsed_seconds_total": {
+      "mean": 120.0,
+      "stddev": 0.0,
+      "min": 120.0,
+      "max": 120.0
+    },
+    "elapsed_seconds_per_eval": {
+      "mean": 30.0,
+      "stddev": 0.0,
+      "min": 30.0,
+      "max": 30.0
+    },
+    "response_words_total": {
+      "mean": 235.3333,
+      "stddev": 281.2834,
+      "min": 65.0,
+      "max": 560.0
+    },
+    "response_words_per_eval": {
+      "mean": 58.8333,
+      "stddev": 70.3208,
+      "min": 16.25,
+      "max": 140.0
+    },
+    "files_read_count": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "files_written_count": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0
+    }
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "summary": {
+        "elapsed_seconds_total": 120.0,
+        "elapsed_seconds_per_eval": 30.0,
+        "response_words_total": 560,
+        "response_words_per_eval": 140.0,
+        "files_read_count": 1,
+        "files_written_count": 1
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 1,
+          "response_path": "eval-0/without_skill/run-1/response.md",
+          "response_words": 114
+        },
+        {
+          "id": 1,
+          "run_number": 1,
+          "response_path": "eval-1/without_skill/run-1/response.md",
+          "response_words": 155
+        },
+        {
+          "id": 2,
+          "run_number": 1,
+          "response_path": "eval-2/without_skill/run-1/response.md",
+          "response_words": 105
+        },
+        {
+          "id": 3,
+          "run_number": 1,
+          "response_path": "eval-3/without_skill/run-1/response.md",
+          "response_words": 186
+        }
+      ]
+    },
+    {
+      "run_number": 2,
+      "summary": {
+        "elapsed_seconds_total": 120.0,
+        "elapsed_seconds_per_eval": 30.0,
+        "response_words_total": 81,
+        "response_words_per_eval": 20.25,
+        "files_read_count": 1,
+        "files_written_count": 1
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 2,
+          "response_path": "eval-0/without_skill/run-2/response.md",
+          "response_words": 21
+        },
+        {
+          "id": 1,
+          "run_number": 2,
+          "response_path": "eval-1/without_skill/run-2/response.md",
+          "response_words": 26
+        },
+        {
+          "id": 2,
+          "run_number": 2,
+          "response_path": "eval-2/without_skill/run-2/response.md",
+          "response_words": 19
+        },
+        {
+          "id": 3,
+          "run_number": 2,
+          "response_path": "eval-3/without_skill/run-2/response.md",
+          "response_words": 15
+        }
+      ]
+    },
+    {
+      "run_number": 3,
+      "summary": {
+        "elapsed_seconds_total": 120.0,
+        "elapsed_seconds_per_eval": 30.0,
+        "response_words_total": 65,
+        "response_words_per_eval": 16.25,
+        "files_read_count": 1,
+        "files_written_count": 1
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 3,
+          "response_path": "eval-0/without_skill/run-3/response.md",
+          "response_words": 18
+        },
+        {
+          "id": 1,
+          "run_number": 3,
+          "response_path": "eval-1/without_skill/run-3/response.md",
+          "response_words": 17
+        },
+        {
+          "id": 2,
+          "run_number": 3,
+          "response_path": "eval-2/without_skill/run-3/response.md",
+          "response_words": 15
+        },
+        {
+          "id": 3,
+          "run_number": 3,
+          "response_path": "eval-3/without_skill/run-3/response.md",
+          "response_words": 15
+        }
+      ]
+    }
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "response_words": 114
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "response_words": 155
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "response_words": 105
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "response_words": 186
+    }
+  ],
+  "high_variance_evals": [
+    {
+      "id": 0,
+      "metric": "response_words",
+      "stats": {
+        "mean": 51.0,
+        "stddev": 54.5802,
+        "min": 18.0,
+        "max": 114.0
+      }
+    },
+    {
+      "id": 1,
+      "metric": "response_words",
+      "stats": {
+        "mean": 66.0,
+        "stddev": 77.2075,
+        "min": 17.0,
+        "max": 155.0
+      }
+    },
+    {
+      "id": 2,
+      "metric": "response_words",
+      "stats": {
+        "mean": 46.3333,
+        "stddev": 50.8462,
+        "min": 15.0,
+        "max": 105.0
+      }
+    },
+    {
+      "id": 3,
+      "metric": "response_words",
+      "stats": {
+        "mean": 72.0,
+        "stddev": 98.7269,
+        "min": 15.0,
+        "max": 186.0
+      }
+    }
+  ]
+}

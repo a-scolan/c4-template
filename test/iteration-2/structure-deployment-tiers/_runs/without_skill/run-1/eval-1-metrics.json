@@ -1,0 +1,30 @@
+{
+  "eval_id": "eval-1",
+  "run_number": 1,
+  "configuration": "without_skill",
+  "status": "completed",
+  "elapsed_seconds": 2.4,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "response_path": "test/iteration-2/structure-deployment-tiers/eval-1/without_skill/run-1/response.md",
+  "metrics_path": "test/iteration-2/structure-deployment-tiers/_runs/without_skill/run-1/eval-1-metrics.json"
+}
+  "iteration": "test/iteration-2",
+  "skill": "structure-deployment-tiers",
+  "configuration": "without_skill",
+  "run": 1,
+  "evalId": "eval-1",
+  "promptUsedVerbatim": true,
+  "responsePath": "test/iteration-2/structure-deployment-tiers/eval-1/without_skill/run-1/response.md",
+  "status": "completed",
+  "scores": {
+    "relevance": 5,
+    "accuracy": 5,
+    "completeness": 5,
+    "clarity": 5,
+    "constraintCompliance": 5,
+    "overall": 5
+  },
+  "notes": "Kept scope boundaries clear: tier-structuring focus vs detailed VM/table/instanceOf instantiation.",
+  "timestamp": "2026-03-25"
+}

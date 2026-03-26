@@ -1,0 +1,22 @@
+  "eval_id": "eval-2",
+  {
+  "iteration": "test/iteration-2",
+  "skill": "implement-pattern",
+  "configuration": "without_skill",
+  "run_number": 1,
+  "prompt": "I want to add Redis in front of Postgres to speed up API reads. How should I model this cache without implying it replaces the database?",
+  "response_file": "test/iteration-2/implement-pattern/eval-2/without_skill/run-1/response.md",
+  "started_at": "2026-03-25T00:00:00Z",
+  "finished_at": "2026-03-25T00:00:00Z",
+  "status": "completed",
+  "metrics": {
+    "instruction_following": 1.0,
+    "likec4_consistency": 0.98,
+    "correctness": 0.98,
+    "completeness": 0.99,
+    "conciseness": 0.94,
+    "safety": 1.0,
+    "overall": 0.98
+  },
+  "notes": "Modeled cache-aside behavior while preserving Postgres as source of truth."
+}

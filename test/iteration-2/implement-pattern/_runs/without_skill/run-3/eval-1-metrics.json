@@ -1,0 +1,19 @@
+{
+  "eval_id": "eval-1",
+  "run_id": 3,
+  "skill": "implement-pattern",
+  "config": "without_skill",
+  "iteration": "iteration-2",
+  "prompt_summary": "Implement API Gateway pattern as single entry point routing to backend services",
+  "scores": {
+    "syntax_valid": 1,
+    "element_kinds_idiomatic": 0,
+    "relationship_kinds_typed": 0,
+    "tags_applied": 0,
+    "completeness": 1,
+    "view_provided": 1
+  },
+  "score": 59,
+  "pass": false,
+  "notes": "Generic Container used for gateway (should be Container_ReverseProxy). Cache bonus element included but not relevant. Plain -> relationships, no #Routing or #Ingress tags."
+}

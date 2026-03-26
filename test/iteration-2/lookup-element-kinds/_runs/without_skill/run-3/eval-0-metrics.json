@@ -1,0 +1,30 @@
+{
+  "eval_id": 0,
+  "run": 3,
+  "config": "without_skill",
+  "score": 75,
+  "max_score": 100,
+  "criteria": {
+    "correct_kind": {
+      "score": 1,
+      "max": 1,
+      "notes": "Correctly identified Actor_Person for an external customer"
+    },
+    "includes_example": {
+      "score": 1,
+      "max": 1,
+      "notes": "LikeC4 code example provided"
+    },
+    "mentions_tags": {
+      "score": 1,
+      "max": 1,
+      "notes": "Tags #Actor #Person and family alternatives mentioned"
+    },
+    "spec_file_referenced": {
+      "score": 0,
+      "max": 1,
+      "notes": "spec-context.c4 not explicitly referenced without skill guidance"
+    }
+  },
+  "notes": "Without-skill baseline run-3: correct answer with minor phrasing variations"
+}

@@ -1,0 +1,30 @@
+{
+  "eval_id": "eval-0",
+  "run_number": 1,
+  "configuration": "without_skill",
+  "status": "completed",
+  "elapsed_seconds": 3.1,
+  "files_read_count": 2,
+  "files_written_count": 2,
+  "response_path": "test/iteration-2/structure-deployment-tiers/eval-0/without_skill/run-1/response.md",
+  "metrics_path": "test/iteration-2/structure-deployment-tiers/_runs/without_skill/run-1/eval-0-metrics.json"
+}
+  "iteration": "test/iteration-2",
+  "skill": "structure-deployment-tiers",
+  "configuration": "without_skill",
+  "run": 1,
+  "evalId": "eval-0",
+  "promptUsedVerbatim": true,
+  "responsePath": "test/iteration-2/structure-deployment-tiers/eval-0/without_skill/run-1/response.md",
+  "status": "completed",
+  "scores": {
+    "relevance": 5,
+    "accuracy": 5,
+    "completeness": 5,
+    "clarity": 5,
+    "constraintCompliance": 5,
+    "overall": 5
+  },
+  "notes": "Provided coherent tiering, responsibilities, and key network rules for all requested platform components.",
+  "timestamp": "2026-03-25"
+}

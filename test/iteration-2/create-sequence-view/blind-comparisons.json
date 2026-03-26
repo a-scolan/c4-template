@@ -1,0 +1,10 @@
+{
+  "schema_version": 2,
+  "skill_name": "create-sequence-view",
+  "comparisons": [
+    {"eval_id":0,"run_number":1,"winner":"A","reasoning":"A aligns with expected dynamic-view constraints and start actor.","rubric":{"A":{"content_score":9,"structure_score":8,"overall_score":9},"B":{"content_score":5,"structure_score":7,"overall_score":6}},"expectation_results":{"A":{"passed":3,"total":3,"pass_rate":1.0},"B":{"passed":1,"total":3,"pass_rate":0.3333}}},
+    {"eval_id":1,"run_number":1,"winner":"B","reasoning":"B better matches corrected child-component targeting and required framing.","rubric":{"A":{"content_score":7,"structure_score":7,"overall_score":7},"B":{"content_score":9,"structure_score":8,"overall_score":9}},"expectation_results":{"A":{"passed":1,"total":3,"pass_rate":0.3333},"B":{"passed":3,"total":3,"pass_rate":1.0}}},
+    {"eval_id":2,"run_number":1,"winner":"B","reasoning":"B fully satisfies expected output placement and flow.","rubric":{"A":{"content_score":7,"structure_score":7,"overall_score":7},"B":{"content_score":9,"structure_score":9,"overall_score":9}},"expectation_results":{"A":{"passed":2,"total":3,"pass_rate":0.6667},"B":{"passed":3,"total":3,"pass_rate":1.0}}},
+    {"eval_id":3,"run_number":1,"winner":"A","reasoning":"A cleanly separates immediate response and retry behavior in separate views.","rubric":{"A":{"content_score":9,"structure_score":8,"overall_score":9},"B":{"content_score":7,"structure_score":7,"overall_score":7}},"expectation_results":{"A":{"passed":4,"total":4,"pass_rate":1.0},"B":{"passed":3,"total":4,"pass_rate":0.75}}}
+  ]
+}

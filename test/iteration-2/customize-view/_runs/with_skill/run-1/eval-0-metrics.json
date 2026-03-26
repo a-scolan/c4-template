@@ -1,0 +1,12 @@
+{
+  "eval_id": 0,
+  "skill_name": "customize-view",
+  "configuration": "with_skill",
+  "run_id": 1,
+  "generated_at": "2026-03-26T10:00:12.000Z",
+  "elapsed_seconds": 12,
+  "response_file": "test/iteration-2/customize-view/eval-0/with_skill/run-1/response.md",
+  "prompt_summary": "Improve existing C2 view: left-to-right flow, user as input, db+mailService as outputs, preserve drill-down on webApp",
+  "skill_applied": true,
+  "mcp_used": false
+}

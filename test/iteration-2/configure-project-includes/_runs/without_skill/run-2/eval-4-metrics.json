@@ -1,0 +1,15 @@
+{
+  "iteration": "test/iteration-2",
+  "skill": "configure-project-includes",
+  "configuration": "without_skill",
+  "run": 2,
+  "eval_id": 4,
+  "status": "completed",
+  "overall_score": 0.88,
+  "dimensions": {
+    "correctness": 0.88,
+    "completeness": 0.88,
+    "safety": 0.88
+  },
+  "notes": "Covers include.paths append strategy and alias namespace conflicts."
+}
