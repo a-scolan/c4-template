@@ -10,3 +10,5 @@ test/iteration-*/**/skill-creator-benchmark.json
 __pycache__/
 *.py[cod]
 
+**/_agent-hooks/*
+**/_meta/*
