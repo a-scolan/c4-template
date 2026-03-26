@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import os
 import hashlib
 import json
 import re
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from statistics import mean
@@ -12,13 +14,52 @@ from typing import Any
 WORD_RE = re.compile(r"\S+")
 
 
+def _json_error_excerpt(text: str, pos: int, radius: int = 80) -> str:
+	start = max(0, pos - radius)
+	end = min(len(text), pos + radius)
+	excerpt = text[start:end].replace("\r", "\\r").replace("\n", "\\n")
+	if start > 0:
+		excerpt = "…" + excerpt
+	if end < len(text):
+		excerpt = excerpt + "…"
+	return excerpt
+
+
 def read_json(path: Path) -> Any:
-	return json.loads(path.read_text(encoding="utf-8"))
+	text = path.read_text(encoding="utf-8")
+	try:
+		return json.loads(text)
+	except json.JSONDecodeError as exc:
+		excerpt = _json_error_excerpt(text, exc.pos)
+		raise ValueError(
+			f"Invalid JSON in {path} at line {exc.lineno}, column {exc.colno}: {exc.msg}. Context: {excerpt}"
+		) from exc
 
 
 def write_json(path: Path, data: Any) -> None:
 	path.parent.mkdir(parents=True, exist_ok=True)
-	path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+	serialized = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+	temp_path: Path | None = None
+	try:
+		with tempfile.NamedTemporaryFile(
+			mode="w",
+			encoding="utf-8",
+			dir=path.parent,
+			delete=False,
+			prefix=f".{path.name}.",
+			suffix=".tmp",
+		) as handle:
+			handle.write(serialized)
+			handle.flush()
+			os.fsync(handle.fileno())
+			temp_path = Path(handle.name)
+		if temp_path is None:
+			raise RuntimeError(f"Failed to create temp file for JSON write: {path}")
+		temp_path.replace(path)
+	except Exception:
+		if temp_path is not None and temp_path.exists():
+			temp_path.unlink()
+		raise
 
 
 def write_text(path: Path, content: str) -> None:

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-26T14:02:46Z",
+  "generated_at": "2026-03-26T16:09:43Z",
   "iteration": "iteration-2",
   "previous_iteration": "iteration-1",
   "protocol_version": "benchmark-v3",
@@ -19,9 +19,9 @@
     "with_skill_win_rate": 0.6839,
     "expectation_delta": 0.2171,
     "rubric_delta": 1.535,
-    "time_delta_per_eval": 9.4815,
+    "time_delta_per_eval": -4.7003,
     "words_delta_per_eval": -46.6849,
-    "files_read_delta": 0.7778,
+    "files_read_delta": 0.15,
     "executable_delta": 0.1957
   },
   "suite_variance": {
@@ -44,10 +44,10 @@
       "max": 3.0
     },
     "time_delta_per_eval": {
-      "mean": 9.4815,
-      "stddev": 13.8145,
-      "min": -6.2778,
-      "max": 19.5
+      "mean": -4.7003,
+      "stddev": 18.0673,
+      "min": -47.2223,
+      "max": 20.5666
     },
     "executable_delta": {
       "mean": 0.1957,
@@ -57,7 +57,7 @@
     }
   },
   "metric_validation": {
-    "generated_at": "2026-03-26T14:02:46Z",
+    "generated_at": "2026-03-26T16:09:42Z",
     "iteration": "iteration-2",
     "status": "passed",
     "expected_files": 40,
@@ -67,8 +67,9 @@
     "issue_count": 0,
     "issues": []
   },
+  "skipped_skills": [],
   "executable_checks": {
-    "generated_at": "2026-03-26T14:02:46Z",
+    "generated_at": "2026-03-26T16:09:43Z",
     "iteration": "iteration-2",
     "summary_count": 40,
     "summaries": [
@@ -374,7 +375,7 @@
       "with_skill_win_rate": 0.8333,
       "expectation_delta": 0.275,
       "rubric_delta": 2.1334,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -9.7222,
       "words_delta_per_eval": 60.8333,
       "files_read_delta": -0.3333,
       "executable_delta": 0.3333,
@@ -387,9 +388,9 @@
       "with_skill_win_rate": 1.0,
       "expectation_delta": 0.22,
       "rubric_delta": 2.0,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": 7.7333,
       "words_delta_per_eval": 82.7333,
-      "files_read_delta": null,
+      "files_read_delta": 2.6667,
       "executable_delta": 0.4444,
       "run_count": 3,
       "high_variance_eval_count": 0
@@ -400,9 +401,9 @@
       "with_skill_win_rate": 0.6,
       "expectation_delta": -0.04,
       "rubric_delta": 0.36,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -10.0,
       "words_delta_per_eval": 130.3333,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": -0.2,
       "run_count": 3,
       "high_variance_eval_count": 5
@@ -413,9 +414,9 @@
       "with_skill_win_rate": 0.75,
       "expectation_delta": 0.3542,
       "rubric_delta": 1.25,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -12.5,
       "words_delta_per_eval": 176.0,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": -1.0,
       "run_count": 3,
       "high_variance_eval_count": 5
@@ -426,9 +427,9 @@
       "with_skill_win_rate": 0.8,
       "expectation_delta": 0.2433,
       "rubric_delta": 1.52,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -10.0,
       "words_delta_per_eval": 141.7333,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": 1.0,
       "run_count": 3,
       "high_variance_eval_count": 2
@@ -439,9 +440,9 @@
       "with_skill_win_rate": 0.5,
       "expectation_delta": 0.4375,
       "rubric_delta": 3.0,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": 9.5,
       "words_delta_per_eval": -206.4167,
-      "files_read_delta": null,
+      "files_read_delta": 1.0,
       "executable_delta": 0.0833,
       "run_count": 3,
       "high_variance_eval_count": 1
@@ -452,9 +453,9 @@
       "with_skill_win_rate": 1.0,
       "expectation_delta": 0.4556,
       "rubric_delta": 2.2667,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": 0.0,
       "words_delta_per_eval": -16.0,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 5
@@ -465,9 +466,9 @@
       "with_skill_win_rate": 0.75,
       "expectation_delta": 0.0,
       "rubric_delta": 2.825,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -12.5,
       "words_delta_per_eval": -226.25,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": 1.0,
       "run_count": 3,
       "high_variance_eval_count": 4
@@ -478,9 +479,9 @@
       "with_skill_win_rate": 0.7619,
       "expectation_delta": 0.2667,
       "rubric_delta": 2.3809,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -0.6667,
       "words_delta_per_eval": 0.619,
-      "files_read_delta": null,
+      "files_read_delta": 1.0,
       "executable_delta": 0.0,
       "run_count": 3,
       "high_variance_eval_count": 0
@@ -491,9 +492,9 @@
       "with_skill_win_rate": 0.2,
       "expectation_delta": 0.0,
       "rubric_delta": -0.12,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": 0.0,
       "words_delta_per_eval": -156.8667,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": 0.1,
       "run_count": 3,
       "high_variance_eval_count": 7
@@ -504,9 +505,9 @@
       "with_skill_win_rate": 0.6,
       "expectation_delta": 0.2,
       "rubric_delta": 1.8,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -10.0,
       "words_delta_per_eval": -183.0,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 5
@@ -517,9 +518,9 @@
       "with_skill_win_rate": 0.6667,
       "expectation_delta": 0.278,
       "rubric_delta": 1.7,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -16.6667,
       "words_delta_per_eval": -233.4444,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 6
@@ -530,9 +531,9 @@
       "with_skill_win_rate": 0.5,
       "expectation_delta": 0.1875,
       "rubric_delta": 0.325,
-      "time_delta_per_eval": 19.5,
+      "time_delta_per_eval": 16.5,
       "words_delta_per_eval": -257.0,
-      "files_read_delta": null,
+      "files_read_delta": -2.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 6
@@ -543,9 +544,9 @@
       "with_skill_win_rate": 0.3333,
       "expectation_delta": 0.11,
       "rubric_delta": 0.4334,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": 20.5666,
       "words_delta_per_eval": -101.0,
-      "files_read_delta": null,
+      "files_read_delta": -5.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 5
@@ -556,9 +557,9 @@
       "with_skill_win_rate": 0.8,
       "expectation_delta": 0.15,
       "rubric_delta": 1.2,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -46.0,
       "words_delta_per_eval": -67.0,
-      "files_read_delta": null,
+      "files_read_delta": 0.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 3
@@ -569,9 +570,9 @@
       "with_skill_win_rate": 0.6667,
       "expectation_delta": 0.0278,
       "rubric_delta": 0.3,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": -47.2223,
       "words_delta_per_eval": -59.5555,
-      "files_read_delta": 0.6667,
+      "files_read_delta": 1.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 3
@@ -582,9 +583,9 @@
       "with_skill_win_rate": 0.75,
       "expectation_delta": 0.355,
       "rubric_delta": 2.125,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": 7.25,
       "words_delta_per_eval": -22.75,
-      "files_read_delta": null,
+      "files_read_delta": 1.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 0
@@ -595,9 +596,9 @@
       "with_skill_win_rate": 1.0,
       "expectation_delta": 0.3084,
       "rubric_delta": 2.6667,
-      "time_delta_per_eval": 15.2222,
+      "time_delta_per_eval": 8.6667,
       "words_delta_per_eval": 35.0,
-      "files_read_delta": null,
+      "files_read_delta": 1.0,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 0
@@ -608,9 +609,9 @@
       "with_skill_win_rate": 0.6667,
       "expectation_delta": 0.4167,
       "rubric_delta": 1.8333,
-      "time_delta_per_eval": null,
+      "time_delta_per_eval": 17.3333,
       "words_delta_per_eval": 1.0,
-      "files_read_delta": null,
+      "files_read_delta": 0.6667,
       "executable_delta": null,
       "run_count": 3,
       "high_variance_eval_count": 2
@@ -1276,6 +1277,18 @@
           "files_read_count": 0.6667,
           "files_written_count": 12.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 61.6667,
+              "stddev": 2.0817,
+              "min": 60.0,
+              "max": 64.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 10.2778,
+              "stddev": 0.347,
+              "min": 10.0,
+              "max": 10.6667
+            },
             "response_words_total": {
               "mean": 1296.0,
               "stddev": 0.0,
@@ -1353,9 +1366,21 @@
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 61.6667,
+          "elapsed_seconds_per_eval": 10.2778,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 61.6667,
+              "stddev": 2.0817,
+              "min": 60.0,
+              "max": 64.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 10.2778,
+              "stddev": 0.347,
+              "min": 10.0,
+              "max": 10.6667
+            },
             "response_words_total": {
               "mean": 1296.0,
               "stddev": 0.0,
@@ -1425,8 +1450,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -58.3333,
+          "elapsed_seconds_per_eval": -9.7222
         }
       },
       "executable_validity": {
@@ -1703,9 +1728,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 134.4,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 3.6667,
+          "files_written_count": 0.3333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 108.6667,
+              "stddev": 11.9304,
+              "min": 95.0,
+              "max": 117.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 21.7333,
+              "stddev": 2.3861,
+              "min": 19.0,
+              "max": 23.4
+            },
             "response_words_total": {
               "mean": 672.0,
               "stddev": 14.4222,
@@ -1717,14 +1754,38 @@
               "stddev": 2.8844,
               "min": 132.0,
               "max": 137.6
+            },
+            "files_read_count": {
+              "mean": 3.6667,
+              "stddev": 0.5774,
+              "min": 3.0,
+              "max": 4.0
+            },
+            "files_written_count": {
+              "mean": 0.3333,
+              "stddev": 0.5774,
+              "min": 0.0,
+              "max": 1.0
             }
           }
         },
         "without_skill": {
           "response_words_per_eval": 51.6667,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 258.3333,
               "stddev": 35.7957,
@@ -1736,20 +1797,44 @@
               "stddev": 7.1591,
               "min": 43.4,
               "max": 55.8
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "delta": {
           "response_words_per_eval": 82.7333,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 2.6667,
+          "files_written_count": -0.6667
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 108.6667,
+          "elapsed_seconds_per_eval": 21.7333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 108.6667,
+              "stddev": 11.9304,
+              "min": 95.0,
+              "max": 117.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 21.7333,
+              "stddev": 2.3861,
+              "min": 19.0,
+              "max": 23.4
+            },
             "response_words_total": {
               "mean": 672.0,
               "stddev": 14.4222,
@@ -1761,13 +1846,37 @@
               "stddev": 2.8844,
               "min": 132.0,
               "max": 137.6
+            },
+            "files_read_count": {
+              "mean": 3.6667,
+              "stddev": 0.5774,
+              "min": 3.0,
+              "max": 4.0
+            },
+            "files_written_count": {
+              "mean": 0.3333,
+              "stddev": 0.5774,
+              "min": 0.0,
+              "max": 1.0
             }
           }
         },
         "without_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 14.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 258.3333,
               "stddev": 35.7957,
@@ -1779,12 +1888,24 @@
               "stddev": 7.1591,
               "min": 43.4,
               "max": 55.8
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": 38.6667,
+          "elapsed_seconds_per_eval": 7.7333
         }
       },
       "executable_validity": {
@@ -1994,9 +2115,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 161.2,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 806.0,
               "stddev": 0.0,
@@ -2008,6 +2141,18 @@
               "stddev": 0.0,
               "min": 161.2,
               "max": 161.2
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -2056,15 +2201,27 @@
         },
         "delta": {
           "response_words_per_eval": 130.3333,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 14.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 806.0,
               "stddev": 0.0,
@@ -2076,6 +2233,18 @@
               "stddev": 0.0,
               "min": 161.2,
               "max": 161.2
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -2122,8 +2291,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -50.0,
+          "elapsed_seconds_per_eval": -10.0
         }
       },
       "executable_validity": {
@@ -2369,9 +2538,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 234.8333,
-          "files_read_count": null,
-          "files_written_count": 8.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
+            },
             "response_words_total": {
               "mean": 939.3333,
               "stddev": 35.2467,
@@ -2384,11 +2565,17 @@
               "min": 227.25,
               "max": 244.5
             },
-            "files_written_count": {
-              "mean": 8.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 8.0,
-              "max": 8.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -2437,15 +2624,27 @@
         },
         "delta": {
           "response_words_per_eval": 176.0,
-          "files_read_count": null,
-          "files_written_count": 7.0
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 17.5,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
+            },
             "response_words_total": {
               "mean": 939.3333,
               "stddev": 35.2467,
@@ -2458,11 +2657,17 @@
               "min": 227.25,
               "max": 244.5
             },
-            "files_written_count": {
-              "mean": 8.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 8.0,
-              "max": 8.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -2509,8 +2714,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -50.0,
+          "elapsed_seconds_per_eval": -12.5
         }
       },
       "executable_validity": {
@@ -2776,9 +2981,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 160.8,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 804.0,
               "stddev": 69.7424,
@@ -2790,6 +3007,18 @@
               "stddev": 13.9485,
               "min": 151.2,
               "max": 176.8
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -2838,15 +3067,27 @@
         },
         "delta": {
           "response_words_per_eval": 141.7333,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 14.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 804.0,
               "stddev": 69.7424,
@@ -2858,6 +3099,18 @@
               "stddev": 13.9485,
               "min": 151.2,
               "max": 176.8
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -2904,8 +3157,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -50.0,
+          "elapsed_seconds_per_eval": -10.0
         }
       },
       "executable_validity": {
@@ -3118,9 +3371,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 104.5,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
+            },
             "response_words_total": {
               "mean": 418.0,
               "stddev": 0.0,
@@ -3132,6 +3397,18 @@
               "stddev": 0.0,
               "min": 104.5,
               "max": 104.5
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -3180,15 +3457,27 @@
         },
         "delta": {
           "response_words_per_eval": -206.4167,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 1.0,
+          "files_written_count": -7.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 17.5,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
+            },
             "response_words_total": {
               "mean": 418.0,
               "stddev": 0.0,
@@ -3200,6 +3489,18 @@
               "stddev": 0.0,
               "min": 104.5,
               "max": 104.5
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -3246,8 +3547,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": 38.0,
+          "elapsed_seconds_per_eval": 9.5
         }
       },
       "executable_validity": {
@@ -3429,9 +3730,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 252.7778,
-          "files_read_count": null,
-          "files_written_count": 6.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 758.3333,
               "stddev": 98.5918,
@@ -3444,19 +3757,37 @@
               "min": 232.0,
               "max": 290.6667
             },
-            "files_written_count": {
-              "mean": 6.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 6.0,
-              "max": 6.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "without_skill": {
           "response_words_per_eval": 268.7778,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 806.3333,
               "stddev": 78.8057,
@@ -3468,20 +3799,44 @@
               "stddev": 26.2685,
               "min": 238.6667,
               "max": 287.0
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "delta": {
           "response_words_per_eval": -16.0,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 23.3333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 758.3333,
               "stddev": 98.5918,
@@ -3494,18 +3849,36 @@
               "min": 232.0,
               "max": 290.6667
             },
-            "files_written_count": {
-              "mean": 6.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 6.0,
-              "max": 6.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "without_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 23.3333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 806.3333,
               "stddev": 78.8057,
@@ -3517,12 +3890,24 @@
               "stddev": 26.2685,
               "min": 238.6667,
               "max": 287.0
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": 0.0,
+          "elapsed_seconds_per_eval": 0.0
         }
       },
       "executable_validity": {
@@ -3768,9 +4153,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 114.5,
-          "files_read_count": null,
-          "files_written_count": 8.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
+            },
             "response_words_total": {
               "mean": 458.0,
               "stddev": 44.238,
@@ -3783,11 +4180,17 @@
               "min": 107.5,
               "max": 127.25
             },
-            "files_written_count": {
-              "mean": 8.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 8.0,
-              "max": 8.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -3836,15 +4239,27 @@
         },
         "delta": {
           "response_words_per_eval": -226.25,
-          "files_read_count": null,
-          "files_written_count": 7.0
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 17.5,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
+            },
             "response_words_total": {
               "mean": 458.0,
               "stddev": 44.238,
@@ -3857,11 +4272,17 @@
               "min": 107.5,
               "max": 127.25
             },
-            "files_written_count": {
-              "mean": 8.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 8.0,
-              "max": 8.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -3908,8 +4329,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -50.0,
+          "elapsed_seconds_per_eval": -12.5
         }
       },
       "executable_validity": {
@@ -4484,9 +4905,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 40.5238,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 3.3333,
+              "stddev": 0.0,
+              "min": 3.3333,
+              "max": 3.3333
+            },
             "response_words_total": {
               "mean": 851.0,
               "stddev": 0.0,
@@ -4498,6 +4931,18 @@
               "stddev": 0.0,
               "min": 40.5238,
               "max": 40.5238
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -4546,15 +4991,27 @@
         },
         "delta": {
           "response_words_per_eval": 0.619,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 1.0,
+          "files_written_count": -41.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 3.3333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 3.3333,
+              "stddev": 0.0,
+              "min": 3.3333,
+              "max": 3.3333
+            },
             "response_words_total": {
               "mean": 851.0,
               "stddev": 0.0,
@@ -4566,6 +5023,18 @@
               "stddev": 0.0,
               "min": 40.5238,
               "max": 40.5238
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -4612,8 +5081,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -14.0,
+          "elapsed_seconds_per_eval": -0.6667
         }
       },
       "executable_validity": {
@@ -4823,20 +5292,20 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 74.0,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
             "elapsed_seconds_total": {
-              "mean": 24.2667,
-              "stddev": 0.3215,
-              "min": 23.9,
-              "max": 24.5
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
             },
             "elapsed_seconds_per_eval": {
-              "mean": 4.8533,
-              "stddev": 0.0643,
-              "min": 4.78,
-              "max": 4.9
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
             },
             "response_words_total": {
               "mean": 370.0,
@@ -4849,14 +5318,38 @@
               "stddev": 18.0411,
               "min": 57.4,
               "max": 93.2
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "without_skill": {
           "response_words_per_eval": 230.8667,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 1154.3333,
               "stddev": 561.5775,
@@ -4868,31 +5361,43 @@
               "stddev": 112.3155,
               "min": 101.4,
               "max": 302.2
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "delta": {
           "response_words_per_eval": -156.8667,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": 24.2667,
-          "elapsed_seconds_per_eval": 4.8533,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 14.0,
           "variance": {
             "elapsed_seconds_total": {
-              "mean": 24.2667,
-              "stddev": 0.3215,
-              "min": 23.9,
-              "max": 24.5
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
             },
             "elapsed_seconds_per_eval": {
-              "mean": 4.8533,
-              "stddev": 0.0643,
-              "min": 4.78,
-              "max": 4.9
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
             },
             "response_words_total": {
               "mean": 370.0,
@@ -4905,13 +5410,37 @@
               "stddev": 18.0411,
               "min": 57.4,
               "max": 93.2
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "without_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 14.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 1154.3333,
               "stddev": 561.5775,
@@ -4923,12 +5452,24 @@
               "stddev": 112.3155,
               "min": 101.4,
               "max": 302.2
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": 0.0,
+          "elapsed_seconds_per_eval": 0.0
         }
       },
       "executable_validity": {
@@ -5216,9 +5757,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 89.8,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 449.0,
               "stddev": 0.0,
@@ -5230,6 +5783,18 @@
               "stddev": 0.0,
               "min": 89.8,
               "max": 89.8
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -5278,15 +5843,27 @@
         },
         "delta": {
           "response_words_per_eval": -183.0,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 14.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 449.0,
               "stddev": 0.0,
@@ -5298,6 +5875,18 @@
               "stddev": 0.0,
               "min": 89.8,
               "max": 89.8
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -5344,8 +5933,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -50.0,
+          "elapsed_seconds_per_eval": -10.0
         }
       },
       "executable_validity": {
@@ -5571,9 +6160,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 141.7778,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 425.3333,
               "stddev": 70.3017,
@@ -5585,6 +6186,18 @@
               "stddev": 23.4339,
               "min": 124.0,
               "max": 168.3333
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -5633,15 +6246,27 @@
         },
         "delta": {
           "response_words_per_eval": -233.4444,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 23.3333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 425.3333,
               "stddev": 70.3017,
@@ -5653,6 +6278,18 @@
               "stddev": 23.4339,
               "min": 124.0,
               "max": 168.3333
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -5699,8 +6336,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -50.0,
+          "elapsed_seconds_per_eval": -16.6667
         }
       },
       "executable_validity": {
@@ -5957,20 +6594,20 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 110.5,
-          "files_read_count": null,
-          "files_written_count": 8.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
             "elapsed_seconds_total": {
-              "mean": 82.0,
-              "stddev": 2.0,
-              "min": 80.0,
-              "max": 84.0
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
             },
             "elapsed_seconds_per_eval": {
-              "mean": 20.5,
-              "stddev": 0.5,
-              "min": 20.0,
-              "max": 21.0
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
             },
             "response_words_total": {
               "mean": 442.0,
@@ -5984,11 +6621,17 @@
               "min": 90.25,
               "max": 135.75
             },
-            "files_written_count": {
-              "mean": 8.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 8.0,
-              "max": 8.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -6037,26 +6680,26 @@
         },
         "delta": {
           "response_words_per_eval": -257.0,
-          "files_read_count": null,
-          "files_written_count": -0.3333
+          "files_read_count": -2.0,
+          "files_written_count": -7.3333
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": 82.0,
-          "elapsed_seconds_per_eval": 20.5,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 17.5,
           "variance": {
             "elapsed_seconds_total": {
-              "mean": 82.0,
-              "stddev": 2.0,
-              "min": 80.0,
-              "max": 84.0
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
             },
             "elapsed_seconds_per_eval": {
-              "mean": 20.5,
-              "stddev": 0.5,
-              "min": 20.0,
-              "max": 21.0
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
             },
             "response_words_total": {
               "mean": 442.0,
@@ -6070,11 +6713,17 @@
               "min": 90.25,
               "max": 135.75
             },
-            "files_written_count": {
-              "mean": 8.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 8.0,
-              "max": 8.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -6121,8 +6770,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": 78.0,
-          "elapsed_seconds_per_eval": 19.5
+          "elapsed_seconds_total": 66.0,
+          "elapsed_seconds_per_eval": 16.5
         }
       },
       "executable_validity": {
@@ -6359,9 +7008,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 209.1111,
-          "files_read_count": null,
-          "files_written_count": 6.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 627.3333,
               "stddev": 74.272,
@@ -6374,11 +7035,17 @@
               "min": 193.6667,
               "max": 237.6667
             },
-            "files_written_count": {
-              "mean": 6.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 6.0,
-              "max": 6.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -6427,15 +7094,27 @@
         },
         "delta": {
           "response_words_per_eval": -101.0,
-          "files_read_count": null,
-          "files_written_count": 0.0
+          "files_read_count": -5.0,
+          "files_written_count": -5.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 23.3333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 627.3333,
               "stddev": 74.272,
@@ -6448,11 +7127,17 @@
               "min": 193.6667,
               "max": 237.6667
             },
-            "files_written_count": {
-              "mean": 6.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 6.0,
-              "max": 6.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -6499,8 +7184,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": 61.7,
+          "elapsed_seconds_per_eval": 20.5666
         }
       },
       "executable_validity": {
@@ -6766,9 +7451,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 76.6667,
-          "files_read_count": null,
-          "files_written_count": null,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 383.3333,
               "stddev": 116.1091,
@@ -6780,6 +7477,18 @@
               "stddev": 23.2218,
               "min": 58.4,
               "max": 102.8
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -6828,15 +7537,27 @@
         },
         "delta": {
           "response_words_per_eval": -67.0,
-          "files_read_count": null,
-          "files_written_count": null
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 14.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 14.0,
+              "stddev": 0.0,
+              "min": 14.0,
+              "max": 14.0
+            },
             "response_words_total": {
               "mean": 383.3333,
               "stddev": 116.1091,
@@ -6848,6 +7569,18 @@
               "stddev": 23.2218,
               "min": 58.4,
               "max": 102.8
+            },
+            "files_read_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -6894,8 +7627,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -230.0,
+          "elapsed_seconds_per_eval": -46.0
         }
       },
       "executable_validity": {
@@ -7099,9 +7832,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 179.7778,
-          "files_read_count": 0.6667,
-          "files_written_count": 6.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 539.3333,
               "stddev": 151.4607,
@@ -7115,16 +7860,16 @@
               "max": 226.6667
             },
             "files_read_count": {
-              "mean": 0.6667,
-              "stddev": 1.1547,
-              "min": 0.0,
-              "max": 2.0
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             },
             "files_written_count": {
-              "mean": 6.0,
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 6.0,
-              "max": 6.0
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -7173,15 +7918,27 @@
         },
         "delta": {
           "response_words_per_eval": -59.5555,
-          "files_read_count": 0.6667,
-          "files_written_count": 0.0
+          "files_read_count": 1.0,
+          "files_written_count": -5.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 23.3333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 539.3333,
               "stddev": 151.4607,
@@ -7195,16 +7952,16 @@
               "max": 226.6667
             },
             "files_read_count": {
-              "mean": 0.6667,
-              "stddev": 1.1547,
-              "min": 0.0,
-              "max": 2.0
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             },
             "files_written_count": {
-              "mean": 6.0,
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 6.0,
-              "max": 6.0
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -7251,8 +8008,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": -141.6667,
+          "elapsed_seconds_per_eval": -47.2223
         }
       },
       "executable_validity": {
@@ -7476,9 +8233,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 106.5,
-          "files_read_count": null,
-          "files_written_count": 8.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
+            },
             "response_words_total": {
               "mean": 426.0,
               "stddev": 0.0,
@@ -7491,11 +8260,17 @@
               "min": 106.5,
               "max": 106.5
             },
-            "files_written_count": {
-              "mean": 8.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 8.0,
-              "max": 8.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -7544,15 +8319,27 @@
         },
         "delta": {
           "response_words_per_eval": -22.75,
-          "files_read_count": null,
-          "files_written_count": 0.0
+          "files_read_count": 1.0,
+          "files_written_count": -7.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 17.5,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 17.5,
+              "stddev": 0.0,
+              "min": 17.5,
+              "max": 17.5
+            },
             "response_words_total": {
               "mean": 426.0,
               "stddev": 0.0,
@@ -7565,11 +8352,17 @@
               "min": 106.5,
               "max": 106.5
             },
-            "files_written_count": {
-              "mean": 8.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 8.0,
-              "max": 8.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -7616,8 +8409,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": 29.0,
+          "elapsed_seconds_per_eval": 7.25
         }
       },
       "executable_validity": {
@@ -7847,20 +8640,20 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 138.6667,
-          "files_read_count": null,
-          "files_written_count": 12.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
             "elapsed_seconds_total": {
-              "mean": 109.3333,
-              "stddev": 4.0415,
-              "min": 105.0,
-              "max": 113.0
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
             },
             "elapsed_seconds_per_eval": {
-              "mean": 18.2222,
-              "stddev": 0.6736,
-              "min": 17.5,
-              "max": 18.8333
+              "mean": 11.6667,
+              "stddev": 0.0,
+              "min": 11.6667,
+              "max": 11.6667
             },
             "response_words_total": {
               "mean": 832.0,
@@ -7874,11 +8667,17 @@
               "min": 138.6667,
               "max": 138.6667
             },
-            "files_written_count": {
-              "mean": 12.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 12.0,
-              "max": 12.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -7927,26 +8726,26 @@
         },
         "delta": {
           "response_words_per_eval": 35.0,
-          "files_read_count": null,
-          "files_written_count": -0.3333
+          "files_read_count": 1.0,
+          "files_written_count": -11.3333
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": 109.3333,
-          "elapsed_seconds_per_eval": 18.2222,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 11.6667,
           "variance": {
             "elapsed_seconds_total": {
-              "mean": 109.3333,
-              "stddev": 4.0415,
-              "min": 105.0,
-              "max": 113.0
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
             },
             "elapsed_seconds_per_eval": {
-              "mean": 18.2222,
-              "stddev": 0.6736,
-              "min": 17.5,
-              "max": 18.8333
+              "mean": 11.6667,
+              "stddev": 0.0,
+              "min": 11.6667,
+              "max": 11.6667
             },
             "response_words_total": {
               "mean": 832.0,
@@ -7960,11 +8759,17 @@
               "min": 138.6667,
               "max": 138.6667
             },
-            "files_written_count": {
-              "mean": 12.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 12.0,
-              "max": 12.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -8011,8 +8816,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": 91.3333,
-          "elapsed_seconds_per_eval": 15.2222
+          "elapsed_seconds_total": 52.0,
+          "elapsed_seconds_per_eval": 8.6667
         }
       },
       "executable_validity": {
@@ -8182,9 +8987,21 @@
       "consumption": {
         "with_skill": {
           "response_words_per_eval": 108.3333,
-          "files_read_count": null,
-          "files_written_count": 6.0,
+          "files_read_count": 1.0,
+          "files_written_count": 1.0,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 325.0,
               "stddev": 72.519,
@@ -8197,11 +9014,17 @@
               "min": 86.0,
               "max": 134.0
             },
-            "files_written_count": {
-              "mean": 6.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 6.0,
-              "max": 6.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -8250,15 +9073,27 @@
         },
         "delta": {
           "response_words_per_eval": 1.0,
-          "files_read_count": null,
-          "files_written_count": 0.0
+          "files_read_count": 0.6667,
+          "files_written_count": -5.0
         }
       },
       "time": {
         "with_skill": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null,
+          "elapsed_seconds_total": 70.0,
+          "elapsed_seconds_per_eval": 23.3333,
           "variance": {
+            "elapsed_seconds_total": {
+              "mean": 70.0,
+              "stddev": 0.0,
+              "min": 70.0,
+              "max": 70.0
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 23.3333,
+              "stddev": 0.0,
+              "min": 23.3333,
+              "max": 23.3333
+            },
             "response_words_total": {
               "mean": 325.0,
               "stddev": 72.519,
@@ -8271,11 +9106,17 @@
               "min": 86.0,
               "max": 134.0
             },
-            "files_written_count": {
-              "mean": 6.0,
+            "files_read_count": {
+              "mean": 1.0,
               "stddev": 0.0,
-              "min": 6.0,
-              "max": 6.0
+              "min": 1.0,
+              "max": 1.0
+            },
+            "files_written_count": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
             }
           }
         },
@@ -8322,8 +9163,8 @@
           }
         },
         "delta": {
-          "elapsed_seconds_total": null,
-          "elapsed_seconds_per_eval": null
+          "elapsed_seconds_total": 52.0,
+          "elapsed_seconds_per_eval": 17.3333
         }
       },
       "executable_validity": {
@@ -9233,8 +10074,8 @@
         "current_rubric_delta": 2.1334,
         "delta_rubric_delta": 0.8168,
         "previous_time_delta_per_eval": -10.6667,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -9.7222,
+        "delta_time_delta_per_eval": 0.9445
       },
       {
         "skill": "create-element",
@@ -9248,8 +10089,8 @@
         "current_rubric_delta": 2.0,
         "delta_rubric_delta": -0.4,
         "previous_time_delta_per_eval": -33.6,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": 7.7333,
+        "delta_time_delta_per_eval": 41.3333
       },
       {
         "skill": "create-relationship",
@@ -9263,8 +10104,8 @@
         "current_rubric_delta": 0.36,
         "delta_rubric_delta": -1.04,
         "previous_time_delta_per_eval": -12.8,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -10.0,
+        "delta_time_delta_per_eval": 2.8
       },
       {
         "skill": "create-sequence-view",
@@ -9278,8 +10119,8 @@
         "current_rubric_delta": 1.25,
         "delta_rubric_delta": -0.675,
         "previous_time_delta_per_eval": -3.5,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -12.5,
+        "delta_time_delta_per_eval": -9.0
       },
       {
         "skill": "customize-view",
@@ -9293,8 +10134,8 @@
         "current_rubric_delta": 1.52,
         "delta_rubric_delta": -0.12,
         "previous_time_delta_per_eval": -31.8,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -10.0,
+        "delta_time_delta_per_eval": 21.8
       },
       {
         "skill": "design-view",
@@ -9308,8 +10149,8 @@
         "current_rubric_delta": 3.0,
         "delta_rubric_delta": 0.25,
         "previous_time_delta_per_eval": -11.75,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": 9.5,
+        "delta_time_delta_per_eval": 21.25
       },
       {
         "skill": "document-decision",
@@ -9323,8 +10164,8 @@
         "current_rubric_delta": 2.2667,
         "delta_rubric_delta": 0.1667,
         "previous_time_delta_per_eval": 0.3333,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": 0.0,
+        "delta_time_delta_per_eval": -0.3333
       },
       {
         "skill": "implement-pattern",
@@ -9338,8 +10179,8 @@
         "current_rubric_delta": 2.825,
         "delta_rubric_delta": 0.725,
         "previous_time_delta_per_eval": -0.25,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -12.5,
+        "delta_time_delta_per_eval": -12.25
       },
       {
         "skill": "lookup-element-kinds",
@@ -9353,8 +10194,8 @@
         "current_rubric_delta": -0.12,
         "delta_rubric_delta": -2.86,
         "previous_time_delta_per_eval": -16.6,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": 0.0,
+        "delta_time_delta_per_eval": 16.6
       },
       {
         "skill": "model-deployment-infrastructure",
@@ -9368,8 +10209,8 @@
         "current_rubric_delta": 1.8,
         "delta_rubric_delta": 0.24,
         "previous_time_delta_per_eval": -0.8,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -10.0,
+        "delta_time_delta_per_eval": -9.2
       },
       {
         "skill": "name-deployment-nodes",
@@ -9383,8 +10224,8 @@
         "current_rubric_delta": 1.7,
         "delta_rubric_delta": -1.2,
         "previous_time_delta_per_eval": 25.6667,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -16.6667,
+        "delta_time_delta_per_eval": -42.3334
       },
       {
         "skill": "organize-multi-project",
@@ -9398,8 +10239,8 @@
         "current_rubric_delta": 0.325,
         "delta_rubric_delta": -1.225,
         "previous_time_delta_per_eval": -9.0,
-        "current_time_delta_per_eval": 19.5,
-        "delta_time_delta_per_eval": 28.5
+        "current_time_delta_per_eval": 16.5,
+        "delta_time_delta_per_eval": 25.5
       },
       {
         "skill": "structure-deployment-tiers",
@@ -9413,8 +10254,8 @@
         "current_rubric_delta": 0.4334,
         "delta_rubric_delta": -0.8999,
         "previous_time_delta_per_eval": 198.6667,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": 20.5666,
+        "delta_time_delta_per_eval": -178.1001
       },
       {
         "skill": "sync-with-template",
@@ -9428,8 +10269,8 @@
         "current_rubric_delta": 1.2,
         "delta_rubric_delta": -0.04,
         "previous_time_delta_per_eval": -16.0,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -46.0,
+        "delta_time_delta_per_eval": -30.0
       },
       {
         "skill": "test-model",
@@ -9443,8 +10284,8 @@
         "current_rubric_delta": 0.3,
         "delta_rubric_delta": 0.4,
         "previous_time_delta_per_eval": 3.3333,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": -47.2223,
+        "delta_time_delta_per_eval": -50.5556
       },
       {
         "skill": "troubleshoot-errors",
@@ -9458,8 +10299,8 @@
         "current_rubric_delta": 2.125,
         "delta_rubric_delta": 1.775,
         "previous_time_delta_per_eval": -14.25,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": 7.25,
+        "delta_time_delta_per_eval": 21.5
       },
       {
         "skill": "understand-project-structure",
@@ -9473,8 +10314,8 @@
         "current_rubric_delta": 2.6667,
         "delta_rubric_delta": 2.1333,
         "previous_time_delta_per_eval": -10.0,
-        "current_time_delta_per_eval": 15.2222,
-        "delta_time_delta_per_eval": 25.2222
+        "current_time_delta_per_eval": 8.6667,
+        "delta_time_delta_per_eval": 18.6667
       },
       {
         "skill": "write-rich-descriptions",
@@ -9488,8 +10329,8 @@
         "current_rubric_delta": 1.8333,
         "delta_rubric_delta": -2.6667,
         "previous_time_delta_per_eval": -15.0,
-        "current_time_delta_per_eval": null,
-        "delta_time_delta_per_eval": null
+        "current_time_delta_per_eval": 17.3333,
+        "delta_time_delta_per_eval": 32.3333
       }
     ]
   }

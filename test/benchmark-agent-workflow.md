@@ -24,6 +24,7 @@ Internal helpers now live under `test/scripts/benchmark/`. This refactor must re
 - `with_skill` starts only after skill restoration
 - blind comparison starts only after `with_skill` completes
 - `materialize-comparisons` must refresh `suite-summary.json` and `suite-summary.md` immediately
+- `resume-finalize` is the preferred recovery/finalization command after interruptions (auto-materialize missing blind outputs from `_meta`, run pre-check, then aggregate)
 - Cross-iteration comparisons must support both numeric iterations (`iteration-N`) and named benchmark series (`<skill>-test`, `<skill>-test2`, `<skill>-test3`, ...)
 - Never reuse an older `blind-comparisons.json` as fresh evidence
 - Blind comparator workers must receive explicit evidence paths from `blind-compare-bundle` (A, B, grading spec). Do not rely on broad repository search during blind runs.
@@ -44,7 +45,7 @@ If raw hook payloads omit `sessionId`, the wrapper must derive stable anonymous 
 9. normalize + validate metrics
 10. run blind comparison in parallel waves
 11. `validate-executable-checks`
-12. aggregate suite outputs
+12. `resume-finalize` (or `pre-aggregate-check` + `aggregate` when manual control is needed)
 13. run an explicit Anthropic skill-authoring best-practices pass per benchmarked skill (inside each `synthesis.md`)
 
 ## Agent map

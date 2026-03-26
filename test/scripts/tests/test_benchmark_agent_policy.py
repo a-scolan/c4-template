@@ -832,6 +832,26 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         self.assertEqual(self.decision(output), "deny")
         self.assertIn("must provide an explicit --iteration", output["hookSpecificOutput"]["permissionDecisionReason"])
 
+    def test_manager_allows_pre_aggregate_check_with_iteration(self) -> None:
+        output = self.run_hook_payload(
+            self.command_payload(
+                "manager-session-precheck",
+                "python test/scripts/skill_suite_tools.py pre-aggregate-check --iteration test/iteration-2 --workspace-root .",
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_manager_allows_resume_finalize_with_iteration(self) -> None:
+        output = self.run_hook_payload(
+            self.command_payload(
+                "manager-session-resume-finalize",
+                "python test/scripts/skill_suite_tools.py resume-finalize --iteration test/iteration-2 --workspace-root .",
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
     def test_manager_locks_iteration_across_sensitive_commands(self) -> None:
         first = self.run_hook_payload(
             self.command_payload(

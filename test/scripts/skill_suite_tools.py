@@ -512,6 +512,13 @@ def refresh_run_metrics_collection(skill_dir: Path, configuration: str) -> dict[
             normalized = dict(metrics)
             normalized["run_number"] = run_number
 
+        normalized, _changes = canonicalize_run_metrics(normalized)
+        missing_keys = validate_run_metrics_payload(normalized)
+        if missing_keys:
+            raise ValueError(
+                f"Incomplete normalized run metrics for {skill_dir.name} {configuration} run-{run_number}: missing/null keys {missing_keys}"
+            )
+
         runs.append(normalized)
         elapsed = coerce_float(normalized.get("elapsed_seconds_total"))
         if elapsed is not None:
@@ -547,6 +554,12 @@ def refresh_run_metrics_collection(skill_dir: Path, configuration: str) -> dict[
             "files_written_count": calculate_benchmark_stats(files_written_values) if files_written_values else None,
         },
     }
+    collection, _changes = canonicalize_run_metrics(collection)
+    collection_missing_keys = validate_run_metrics_payload(collection)
+    if collection_missing_keys:
+        raise ValueError(
+            f"Incomplete consolidated run metrics for {skill_dir.name} {configuration}: missing/null keys {collection_missing_keys}"
+        )
     output_path = skill_dir / f"{configuration}-run-metrics.json"
     write_json(output_path, collection)
     return collection
@@ -598,8 +611,8 @@ def validate_expectation_side_payload(side_label: str, payload: Any) -> list[str
     if passed is not None and total is not None and total < passed:
         issues.append(f"expectation_results.{side_label}.total must be >= passed")
     if passed is not None and total is not None and pass_rate is not None:
-        expected_rate = 0.0 if total == 0 else round(passed / total, 4)
-        if abs(expected_rate - round(pass_rate, 4)) > 0.0001:
+        expected_rate = 0.0 if total == 0 else (passed / total)
+        if abs(expected_rate - float(pass_rate)) > 0.005:
             issues.append(f"expectation_results.{side_label}.pass_rate must equal passed / total")
     return issues
 
@@ -2397,6 +2410,133 @@ def validate_iteration_metrics(iteration_dir: Path) -> dict[str, Any]:
     return summary
 
 
+def pre_aggregate_check(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]:
+    issues: list[dict[str, Any]] = []
+    checked_files = 0
+    required_files = (
+        "with_skill-run-metrics.json",
+        "without_skill-run-metrics.json",
+        "with_skill-summary.json",
+        "without_skill-summary.json",
+        "blind-comparisons.json",
+    )
+
+    for skill_dir in skill_dirs(iteration_dir):
+        for filename in required_files:
+            path = skill_dir / filename
+            relative_path = path.relative_to(workspace_root).as_posix()
+            if not path.exists():
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "file": filename,
+                        "path": relative_path,
+                        "reason": "missing-file",
+                    }
+                )
+                continue
+
+            checked_files += 1
+            try:
+                payload = read_json(path)
+            except Exception as exc:
+                issues.append(
+                    {
+                        "skill": skill_dir.name,
+                        "file": filename,
+                        "path": relative_path,
+                        "reason": "invalid-json",
+                        "details": str(exc),
+                    }
+                )
+                continue
+
+            if filename.endswith("-run-metrics.json"):
+                if not isinstance(payload, dict):
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "file": filename,
+                            "path": relative_path,
+                            "reason": "invalid-run-metrics-payload",
+                            "details": f"expected JSON object, got {type(payload).__name__}",
+                        }
+                    )
+                    continue
+                missing_keys = validate_run_metrics_payload(payload)
+                if missing_keys:
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "file": filename,
+                            "path": relative_path,
+                            "reason": "missing-or-null-keys",
+                            "missing_keys": missing_keys,
+                        }
+                    )
+                runs = payload.get("runs")
+                if not isinstance(runs, list) or not runs:
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "file": filename,
+                            "path": relative_path,
+                            "reason": "missing-runs-array",
+                        }
+                    )
+                    continue
+                for run_entry in runs:
+                    if not isinstance(run_entry, dict):
+                        issues.append(
+                            {
+                                "skill": skill_dir.name,
+                                "file": filename,
+                                "path": relative_path,
+                                "reason": "invalid-run-entry",
+                            }
+                        )
+                        continue
+                    run_missing_keys = validate_run_metrics_payload(run_entry)
+                    if run_missing_keys:
+                        issues.append(
+                            {
+                                "skill": skill_dir.name,
+                                "file": filename,
+                                "path": relative_path,
+                                "reason": "missing-or-null-run-keys",
+                                "run_number": run_entry.get("run_number"),
+                                "missing_keys": run_missing_keys,
+                            }
+                        )
+            elif filename == "blind-comparisons.json":
+                try:
+                    comparisons = load_comparisons(path)
+                    for item in comparisons:
+                        normalize_comparison_entry(item)
+                except Exception as exc:
+                    issues.append(
+                        {
+                            "skill": skill_dir.name,
+                            "file": filename,
+                            "path": relative_path,
+                            "reason": "invalid-comparison-schema",
+                            "details": str(exc),
+                        }
+                    )
+
+    summary = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "iteration": iteration_dir.name,
+        "status": "ok" if not issues else "fail",
+        "skill_count": len(skill_dirs(iteration_dir)),
+        "checked_files": checked_files,
+        "issues": issues,
+        "issue_count": len(issues),
+    }
+    write_json(iteration_dir / "_meta" / "pre-aggregate-check.json", summary)
+    return summary
+
+
 def normalize_iteration_metrics(iteration_dir: Path) -> dict[str, Any]:
     normalized_files: list[dict[str, Any]] = []
     checked_files = 0
@@ -3012,14 +3152,23 @@ def comparison_metrics(skill_dir: Path, comparison_items: list[dict[str, Any]]) 
     }
 
 
-def build_skill_row(skill_dir: Path, workspace_root: Path) -> dict[str, Any] | None:
+def build_skill_row_with_reason(skill_dir: Path, workspace_root: Path) -> tuple[dict[str, Any] | None, str | None]:
     with_summary_path = skill_dir / "with_skill-summary.json"
     without_summary_path = skill_dir / "without_skill-summary.json"
     comparisons_path = skill_dir / "blind-comparisons.json"
-    eval_bundle = load_skill_eval_bundle(workspace_root, skill_dir.name)
 
-    if not with_summary_path.exists() or not without_summary_path.exists() or not comparisons_path.exists():
-        return None
+    missing_paths = [
+        path.name
+        for path in (with_summary_path, without_summary_path, comparisons_path)
+        if not path.exists()
+    ]
+    if missing_paths:
+        return None, f"missing required artifacts: {', '.join(missing_paths)}"
+
+    try:
+        eval_bundle = load_skill_eval_bundle(workspace_root, skill_dir.name)
+    except Exception as exc:
+        return None, f"failed to load eval bundle: {exc}"
 
     with_metrics = load_summary_metrics(with_summary_path)
     without_metrics = load_summary_metrics(without_summary_path)
@@ -3099,7 +3248,12 @@ def build_skill_row(skill_dir: Path, workspace_root: Path) -> dict[str, Any] | N
             },
         },
         "high_variance_evals": high_variance_evals,
-    }
+    }, None
+
+
+def build_skill_row(skill_dir: Path, workspace_root: Path) -> dict[str, Any] | None:
+	row, _reason = build_skill_row_with_reason(skill_dir, workspace_root)
+	return row
 
 
 def suite_overview_rows(skill_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -3258,7 +3412,22 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
     benchmark_caveats = load_iteration_caveats(iteration_dir)
     comparison_validity = derive_iteration_comparison_validity(benchmark_caveats)
 
-    skill_rows = [row for row in (build_skill_row(skill_dir, workspace_root) for skill_dir in skill_dirs(iteration_dir)) if row]
+    skill_rows: list[dict[str, Any]] = []
+    skipped_skills: list[dict[str, Any]] = []
+    for skill_dir in skill_dirs(iteration_dir):
+        row, reason = build_skill_row_with_reason(skill_dir, workspace_root)
+        if row is None:
+            skipped_entry = {
+                "skill": skill_dir.name,
+                "reason": reason or "unknown-skip-reason",
+            }
+            skipped_skills.append(skipped_entry)
+            print(
+                f"[aggregate] Skipping {skill_dir.name}: {skipped_entry['reason']}",
+                file=sys.stderr,
+            )
+            continue
+        skill_rows.append(row)
     apply_iteration_comparison_validity(skill_rows, comparison_validity)
     overview_rows = suite_overview_rows(skill_rows)
 
@@ -3288,6 +3457,7 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
             "executable_delta": calculate_benchmark_stats([row["executable_validity"]["delta"]["valid_eval_rate"] for row in skill_rows if row["executable_validity"]["delta"]["valid_eval_rate"] is not None]) if [row["executable_validity"]["delta"]["valid_eval_rate"] for row in skill_rows if row["executable_validity"]["delta"]["valid_eval_rate"] is not None] else None,
         },
         "metric_validation": metric_validation,
+        "skipped_skills": skipped_skills,
         "executable_checks": executable_validation,
         "overview": overview_rows,
         "skills": skill_rows,
@@ -3425,12 +3595,40 @@ def cmd_protocol_preflight(args: argparse.Namespace) -> None:
 
 
 def cmd_summarize_config(args: argparse.Namespace) -> None:
-    summary = summarize_config(args.skill_dir, args.config, args.evals, args.metrics)
+    skill_dir = args.skill_dir
+    evals_path = args.evals
+    metrics_path = args.metrics
+
+    if skill_dir is None:
+        if args.iteration is None or not args.skill or args.config is None:
+            raise ValueError(
+                "summarize-config requires --skill-dir, or legacy mode (--iteration, --skill, --config, [--workspace-root])"
+            )
+        skill_dir = args.iteration / args.skill
+
+    if not skill_dir.exists():
+        raise FileNotFoundError(f"Missing skill directory: {skill_dir}")
+
+    if evals_path is None:
+        if args.iteration is not None and args.skill:
+            iteration_dir = args.iteration
+            skill_name = args.skill
+        else:
+            iteration_dir = skill_dir.parent
+            skill_name = skill_dir.name
+
+        workspace_root = args.workspace_root
+        if workspace_root is None:
+            workspace_root = infer_workspace_root_from_iteration(iteration_dir)
+
+        evals_path = resolve_public_evals_for_config(iteration_dir, workspace_root, skill_name, args.config)
+
+    summary = summarize_config(skill_dir, args.config, evals_path, metrics_path)
     print(json.dumps({
         "skill_name": summary["skill_name"],
         "configuration": summary["configuration"],
         "eval_count": len(summary["evals"]),
-        "output_json": str(args.skill_dir / f"{args.config}-summary.json"),
+        "output_json": str(skill_dir / f"{args.config}-summary.json"),
     }, indent=2, ensure_ascii=False))
 
 
@@ -3522,6 +3720,24 @@ def cmd_write_skill_creator_benchmark(args: argparse.Namespace) -> None:
 def cmd_validate_metrics(args: argparse.Namespace) -> None:
     summary = validate_iteration_metrics(args.iteration)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
+
+
+def cmd_pre_aggregate_check(args: argparse.Namespace) -> None:
+    summary = pre_aggregate_check(args.iteration, args.workspace_root)
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+    if summary["status"] != "ok":
+        raise SystemExit(1)
+
+
+def cmd_resume_finalize(args: argparse.Namespace) -> None:
+    summary = resume_finalize_iteration(
+        args.iteration,
+        args.workspace_root,
+        materialize_from_meta=not args.no_materialize_from_meta,
+    )
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
+    if summary["status"] != "ok":
+        raise SystemExit(1)
 
 
 def cmd_normalize_metrics(args: argparse.Namespace) -> None:
@@ -3698,6 +3914,78 @@ def refresh_suite_outputs_after_blind(
     }
 
 
+def resume_finalize_iteration(
+    iteration_dir: Path,
+    workspace_root: Path,
+    *,
+    materialize_from_meta: bool = True,
+) -> dict[str, Any]:
+    meta_dir = iteration_dir / "_meta"
+    materialized: list[dict[str, Any]] = []
+    unresolved: list[dict[str, Any]] = []
+
+    for skill_dir in skill_dirs(iteration_dir):
+        comparisons_path = skill_dir / "blind-comparisons.json"
+        if comparisons_path.exists():
+            continue
+
+        raw_path = meta_dir / f"{skill_dir.name}-blind.json"
+        if materialize_from_meta and raw_path.exists():
+            materialized_summary = materialize_blind_comparisons(iteration_dir, skill_dir.name, raw_path)
+            materialized.append(
+                {
+                    "skill": skill_dir.name,
+                    "raw_json": raw_path.relative_to(workspace_root).as_posix(),
+                    "comparison_count": materialized_summary.get("comparison_count", 0),
+                    "output_path": comparisons_path.relative_to(workspace_root).as_posix(),
+                }
+            )
+            continue
+
+        unresolved.append(
+            {
+                "skill": skill_dir.name,
+                "reason": "missing blind-comparisons and no resumable raw comparator payload",
+                "expected_raw_payload": raw_path.relative_to(workspace_root).as_posix(),
+            }
+        )
+
+    precheck = pre_aggregate_check(iteration_dir, workspace_root)
+    if precheck.get("status") != "ok":
+        return {
+            "iteration": iteration_dir.name,
+            "status": "blocked",
+            "materialize_from_meta": materialize_from_meta,
+            "materialized_count": len(materialized),
+            "materialized": materialized,
+            "unresolved_count": len(unresolved),
+            "unresolved": unresolved,
+            "pre_aggregate_check": precheck,
+            "aggregate": None,
+        }
+
+    aggregate_summary = aggregate_suite(iteration_dir, workspace_root)
+    write_json(iteration_dir / "suite-summary.json", aggregate_summary)
+    write_text(iteration_dir / "suite-summary.md", render_markdown(aggregate_summary))
+
+    return {
+        "iteration": iteration_dir.name,
+        "status": "ok",
+        "materialize_from_meta": materialize_from_meta,
+        "materialized_count": len(materialized),
+        "materialized": materialized,
+        "unresolved_count": len(unresolved),
+        "unresolved": unresolved,
+        "pre_aggregate_check": precheck,
+        "aggregate": {
+            "skill_count": aggregate_summary.get("skill_count", 0),
+            "metric_issue_count": aggregate_summary.get("metric_validation", {}).get("issue_count", 0),
+            "output_json": (iteration_dir / "suite-summary.json").relative_to(workspace_root).as_posix(),
+            "output_md": (iteration_dir / "suite-summary.md").relative_to(workspace_root).as_posix(),
+        },
+    }
+
+
 def cmd_summarize_phase(args: argparse.Namespace) -> None:
     skill_names = [args.skill] if args.skill else completed_skill_names_for_config(args.iteration, args.config)
     summaries = []
@@ -3773,10 +4061,13 @@ def build_parser() -> argparse.ArgumentParser:
     prepare_parser.set_defaults(func=cmd_prepare_blind)
 
     summarize_parser = subparsers.add_parser("summarize-config", help="Build a per-skill per-configuration summary JSON")
-    summarize_parser.add_argument("--skill-dir", type=Path, required=True, help="Path to /test/iteration-N/<skill-name>")
+    summarize_parser.add_argument("--skill-dir", type=Path, help="Path to /test/iteration-N/<skill-name>")
     summarize_parser.add_argument("--config", choices=["with_skill", "without_skill"], required=True, help="Configuration name")
-    summarize_parser.add_argument("--evals", type=Path, required=True, help="Path to the skill evals-public.json file")
+    summarize_parser.add_argument("--evals", type=Path, help="Path to the skill evals-public.json file")
     summarize_parser.add_argument("--metrics", type=Path, help="Optional path to the run-metrics JSON file")
+    summarize_parser.add_argument("--iteration", type=Path, help="Legacy mode: path to /test/iteration-N")
+    summarize_parser.add_argument("--skill", help="Legacy mode: target skill name")
+    summarize_parser.add_argument("--workspace-root", type=Path, help="Legacy mode: workspace root path (auto-inferred when omitted)")
     summarize_parser.set_defaults(func=cmd_summarize_config)
 
     summarize_phase_parser = subparsers.add_parser("summarize-phase", help="Write per-skill summary JSON files for every completed skill in one benchmark phase")
@@ -3847,6 +4138,24 @@ def build_parser() -> argparse.ArgumentParser:
     validate_parser = subparsers.add_parser("validate-metrics", help="Validate that every run-metrics file exists and contains all required non-null keys")
     validate_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     validate_parser.set_defaults(func=cmd_validate_metrics)
+
+    pre_aggregate_parser = subparsers.add_parser("pre-aggregate-check", help="Fail-fast readiness check before final aggregation")
+    pre_aggregate_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    pre_aggregate_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    pre_aggregate_parser.set_defaults(func=cmd_pre_aggregate_check)
+
+    resume_finalize_parser = subparsers.add_parser(
+        "resume-finalize",
+        help="Resume-safe finalization: materialize missing blind-comparisons from _meta payloads, run pre-aggregate-check, then aggregate",
+    )
+    resume_finalize_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    resume_finalize_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    resume_finalize_parser.add_argument(
+        "--no-materialize-from-meta",
+        action="store_true",
+        help="Disable auto-materialization from test/<iteration>/_meta/<skill>-blind.json",
+    )
+    resume_finalize_parser.set_defaults(func=cmd_resume_finalize)
 
     normalize_parser = subparsers.add_parser("normalize-metrics", help="Normalize known legacy run-metrics aliases into the canonical benchmark schema")
     normalize_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")

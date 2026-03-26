@@ -5,14 +5,26 @@
   "mcp_used": false,
   "run_count": 3,
   "summary": {
-    "elapsed_seconds_total": null,
-    "elapsed_seconds_per_eval": null,
+    "elapsed_seconds_total": 61.6667,
+    "elapsed_seconds_per_eval": 10.2778,
     "response_words_total": 1296.0,
     "response_words_per_eval": 216.0,
     "files_read_count": 0.6667,
     "files_written_count": 12.0
   },
   "variance": {
+    "elapsed_seconds_total": {
+      "mean": 61.6667,
+      "stddev": 2.0817,
+      "min": 60.0,
+      "max": 64.0
+    },
+    "elapsed_seconds_per_eval": {
+      "mean": 10.2778,
+      "stddev": 0.347,
+      "min": 10.0,
+      "max": 10.6667
+    },
     "response_words_total": {
       "mean": 1296.0,
       "stddev": 0.0,
@@ -42,8 +54,8 @@
     {
       "run_number": 1,
       "summary": {
-        "elapsed_seconds_total": null,
-        "elapsed_seconds_per_eval": null,
+        "elapsed_seconds_total": 60.0,
+        "elapsed_seconds_per_eval": 10.0,
         "response_words_total": 1296,
         "response_words_per_eval": 216.0,
         "files_read_count": 2,
@@ -91,8 +103,8 @@
     {
       "run_number": 2,
       "summary": {
-        "elapsed_seconds_total": null,
-        "elapsed_seconds_per_eval": null,
+        "elapsed_seconds_total": 64.0,
+        "elapsed_seconds_per_eval": 10.6667,
         "response_words_total": 1296,
         "response_words_per_eval": 216.0,
         "files_read_count": 0,
@@ -140,8 +152,8 @@
     {
       "run_number": 3,
       "summary": {
-        "elapsed_seconds_total": null,
-        "elapsed_seconds_per_eval": null,
+        "elapsed_seconds_total": 61.0,
+        "elapsed_seconds_per_eval": 10.1667,
         "response_words_total": 1296,
         "response_words_per_eval": 216.0,
         "files_read_count": 0,

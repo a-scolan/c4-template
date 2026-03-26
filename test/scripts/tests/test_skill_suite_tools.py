@@ -182,6 +182,44 @@ class SkillSuiteToolsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             tools.materialize_blind_comparisons(self.iteration_dir, "create-element", raw_path)
 
+    def test_materialize_comparisons_accepts_legacy_two_decimal_pass_rate_rounding(self) -> None:
+        raw_path = self._write_json(
+            self.workspace_root / "raw-blind-rounded.json",
+            {
+                "comparisons": [
+                    {
+                        "eval_id": 0,
+                        "winner": "A",
+                        "reasoning": "A is slightly better.",
+                        "rubric": {
+                            "A": {"content_score": 8.0, "structure_score": 8.0, "overall_score": 8.0},
+                            "B": {"content_score": 7.0, "structure_score": 7.0, "overall_score": 7.0},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 2, "total": 3, "pass_rate": 0.67},
+                            "B": {"passed": 1, "total": 3, "pass_rate": 0.33},
+                        },
+                    }
+                ]
+            },
+        )
+
+        summary = tools.materialize_blind_comparisons(self.iteration_dir, "create-element", raw_path)
+
+        self.assertEqual(summary["comparison_count"], 1)
+
+    def test_read_json_reports_path_and_context_for_invalid_json(self) -> None:
+        bad_path = self.workspace_root / "broken.json"
+        bad_path.write_text('{"a": 1 trailing}\n', encoding="utf-8")
+
+        with self.assertRaises(ValueError) as context:
+            tools.read_json(bad_path)
+
+        message = str(context.exception)
+        self.assertIn(str(bad_path), message)
+        self.assertIn("Invalid JSON", message)
+        self.assertIn("Context:", message)
+
     def test_protocol_preflight_writes_lock_file(self) -> None:
         manifest = tools.build_protocol_manifest(self.workspace_root, "benchmark-test")
         manifest_path = self.workspace_root / "test" / "benchmark-protocol.json"
@@ -317,6 +355,151 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertIn("elapsed_seconds_per_eval", summary["variance"])
         self.assertTrue((self.iteration_dir / "create-element" / "eval-0" / "with_skill" / "run-2" / "response.md").exists())
 
+    def test_cmd_summarize_config_supports_legacy_iteration_skill_arguments(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        response_path = skill_dir / "eval-0" / "with_skill" / "run-1" / "response.md"
+        response_path.parent.mkdir(parents=True, exist_ok=True)
+        response_path.write_text("legacy summarize command response\n", encoding="utf-8")
+
+        self._write_json(
+            skill_dir / "with_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:00:00Z",
+                "finished_at": "2026-03-13T10:00:05Z",
+                "elapsed_seconds_total": 5.0,
+                "files_read_count": 1,
+                "files_written_count": 1,
+                "run_count": 1,
+                "runs": [
+                    {
+                        "skill_name": "create-element",
+                        "configuration": "with_skill",
+                        "language": "English",
+                        "mcp_used": False,
+                        "started_at": "2026-03-13T10:00:00Z",
+                        "finished_at": "2026-03-13T10:00:05Z",
+                        "elapsed_seconds_total": 5.0,
+                        "files_read_count": 1,
+                        "files_written_count": 1,
+                        "run_number": 1,
+                    }
+                ],
+                "aggregate": {},
+            },
+        )
+
+        parser = tools.build_parser()
+        args = parser.parse_args(
+            [
+                "summarize-config",
+                "--iteration",
+                str(self.iteration_dir),
+                "--skill",
+                "create-element",
+                "--config",
+                "with_skill",
+                "--workspace-root",
+                str(self.workspace_root),
+            ]
+        )
+        args.iteration = args.iteration.resolve()
+        args.workspace_root = args.workspace_root.resolve()
+        args.func(args)
+
+        summary_path = skill_dir / "with_skill-summary.json"
+        self.assertTrue(summary_path.exists())
+        summary = tools.read_json(summary_path)
+        self.assertEqual(summary["skill_name"], "create-element")
+        self.assertEqual(summary["configuration"], "with_skill")
+
+    def test_cmd_summarize_config_infers_evals_from_skill_dir_when_omitted(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        response_path = skill_dir / "eval-0" / "with_skill" / "run-1" / "response.md"
+        response_path.parent.mkdir(parents=True, exist_ok=True)
+        response_path.write_text("inferred evals response\n", encoding="utf-8")
+
+        self._write_json(
+            skill_dir / "with_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:00:00Z",
+                "finished_at": "2026-03-13T10:00:05Z",
+                "elapsed_seconds_total": 5.0,
+                "files_read_count": 1,
+                "files_written_count": 1,
+                "run_count": 1,
+                "runs": [
+                    {
+                        "skill_name": "create-element",
+                        "configuration": "with_skill",
+                        "language": "English",
+                        "mcp_used": False,
+                        "started_at": "2026-03-13T10:00:00Z",
+                        "finished_at": "2026-03-13T10:00:05Z",
+                        "elapsed_seconds_total": 5.0,
+                        "files_read_count": 1,
+                        "files_written_count": 1,
+                        "run_number": 1,
+                    }
+                ],
+                "aggregate": {},
+            },
+        )
+
+        parser = tools.build_parser()
+        args = parser.parse_args(
+            [
+                "summarize-config",
+                "--skill-dir",
+                str(skill_dir),
+                "--config",
+                "with_skill",
+                "--workspace-root",
+                str(self.workspace_root),
+            ]
+        )
+        args.workspace_root = args.workspace_root.resolve()
+        args.func(args)
+
+        summary_path = skill_dir / "with_skill-summary.json"
+        self.assertTrue(summary_path.exists())
+        summary = tools.read_json(summary_path)
+        self.assertEqual(summary["skill_name"], "create-element")
+        self.assertEqual(summary["configuration"], "with_skill")
+
+    def test_refresh_run_metrics_collection_canonicalizes_alias_keys(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        metrics_path = skill_dir / "_runs" / "with_skill" / "run-1-metrics.json"
+        self._write_json(
+            metrics_path,
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at_utc": "2026-03-13T10:00:00Z",
+                "finished_at_utc": "2026-03-13T10:00:05Z",
+                "elapsed_seconds_total": 5.0,
+                "workspace_files_intentionally_read": 3,
+                "files_written_under_target_output_dir_count": 1,
+            },
+        )
+
+        collection = tools.refresh_run_metrics_collection(skill_dir, "with_skill")
+
+        self.assertEqual(collection["started_at"], "2026-03-13T10:00:00Z")
+        self.assertEqual(collection["finished_at"], "2026-03-13T10:00:05Z")
+        self.assertEqual(collection["files_read_count"], 3)
+        self.assertEqual(collection["files_written_count"], 1)
+        self.assertNotIn("started_at_utc", collection["runs"][0])
+
     def test_refresh_suite_outputs_after_blind_writes_suite_summary_files(self) -> None:
         skill_dir = self.iteration_dir / "create-element"
         with_response = skill_dir / "eval-0" / "with_skill" / "response.md"
@@ -391,6 +574,251 @@ class SkillSuiteToolsTests(unittest.TestCase):
         suite = tools.read_json(suite_json)
         self.assertEqual(suite["skill_count"], 1)
         self.assertEqual(suite["overview"][0]["skill"], "create-element")
+
+    def test_pre_aggregate_check_fails_when_blind_comparisons_missing(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        for filename in (
+            "with_skill-run-metrics.json",
+            "without_skill-run-metrics.json",
+            "with_skill-summary.json",
+            "without_skill-summary.json",
+        ):
+            self._write_json(
+                skill_dir / filename,
+                {
+                    "skill_name": "create-element",
+                    "configuration": "with_skill" if filename.startswith("with") else "without_skill",
+                    "language": "English",
+                    "mcp_used": False,
+                    "started_at": "2026-03-13T10:00:00Z",
+                    "finished_at": "2026-03-13T10:00:05Z",
+                    "elapsed_seconds_total": 5.0,
+                    "files_read_count": 1,
+                    "files_written_count": 1,
+                    "run_count": 1,
+                    "runs": [
+                        {
+                            "skill_name": "create-element",
+                            "configuration": "with_skill" if filename.startswith("with") else "without_skill",
+                            "language": "English",
+                            "mcp_used": False,
+                            "started_at": "2026-03-13T10:00:00Z",
+                            "finished_at": "2026-03-13T10:00:05Z",
+                            "elapsed_seconds_total": 5.0,
+                            "files_read_count": 1,
+                            "files_written_count": 1,
+                            "run_number": 1,
+                        }
+                    ],
+                    "aggregate": {},
+                    "summary": {},
+                    "variance": {},
+                    "evals": [],
+                    "high_variance_evals": [],
+                },
+            )
+
+        summary = tools.pre_aggregate_check(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(summary["status"], "fail")
+        self.assertEqual(summary["issue_count"], 1)
+        self.assertEqual(summary["issues"][0]["file"], "blind-comparisons.json")
+
+    def test_resume_finalize_materializes_missing_blind_comparisons_from_meta(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        with_response = skill_dir / "eval-0" / "with_skill" / "response.md"
+        without_response = skill_dir / "eval-0" / "without_skill" / "response.md"
+        with_response.parent.mkdir(parents=True, exist_ok=True)
+        without_response.parent.mkdir(parents=True, exist_ok=True)
+        with_response.write_text("with skill answer\n", encoding="utf-8")
+        without_response.write_text("without skill answer\n", encoding="utf-8")
+
+        self._write_json(
+            skill_dir / "with_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:00:00Z",
+                "finished_at": "2026-03-13T10:00:05Z",
+                "elapsed_seconds_total": 5.0,
+                "files_read_count": 1,
+                "files_written_count": 1,
+                "run_count": 1,
+                "runs": [
+                    {
+                        "skill_name": "create-element",
+                        "configuration": "with_skill",
+                        "language": "English",
+                        "mcp_used": False,
+                        "started_at": "2026-03-13T10:00:00Z",
+                        "finished_at": "2026-03-13T10:00:05Z",
+                        "elapsed_seconds_total": 5.0,
+                        "files_read_count": 1,
+                        "files_written_count": 1,
+                        "run_number": 1,
+                    }
+                ],
+                "aggregate": {},
+            },
+        )
+        self._write_json(
+            skill_dir / "without_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "without_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:01:00Z",
+                "finished_at": "2026-03-13T10:01:08Z",
+                "elapsed_seconds_total": 8.0,
+                "files_read_count": 0,
+                "files_written_count": 1,
+                "run_count": 1,
+                "runs": [
+                    {
+                        "skill_name": "create-element",
+                        "configuration": "without_skill",
+                        "language": "English",
+                        "mcp_used": False,
+                        "started_at": "2026-03-13T10:01:00Z",
+                        "finished_at": "2026-03-13T10:01:08Z",
+                        "elapsed_seconds_total": 8.0,
+                        "files_read_count": 0,
+                        "files_written_count": 1,
+                        "run_number": 1,
+                    }
+                ],
+                "aggregate": {},
+            },
+        )
+        self._write_json(skill_dir / "eval-0" / "blind-map.run-1.json", {"A": "with_skill", "B": "without_skill"})
+
+        evals_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "evals-public.json"
+        tools.summarize_config(skill_dir, "with_skill", evals_path)
+        tools.summarize_config(skill_dir, "without_skill", evals_path)
+
+        self._write_json(
+            self.iteration_dir / "_meta" / "create-element-blind.json",
+            {
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "eval_id": 0,
+                        "run_number": 1,
+                        "winner": "A",
+                        "reasoning": "A is better.",
+                        "rubric": {
+                            "A": {"content_score": 9, "structure_score": 9, "overall_score": 9},
+                            "B": {"content_score": 5, "structure_score": 5, "overall_score": 5},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                            "B": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                        },
+                    }
+                ],
+            },
+        )
+
+        result = tools.resume_finalize_iteration(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(result["status"], "ok")
+        self.assertEqual(result["materialized_count"], 1)
+        self.assertTrue((skill_dir / "blind-comparisons.json").exists())
+        self.assertTrue((self.iteration_dir / "suite-summary.json").exists())
+        self.assertTrue((self.iteration_dir / "suite-summary.md").exists())
+
+    def test_resume_finalize_blocks_when_blind_comparisons_cannot_be_materialized(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        skill_dir.mkdir(parents=True, exist_ok=True)
+
+        result = tools.resume_finalize_iteration(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(result["status"], "blocked")
+        self.assertEqual(result["materialized_count"], 0)
+        self.assertEqual(result["unresolved_count"], 1)
+        self.assertEqual(result["unresolved"][0]["skill"], "create-element")
+
+    def test_aggregate_suite_reports_skipped_skills_explicitly(self) -> None:
+        second_skill = "create-relationship"
+        self._write_split_evals(second_skill)
+
+        good_skill_dir = self.iteration_dir / "create-element"
+        with_response = good_skill_dir / "eval-0" / "with_skill" / "response.md"
+        without_response = good_skill_dir / "eval-0" / "without_skill" / "response.md"
+        with_response.parent.mkdir(parents=True, exist_ok=True)
+        without_response.parent.mkdir(parents=True, exist_ok=True)
+        with_response.write_text("with skill answer\n", encoding="utf-8")
+        without_response.write_text("without skill answer\n", encoding="utf-8")
+
+        self._write_json(
+            good_skill_dir / "with_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:00:00Z",
+                "finished_at": "2026-03-13T10:00:05Z",
+                "elapsed_seconds_total": 5.0,
+                "files_read_count": 1,
+                "files_written_count": 1,
+            },
+        )
+        self._write_json(
+            good_skill_dir / "without_skill-run-metrics.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "without_skill",
+                "language": "English",
+                "mcp_used": False,
+                "started_at": "2026-03-13T10:01:00Z",
+                "finished_at": "2026-03-13T10:01:08Z",
+                "elapsed_seconds_total": 8.0,
+                "files_read_count": 0,
+                "files_written_count": 1,
+            },
+        )
+        self._write_json(good_skill_dir / "eval-0" / "blind-map.run-1.json", {"A": "with_skill", "B": "without_skill"})
+        self._write_json(
+            good_skill_dir / "blind-comparisons.json",
+            {
+                "schema_version": 2,
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "schema_version": 2,
+                        "eval_id": 0,
+                        "run_number": 1,
+                        "winner": "A",
+                        "reasoning": "A is better.",
+                        "rubric": {
+                            "A": {"content_score": 9, "structure_score": 9, "overall_score": 9},
+                            "B": {"content_score": 5, "structure_score": 5, "overall_score": 5},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                            "B": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                        },
+                    }
+                ],
+            },
+        )
+        evals_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "evals-public.json"
+        tools.summarize_config(good_skill_dir, "with_skill", evals_path)
+        tools.summarize_config(good_skill_dir, "without_skill", evals_path)
+
+        skipped_skill_dir = self.iteration_dir / second_skill
+        skipped_skill_dir.mkdir(parents=True, exist_ok=True)
+
+        suite = tools.aggregate_suite(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(suite["skill_count"], 1)
+        self.assertEqual(len(suite["skipped_skills"]), 1)
+        self.assertEqual(suite["skipped_skills"][0]["skill"], second_skill)
+        self.assertIn("missing required artifacts", suite["skipped_skills"][0]["reason"])
 
     def test_validate_executable_checks_flags_unknown_kind(self) -> None:
         response_path = self.iteration_dir / "create-element" / "eval-0" / "with_skill" / "response.md"

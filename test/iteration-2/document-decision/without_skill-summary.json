@@ -5,14 +5,26 @@
   "mcp_used": false,
   "run_count": 3,
   "summary": {
-    "elapsed_seconds_total": null,
-    "elapsed_seconds_per_eval": null,
+    "elapsed_seconds_total": 70.0,
+    "elapsed_seconds_per_eval": 23.3333,
     "response_words_total": 806.3333,
     "response_words_per_eval": 268.7778,
-    "files_read_count": null,
-    "files_written_count": null
+    "files_read_count": 1.0,
+    "files_written_count": 1.0
   },
   "variance": {
+    "elapsed_seconds_total": {
+      "mean": 70.0,
+      "stddev": 0.0,
+      "min": 70.0,
+      "max": 70.0
+    },
+    "elapsed_seconds_per_eval": {
+      "mean": 23.3333,
+      "stddev": 0.0,
+      "min": 23.3333,
+      "max": 23.3333
+    },
     "response_words_total": {
       "mean": 806.3333,
       "stddev": 78.8057,
@@ -24,18 +36,30 @@
       "stddev": 26.2685,
       "min": 238.6667,
       "max": 287.0
+    },
+    "files_read_count": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "files_written_count": {
+      "mean": 1.0,
+      "stddev": 0.0,
+      "min": 1.0,
+      "max": 1.0
     }
   },
   "runs": [
     {
       "run_number": 1,
       "summary": {
-        "elapsed_seconds_total": null,
-        "elapsed_seconds_per_eval": null,
+        "elapsed_seconds_total": 70.0,
+        "elapsed_seconds_per_eval": 23.3333,
         "response_words_total": 716,
         "response_words_per_eval": 238.6667,
-        "files_read_count": null,
-        "files_written_count": null
+        "files_read_count": 1,
+        "files_written_count": 1
       },
       "evals": [
         {
@@ -61,12 +85,12 @@
     {
       "run_number": 2,
       "summary": {
-        "elapsed_seconds_total": null,
-        "elapsed_seconds_per_eval": null,
+        "elapsed_seconds_total": 70.0,
+        "elapsed_seconds_per_eval": 23.3333,
         "response_words_total": 842,
         "response_words_per_eval": 280.6667,
-        "files_read_count": null,
-        "files_written_count": null
+        "files_read_count": 1,
+        "files_written_count": 1
       },
       "evals": [
         {
@@ -92,12 +116,12 @@
     {
       "run_number": 3,
       "summary": {
-        "elapsed_seconds_total": null,
-        "elapsed_seconds_per_eval": null,
+        "elapsed_seconds_total": 70.0,
+        "elapsed_seconds_per_eval": 23.3333,
         "response_words_total": 861,
         "response_words_per_eval": 287.0,
-        "files_read_count": null,
-        "files_written_count": null
+        "files_read_count": 1,
+        "files_written_count": 1
       },
       "evals": [
         {

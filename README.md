@@ -93,10 +93,22 @@ The benchmark guide now centralizes workflow, trust rules, hook modes, trace lev
 - Use the strict relocated baseline by default.
 - Run workers in parallel only within a phase.
 - Keep `without_skill`, `with_skill`, and `blind_compare` strictly sequential across phases.
+- Run `pre-aggregate-check` before the final `aggregate` step so missing summaries / blind comparisons fail fast instead of being silently skipped.
+- Prefer `resume-finalize` for interruption recovery: it auto-materializes missing `blind-comparisons.json` from `test/<iteration>/_meta/<skill>-blind.json`, runs `pre-aggregate-check`, then writes fresh suite summaries.
 - Keep all canonical outputs under `test/<iteration>/`.
 - Treat review exports and hook traces as disposable by default.
 - Prefer JSON as the machine source of truth; `suite-summary.md` remains the human-facing rendering of suite results.
 - For each benchmarked skill, complete a mandatory Anthropic skill-authoring best-practices pass in `test/<iteration>/<skill>/synthesis.md` (concision, degrees-of-freedom fit, triggerability metadata quality, progressive disclosure quality, workflow/validation loop quality, anti-pattern scan with prioritized fixes).
+
+### Resilient benchmark flow
+
+The benchmark harness now aims to be interruption-tolerant rather than interruption-free:
+
+- JSON writes use atomic replacement, reducing the chance of half-written benchmark artifacts.
+- `pre-aggregate-check` validates that each skill has both summaries, both run-metrics files, and `blind-comparisons.json` before a final suite aggregation.
+- `resume-finalize` provides a deterministic one-step recovery/finalization path (`materialize missing blind artifacts -> pre-check -> aggregate`) after interruptions.
+- `suite-summary.json` now reports `skipped_skills` explicitly when partial artifacts are still present, instead of silently hiding omissions.
+- Manager workflows should persist every blind comparator result immediately with `materialize-comparisons` rather than relying on deferred manual writeback.
 
 ### Trace policy
 
@@ -113,5 +125,13 @@ Useful helpers:
 
 - `clean-benchmark-artifacts` removes generated iterations, hook traces, probe folders, and Python cache
 - `prune-generated-artifacts` removes disposable per-iteration review exports such as `_skill-creator-review-workspace/`, `skill-creator-review.html`, and `skill-creator-benchmark.json`
+
+### Python test launch reliability (Windows + venv)
+
+To avoid intermittent `ModuleNotFoundError: No module named 'test.scripts'` when launching tests with dotted module names, prefer discovery mode from the repository root:
+
+- `python -m unittest discover -s test/scripts/tests -p "test_*.py"`
+
+The repository now also exposes `test/`, `test/scripts/`, and `test/scripts/tests/` as Python packages for better compatibility with dotted module invocations.
 
 For the full benchmark protocol and rationale, read `test/benchmark-agent-workflow.md`.

@@ -120,6 +120,7 @@ ITERATION_REQUIRED_MANAGER_SUBCOMMANDS = {
     "clean-benchmark-artifacts",
     "materialize-comparisons",
     "materialize-comparisons-stdin",
+    "resume-finalize",
     "write-run-metrics",
     "summarize-phase",
     "summarize-config",
