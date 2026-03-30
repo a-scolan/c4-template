@@ -1,8 +1,6 @@
 ---
 name: likec4-dsl
-description: |
-  Auto-trigger when working with .c4 or .likec4 files, or when user asks to write, edit, or generate LikeC4 DSL code.
-  Provides complete LikeC4 DSL syntax reference for writing correct architecture-as-code definitions.
+description: Use when working with `.c4`/`.likec4` files, or when asked to write, edit, validate, or troubleshoot LikeC4 DSL (including predicates, views, deployment syntax, and CLI usage).
 ---
 
 # LikeC4 DSL Skill
@@ -21,6 +19,12 @@ Architecture-as-code tool. Describe systems in `.c4`/`.likec4` files and LikeC4 
 8. **FQN** — Fully Qualified Name (FQN) is a dot-separated path to an element, MUST be unique within the project. Examples: `customer`, `saas.backend.payment-service.paymentsApi`, `infra.eu.zone1.node1`.
 9. **References** — LikeC4 has lexical scoping with hoisting, nested scope may shadow outer, like in JavaScript. To reference across files, FQN must be used.
 
+## Response Discipline (critical for evals)
+
+- If prompt says **"minimal"** or **"paste-ready"**, output only the requested DSL constructs.
+- Do **not** add unrequested `title`, labels, alternate snippets, or long explanations unless explicitly asked.
+- Prefer exact requested tokens/phrases in the first line when the prompt requires strict phrasing.
+
 ## Workflow
 
 1. (Required) Find existing or create new project config (section below). Directory with project config defines the scope for all LikeC4 files in that directory and subdirectories. Ask user if you are uncertain about the scope.
@@ -33,15 +37,26 @@ Architecture-as-code tool. Describe systems in `.c4`/`.likec4` files and LikeC4 
 ## Validation
 
 ```bash
-npx likec4 validate --json --no-layout --file <edited-file> <project-dir> 2>/dev/null
+<runtime> likec4 validate --json --no-layout --file <edited-file> <project-dir>
+```
+
+Runtime launchers are equivalent for this command family:
+
+```bash
+npx likec4 validate --json --no-layout --file <edited-file> <project-dir>
+bunx likec4 validate --json --no-layout --file <edited-file> <project-dir>
+pnpm dlx likec4 validate --json --no-layout --file <edited-file> <project-dir>
 ```
 
 - `--json` — structured output (stdout), logging goes to stderr
 - `--no-layout` — skip layout drift checks (faster, only syntax+semantic)
 - `--file <path>` — only report errors from this file (can repeat for multiple files)
 - `<project-dir>` — path to the project directory
+- There is **no** `likec4 check` command; use `likec4 validate`.
 
-If workspace already has `likec4` as a dependency, check its version from package.json, make sure it is at least 1.53.0. Pin version `npx likec4@1.53.0 ...` otherwise (use workspace's package manager (pnpm/bun/npx), fallback to `npx`).
+For evals/gradings/executions, be **runner-tolerant** (`npx`/`bunx`/`pnpm dlx`), and judge correctness by subcommand + flags + project scope.
+
+If workspace already has `likec4` as a dependency, check its version from package.json and ensure it is at least 1.53.0. If pinning is needed, use the active runner (`npx`/`bunx`/`pnpm dlx`) with `likec4@1.53.0`.
 
 Example output:
 
@@ -66,6 +81,23 @@ Example output:
 ```
 
 Broken specification/model in a large project can cascade into lots of errors across all files. Always use `--file` to focus on the files you edited. If `filteredErrors` is 0 but `totalErrors` is high, your files are clean but something else in the project is broken (not your problem). Selfcheck that `filteredFiles` matches the number of files you passed to `--file`.
+
+Field semantics (must be explicit in answers):
+
+- `filteredFiles`: count of files actually included by repeated `--file` filters
+- `filteredErrors`: errors in the filtered subset only
+- `totalErrors`: errors across the full project model
+
+Example edge case: if you pass 3 files but one is `likec4.config.json`, `filteredFiles` may be `2` because config JSON is not a `.c4`/`.likec4` source file for DSL validation.
+
+## Export PNG flags (precision)
+
+Canonical output directory flags:
+
+- `--outdir` (long form)
+- `-o` (short form)
+
+Do not invent flags like `--out-dir`. Depending on LikeC4 version, `--output` may appear as compatibility alias; prefer `--outdir`/`-o` for deterministic answers.
 
 Full CLI reference → `references/cli.md`
 
@@ -201,6 +233,8 @@ model {
   // Extend existing relationship (must match existing relationship identity)
   // SOURCE and TARGET are always required. If multiple relationships exist between the
   // same endpoints, include kind and/or title to disambiguate the exact relationship.
+  // In disambiguation cases, omitting kind is WRONG (not just "ambiguous"): it can silently
+  // match the unkinded relation instead of the intended typed one.
   extend SOURCE -> TARGET  {
     TAGS                   // additional tags to apply to this relationship
     PROPERTIES             // additional properties to merge into this relationship, allowed `metadata` and `link` only
@@ -209,6 +243,15 @@ model {
     TAGS                   // additional tags to apply to this relationship
     PROPERTIES             // additional properties to merge into this relationship, allowed `metadata` and `link` only
   }
+
+  // Example:
+  // Existing:
+  //   frontend -> api "streams"
+  //   frontend -[async]-> api "streams"
+  // Wrong matcher for async target:
+  //   extend frontend -> api "streams" { ... }
+  // Correct matcher:
+  //   extend frontend -[async]-> api "streams" { metadata { qos "high" } }
 }
 ```
 
@@ -408,6 +451,17 @@ views {
 Full view reference → references/views.md
 
 ## Quick Decision Trees
+
+### "I need incoming relationship predicates"
+
+```text
+Need inbound relation selection?
+├─ From any source to target element → `include -> target`
+├─ From explicit wildcard source     → `include * -> target`
+└─ Include both directions around X  → `include -> X ->`
+```
+
+`include -> X` and `include * -> X` are related but not interchangeable in all contexts; prefer the exact form requested by user/eval.
 
 ### "I need to create a diagram/view or show a flow or sequence"
 
