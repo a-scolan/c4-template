@@ -1,6 +1,6 @@
 ---
 name: likec4-dsl
-description: Use when working with `.c4`/`.likec4` files, or when asked to write, edit, validate, or troubleshoot LikeC4 DSL (including predicates, views, deployment syntax, and CLI usage).
+description: Use when working with `.c4`/`.likec4` files and exact LikeC4 DSL/CLI syntax is required (validate/export flags, predicates `*`/`_`/`**`, views, deployment, relationship extension matching, strict minimal snippets).
 ---
 
 # LikeC4 DSL Skill
@@ -21,9 +21,17 @@ Architecture-as-code tool. Describe systems in `.c4`/`.likec4` files and LikeC4 
 
 ## Response Discipline (critical for evals)
 
-- If prompt says **"minimal"** or **"paste-ready"**, output only the requested DSL constructs.
+- If prompt says **"minimal"**, **"paste-ready"**, or **"strict"**, output exactly **one final command/snippet** (no alternatives, no fallback variants, no extra preamble).
 - Do **not** add unrequested `title`, labels, alternate snippets, or long explanations unless explicitly asked.
 - Prefer exact requested tokens/phrases in the first line when the prompt requires strict phrasing.
+- For strict command prompts, avoid ambiguous wording like "equivalent command" unless prompt explicitly asks for alternatives.
+
+## CLI Canonical Contracts (anti-substitution guardrails)
+
+- Validate family: use `likec4 validate` (never substitute with `check`, `lint`, or `build`).
+- Export family: use `likec4 export` (never substitute with other command families).
+- Validation flags contract for strict evals: `--json --no-layout --file <path> ... <project-dir>`.
+- Export output flags contract: prefer `--outdir` or `-o` (avoid invented aliases).
 
 ## Workflow
 
@@ -33,6 +41,16 @@ Architecture-as-code tool. Describe systems in `.c4`/`.likec4` files and LikeC4 
 4. Deployment topology is defined in `deployment { ... }` block. See Deployment section below.
 5. Views (diagrams) are defined in `views { ... }` block. See Views section below.
 6. After editing LikeC4 files, validate with the CLI
+
+## Generate → Self-check → Finalize
+
+For strict command/snippet prompts, keep a compact loop:
+
+1. **Generate** only the requested final command/snippet.
+2. **Self-check** quickly: exact command family/flags, predicate semantics, scope/FQN correctness, relationship matcher specificity.
+3. **Finalize** by fixing in place (no extra alternatives unless explicitly requested).
+
+Never claim CLI execution happened unless it actually ran.
 
 ## Validation
 
@@ -231,10 +249,12 @@ model {
     NESTED_ELEMENTS | RELATIONSHIPS
   }
   // Extend existing relationship (must match existing relationship identity)
-  // SOURCE and TARGET are always required. If multiple relationships exist between the
-  // same endpoints, include kind and/or title to disambiguate the exact relationship.
-  // In disambiguation cases, omitting kind is WRONG (not just "ambiguous"): it can silently
-  // match the unkinded relation instead of the intended typed one.
+  // Anti-ambiguity matcher contract:
+  // 1) SOURCE and TARGET are always required.
+  // 2) If typed relationships exist, include KIND.
+  // 3) If multiple relationships share SOURCE/TARGET/KIND, include TITLE.
+  // In disambiguation cases, omitting KIND is WRONG (not just "ambiguous"): it can silently
+  // match an unkinded relation instead of the intended typed one.
   extend SOURCE -> TARGET  {
     TAGS                   // additional tags to apply to this relationship
     PROPERTIES             // additional properties to merge into this relationship, allowed `metadata` and `link` only
@@ -463,6 +483,16 @@ Need inbound relation selection?
 
 `include -> X` and `include * -> X` are related but not interchangeable in all contexts; prefer the exact form requested by user/eval.
 
+### Scoped Predicate Truth Card (`*`, `_`, `**`)
+
+| Selector | One-line truth | Typical use |
+| --- | --- | --- |
+| `parent.*` | Direct children of `parent` only | Show immediate structure |
+| `parent._` | Direct children of `parent` that have relationships with accumulated result | Keep only connected direct children |
+| `parent.**` | Recursive descendants of `parent` that have relationships with accumulated result | Explore connected deep descendants |
+
+Hard rule: do not describe `*` as recursive; do not describe `_` as wildcard-all; do not drop relationship-condition semantics for `_` / `**`.
+
 ### "I need to create a diagram/view or show a flow or sequence"
 
 ```text
@@ -516,6 +546,15 @@ Flow / sequence diagram?
 ├─ Link to another view → step { navigateTo other-view }
 ├─ Sequence variant → dynamic view name { variant sequence }
 └─ Full reference → references/dynamic-views.md
+
+## Anti-Patterns to Avoid in Strict Prompts
+
+| Anti-pattern | Why it fails | Correct behavior |
+| --- | --- | --- |
+| Substituting command families (`check`/`build`) for `validate` | Breaks exact command contract | Keep `likec4 validate` |
+| Inventing/guessing flags | Creates non-portable invalid commands | Use canonical documented flags only |
+| Multiple alternative snippets for one strict ask | Reduces precision; fails strict-output grading | Output one final answer unless alternatives are requested |
+| Extending typed relationship without kind/title in ambiguous graph | Can target wrong relationship | Match with source + target + kind (+ title when needed) |
 ```
 
 ## Reference Index

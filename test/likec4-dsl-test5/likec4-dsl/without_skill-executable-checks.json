@@ -1,0 +1,1985 @@
+{
+  "iteration": "likec4-dsl-test5",
+  "skill_name": "likec4-dsl",
+  "configuration": "without_skill",
+  "checked_at": "2026-03-30T14:46:14Z",
+  "run_count": 2,
+  "summary": {
+    "applicable_eval_count": 55,
+    "valid_eval_count": 32,
+    "valid_eval_rate": 0.5818,
+    "snippet_count_total": 124,
+    "error_count_total": 95,
+    "warning_count_total": 120
+  },
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "{",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "{",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/without_skill/run-1/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 18,
+      "snippets": [
+        {
+          "snippet": "dynamic client_to_db_sequence {\n  title \"Client order flow\"\n\n  client -> gateway \"Request\"\n  gateway -> orders \"Forward request\"\n  orders -> db \"Write/read\"\n\n  db --> orders \"Result\"\n  orders --> gateway \"Response\"\n  gateway --> client \"Final response\"\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 6,
+          "errors": [],
+          "warnings": [
+            "Reference 'client' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'db' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "dynamic view PlaceOrderSequence {\n  title \"Place Order – sequence\"\n\n  #sequence\n\n  client -> gateway \"send request\"\n  gateway -> orders  \"route to orders service\"\n  orders  -> db      \"persist order\"\n  db      -> orders  \"ack\"\n  orders  -> gateway \"order result\"\n  gateway -> client  \"send response\"\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 12,
+          "errors": [],
+          "warnings": [
+            "Reference 'client' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'db' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'db' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'client' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "view backend_focus of cloud {\n  include *\n\n  style * {\n    color muted\n  }\n\n  style cloud.backend.* {\n    color primary\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view highlightBackend {\n  include *\n\n  style * {\n    color muted\n  }\n\n  style cloud.backend.* {\n    color primary\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "run_number": 1,
+      "response_path": "eval-5/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 4,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deployment {\n  node vm {\n    apiA = instanceOf cloud.api\n    apiB = instanceOf cloud.api\n  }\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown LikeC4 kind 'instanceOf'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "deployment {\n  vm {\n    api_blue = instanceOf cloud.api\n    api_green = instanceOf cloud.api\n  }\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown LikeC4 kind 'instanceOf'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "run_number": 1,
+      "response_path": "eval-6/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "view backend of cloud.backend {\n  include cloud.backend\n  include cloud.backend._\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view backendDetail of cloud.backend {\n  include cloud.backend\n  include cloud.backend.*\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "run_number": 1,
+      "response_path": "eval-7/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "view backend-overview of cloud.backend {\n  include *\n}\n\nview backend-detail extends backend-overview {\n  include api\n  include * -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view detail extends backend-overview {\n  include api\n  include -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "include -> cloud.backend",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "run_number": 1,
+      "response_path": "eval-8/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 4,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "global {\n  predicateGroup core-services {\n    include cloud.**\n    include kind:service\n    exclude #deprecated\n  }\n}\n\nview core-services-styled {\n  include global predicate core-services\n\n  style {\n    element \"tag=core\" {\n      color green\n    }\n  }\n}\n\nview core-services-plus-extra {\n  include global predicate core-services\n  include cloud.gateway\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "global {\n  predicateGroup core-services {\n    include cloud.* where kind is service\n    exclude #deprecated\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view coreServicesStyled {\n  title \"Core Services – styled\"\n\n  global predicate core-services\n\n  style * {\n    color green\n    shape rectangle\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view coreServicesExtended {\n  title \"Core Services – extended\"\n\n  global predicate core-services\n\n  include cloud.gateway\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "run_number": 1,
+      "response_path": "eval-9/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 10,
+      "snippets": [
+        {
+          "snippet": "dynamic view checkout-flow {\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  api -> {\n    payments\n    inventory\n    notifications\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "dynamic view checkout-flow {\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  par {\n    api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 8,
+          "errors": [
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "run_number": 1,
+      "response_path": "eval-10/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 14,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "specification {\n  element service\n  element database\n  deploymentNode environment\n  deploymentNode region\n  deploymentNode node\n  relationship reads\n}\n\nmodel {\n  frontend = service 'Frontend' #next\n  db = database 'DB'\n\n  frontend -> db reads\n}\n\ndeployment {\n  prod = environment 'prod' {\n    eu = region 'eu' {\n      web = node 'web' {\n        frontend = frontend #gamma\n      }\n    }\n  }\n}\n\nviews {\n  deployment prod {\n    view rel_only_next {\n      include relationship * where source.tag is #next\n    }\n\n    view rel_only_gamma {\n      include relationship * where source.tag is #gamma\n    }\n\n    view rel_only_missing {\n      include relationship * where source.tag is #missing\n    }\n  }\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'service'.",
+            "Unknown LikeC4 kind 'database'.",
+            "Unknown LikeC4 kind 'environment'.",
+            "Unknown LikeC4 kind 'region'.",
+            "Unknown LikeC4 kind 'node'.",
+            "Unknown LikeC4 kind 'frontend'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "// ── cumulative-tags-fixture.c4 ────────────────────────────────────────────\n\nspecification {\n  element system\n  deployment node zone\n  tag #next\n  tag #gamma\n  tag #missing\n}\n\n// ── logical model ─────────────────────────────────────────────────────────\n\nmodel {\n  // #next comes from the logical element definition\n  frontend = system 'Frontend' #next\n  db       = system 'Database'\n\n  frontend -> db 'reads'\n}\n\n// ── deployment ────────────────────────────────────────────────────────────\n\ndeployment {\n  prod = zone 'Production' {\n    eu = zone 'EU' {\n      web = zone 'Web Tier' {\n        // This instance inherits #next from the logical 'frontend'\n        // and gains #gamma here → effective tags = { #next, #gamma }\n        frontend = instanceOf frontend #gamma\n      }\n    }\n  }\n\n  // plain instance of db — no extra tags\n  db_inst = instanceOf db\n}\n\n// ── views ─────────────────────────────────────────────────────────────────\n\nviews {\n\n  // RENDERS: prod.eu.web.frontend has #next (inherited) → 'reads' relation visible\n  deployment view rel_only_next {\n    title \"Filtered by #next — expects 'reads'\"\n    include * -> * where source.tag is #next\n  }\n\n  // RENDERS: prod.eu.web.frontend has #gamma (own) → 'reads' relation visible\n  deployment view rel_only_gamma {\n    title \"Filtered by #gamma — expects 'reads'\"\n    include * -> * where source.tag is #gamma\n  }\n\n  // EMPTY: no instance carries #missing → no edges rendered\n  deployment view rel_only_missing {\n    title \"Filtered by #missing — expects empty\"\n    include * -> * where source.tag is #missing\n  }\n\n}",
+          "valid": false,
+          "error_count": 8,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'zone'.",
+            "Unknown LikeC4 kind 'zone'.",
+            "Unknown LikeC4 kind 'zone'.",
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown relationship kind ''reads''."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "run_number": 1,
+      "response_path": "eval-11/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  extend cloud.api {\n    metadata {\n      port '9090'\n      region 'us-east-1'\n    }\n\n    health = component 'Health Check'\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'component'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "extend cloud.api {\n  metadata {\n    port '9090'\n    region 'us-east-1'\n  }\n  health = component 'Health Check'\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'component'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "run_number": 1,
+      "response_path": "eval-12/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  deployment prod {\n    view v {\n      include *\n\n      style * {\n        color red\n      }\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "style <selector> {\n  color <value>\n  shape <value>\n  ...\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "deployment view ProductionDeployment {\n  title \"Production Deployment\"\n\n  include *\n\n  // Supported: local style rule — applies red color to all included nodes\n  style * {\n    color red\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "run_number": 1,
+      "response_path": "eval-13/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  api = service 'API' #critical {\n    technology 'Node.js'\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'service'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "model {\n  api = service 'API' #critical {\n    technology 'Node.js'\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'service'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "run_number": 1,
+      "response_path": "eval-14/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "global {\n  style * {\n    color '#dddddd'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "global {\n  style * {\n    color secondary\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "views {\n  view index {\n    include *\n\n    style * {\n      color muted\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "run_number": 1,
+      "response_path": "eval-15/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  // invalid originals (would cause parse errors as flat ids)\n  // payment.api   -- parsed as nested reference, not a declaration\n  // 1backend      -- syntax error\n  // payment-api   -- syntax error\n\n  // valid rewrites\n  payment_api = component \"Payment API\"\n  backend1    = component \"1Backend Service\"\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'component'.",
+            "Unknown LikeC4 kind 'component'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "run_number": 1,
+      "response_path": "eval-16/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 8,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n    cache = container 'Cache'\n    backend -> cache 'reads/writes'\n  }\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown relationship kind ''reads/writes''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "model {\n  customer = actor 'Customer'\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n  }\n  customer -> cloud 'uses'\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'actor'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown relationship kind ''uses''."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "run_number": 1,
+      "response_path": "eval-17/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 3,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "cloud.backend.api -> cloud.db",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "cloud = system {\n  backend = container {\n    api = service\n  }\n}",
+          "valid": false,
+          "error_count": 3,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'service'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "backend.api -> cloud.db",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "cloud.backend.api -> cloud.db",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "run_number": 1,
+      "response_path": "eval-18/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 3,
+      "error_count": 1,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n    metadata {\n        qos 'high'\n    }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "frontend -[async]-> api 'streams'   // kind=async,  title='streams'\nfrontend -> api          'streams'  // kind=(none),  title='streams'",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind ''streams''."
+          ],
+          "warnings": [
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "extend frontend -> api 'streams' { ... }",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n    metadata {\n        qos 'high'\n    }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "run_number": 1,
+      "response_path": "eval-19/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 1,
+      "snippets": [
+        {
+          "snippet": "view backend of cloud.backend {\n  include *\n  include * -> cloud.backend\n  include cloud.backend -> *\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view backend of cloud.backend {\n  include *\n\n  // pull in every element that sends to cloud.backend (incomers)\n  include -> cloud.backend\n\n  // pull in every element that cloud.backend sends to (outgoers)\n  include cloud.backend ->\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "run_number": 1,
+      "response_path": "eval-20/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "{",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "run_number": 1,
+      "response_path": "eval-21/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "view backend-detail extends backend-overview {\n  include api\n  include -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "view backend-detail extends backend-overview {\n  include api\n  include -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "run_number": 1,
+      "response_path": "eval-22/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 16,
+      "snippets": [
+        {
+          "snippet": "dynamic view checkout-flow {\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  parallel {\n    api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 8,
+          "errors": [
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "dynamic view checkout-flow {\n\n  // (1) single chained expression; (2) body applies only to the frontend -> api hop\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  // (3) api fans out in parallel\n  parallel {\n    api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 8,
+          "errors": [
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "run_number": 1,
+      "response_path": "eval-23/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Deployment-instance tags are cumulative, so filters can match tags inherited from the logical element and tags added on the instance itself.# Eval-23 Response",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "Deployment-instance tags are **cumulative**: a deployed instance inherits all tags from its logical element (`#next` from `frontend`) and any tags declared on the instance itself (`#gamma`) are added on top, so the effective tag set is the union of both.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "run_number": 1,
+      "response_path": "eval-24/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n  tags #extended\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n  technology 'WebSocket'\n  description 'Continuous event stream from frontend to API over an async channel'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "run_number": 1,
+      "response_path": "eval-25/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "npx likec4 check --file projects/template/system-model.c4 --file projects/template/system-views.c4 --file projects/template/likec4.config.json",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 26,
+      "run_number": 1,
+      "response_path": "eval-26/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "global {\n  predicateGroup core-services {\n    include cloud.* where kind == 'service' and !#deprecated\n  }\n}\n\nview services of cloud {\n  global predicate core-services\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "global {\n  predicateGroup core-services {\n    include cloud.* where kind is service\n    exclude #deprecated\n  }\n}\n\nviews {\n  view cloud_services of cloud {\n    global predicate core-services\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "run_number": 1,
+      "response_path": "eval-27/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 1,
+      "snippets": [
+        {
+          "snippet": "view backend of cloud.backend {\n  include *\n  include <- cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view backend of cloud.backend {\n  include *\n  include -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "run_number": 1,
+      "response_path": "eval-28/without_skill/run-1/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 0,
+      "run_number": 2,
+      "response_path": "eval-0/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "The `check` command validates DSL syntax, semantic correctness (element references, relationship targets, kind conformance), and model integrity — but does **not** run the layout engine, so no layout drift is introduced.\n\n> **Note:** LikeC4's `check` command validates the whole project graph because elements in `system-model.c4` may be referenced by other files (e.g. shared specs or views). There is no single-file isolation flag in the standard CLI; the project must be parsed as a whole to resolve cross-file references. The key is in *reading the output*, not in restricting the input scope.\n\n---\n\n## JSON Output Fields\n\nWhen running with JSON output, the response is an array of **diagnostic objects**. The relevant fields are:\n\n| Field | Type | Purpose |\n|---|---|---|\n| `diagnostics[].uri` (or `file`) | `string` | Absolute or workspace-relative path of the file where the error was detected |\n| `diagnostics[].severity` | `\"error\"` \\| `\"warning\"` | Whether this is a hard failure or advisory |\n| `diagnostics[].message` | `string` | Human-readable description of the problem |\n| `diagnostics[].range.start.line` | `number` | 0-based line number inside the offending file |\n\n### Distinguishing \"only my file failed\" vs \"whole project broken\"\n\n1. **Only your file failed** — all diagnostic entries with `severity: \"error\"` have a `uri` value that resolves to `projects/template/system-model.c4`. No errors reference other source files.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "2. **Whole project broken** — diagnostic entries with `severity: \"error\"` reference files *other than* `system-model.c4` (e.g. shared specs, view files, other project files). This indicates a cascading failure where your change broke cross-file references or the shared specification is inconsistent.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "run_number": 2,
+      "response_path": "eval-1/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 0,
+      "error_count": 6,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "{",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "{",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Closing brace appears before a matching opening brace.",
+            "Braces are not balanced."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "run_number": 2,
+      "response_path": "eval-2/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "## Explanation of flags\n\n| Flag | Value | Purpose |\n|---|---|---|\n| `export png` | — | Export views as PNG files |\n| `--output ./images` | `./images` | Destination directory for generated PNGs |\n| `--theme dark` | `dark` | Render with the dark colour theme |\n| `--filter \"overview*\"` | glob pattern | Include only views whose ID matches `overview*` |\n| `--flat` | — | Write all PNGs directly into the output directory (no sub-folder hierarchy) |\n\n## Project path argument\n\nThe `[path]` positional argument (pointing to the project folder or `likec4.config.json`) is **optional**.  \nWhen the command is run from the project root (the directory that contains `likec4.config.json`), it can be omitted entirely, as shown above.\n\nIf you need to target a project that is not the current working directory, append the path explicitly:",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "run_number": 2,
+      "response_path": "eval-3/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 18,
+      "snippets": [
+        {
+          "snippet": "dynamic client_gateway_orders_db {\n  title \"Client → Gateway → Orders → DB\"\n\n  client -> gateway \"request\"\n  gateway -> orders \"forward\"\n  orders -> db \"query/write\"\n\n  db --> orders \"result\"\n  orders --> gateway \"response\"\n  gateway --> client \"response\"\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 6,
+          "errors": [],
+          "warnings": [
+            "Reference 'client' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'db' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "dynamic view sequence_order_flow {\n  title \"Order Request Flow\"\n\n  client -> gateway \"Send request\"\n  gateway -> orders  \"Route to Orders service\"\n  orders  -> db      \"Query database\"\n  db      -> orders  \"Return results\"\n  orders  -> gateway \"Return response\"\n  gateway -> client  \"Send response\"\n\n  autoLayout TopBottom\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 12,
+          "errors": [],
+          "warnings": [
+            "Reference 'client' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'db' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'db' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'orders' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'gateway' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'client' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "run_number": 2,
+      "response_path": "eval-4/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "view backend_focus of cloud {\n  include *\n\n  style * {\n    color muted\n  }\n\n  style cloud.backend.* {\n    color primary\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view backend_highlight {\n  include *\n\n  style * {\n    color muted\n  }\n\n  style cloud.backend.* {\n    color primary\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "run_number": 2,
+      "response_path": "eval-5/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 1,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "deploymentNode vm {\n  instance apiA = cloud.api\n  instance apiB = cloud.api\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "deployment {\n  vm {\n    api_blue = instanceOf cloud.api\n    api_green = instanceOf cloud.api\n  }\n}",
+          "valid": false,
+          "error_count": 2,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'instanceOf'.",
+            "Unknown LikeC4 kind 'instanceOf'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "run_number": 2,
+      "response_path": "eval-6/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "view of cloud.backend {\n  include cloud.backend\n  include cloud.backend._ where hasRelationshipWithIncluded()\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view backendView of cloud.backend {\n  include cloud.backend\n  include cloud.backend._\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "run_number": 2,
+      "response_path": "eval-7/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "view backend-overview of cloud.backend {\n  include *\n}\n\nview backend-detail extends backend-overview {\n  include api\n  include * -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view detail extends backend-overview {\n  include api\n  include * -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "include * -> cloud.backend",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "run_number": 2,
+      "response_path": "eval-8/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 4,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "global {\n  predicateGroup core-services {\n    include cloud.* where kind == 'service' and !hasTag('#deprecated')\n  }\n}\n\nview core-services-styled {\n  global predicate core-services\n\n  style {\n    element kind == 'service' {\n      color '#2E86DE'\n      border solid\n    }\n  }\n}\n\nview core-services-plus-extra {\n  global predicate core-services\n  include cloud.shared.logging\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "global {\n  predicateGroup core-services {\n    include cloud.* where kind == service\n    exclude #deprecated\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view cloud-services-styled {\n  title \"Cloud Core Services (styled)\"\n\n  global predicate core-services\n\n  style element {\n    color green\n    shape rectangle\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view cloud-services-extended {\n  title \"Cloud Core Services (extended)\"\n\n  global predicate core-services\n\n  include cloud.gateway\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "run_number": 2,
+      "response_path": "eval-9/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 16,
+      "snippets": [
+        {
+          "snippet": "dynamic view checkout-flow {\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  parallel {\n    api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 8,
+          "errors": [
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "dynamic view checkout-flow {\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  par {\n    api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 8,
+          "errors": [
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "run_number": 2,
+      "response_path": "eval-10/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 18,
+      "warning_count": 12,
+      "snippets": [
+        {
+          "snippet": "// Minimal fixture: proves deployment-instance tags are cumulative for source.tag filtering.\n// Logical `frontend` carries #next; its deployment instance adds #gamma.\n// Both tags coexist on the deployed instance, so:\n//   rel_only_next    → renders the `reads` relation  (cumulative: logical tag inherited)\n//   rel_only_gamma   → renders the `reads` relation  (instance-level tag matched)\n//   rel_only_missing → renders empty                 (#missing appears on neither)\n\nspecification {\n  element system\n  element database\n  relationship reads\n  tag next\n  tag gamma\n  tag missing\n}\n\nmodel {\n  frontend = system 'Frontend' {\n    #next\n  }\n\n  db = database 'Database'\n\n  frontend -> db 'reads' {\n    kind reads\n  }\n}\n\ndeployment {\n  node prod {\n    node eu {\n      node web {\n        // Inherits #next from logical frontend; #gamma added at instance level.\n        instance frontend = frontend {\n          #gamma\n        }\n      }\n    }\n    node data {\n      instance db = db\n    }\n  }\n}\n\n// Matches: prod.eu.web.frontend has #next (inherited from logical element)\ndeployment view rel_only_next {\n  title 'Reads — source tagged #next (inherited)'\n  include -> where source.tag is #next\n}\n\n// Matches: prod.eu.web.frontend has #gamma (added at deployment instance level)\ndeployment view rel_only_gamma {\n  title 'Reads — source tagged #gamma (instance)'\n  include -> where source.tag is #gamma\n}\n\n// No match: neither the logical element nor the instance declares #missing → empty view\ndeployment view rel_only_missing {\n  title 'Reads — source tagged #missing (empty)'\n  include -> where source.tag is #missing\n}",
+          "valid": false,
+          "error_count": 6,
+          "warning_count": 6,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'database'.",
+            "Unknown relationship kind ''reads''.",
+            "Unknown relationship kind 'source.tag'.",
+            "Unknown relationship kind 'source.tag'.",
+            "Unknown relationship kind 'source.tag'."
+          ],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'where' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'where' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'where' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "specification {\n  element person\n  element system\n  relationship reads\n  tag next\n  tag gamma\n}\n\nmodel {\n  user = person 'User'\n  app = system 'App' {\n    frontend = system 'Frontend' #next\n    db = system 'DB'\n  }\n\n  user -> app.frontend 'uses'\n  app.frontend -> app.db reads\n}\n\ndeployment {\n  environment prod {\n    eu = deploymentNode 'eu' {\n      web = deploymentNode 'web' {\n        frontend = app.frontend #gamma\n      }\n      db = app.db\n    }\n  }\n}\n\nviews {\n  deployment prod.eu.web rel_only_next {\n    include *\n    include -> where source.tag is #next\n    autolayout lr\n  }\n\n  deployment prod.eu.web rel_only_gamma {\n    include *\n    include -> where source.tag is #gamma\n    autolayout lr\n  }\n\n  deployment prod.eu.web rel_only_missing {\n    include *\n    include -> where source.tag is #missing\n    autolayout lr\n  }\n}",
+          "valid": false,
+          "error_count": 12,
+          "warning_count": 6,
+          "errors": [
+            "Unknown LikeC4 kind 'person'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'deploymentNode'.",
+            "Unknown LikeC4 kind 'deploymentNode'.",
+            "Unknown LikeC4 kind 'app'.",
+            "Unknown LikeC4 kind 'app'.",
+            "Unknown relationship kind ''uses''.",
+            "Unknown relationship kind 'source.tag'.",
+            "Unknown relationship kind 'source.tag'.",
+            "Unknown relationship kind 'source.tag'."
+          ],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'where' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'where' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'where' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "run_number": 2,
+      "response_path": "eval-11/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  extend cloud.api {\n    metadata {\n      port '9090'\n      region 'us-east-1'\n    }\n\n    health = component 'Health Check'\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'component'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "extend cloud.api {\n  metadata {\n    port '9090'\n    region 'us-east-1'\n  }\n  health = component 'Health Check'\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'component'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "run_number": 2,
+      "response_path": "eval-12/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "views {\n  deployment prod.main {\n    include *\n\n    style * {\n      color red\n    }\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "style <selector> {\n  color <value>\n  ...\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "deployment view myDeploymentView {\n  include *\n\n  style * {\n    color red\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "run_number": 2,
+      "response_path": "eval-13/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  api = service 'API' #critical {\n    technology 'Node.js'\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'service'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "specification {\n  element service\n}\n\nmodel {\n  api = service 'API' {\n    technology 'Node.js'\n    #critical\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'service'."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "run_number": 2,
+      "response_path": "eval-14/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 3,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "global {\n  style * {\n    color '#e6edf3'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "# Why `styles { theme dark }` Fails\n\n## Explanation\n\nThe snippet fails because `theme` is **not a valid statement inside the `styles { }` block**.\n\nIn LikeC4 DSL, the `styles` top-level block only accepts **element style rules** — i.e., rules that target elements by kind, tag, or wildcard selector and assign properties like `color`, `shape`, `icon`, etc. The keyword `theme` is not recognized as a valid inner statement of `styles {}`, so the parser will reject it with a syntax error.\n\nThe `styles` block grammar looks like:",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "This is the closest DSL-level equivalent — it overrides the default color for all elements. There is no mechanism within `.c4` files to switch the overall UI theme (dark/light); that is a project-configuration or viewer concern.\n\n---\n\n## (2) Minimal `likec4.config.json` for a Project-Level Dark Theme\n\nThe project-level theme is declared in `likec4.config.json`:",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "run_number": 2,
+      "response_path": "eval-15/without_skill/run-2/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 16,
+      "run_number": 2,
+      "response_path": "eval-16/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 8,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "model {\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n    frontend = container 'Frontend'\n    frontend -> backend 'calls'\n  }\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown relationship kind ''calls''."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "model {\n  user = actor 'User'\n\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n  }\n\n  user -> cloud 'uses'\n}",
+          "valid": false,
+          "error_count": 4,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'actor'.",
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown relationship kind ''uses''."
+          ],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "run_number": 2,
+      "response_path": "eval-17/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 4,
+      "valid_snippet_count": 3,
+      "error_count": 3,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "cloud.backend.api -> cloud.db",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "cloud = system {\n  backend = container {\n    api = service\n  }\n}",
+          "valid": false,
+          "error_count": 3,
+          "warning_count": 0,
+          "errors": [
+            "Unknown LikeC4 kind 'system'.",
+            "Unknown LikeC4 kind 'container'.",
+            "Unknown LikeC4 kind 'service'."
+          ],
+          "warnings": []
+        },
+        {
+          "snippet": "backend.api -> cloud.db",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "cloud.backend.api -> cloud.db",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "run_number": 2,
+      "response_path": "eval-18/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 3,
+      "valid_snippet_count": 2,
+      "error_count": 1,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n  metadata {\n    qos 'high'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "frontend -[async]-> api 'streams'   // kind=async, title=streams\nfrontend -> api 'streams'           // kind=none (default), title=streams",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 2,
+          "errors": [
+            "Unknown relationship kind ''streams''."
+          ],
+          "warnings": [
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n  metadata {\n    qos 'high'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "run_number": 2,
+      "response_path": "eval-19/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 2,
+      "snippets": [
+        {
+          "snippet": "view backend of cloud.backend {\n  include *\n  include -> cloud.backend\n  include cloud.backend ->\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "view backend of cloud.backend {\n  include *               // direct children of cloud.backend\n\n  // pull in whatever points INTO cloud.backend from outside\n  include -> cloud.backend\n\n  // pull in whatever cloud.backend points OUT TO\n  include cloud.backend ->\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "run_number": 2,
+      "response_path": "eval-20/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "### Flags explained\n\n| Flag | Purpose |\n|------|---------|\n| `--json` | Emit structured JSON output instead of human-readable text |\n| `--no-layout` | Skip layout drift checks (no comparison against persisted layout snapshots) |\n| `projects/template/system-model.c4` `projects/template/system-views.c4` | Restrict validation to exactly these two files |\n\n---\n\n## How to confirm both files were actually filtered in JSON output\n\nThe JSON output contains a top-level `files` (or `checkedFiles`) array listing every file the checker processed. After running the command, inspect that array:",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "**Confirmation steps:**\n\n1. **Count entries** – the `files` array must have exactly **2** entries.\n2. **Match paths** – verify both `projects/template/system-model.c4` and `projects/template/system-views.c4` are present and no other `.c4` files appear.\n3. **No layout keys** – because `--no-layout` was passed, there should be no `layoutDrift` or `layout` key in the output; if such a key is present the flag was not honoured.\n\nYou can automate the check with `jq`:",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 21,
+      "run_number": 2,
+      "response_path": "eval-21/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 1,
+      "snippets": [
+        {
+          "snippet": "view backend-detail extends backend-overview {\n  include api\n  include <- cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view backend-detail extends backend-overview {\n  include api\n  include -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "run_number": 2,
+      "response_path": "eval-22/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 0,
+      "error_count": 2,
+      "warning_count": 16,
+      "snippets": [
+        {
+          "snippet": "dynamic view checkout-flow {\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  parallel {\n    api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 8,
+          "errors": [
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        },
+        {
+          "snippet": "dynamic view checkout-flow {\n\n  customer -> frontend -> api {\n    technology 'HTTPS'\n    navigateTo payment-detail\n  }\n\n  parallel {\n    api -> payments\n    api -> inventory\n    api -> notifications\n  }\n}",
+          "valid": false,
+          "error_count": 1,
+          "warning_count": 8,
+          "errors": [
+            "Unknown relationship kind '->'."
+          ],
+          "warnings": [
+            "Reference 'customer' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'frontend' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'payments' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'inventory' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'api' is not declared inside the snippet (may rely on surrounding model context).",
+            "Reference 'notifications' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "run_number": 2,
+      "response_path": "eval-23/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 1,
+      "valid_snippet_count": 1,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "Deployment-instance tags are **cumulative**: the instance inherits all tags from its logical element (`frontend` contributes `#next`) and merges them with any tags declared directly on the instance (`#gamma`), so both sets are visible to tag filters.",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 24,
+      "run_number": 2,
+      "response_path": "eval-24/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n  technology 'WebSocket'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n  // additional properties, e.g.:\n  description 'Streams events asynchronously to the API'\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 25,
+      "run_number": 2,
+      "response_path": "eval-25/without_skill/run-2/response.md",
+      "status": "not_applicable",
+      "snippet_count": 0,
+      "valid_snippet_count": 0,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": []
+    },
+    {
+      "id": 26,
+      "run_number": 2,
+      "response_path": "eval-26/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "global {\n  predicateGroup core-services {\n    include cloud.*\n    where kind == service\n    exclude #deprecated\n  }\n}\n\nview core of cloud {\n  global predicate core-services\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "global {\n  predicateGroup core-services {\n    include cloud.* where kind == service\n    exclude #deprecated\n  }\n}\n\nviews {\n  view services_overview {\n    title \"Core Services Overview\"\n    global predicate core-services\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "run_number": 2,
+      "response_path": "eval-27/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 1,
+      "snippets": [
+        {
+          "snippet": "view backend of cloud.backend {\n  include *\n  include <- cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "view backend of cloud.backend {\n  include *\n  include -> cloud.backend\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 1,
+          "errors": [],
+          "warnings": [
+            "Reference 'include' is not declared inside the snippet (may rely on surrounding model context)."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "run_number": 2,
+      "response_path": "eval-28/without_skill/run-2/response.md",
+      "status": "checked",
+      "snippet_count": 2,
+      "valid_snippet_count": 2,
+      "error_count": 0,
+      "warning_count": 0,
+      "snippets": [
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n  metadata {\n    qos 'high'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        },
+        {
+          "snippet": "extend frontend -[async]-> api 'streams' {\n  metadata {\n    qos 'high'\n  }\n}",
+          "valid": true,
+          "error_count": 0,
+          "warning_count": 0,
+          "errors": [],
+          "warnings": []
+        }
+      ]
+    }
+  ]
+}

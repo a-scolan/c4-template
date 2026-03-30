@@ -1,0 +1,6 @@
+{
+  "id": 14,
+  "skill_name": "likec4-dsl",
+  "prompt": "Someone proposed this file:\n```likec4\nstyles {\n  theme dark\n}\n```\nExplain why this fails. Then provide (1) a minimal valid `.c4` alternative using only allowed top-level DSL statements for styling inside DSL scope, and (2) a minimal `likec4.config.json` snippet if the intent is a project-level dark theme.",
+  "files": []
+}

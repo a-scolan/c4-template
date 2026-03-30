@@ -147,6 +147,21 @@
       "id": 28,
       "prompt": "Assume these two relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -> api 'streams'`. Start your answer with exactly `Wrong: extend frontend -> api 'streams'`. Then explain in one short paragraph why omitting the kind is wrong here, and finish with the exact `extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }` snippet.",
       "files": []
+    },
+    {
+      "id": 29,
+      "prompt": "Choose exactly one valid option and start your answer with only `A`, `B`, `C`, or `D` on the first line. Requirement: keep `customer -> frontend -> api` as one chained dynamic expression, attach a body only to the `frontend -> api` hop, then keep a parallel fan-out from `api`. Options: (A) `customer -> frontend -> api { technology 'HTTPS' navigateTo payment-detail }` then `parallel { api -> payments; api -> inventory; api -> notifications }`; (B) `customer -> frontend { technology 'HTTPS' } -> api` then `parallel { ... }`; (C) `customer -> frontend -> api` and separately `frontend -> api { technology 'HTTPS' navigateTo payment-detail }`; (D) `customer -> frontend; frontend -> api { technology 'HTTPS' navigateTo payment-detail }` then `parallel { ... }`. After the first-line letter, add one sentence only explaining why the others violate the chained-hop requirement.",
+      "files": []
+    },
+    {
+      "id": 30,
+      "prompt": "Assume logical `frontend` has tags `#next` and `#web`. Deployment has two instances: `prod.frontend = instanceOf frontend` with extra tag `#gamma`, and `canary.frontend = instanceOf frontend` with extra tag `#canary`. For each filter below, answer exactly in this format: `<filter> => prod:<match|no> canary:<match|no>` on its own line. Filters: `where source.tag is #next`, `where source.tag is #web`, `where source.tag is #gamma`, `where source.tag is #canary`, `where source.tag is #missing`. Then add exactly one sentence that explicitly uses the word `cumulative` to state the deployment-instance tag rule.",
+      "files": []
+    },
+    {
+      "id": 31,
+      "prompt": "Assume existing relationships: `api -[async]-> service 'GetData'`, `api -[sync]-> service 'GetData'`, and `api -[async]-> service 'PostData'`. Classify each matcher as `correct`, `ambiguous`, or `wrong` (one line each): (1) `extend api -[async]-> service 'GetData' { metadata { timeout '5s' } }`; (2) `extend api -[async]-> service { metadata { timeout '5s' } }`; (3) `extend api -> service 'GetData' { metadata { timeout '5s' } }`. After classification lines, provide the single exact unambiguous extension snippet.",
+      "files": []
     }
   ]
 }

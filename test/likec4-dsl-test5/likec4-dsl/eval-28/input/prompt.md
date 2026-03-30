@@ -1,0 +1,1 @@
+Assume these two relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -> api 'streams'`. Start your answer with exactly `Wrong: extend frontend -> api 'streams'`. Then explain in one short paragraph why omitting the kind is wrong here, and finish with the exact `extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }` snippet.

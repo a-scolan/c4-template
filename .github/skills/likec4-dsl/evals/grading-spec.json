@@ -412,6 +412,46 @@
         "The answer does not present the unkinded matcher as acceptable."
       ],
       "grading_guidance": "This eval is about explicit rejection of the near-miss matcher. The exact opening line and the exact async extension snippet are the decisive signals; do not over-credit generic ambiguity talk if those are missing."
+    },
+    {
+      "id": 29,
+      "expected_output": "The response selects only option `A`, places only `A`/`B`/`C`/`D` on the first line, and gives one sentence explaining that the others break chained-hop body semantics.",
+      "files": [],
+      "expectations": [
+        "The first line is exactly one letter among `A`, `B`, `C`, or `D`.",
+        "The selected option is `A`.",
+        "The explanation is exactly one sentence after the first line.",
+        "The explanation mentions why non-`A` options violate chained-hop/body placement constraints.",
+        "The response does not include extra snippets or alternative rewrites."
+      ],
+      "grading_guidance": "This is a strict-format discriminator. The first-line token and option choice dominate scoring. Any first-line mismatch or selecting non-`A` should lose heavily, even if surrounding prose is generally knowledgeable."
+    },
+    {
+      "id": 30,
+      "expected_output": "The response outputs five required lines in the exact `<filter> => prod:<match|no> canary:<match|no>` format with correct match matrix (`#next` and `#web` match both, `#gamma` only prod, `#canary` only canary, `#missing` neither), followed by exactly one sentence explicitly using the word `cumulative`.",
+      "files": [],
+      "expectations": [
+        "The response includes one line for each required filter: `#next`, `#web`, `#gamma`, `#canary`, `#missing`.",
+        "`#next` line marks `prod:match` and `canary:match`.",
+        "`#web` line marks `prod:match` and `canary:match`.",
+        "`#gamma` line marks `prod:match` and `canary:no`, and `#canary` line marks `prod:no` and `canary:match`.",
+        "`#missing` line marks `prod:no` and `canary:no`.",
+        "The final rule sentence contains the word `cumulative` and states the inherited-logical-plus-instance-tag behavior."
+      ],
+      "grading_guidance": "Grade mechanically by the matrix and format contract. Missing one filter line, swapping prod/canary outcomes, or omitting the word `cumulative` in the final sentence should materially reduce score."
+    },
+    {
+      "id": 31,
+      "expected_output": "The response classifies (1) as `correct`, (2) as `ambiguous`, and (3) as `wrong`, then provides the exact unambiguous extension snippet `extend api -[async]-> service 'GetData' { metadata { timeout '5s' } }` (format-equivalent multi-line accepted).",
+      "files": [],
+      "expectations": [
+        "Classification line for matcher (1) marks it `correct`.",
+        "Classification line for matcher (2) marks it `ambiguous` because title is omitted while multiple async relationships exist.",
+        "Classification line for matcher (3) marks it `wrong` because kind is omitted while typed alternatives exist.",
+        "The final snippet targets async + exact title `GetData`.",
+        "The final snippet includes metadata field `timeout '5s'`."
+      ],
+      "grading_guidance": "Prioritize matcher-identity reasoning (source/target/kind/title). Answers that call (2) fully correct or call (3) acceptable should lose clearly, even if they provide a plausible final snippet."
     }
   ],
   "default_execution_checks": [

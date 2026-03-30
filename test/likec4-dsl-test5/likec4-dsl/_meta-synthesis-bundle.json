@@ -1,0 +1,2008 @@
+{
+  "iteration": "likec4-dsl-test5",
+  "skill_name": "likec4-dsl",
+  "protocol_version": "benchmark-v3",
+  "generated_at": "2026-03-30T14:46:26Z",
+  "eval_count": 29,
+  "run_count": 2,
+  "quantitative": {
+    "blind": {
+      "with_skill_wins": 44,
+      "without_skill_wins": 5,
+      "ties": 9,
+      "with_skill_win_rate": 0.7586
+    },
+    "expectation_pass_rate": {
+      "with_skill": 0.9724,
+      "without_skill": 0.7638,
+      "delta": 0.2086
+    },
+    "rubric_score": {
+      "with_skill": 9.2586,
+      "without_skill": 7.4138,
+      "delta": 1.8448
+    },
+    "time_per_eval": {
+      "with_skill": 0.0,
+      "without_skill": 0.1034,
+      "delta": -0.1034
+    },
+    "words_per_eval": {
+      "with_skill": 53.8276,
+      "without_skill": 236.2414,
+      "delta": -182.4138
+    },
+    "files_read": {
+      "with_skill": 29.0,
+      "without_skill": 29.0,
+      "delta": 0.0
+    },
+    "executable_validity": {
+      "with_skill": 0.6667,
+      "without_skill": 0.5818,
+      "delta": 0.0849
+    }
+  },
+  "per_eval_comparisons": [
+    {
+      "eval_id": 0,
+      "run_number": 1,
+      "eval_prompt": "I just edited `projects/template/system-model.c4` and I only want syntax and semantic validation for that file, not layout drift. What exact LikeC4 CLI command should I run from the repo root, and which JSON fields tell me whether only my file failed versus the whole project being broken?",
+      "expected_output": "The response gives the focused `likec4 validate` command with `--json`, `--no-layout`, `--file`, and the correct project path, then explains how to interpret `filteredFiles` and `filteredErrors` versus `totalErrors`.",
+      "expectations": [
+        "The response uses `npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template` or an equivalent command with the same flags and project path; version pins such as `npx likec4@latest validate` are also accepted; platform-specific redirects like `2>/dev/null` are optional.",
+        "The response explains that `--no-layout` skips layout drift checks.",
+        "The response explains that `--file` scopes reported errors to the edited file.",
+        "The response mentions `filteredFiles` and `filteredErrors` as the key fields for the targeted file check.",
+        "The response distinguishes those filtered fields from `totalErrors` or other project-wide counts."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "Read success: A path, B path, and grading-spec path were all individually readable. A matches the required validate command shape (`--json --no-layout --file <path> <project>`) and correctly explains `filteredFiles`/`filteredErrors` vs `totalErrors`. B proposes alternate commands/flags and does not satisfy the strict filtered-fields interpretation requirements.",
+      "with_skill_rubric_score": 10,
+      "without_skill_rubric_score": 2,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 0,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 0,
+      "run_number": 2,
+      "eval_prompt": "I just edited `projects/template/system-model.c4` and I only want syntax and semantic validation for that file, not layout drift. What exact LikeC4 CLI command should I run from the repo root, and which JSON fields tell me whether only my file failed versus the whole project being broken?",
+      "expected_output": "The response gives the focused `likec4 validate` command with `--json`, `--no-layout`, `--file`, and the correct project path, then explains how to interpret `filteredFiles` and `filteredErrors` versus `totalErrors`.",
+      "expectations": [
+        "The response uses `npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template` or an equivalent command with the same flags and project path; version pins such as `npx likec4@latest validate` are also accepted; platform-specific redirects like `2>/dev/null` are optional.",
+        "The response explains that `--no-layout` skips layout drift checks.",
+        "The response explains that `--file` scopes reported errors to the edited file.",
+        "The response mentions `filteredFiles` and `filteredErrors` as the key fields for the targeted file check.",
+        "The response distinguishes those filtered fields from `totalErrors` or other project-wide counts."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "B fournit exactement la commande ciblée avec `--json --no-layout --file ... <project>` et l’interprétation correcte de `filteredFiles`/`filteredErrors` vs `totalErrors`. A propose une commande différente et ne couvre pas les champs filtrés demandés.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 3.5,
+      "with_skill_rubric_notes": "Réponse exacte, concise, et conforme aux invariants.",
+      "without_skill_rubric_notes": "Commande et sémantique des champs JSON non alignées avec l’éval.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 0,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 1,
+      "run_number": 1,
+      "eval_prompt": "I’m creating `projects/template/likec4.config.json` and I want that project to reuse shared specs from `projects/shared/`. Show a minimal JSON config snippet and explain how LikeC4 decides which project a `.c4` file belongs to when multiple config files exist in the workspace.",
+      "expected_output": "A minimal JSON config with `$schema`, `name`, and `include.paths` for `../shared`, plus a correct explanation that the nearest config file in the directory hierarchy determines project scope.",
+      "expectations": [
+        "The response includes a JSON config snippet, not just prose.",
+        "The snippet includes `$schema` pointing to the LikeC4 config schema.",
+        "The snippet includes a valid `name` field.",
+        "The snippet uses `include.paths` with `../shared` or an equivalent relative path to the shared folder.",
+        "The explanation says that `.c4` files belong to the project defined by the nearest config file in the directory hierarchy."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "Read success: A path, B path, and grading-spec path were all individually readable. B provides the requested minimal JSON config with `$schema`, `name`, and `include.paths` referencing `../shared`, plus the nearest-config scope explanation. A lacks the required `name` and does not use `include.paths` as requested.",
+      "with_skill_rubric_score": 9,
+      "without_skill_rubric_score": 5,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 3,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 1,
+      "run_number": 2,
+      "eval_prompt": "I’m creating `projects/template/likec4.config.json` and I want that project to reuse shared specs from `projects/shared/`. Show a minimal JSON config snippet and explain how LikeC4 decides which project a `.c4` file belongs to when multiple config files exist in the workspace.",
+      "expected_output": "A minimal JSON config with `$schema`, `name`, and `include.paths` for `../shared`, plus a correct explanation that the nearest config file in the directory hierarchy determines project scope.",
+      "expectations": [
+        "The response includes a JSON config snippet, not just prose.",
+        "The snippet includes `$schema` pointing to the LikeC4 config schema.",
+        "The snippet includes a valid `name` field.",
+        "The snippet uses `include.paths` with `../shared` or an equivalent relative path to the shared folder.",
+        "The explanation says that `.c4` files belong to the project defined by the nearest config file in the directory hierarchy."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "A donne le snippet JSON minimal attendu avec `$schema`, `name`, `include.paths` vers `../shared`, et explique correctement la règle du config le plus proche. B n’emploie pas la forme attendue et décrit une résolution multi-match incompatible avec la règle de proximité demandée.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 5.0,
+      "with_skill_rubric_notes": "Conforme et directement réutilisable.",
+      "without_skill_rubric_notes": "Partiellement utile mais hors cible sur la mécanique de scope de projet.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 2,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 2,
+      "run_number": 1,
+      "eval_prompt": "I want to export only views matching `overview*` as dark PNGs into `./images`, flattened, for the current project. What exact LikeC4 CLI command should I run? (If a project path is optional in this context, make that explicit.)",
+      "expected_output": "The response gives the `export png` CLI command with dark theme, flat output, a filter for `overview*`, an output directory, and the project path placeholder or path.",
+      "expectations": [
+        "The response uses `npx likec4 export png`.",
+        "The command includes `--theme dark`.",
+        "The command includes `--flat`.",
+        "The command includes a filter option equivalent to `-f \"overview*\"`.",
+        "The command includes an output directory option equivalent to `-o ./images` and keeps a project path argument."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "Read success: A path, B path, and grading-spec path were all individually readable. B includes the full required command semantics (`npx likec4 export png`, dark theme, flat, `overview*` filter, output dir, and explicit project path). A is close but does not provide the fully compliant command line with explicit project argument in the main command.",
+      "with_skill_rubric_score": 10,
+      "without_skill_rubric_score": 7,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 2,
+      "run_number": 2,
+      "eval_prompt": "I want to export only views matching `overview*` as dark PNGs into `./images`, flattened, for the current project. What exact LikeC4 CLI command should I run? (If a project path is optional in this context, make that explicit.)",
+      "expected_output": "The response gives the `export png` CLI command with dark theme, flat output, a filter for `overview*`, an output directory, and the project path placeholder or path.",
+      "expectations": [
+        "The response uses `npx likec4 export png`.",
+        "The command includes `--theme dark`.",
+        "The command includes `--flat`.",
+        "The command includes a filter option equivalent to `-f \"overview*\"`.",
+        "The command includes an output directory option equivalent to `-o ./images` and keeps a project path argument."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "A fournit la forme canonique `npx likec4 export png` avec `--theme dark`, `--flat`, filtre `overview*`, sortie `./images` et argument projet. B contient des variantes plus ambiguës/moins conformes à la forme attendue.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 6.5,
+      "with_skill_rubric_notes": "Commande exacte et complète.",
+      "without_skill_rubric_notes": "Proche mais syntaxe/forme principale moins alignée à l’attendu.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 3,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 3,
+      "run_number": 1,
+      "eval_prompt": "Give me a minimal LikeC4 dynamic view snippet that renders as a UML-style sequence for `client -> gateway -> orders -> db`, and includes response arrows back out to the client.",
+      "expected_output": "A paste-ready `dynamic view` snippet that uses `variant sequence`, forward steps from `client` to `db`, and backward response arrows back toward `client`.",
+      "expectations": [
+        "The response uses a `dynamic view` block.",
+        "The snippet includes `variant sequence`.",
+        "The snippet models the forward flow across `client`, `gateway`, `orders`, and `db`.",
+        "The snippet includes at least one backward arrow using `<-` for responses.",
+        "The response is primarily a usable DSL snippet, not only an explanation."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "Read success: A path, B path, and grading-spec path were all individually readable. B is a paste-ready `dynamic view` snippet with `variant sequence`, correct forward chain through `client/gateway/orders/db`, and explicit backward `<-` response arrows. A omits `dynamic view` + `variant sequence` and uses a different arrow style than requested.",
+      "with_skill_rubric_score": 10,
+      "without_skill_rubric_score": 4,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 2,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 3,
+      "run_number": 2,
+      "eval_prompt": "Give me a minimal LikeC4 dynamic view snippet that renders as a UML-style sequence for `client -> gateway -> orders -> db`, and includes response arrows back out to the client.",
+      "expected_output": "A paste-ready `dynamic view` snippet that uses `variant sequence`, forward steps from `client` to `db`, and backward response arrows back toward `client`.",
+      "expectations": [
+        "The response uses a `dynamic view` block.",
+        "The snippet includes `variant sequence`.",
+        "The snippet models the forward flow across `client`, `gateway`, `orders`, and `db`.",
+        "The snippet includes at least one backward arrow using `<-` for responses.",
+        "The response is primarily a usable DSL snippet, not only an explanation."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "B respecte précisément la demande: bloc `dynamic view`, `variant sequence`, flux aller `client -> gateway -> orders -> db`, puis retours en flèches inversées `<-`. A n’emploie pas le format `dynamic view` ni `variant sequence`.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 4.0,
+      "with_skill_rubric_notes": "Exactement conforme et prêt à coller.",
+      "without_skill_rubric_notes": "Snippet partiel, mais manque les marqueurs DSL clés demandés.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 2,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 4,
+      "run_number": 1,
+      "eval_prompt": "I only want `cloud.backend.*` highlighted in one view while everything else stays muted. Do not move this styling into the model or specification. Answer in two parts: (1) one explicit sentence saying where this styling belongs, and (2) one minimal LikeC4 view snippet that uses `include *`, `style * { color muted }`, and a dedicated rule for `cloud.backend.*`.",
+      "expected_output": "The response keeps the styling in the view, not the model or specification, and provides a minimal view snippet that mutes everything then highlights `cloud.backend.*`.",
+      "expectations": [
+        "The response explicitly says the styling should live in the view rather than in the model or specification for this one-view customization.",
+        "The response uses a `view` block.",
+        "The snippet includes `include *` or an equivalent rule that gives the view context.",
+        "The snippet includes a style rule that mutes the broader set, such as `style * { color muted }`.",
+        "The snippet includes a style rule that highlights `cloud.backend.*`."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read success: A path, B path, and grading-spec path were all individually readable. Both answers are semantically correct (view-local styling, `view` block, `include *`, muted-all rule, and `cloud.backend.*` highlight). A is cleaner and more minimal, matching the requested concise one-view customization with less noise.",
+      "with_skill_rubric_score": 10,
+      "without_skill_rubric_score": 8,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 4,
+      "run_number": 2,
+      "eval_prompt": "I only want `cloud.backend.*` highlighted in one view while everything else stays muted. Do not move this styling into the model or specification. Answer in two parts: (1) one explicit sentence saying where this styling belongs, and (2) one minimal LikeC4 view snippet that uses `include *`, `style * { color muted }`, and a dedicated rule for `cloud.backend.*`.",
+      "expected_output": "The response keeps the styling in the view, not the model or specification, and provides a minimal view snippet that mutes everything then highlights `cloud.backend.*`.",
+      "expectations": [
+        "The response explicitly says the styling should live in the view rather than in the model or specification for this one-view customization.",
+        "The response uses a `view` block.",
+        "The snippet includes `include *` or an equivalent rule that gives the view context.",
+        "The snippet includes a style rule that mutes the broader set, such as `style * { color muted }`.",
+        "The snippet includes a style rule that highlights `cloud.backend.*`."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Les deux réponses satisfont le fond (style dans la vue, `include *`, mute global puis highlight `cloud.backend.*`). A est plus nette et minimale, sans redondance contradictoire.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 8.5,
+      "with_skill_rubric_notes": "Réponse concise, exacte, directement exploitable.",
+      "without_skill_rubric_notes": "Correcte sur le fond mais plus verbeuse et redondante.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 5,
+      "run_number": 1,
+      "eval_prompt": "Assume `deploymentNode vm` already exists and `cloud.api` already exists in the logical model. Show a minimal deployment snippet that creates two separately named instances of `cloud.api` inside one VM node. Do not use two anonymous `instanceOf cloud.api` lines; I specifically need two named instances in the same node.",
+      "expected_output": "A minimal `deployment` snippet with one VM node that contains two separately named `instanceOf cloud.api` declarations, not two anonymous `instanceOf` lines.",
+      "expectations": [
+        "The response uses a `deployment` block.",
+        "The snippet includes a `vm` deployment node.",
+        "The snippet creates two separately named instances inside the same node.",
+        "Each named instance uses `instanceOf cloud.api`.",
+        "The response does not treat two anonymous `instanceOf cloud.api` lines as satisfying the request."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. A is minimal and directly satisfies the named-instance requirement inside one VM node. B contains a correct named-instance example too, but also includes an extra/ambiguous variant that reduces precision for this contrastive eval.",
+      "with_skill_rubric_score": 9.7,
+      "without_skill_rubric_score": 8.2,
+      "with_skill_rubric_notes": "Exact, minimal deployment snippet with two separately named instanceOf cloud.api lines in one vm node.",
+      "without_skill_rubric_notes": "Includes correct named instances, but mixed with extra variant/syntax that adds ambiguity and reduces contrastive clarity.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 5,
+      "run_number": 2,
+      "eval_prompt": "Assume `deploymentNode vm` already exists and `cloud.api` already exists in the logical model. Show a minimal deployment snippet that creates two separately named instances of `cloud.api` inside one VM node. Do not use two anonymous `instanceOf cloud.api` lines; I specifically need two named instances in the same node.",
+      "expected_output": "A minimal `deployment` snippet with one VM node that contains two separately named `instanceOf cloud.api` declarations, not two anonymous `instanceOf` lines.",
+      "expectations": [
+        "The response uses a `deployment` block.",
+        "The snippet includes a `vm` deployment node.",
+        "The snippet creates two separately named instances inside the same node.",
+        "Each named instance uses `instanceOf cloud.api`.",
+        "The response does not treat two anonymous `instanceOf cloud.api` lines as satisfying the request."
+      ],
+      "winner": "with_skill",
+      "confidence": "low",
+      "reasoning": "Read status: success for grading-spec, A.md, and B.md. Both answers satisfy the core requirement (two separately named instances using `instanceOf cloud.api` inside one VM node). B is clearer and more minimal with no potentially confusing alternate syntax blocks, so it wins on structure while content is effectively tied.",
+      "with_skill_rubric_score": 9.3,
+      "without_skill_rubric_score": 8.7,
+      "with_skill_rubric_notes": "Direct, minimal, and exactly aligned with the naming requirement.",
+      "without_skill_rubric_notes": "Meets requirements, but includes extra/variant snippet that slightly reduces precision.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 6,
+      "run_number": 1,
+      "eval_prompt": "In a view scoped `of cloud.backend`, I want to show only the direct children of `cloud.backend` that have at least one relationship with the elements already included in the view — not ALL children. Which predicate should I use: `cloud.backend.*`, `cloud.backend._`, or `cloud.backend.**`? Give me a minimal view snippet using the right one and explain what the other two would have selected instead.",
+      "expected_output": "The response selects `cloud.backend._` (underscore) as the correct predicate, provides a minimal scoped view snippet using it, and explains that `*` selects all direct children unconditionally and `**` selects all recursive descendants that have relationships.",
+      "expectations": [
+        "The response identifies `cloud.backend._` (underscore) as the correct predicate for children with relationships to accumulated result.",
+        "The response explains that `cloud.backend.*` selects ALL direct children regardless of whether they have relationships.",
+        "The response explains that `cloud.backend.**` selects all recursive descendants (not just direct children) that have relationships.",
+        "The response provides a minimal view snippet using `cloud.backend._` inside a scoped `view ... of cloud.backend { ... }` block.",
+        "The response does not confuse `_` with a wildcard or treat it as selecting no elements."
+      ],
+      "winner": "without_skill",
+      "confidence": "high",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. A correctly selects cloud.backend._ and provides a scoped snippet; B selects cloud.backend.* and reverses key predicate semantics, which is the core error in this eval.",
+      "with_skill_rubric_score": 4.0,
+      "without_skill_rubric_score": 8.4,
+      "with_skill_rubric_notes": "Incorrect predicate choice and inverted meaning of * vs _.",
+      "without_skill_rubric_notes": "Correct choice and scoped usage; minor semantic incompleteness on ** relationship-filter explanation.",
+      "with_skill_expectations": {
+        "passed": 0,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 6,
+      "run_number": 2,
+      "eval_prompt": "In a view scoped `of cloud.backend`, I want to show only the direct children of `cloud.backend` that have at least one relationship with the elements already included in the view — not ALL children. Which predicate should I use: `cloud.backend.*`, `cloud.backend._`, or `cloud.backend.**`? Give me a minimal view snippet using the right one and explain what the other two would have selected instead.",
+      "expected_output": "The response selects `cloud.backend._` (underscore) as the correct predicate, provides a minimal scoped view snippet using it, and explains that `*` selects all direct children unconditionally and `**` selects all recursive descendants that have relationships.",
+      "expectations": [
+        "The response identifies `cloud.backend._` (underscore) as the correct predicate for children with relationships to accumulated result.",
+        "The response explains that `cloud.backend.*` selects ALL direct children regardless of whether they have relationships.",
+        "The response explains that `cloud.backend.**` selects all recursive descendants (not just direct children) that have relationships.",
+        "The response provides a minimal view snippet using `cloud.backend._` inside a scoped `view ... of cloud.backend { ... }` block.",
+        "The response does not confuse `_` with a wildcard or treat it as selecting no elements."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: success for grading-spec, A.md, and B.md. A correctly distinguishes `_` vs `*` vs `**`, including the key point that `**` is recursive descendants with relationship-based inclusion in this predicate context. B incorrectly describes `**` as recursive descendants regardless of relationships, which is a content error for this contrastive prompt.",
+      "with_skill_rubric_score": 9.4,
+      "without_skill_rubric_score": 7.3,
+      "with_skill_rubric_notes": "Accurate predicate semantics and minimal usable scoped-view snippet.",
+      "without_skill_rubric_notes": "Contains a key semantic miss on `**` behavior in this eval.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 7,
+      "run_number": 1,
+      "eval_prompt": "I have this base view:\n```likec4\nview backend-overview of cloud.backend {\n  include *\n}\n```\nWrite a `detail` view that: (1) extends `backend-overview`, (2) adds just `include api` — relying on scope inheritance so I don't need the full FQN `cloud.backend.api`, and (3) adds all incoming relationships to `cloud.backend` from the rest of the model using a relationship predicate. Show the DSL and explain what scope inheritance means here.",
+      "expected_output": "A `detail` view using `extends backend-overview`, with a bare `include api` (not full FQN) that resolves to `cloud.backend.api` due to inherited scope, and a relationship predicate for incoming relationships such as `include -> cloud.backend`.",
+      "expectations": [
+        "The response uses `view detail extends backend-overview { ... }` syntax.",
+        "The snippet uses `include api` without the full FQN `cloud.backend.api`, relying on scope inheritance.",
+        "The response explains that extended views inherit the `of` scope from the parent view.",
+        "The snippet includes an inbound relationship predicate such as `include -> cloud.backend` or `include -> cloud.backend ->` to pull in incoming relationships.",
+        "The response does not require the user to redeclare the `of cloud.backend` scope on the child view."
+      ],
+      "winner": "with_skill",
+      "confidence": "low",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. Both answers satisfy the key inherited-scope requirement and use bare include api. B is slightly cleaner and closer to the requested minimal form with include -> cloud.backend in the child view.",
+      "with_skill_rubric_score": 9.6,
+      "without_skill_rubric_score": 9.1,
+      "with_skill_rubric_notes": "Directly matches requested syntax and keeps the child view minimal.",
+      "without_skill_rubric_notes": "Correct inheritance explanation and usable snippet; slightly less direct inbound predicate form.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 7,
+      "run_number": 2,
+      "eval_prompt": "I have this base view:\n```likec4\nview backend-overview of cloud.backend {\n  include *\n}\n```\nWrite a `detail` view that: (1) extends `backend-overview`, (2) adds just `include api` — relying on scope inheritance so I don't need the full FQN `cloud.backend.api`, and (3) adds all incoming relationships to `cloud.backend` from the rest of the model using a relationship predicate. Show the DSL and explain what scope inheritance means here.",
+      "expected_output": "A `detail` view using `extends backend-overview`, with a bare `include api` (not full FQN) that resolves to `cloud.backend.api` due to inherited scope, and a relationship predicate for incoming relationships such as `include -> cloud.backend`.",
+      "expectations": [
+        "The response uses `view detail extends backend-overview { ... }` syntax.",
+        "The snippet uses `include api` without the full FQN `cloud.backend.api`, relying on scope inheritance.",
+        "The response explains that extended views inherit the `of` scope from the parent view.",
+        "The snippet includes an inbound relationship predicate such as `include -> cloud.backend` or `include -> cloud.backend ->` to pull in incoming relationships.",
+        "The response does not require the user to redeclare the `of cloud.backend` scope on the child view."
+      ],
+      "winner": "with_skill",
+      "confidence": "low",
+      "reasoning": "Read status: success for grading-spec, A.md, and B.md. Both answers meet the required semantics (extends syntax, inherited scope, bare `include api`, inbound relationship predicate). A is more focused and uses the exact requested child view naming/style without extra conflicting alternatives, so it edges out on structure.",
+      "with_skill_rubric_score": 9.4,
+      "without_skill_rubric_score": 8.5,
+      "with_skill_rubric_notes": "Clean, exact, and directly aligned with prompt form.",
+      "without_skill_rubric_notes": "Correct but noisier, with extra variant snippets reducing crispness.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 8,
+      "run_number": 1,
+      "eval_prompt": "I want to define a reusable predicate group called `core-services` that includes all `service`-kind elements from `cloud.*` but excludes those tagged `#deprecated`. Use the exact reusable-predicate mechanism `global { predicateGroup ... }` and, in each view, apply it with the exact keyword form `global predicate core-services` (do not replace this with some other reusable-style mechanism). Then show two different views that both apply it: one that adds a per-view style rule on top, and another that adds an extra `include` rule.",
+      "expected_output": "A `global { predicateGroup core-services { ... } }` block with include/exclude rules for service kind and #deprecated tag, then two views using `global predicate core-services` each with a distinct additional rule.",
+      "expectations": [
+        "The response uses a `global { predicateGroup core-services { ... } }` block at the top level.",
+        "The predicate group contains `include cloud.* where kind is service` (or equivalent).",
+        "The predicate group excludes deprecated elements using `exclude * where tag is #deprecated` or a combined `and tag is not #deprecated` filter.",
+        "Both views use `global predicate core-services` to apply the shared group.",
+        "Each view demonstrates an additional distinct rule: one adds a `style` rule and the other adds an `include` rule."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. A is a precise match to the required reusable-predicate syntax (global predicateGroup + global predicate core-services) with two views and distinct extra rules. B contains mixed/near-miss forms and extra noise, reducing spec fidelity in this contrastive syntax task.",
+      "with_skill_rubric_score": 9.8,
+      "without_skill_rubric_score": 7.2,
+      "with_skill_rubric_notes": "Exact mechanism and minimal, correct two-view application.",
+      "without_skill_rubric_notes": "Eventually reaches the intended construct but mixes alternate syntax/verbosity that weakens exactness.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 8,
+      "run_number": 2,
+      "eval_prompt": "I want to define a reusable predicate group called `core-services` that includes all `service`-kind elements from `cloud.*` but excludes those tagged `#deprecated`. Use the exact reusable-predicate mechanism `global { predicateGroup ... }` and, in each view, apply it with the exact keyword form `global predicate core-services` (do not replace this with some other reusable-style mechanism). Then show two different views that both apply it: one that adds a per-view style rule on top, and another that adds an extra `include` rule.",
+      "expected_output": "A `global { predicateGroup core-services { ... } }` block with include/exclude rules for service kind and #deprecated tag, then two views using `global predicate core-services` each with a distinct additional rule.",
+      "expectations": [
+        "The response uses a `global { predicateGroup core-services { ... } }` block at the top level.",
+        "The predicate group contains `include cloud.* where kind is service` (or equivalent).",
+        "The predicate group excludes deprecated elements using `exclude * where tag is #deprecated` or a combined `and tag is not #deprecated` filter.",
+        "Both views use `global predicate core-services` to apply the shared group.",
+        "Each view demonstrates an additional distinct rule: one adds a `style` rule and the other adds an `include` rule."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: success for grading-spec, A.md, and B.md. A closely matches the exact reusable-predicate mechanism requested (`global { predicateGroup ... }` + `global predicate core-services`) and demonstrates one style add-on and one include add-on across two views. B has the same general intent but introduces less canonical/ambiguous filter forms and extra stylistic detours, making it less spec-crisp for this contrastive syntax eval.",
+      "with_skill_rubric_score": 9.4,
+      "without_skill_rubric_score": 7.9,
+      "with_skill_rubric_notes": "Best alignment with exact syntax and contrastive requirement.",
+      "without_skill_rubric_notes": "Conceptually close but less exact/clean for this strict syntax target.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 9,
+      "run_number": 1,
+      "eval_prompt": "Write a dynamic view `checkout-flow` that satisfies all of the following:\n- The chain `customer -> frontend -> api` is written using LikeC4's chained step syntax (a single compound expression, not three separate lines).\n- The `frontend -> api` step has a body block with `technology 'HTTPS'` and `navigateTo payment-detail`.\n- After the chain, `api` fans out simultaneously to `payments`, `inventory`, and `notifications` using the parallel blocks syntax.\nKeep the snippet minimal and immediately usable.",
+      "expected_output": "A `dynamic view checkout-flow` using chained arrow syntax for the three-step chain, a body block on the `frontend -> api` step with `technology` and `navigateTo`, and a `parallel { ... }` block for the fan-out from `api`.",
+      "expectations": [
+        "The response uses a `dynamic view checkout-flow { ... }` block.",
+        "The chain `customer -> frontend -> api` is written as a single chained expression (arrows on the same or continuation lines), not as three separate standalone `->` lines.",
+        "The `frontend -> api` step includes a body block `{ technology 'HTTPS'  navigateTo payment-detail }` (or equivalent).",
+        "The snippet includes a `parallel { ... }` (or `par { ... }`) block containing three concurrent steps: `api -> payments`, `api -> inventory`, `api -> notifications`.",
+        "The response is primarily a usable DSL snippet, not only explanation."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. Both provide chained dynamic flow and metadata on frontend->api. B is cleaner and directly includes the required parallel fan-out in a single coherent snippet; A mixes multiple variants, one of which omits explicit parallel structure.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 8.5,
+      "with_skill_rubric_notes": "Single, coherent snippet matching requested chain + block + parallel fan-out.",
+      "without_skill_rubric_notes": "Contains required constructs but presented with extra variant/noise.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 9,
+      "run_number": 2,
+      "eval_prompt": "Write a dynamic view `checkout-flow` that satisfies all of the following:\n- The chain `customer -> frontend -> api` is written using LikeC4's chained step syntax (a single compound expression, not three separate lines).\n- The `frontend -> api` step has a body block with `technology 'HTTPS'` and `navigateTo payment-detail`.\n- After the chain, `api` fans out simultaneously to `payments`, `inventory`, and `notifications` using the parallel blocks syntax.\nKeep the snippet minimal and immediately usable.",
+      "expected_output": "A `dynamic view checkout-flow` using chained arrow syntax for the three-step chain, a body block on the `frontend -> api` step with `technology` and `navigateTo`, and a `parallel { ... }` block for the fan-out from `api`.",
+      "expectations": [
+        "The response uses a `dynamic view checkout-flow { ... }` block.",
+        "The chain `customer -> frontend -> api` is written as a single chained expression (arrows on the same or continuation lines), not as three separate standalone `->` lines.",
+        "The `frontend -> api` step includes a body block `{ technology 'HTTPS'  navigateTo payment-detail }` (or equivalent).",
+        "The snippet includes a `parallel { ... }` (or `par { ... }`) block containing three concurrent steps: `api -> payments`, `api -> inventory`, `api -> notifications`.",
+        "The response is primarily a usable DSL snippet, not only explanation."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "Read status: success for grading-spec, A.md, and B.md. Both answers provide a valid `dynamic view checkout-flow` snippet with the required chained `customer -> frontend -> api`, body block on the `frontend -> api` hop containing `technology` and `navigateTo`, and a `parallel` fan-out from `api` to three targets. Quality is effectively equivalent for this task.",
+      "with_skill_rubric_score": 9.3,
+      "without_skill_rubric_score": 9.3,
+      "with_skill_rubric_notes": "Also correct; extra labels are acceptable and do not change semantics.",
+      "without_skill_rubric_notes": "Minimal and directly task-aligned.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 10,
+      "run_number": 1,
+      "eval_prompt": "I want a minimal LikeC4 fixture that *proves* deployment-instance tags are cumulative for `source.tag` filtering. Assume logical `frontend` has tag `#next`, deployment instance `prod.eu.web.frontend` adds `#gamma`, and `db` is the target. Write one paste-ready `.c4` file containing: (1) minimal `specification`, `model`, and `deployment`; and (2) three `deployment view`s named `rel_only_next`, `rel_only_gamma`, and `rel_only_missing`, each using only a relationship include with `where source.tag is ...`. The first two views should render the `reads` relation; the third should render empty.",
+      "expected_output": "The response provides one minimal paste-ready `.c4` fixture that proves cumulative deployment-instance tag filtering: logical `frontend` has `#next`, deployed `prod.eu.web.frontend` adds `#gamma`, the logical relation is `frontend -> db 'reads'`, and the three deployment views `rel_only_next`, `rel_only_gamma`, and `rel_only_missing` use relationship-only `include ... where source.tag is ...` predicates such that the first two can render the relation and the third is empty.",
+      "expectations": [
+        "The response includes a valid top-level `specification`, `model`, `deployment`, and `views` structure in one `.c4` snippet.",
+        "The logical model tags `frontend` with `#next` and defines a logical `frontend -> db 'reads'` relationship.",
+        "The deployment model creates a deployed `frontend` instance under `prod.eu.web.frontend` (or equivalent nested FQN) and adds `#gamma` on the `instanceOf` block.",
+        "The snippet defines exactly the three deployment views `rel_only_next`, `rel_only_gamma`, and `rel_only_missing`.",
+        "Each of those views uses a relationship-only include with `where source.tag is #next`, `#gamma`, and `#missing` respectively, with the intended semantic outcome that the first two match and the last one renders empty."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Both responses cover the cumulative-tag fixture intent, but B is closer to the requested single minimal paste-ready fixture. A is verbose and includes multiple blocks/explanations, while B stays focused and directly satisfies the expected structure and predicates.",
+      "with_skill_rubric_score": 8.7,
+      "without_skill_rubric_score": 7.6,
+      "with_skill_rubric_notes": "Concise, single fixture format with required views and source.tag filtering.",
+      "without_skill_rubric_notes": "Semantically strong, but not minimal and includes extra material beyond one focused fixture.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 10,
+      "run_number": 2,
+      "eval_prompt": "I want a minimal LikeC4 fixture that *proves* deployment-instance tags are cumulative for `source.tag` filtering. Assume logical `frontend` has tag `#next`, deployment instance `prod.eu.web.frontend` adds `#gamma`, and `db` is the target. Write one paste-ready `.c4` file containing: (1) minimal `specification`, `model`, and `deployment`; and (2) three `deployment view`s named `rel_only_next`, `rel_only_gamma`, and `rel_only_missing`, each using only a relationship include with `where source.tag is ...`. The first two views should render the `reads` relation; the third should render empty.",
+      "expected_output": "The response provides one minimal paste-ready `.c4` fixture that proves cumulative deployment-instance tag filtering: logical `frontend` has `#next`, deployed `prod.eu.web.frontend` adds `#gamma`, the logical relation is `frontend -> db 'reads'`, and the three deployment views `rel_only_next`, `rel_only_gamma`, and `rel_only_missing` use relationship-only `include ... where source.tag is ...` predicates such that the first two can render the relation and the third is empty.",
+      "expectations": [
+        "The response includes a valid top-level `specification`, `model`, `deployment`, and `views` structure in one `.c4` snippet.",
+        "The logical model tags `frontend` with `#next` and defines a logical `frontend -> db 'reads'` relationship.",
+        "The deployment model creates a deployed `frontend` instance under `prod.eu.web.frontend` (or equivalent nested FQN) and adds `#gamma` on the `instanceOf` block.",
+        "The snippet defines exactly the three deployment views `rel_only_next`, `rel_only_gamma`, and `rel_only_missing`.",
+        "Each of those views uses a relationship-only include with `where source.tag is #next`, `#gamma`, and `#missing` respectively, with the intended semantic outcome that the first two match and the last one renders empty."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "B provides a single coherent fixture with the required top-level structure and the three exact deployment views, while A is not minimal/paste-ready as requested (multiple alternative snippets with conflicting structures) and misses key fixture-shape constraints.",
+      "with_skill_rubric_score": 9.3,
+      "without_skill_rubric_score": 4.5,
+      "with_skill_rubric_notes": "Directly matches requested fixture shape and relationship-tag filter checks.",
+      "without_skill_rubric_notes": "Contains relevant semantics but mixes multiple snippets and does not cleanly satisfy the single minimal fixture requirement.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 2,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 11,
+      "run_number": 1,
+      "eval_prompt": "My `base.c4` defines:\n```likec4\nmodel {\n  cloud = system 'Cloud' {\n    api = service 'API' {\n      metadata { port '8080' }\n    }\n  }\n}\n```\nIn `ops.c4` I use `extend cloud.api` to add `metadata { port '9090'; region 'us-east-1' }` and a nested `health = component 'Health Check'`. Show the correct `ops.c4` snippet and state exactly what value `port` holds in the merged model, and why. Be explicit about whether the original `port '8080'` is overwritten or merged.",
+      "expected_output": "The correct `ops.c4` snippet uses `extend cloud.api { metadata { port '9090'; region 'us-east-1' } health = component 'Health Check' }`, and the response states that `port` becomes the array `['8080', '9090']` because duplicate metadata keys are merged into arrays instead of being overwritten.",
+      "expectations": [
+        "The response shows a correct `extend cloud.api { ... }` block (not a re-declaration of `cloud.api`).",
+        "The `extend` block contains `metadata { port '9090'; region 'us-east-1' }` inside it.",
+        "The `extend` block also declares the nested `health = component 'Health Check'`.",
+        "The response explicitly states that `port` ends up as an array `['8080', '9090']` (or equivalent notation).",
+        "The response explains WHY: duplicate metadata keys are merged into arrays rather than overwriting."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "B matches the key semantic requirement: duplicate metadata keys merge into arrays and `port` becomes ['8080','9090']. A incorrectly claims overwrite semantics (`9090` scalar), which is explicitly graded as incorrect.",
+      "with_skill_rubric_score": 9.3,
+      "without_skill_rubric_score": 5.2,
+      "with_skill_rubric_notes": "Correct extend form, correct array result, correct rationale.",
+      "without_skill_rubric_notes": "Extend snippet mostly present, but core merge semantics are wrong.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 3,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 11,
+      "run_number": 2,
+      "eval_prompt": "My `base.c4` defines:\n```likec4\nmodel {\n  cloud = system 'Cloud' {\n    api = service 'API' {\n      metadata { port '8080' }\n    }\n  }\n}\n```\nIn `ops.c4` I use `extend cloud.api` to add `metadata { port '9090'; region 'us-east-1' }` and a nested `health = component 'Health Check'`. Show the correct `ops.c4` snippet and state exactly what value `port` holds in the merged model, and why. Be explicit about whether the original `port '8080'` is overwritten or merged.",
+      "expected_output": "The correct `ops.c4` snippet uses `extend cloud.api { metadata { port '9090'; region 'us-east-1' } health = component 'Health Check' }`, and the response states that `port` becomes the array `['8080', '9090']` because duplicate metadata keys are merged into arrays instead of being overwritten.",
+      "expectations": [
+        "The response shows a correct `extend cloud.api { ... }` block (not a re-declaration of `cloud.api`).",
+        "The `extend` block contains `metadata { port '9090'; region 'us-east-1' }` inside it.",
+        "The `extend` block also declares the nested `health = component 'Health Check'`.",
+        "The response explicitly states that `port` ends up as an array `['8080', '9090']` (or equivalent notation).",
+        "The response explains WHY: duplicate metadata keys are merged into arrays rather than overwriting."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "A matches the required extend snippet and correctly explains duplicate metadata-key merge semantics as array accumulation. B claims overwrite semantics for port, which contradicts the expected behavior.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 6.0,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "Formatting is fine but the core metadata merge rule is wrong.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 3,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 12,
+      "run_number": 1,
+      "eval_prompt": "In a `deployment view`, can I use `include * with { color red }` and `global style myTheme` to style nodes the same way as in element views? Answer in three parts: (1) say explicitly whether each construct is supported, (2) if you propose any local `style` rule as an alternative, make clear that it is a separate supported deployment-view construct rather than `with { ... }` or `global style`, and (3) provide a minimal corrected snippet that stays within supported deployment-view syntax.",
+      "expected_output": "The response states that deployment views do not support customize predicates (`with { ... }`) and do not support `global style ...`, and if it proposes local styling it clearly presents that as a separate supported deployment-view construct rather than as `with { ... }` or `global style`. It then provides a minimal valid deployment view snippet using only supported syntax.",
+      "expectations": [
+        "The response explicitly says `include * with { ... }` is not supported in deployment views.",
+        "The response explicitly says `global style ...` is not supported in deployment views.",
+        "The response still provides a valid `deployment view` snippet.",
+        "The snippet uses only supported deployment-view rules.",
+        "If the answer uses a local `style` rule, it clearly distinguishes that supported local rule from unsupported `with { ... }` and unsupported `global style ...`.",
+        "The response distinguishes deployment-view limitations from element-view capabilities."
+      ],
+      "winner": "with_skill",
+      "confidence": "low",
+      "reasoning": "Both responses correctly reject `include * with { ... }` and `global style ...` in deployment views and provide valid deployment-view alternatives. B is slightly more concise and directly operational, so it edges out on structure.",
+      "with_skill_rubric_score": 9.4,
+      "without_skill_rubric_score": 9.0,
+      "with_skill_rubric_notes": "Correct and concise; clearly separates unsupported vs supported local style usage.",
+      "without_skill_rubric_notes": "Complete and correct, but more verbose than needed.",
+      "with_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      },
+      "without_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      }
+    },
+    {
+      "eval_id": 12,
+      "run_number": 2,
+      "eval_prompt": "In a `deployment view`, can I use `include * with { color red }` and `global style myTheme` to style nodes the same way as in element views? Answer in three parts: (1) say explicitly whether each construct is supported, (2) if you propose any local `style` rule as an alternative, make clear that it is a separate supported deployment-view construct rather than `with { ... }` or `global style`, and (3) provide a minimal corrected snippet that stays within supported deployment-view syntax.",
+      "expected_output": "The response states that deployment views do not support customize predicates (`with { ... }`) and do not support `global style ...`, and if it proposes local styling it clearly presents that as a separate supported deployment-view construct rather than as `with { ... }` or `global style`. It then provides a minimal valid deployment view snippet using only supported syntax.",
+      "expectations": [
+        "The response explicitly says `include * with { ... }` is not supported in deployment views.",
+        "The response explicitly says `global style ...` is not supported in deployment views.",
+        "The response still provides a valid `deployment view` snippet.",
+        "The snippet uses only supported deployment-view rules.",
+        "If the answer uses a local `style` rule, it clearly distinguishes that supported local rule from unsupported `with { ... }` and unsupported `global style ...`.",
+        "The response distinguishes deployment-view limitations from element-view capabilities."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "Both A and B correctly reject unsupported deployment-view constructs (`include * with { ... }` and `global style ...`), provide valid deployment-view alternatives, and clearly separate supported local `style` usage from unsupported forms. Quality difference is negligible.",
+      "with_skill_rubric_score": 9.3,
+      "without_skill_rubric_score": 9.3,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      },
+      "without_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      }
+    },
+    {
+      "eval_id": 13,
+      "run_number": 1,
+      "eval_prompt": "Fix this invalid LikeC4 snippet and explain why it is invalid:\n```likec4\nmodel {\n  api = service 'API' {\n    technology 'Node.js'\n    #critical\n  }\n}\n```\nKeep the corrected snippet minimal. Do not change the element kind or remove either field; only fix what is necessary.",
+      "expected_output": "The response fixes ordering in the element body by placing tags before properties, then explains that tags must precede properties in block bodies.",
+      "expectations": [
+        "The corrected snippet keeps the same element intent (`api = service 'API'`).",
+        "The corrected snippet places `#critical` before `technology 'Node.js'`.",
+        "The response explicitly explains the ordering rule: tags come before properties.",
+        "The response does not remove the tag or technology field as a workaround.",
+        "The corrected snippet remains minimal and syntactically valid LikeC4 DSL."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "A directly applies the required rule (tags before properties within the element body) and provides the minimal corrected snippet. B changes semantics to a different rule (tag must be on declaration line), which misses the target ordering fix in this eval.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 6.9,
+      "with_skill_rubric_notes": "Precisely aligned with the ordering-rule objective.",
+      "without_skill_rubric_notes": "Readable, but pivots to a different constraint and does not preserve the intended fix rationale.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 3,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 13,
+      "run_number": 2,
+      "eval_prompt": "Fix this invalid LikeC4 snippet and explain why it is invalid:\n```likec4\nmodel {\n  api = service 'API' {\n    technology 'Node.js'\n    #critical\n  }\n}\n```\nKeep the corrected snippet minimal. Do not change the element kind or remove either field; only fix what is necessary.",
+      "expected_output": "The response fixes ordering in the element body by placing tags before properties, then explains that tags must precede properties in block bodies.",
+      "expectations": [
+        "The corrected snippet keeps the same element intent (`api = service 'API'`).",
+        "The corrected snippet places `#critical` before `technology 'Node.js'`.",
+        "The response explicitly explains the ordering rule: tags come before properties.",
+        "The response does not remove the tag or technology field as a workaround.",
+        "The corrected snippet remains minimal and syntactically valid LikeC4 DSL."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "B directly fixes the ordering issue by placing the tag before properties and explains the rule. A gives conflicting and partly incorrect guidance, including an invalid/contradictory workaround instead of a clean ordering fix.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 4.0,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "Conflicting corrections; misses the requested ordering-focused fix.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 1,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 14,
+      "run_number": 1,
+      "eval_prompt": "Someone proposed this file:\n```likec4\nstyles {\n  theme dark\n}\n```\nExplain why this fails. Then provide (1) a minimal valid `.c4` alternative using only allowed top-level DSL statements for styling inside DSL scope, and (2) a minimal `likec4.config.json` snippet if the intent is a project-level dark theme.",
+      "expected_output": "The response says `styles { ... }` is not an allowed top-level block and replaces it with valid top-level statements, typically using `global { styleGroup ... }` and/or `views { ... }`.",
+      "expectations": [
+        "The response identifies that `styles` is an invalid top-level statement.",
+        "The response mentions allowed top-level statements (`import`, `specification`, `model`, `deployment`, `views`, `global`).",
+        "The corrected file uses only allowed top-level statements.",
+        "The corrected DSL demonstrates styling intent via valid constructs (e.g., `global styleGroup` and applying in `views`).",
+        "The output is a minimal valid LikeC4 file, not only prose."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "B explicitly states `styles` is invalid, lists allowed top-level statements including `global`, and demonstrates styling through valid constructs (`global styleGroup` + usage in `views`). A identifies the invalid block but is less complete on required top-level statement guidance.",
+      "with_skill_rubric_score": 9.1,
+      "without_skill_rubric_score": 8.0,
+      "with_skill_rubric_notes": "Fully aligned with contrastive requirement and provides valid minimal correction path.",
+      "without_skill_rubric_notes": "Partially complete; weaker coverage of the required allowed-top-level enumeration.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 14,
+      "run_number": 2,
+      "eval_prompt": "Someone proposed this file:\n```likec4\nstyles {\n  theme dark\n}\n```\nExplain why this fails. Then provide (1) a minimal valid `.c4` alternative using only allowed top-level DSL statements for styling inside DSL scope, and (2) a minimal `likec4.config.json` snippet if the intent is a project-level dark theme.",
+      "expected_output": "The response says `styles { ... }` is not an allowed top-level block and replaces it with valid top-level statements, typically using `global { styleGroup ... }` and/or `views { ... }`.",
+      "expectations": [
+        "The response identifies that `styles` is an invalid top-level statement.",
+        "The response mentions allowed top-level statements (`import`, `specification`, `model`, `deployment`, `views`, `global`).",
+        "The corrected file uses only allowed top-level statements.",
+        "The corrected DSL demonstrates styling intent via valid constructs (e.g., `global styleGroup` and applying in `views`).",
+        "The output is a minimal valid LikeC4 file, not only prose."
+      ],
+      "winner": "with_skill",
+      "confidence": "low",
+      "reasoning": "Both identify `styles` as invalid top-level for this task context, but B more completely satisfies the required contrast by explicitly listing allowed top-level statements and showing valid styling via `global` + `views` constructs.",
+      "with_skill_rubric_score": 8.8,
+      "without_skill_rubric_score": 8.0,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "Mostly correct, but lacks the explicit allowed-top-level statement set requested by the eval expectations.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 15,
+      "run_number": 1,
+      "eval_prompt": "Which identifiers are valid in LikeC4 and why: `payment.api`, `1backend`, `payment_api`, `payment-api`? Then rewrite the invalid ones into valid identifiers while preserving meaning.",
+      "expected_output": "The response marks `payment.api` and `1backend` invalid, marks `payment_api` and `payment-api` valid, and rewrites invalid identifiers into valid forms without dots or leading digits.",
+      "expectations": [
+        "The response states `payment.api` is invalid because dots are reserved for FQNs.",
+        "The response states `1backend` is invalid because identifiers cannot start with a digit.",
+        "The response states `payment_api` is valid.",
+        "The response states `payment-api` is valid.",
+        "The response provides corrected alternatives for invalid identifiers preserving meaning (e.g., `payment_api`, `backend1`)."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "B matches the eval’s required validity calls: it marks `payment.api` invalid for dot/FQN semantics, `1backend` invalid for leading digit, `payment_api` valid, and `payment-api` valid, then provides valid rewrites for invalid identifiers. A is mostly strong but incorrectly labels `payment-api` as invalid, which conflicts with the eval’s expected output and costs a key content criterion.",
+      "with_skill_rubric_score": 9,
+      "without_skill_rubric_score": 8,
+      "with_skill_rubric_notes": "Concise and fully aligned with all required judgments and rewrites.",
+      "without_skill_rubric_notes": "Clear structure and examples, but one decisive semantic miss (`payment-api` validity).",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 15,
+      "run_number": 2,
+      "eval_prompt": "Which identifiers are valid in LikeC4 and why: `payment.api`, `1backend`, `payment_api`, `payment-api`? Then rewrite the invalid ones into valid identifiers while preserving meaning.",
+      "expected_output": "The response marks `payment.api` and `1backend` invalid, marks `payment_api` and `payment-api` valid, and rewrites invalid identifiers into valid forms without dots or leading digits.",
+      "expectations": [
+        "The response states `payment.api` is invalid because dots are reserved for FQNs.",
+        "The response states `1backend` is invalid because identifiers cannot start with a digit.",
+        "The response states `payment_api` is valid.",
+        "The response states `payment-api` is valid.",
+        "The response provides corrected alternatives for invalid identifiers preserving meaning (e.g., `payment_api`, `backend1`)."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "Read status: A.md ✅, B.md ✅, grading-spec.json ✅. B is materially more correct: it marks `payment.api` invalid, `1backend` invalid, `payment_api` valid, `payment-api` valid, and provides valid rewrites. A contains contradictory guidance and incorrectly treats `payment-api` as invalid, so it misses a core requirement.",
+      "with_skill_rubric_score": 8.8,
+      "without_skill_rubric_score": 5.0,
+      "with_skill_rubric_notes": "Meets required validity calls and rewrites; concise and usable.",
+      "without_skill_rubric_notes": "Has major contradiction and wrong validity classification for `payment-api`.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 3,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 16,
+      "run_number": 1,
+      "eval_prompt": "Is this relationship valid in LikeC4? Start your answer with `Valid.` or `Invalid.` exactly.\n```likec4\nmodel {\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n    cloud -> backend 'contains traffic'\n  }\n}\n```\nIf invalid, explicitly say in one sentence that containment is modeled by nesting, not by a relationship. Then provide the smallest valid rewrite that keeps the hierarchy unchanged and adds exactly one valid non-parent/child relationship elsewhere.",
+      "expected_output": "The response says parent-child relationships are invalid, removes `cloud -> backend` relationship, and provides a corrected pattern that preserves hierarchy and adds a valid relationship between non-parent/child elements.",
+      "expectations": [
+        "The response starts with `Invalid.` exactly.",
+        "The response explicitly identifies `cloud -> backend` as invalid parent-child relationship.",
+        "The corrected snippet preserves the hierarchical nesting of `backend` inside `cloud`.",
+        "The corrected snippet demonstrates a valid relationship between non-parent-child elements.",
+        "The response does not claim the original relation is valid with a different label.",
+        "The corrected output is a minimal, usable DSL snippet."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Both answers correctly open with `Invalid.`, explain containment-by-nesting, remove the parent→child relation, preserve `backend` nested under `cloud`, and provide a valid non-parent/child relationship. A is slightly stronger on minimal, directly usable rewrite and keeps the correction tightly focused on the original pattern without extra framing.",
+      "with_skill_rubric_score": 9,
+      "without_skill_rubric_score": 8,
+      "with_skill_rubric_notes": "Meets all required correction semantics with a concise, paste-ready snippet.",
+      "without_skill_rubric_notes": "Semantically correct, but less minimal and more verbose than needed.",
+      "with_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      },
+      "without_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      }
+    },
+    {
+      "eval_id": 16,
+      "run_number": 2,
+      "eval_prompt": "Is this relationship valid in LikeC4? Start your answer with `Valid.` or `Invalid.` exactly.\n```likec4\nmodel {\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n    cloud -> backend 'contains traffic'\n  }\n}\n```\nIf invalid, explicitly say in one sentence that containment is modeled by nesting, not by a relationship. Then provide the smallest valid rewrite that keeps the hierarchy unchanged and adds exactly one valid non-parent/child relationship elsewhere.",
+      "expected_output": "The response says parent-child relationships are invalid, removes `cloud -> backend` relationship, and provides a corrected pattern that preserves hierarchy and adds a valid relationship between non-parent/child elements.",
+      "expectations": [
+        "The response starts with `Invalid.` exactly.",
+        "The response explicitly identifies `cloud -> backend` as invalid parent-child relationship.",
+        "The corrected snippet preserves the hierarchical nesting of `backend` inside `cloud`.",
+        "The corrected snippet demonstrates a valid relationship between non-parent-child elements.",
+        "The response does not claim the original relation is valid with a different label.",
+        "The corrected output is a minimal, usable DSL snippet."
+      ],
+      "winner": "with_skill",
+      "confidence": "low",
+      "reasoning": "Read status: A.md ✅, B.md ✅, grading-spec.json ✅. Both start with `Invalid.` and provide corrected snippets, but B explicitly names `cloud -> backend` as the invalid parent-child relationship and states it was removed, matching the strict guidance more directly.",
+      "with_skill_rubric_score": 9.1,
+      "without_skill_rubric_score": 8.5,
+      "with_skill_rubric_notes": "Directly satisfies the eval’s primary signals and provides minimal valid rewrite.",
+      "without_skill_rubric_notes": "Correct fix, but less explicit on the exact invalid relation string.",
+      "with_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 6
+      }
+    },
+    {
+      "eval_id": 17,
+      "run_number": 1,
+      "eval_prompt": "`base.c4` defines `cloud = system { backend = container { api = service } }`. In `ops.c4` I wrote `backend.api -> cloud.db` and validation says unresolved reference. Do not fix this with import statements. Explain exactly why this happens across files and provide the corrected cross-file relationship using FQNs.",
+      "expected_output": "The response explains that cross-file references to nested elements require FQNs and rewrites the relationship using full element paths.",
+      "expectations": [
+        "The response explains why `backend.api` fails across files (lexical scope and unresolved local reference).",
+        "The response states that cross-file nested references must use FQNs.",
+        "The corrected relationship uses full FQNs (e.g., `cloud.backend.api -> cloud.db`).",
+        "The response does not suggest importing symbols as a substitute for FQNs in this case.",
+        "The answer remains focused on reference resolution and corrected DSL."
+      ],
+      "winner": "without_skill",
+      "confidence": "low",
+      "reasoning": "Both responses correctly explain that cross-file nested references must use FQNs and provide the corrected relationship `cloud.backend.api -> cloud.db` without suggesting imports as a substitute. A gives a more explicit root-cause explanation (scope + global resolution behavior), which better satisfies the diagnostic part of the eval while remaining focused.",
+      "with_skill_rubric_score": 9,
+      "without_skill_rubric_score": 9,
+      "with_skill_rubric_notes": "Correct and concise, but slightly less explicit on the underlying resolution model.",
+      "without_skill_rubric_notes": "Fully correct fix plus clearer explanation of why `backend.api` fails across files.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 17,
+      "run_number": 2,
+      "eval_prompt": "`base.c4` defines `cloud = system { backend = container { api = service } }`. In `ops.c4` I wrote `backend.api -> cloud.db` and validation says unresolved reference. Do not fix this with import statements. Explain exactly why this happens across files and provide the corrected cross-file relationship using FQNs.",
+      "expected_output": "The response explains that cross-file references to nested elements require FQNs and rewrites the relationship using full element paths.",
+      "expectations": [
+        "The response explains why `backend.api` fails across files (lexical scope and unresolved local reference).",
+        "The response states that cross-file nested references must use FQNs.",
+        "The corrected relationship uses full FQNs (e.g., `cloud.backend.api -> cloud.db`).",
+        "The response does not suggest importing symbols as a substitute for FQNs in this case.",
+        "The answer remains focused on reference resolution and corrected DSL."
+      ],
+      "winner": "with_skill",
+      "confidence": "low",
+      "reasoning": "Read status: A.md ✅, B.md ✅, grading-spec.json ✅. Both answers are correct and use full FQNs in the fix. A is more focused and directly tied to the failure mode and correction, while B is verbose without adding meaningful correctness beyond A.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 9.1,
+      "with_skill_rubric_notes": "Fully correct, concise, and task-focused.",
+      "without_skill_rubric_notes": "Also fully correct, but less efficient and more repetitive.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 18,
+      "run_number": 1,
+      "eval_prompt": "Assume these two relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -> api 'streams'`. Can I extend the async one with `extend frontend -> api 'streams' { metadata { qos 'high' } }`? Explain why or why not in terms of relationship identity matching — source, target, title, and kind — and explicitly say whether omitting the kind is ambiguous or wrong here. Then provide the exact extension snippet that unambiguously targets the async relationship.",
+      "expected_output": "The response explains that relationship extension must match source, target, title, and kind; it rejects `extend frontend -> api 'streams'` for the async relationship here because omitting the kind is wrong for this disambiguation case, and provides the correct `extend frontend -[async]-> api 'streams' { ... }` snippet.",
+      "expectations": [
+        "The response states that `extend` for relationships must match source and target.",
+        "The response states that matching also includes title and kind for disambiguation.",
+        "The response identifies `extend frontend -> api 'streams'` as incorrect for a relation originally declared with kind `async`.",
+        "The corrected snippet includes the relationship kind in the `extend` matcher.",
+        "The corrected snippet adds metadata within the `extend` block."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Both answers are semantically correct: they explain relationship identity matching includes source, target, title, and kind; reject `extend frontend -> api 'streams'` for the async target in this disambiguation case; and provide the correct `extend frontend -[async]-> api 'streams' { metadata { ... } }` fix. B delivers the same required semantics more directly and with tighter focus on the eval’s decisive criterion.",
+      "with_skill_rubric_score": 10,
+      "without_skill_rubric_score": 9,
+      "with_skill_rubric_notes": "Fully correct and highly focused on exact matcher disambiguation.",
+      "without_skill_rubric_notes": "Fully correct and thorough, but somewhat verbose.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 18,
+      "run_number": 2,
+      "eval_prompt": "Assume these two relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -> api 'streams'`. Can I extend the async one with `extend frontend -> api 'streams' { metadata { qos 'high' } }`? Explain why or why not in terms of relationship identity matching — source, target, title, and kind — and explicitly say whether omitting the kind is ambiguous or wrong here. Then provide the exact extension snippet that unambiguously targets the async relationship.",
+      "expected_output": "The response explains that relationship extension must match source, target, title, and kind; it rejects `extend frontend -> api 'streams'` for the async relationship here because omitting the kind is wrong for this disambiguation case, and provides the correct `extend frontend -[async]-> api 'streams' { ... }` snippet.",
+      "expectations": [
+        "The response states that `extend` for relationships must match source and target.",
+        "The response states that matching also includes title and kind for disambiguation.",
+        "The response identifies `extend frontend -> api 'streams'` as incorrect for a relation originally declared with kind `async`.",
+        "The corrected snippet includes the relationship kind in the `extend` matcher.",
+        "The corrected snippet adds metadata within the `extend` block."
+      ],
+      "winner": "without_skill",
+      "confidence": "low",
+      "reasoning": "Read status: A.md ✅, B.md ✅, grading-spec.json ✅. Both satisfy the semantic requirements (identity matching includes kind; unkinded matcher rejected; async matcher with metadata provided). A is clearer and more direct; B adds extra explanation that is not needed for this eval.",
+      "with_skill_rubric_score": 9.1,
+      "without_skill_rubric_score": 9.6,
+      "with_skill_rubric_notes": "Correct, but less concise and slightly more diffuse.",
+      "without_skill_rubric_notes": "Exact, focused rejection and correct fixed matcher snippet.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 19,
+      "run_number": 1,
+      "eval_prompt": "In `view backend of cloud.backend { include * }`, what exactly does `*` include in scoped view semantics? Do not answer with only `the whole model` or only `the local subtree`. In your first bullet, you must explicitly use the phrase `direct children`. Answer in two short bullets: (1) the base include set, and (2) what neighboring or derived elements/relationships can still become visible because of that scoped include. Then provide a minimal snippet that keeps `include *` and adds only incoming and outgoing relationships around `cloud.backend`.",
+      "expected_output": "The response explains that scoped `include *` does not include the whole model: it includes the scoped element and its direct children as the base include, and neighboring elements / derived relationships may also become visible because of those included elements under scoped-view semantics. It then shows predicates for incoming/outgoing relationships around `cloud.backend`.",
+      "expectations": [
+        "The response explicitly says scoped `*` does NOT include the whole model.",
+        "The response explains that in a scoped view the base include is the scoped element plus its direct children.",
+        "The response explains that neighboring elements and/or derived relationships can also appear because of the scoped include semantics.",
+        "The snippet uses `view ... of cloud.backend` with `include *`.",
+        "The snippet adds relationship predicates for incoming/outgoing around `cloud.backend` (e.g., `include -> cloud.backend ->`).",
+        "The output includes a minimal usable DSL snippet, not prose-only explanation."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Both responses correctly reject the 'whole model' interpretation, state the scoped base set as the scoped element plus direct children, explain neighboring/derived visibility, and provide usable scoped snippets with relationship predicates around `cloud.backend`. A is more focused and aligns tightly with the expected predicate form (`include -> cloud.backend ->`) while preserving required semantics without extra speculative detail.",
+      "with_skill_rubric_score": 10,
+      "without_skill_rubric_score": 8,
+      "with_skill_rubric_notes": "Direct, complete, and exactly aligned with the eval’s scoped semantics and snippet requirements.",
+      "without_skill_rubric_notes": "Correct core semantics and valid split incoming/outgoing predicates, but less concise and includes extra commentary beyond the minimal target.",
+      "with_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      },
+      "without_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      }
+    },
+    {
+      "eval_id": 19,
+      "run_number": 2,
+      "eval_prompt": "In `view backend of cloud.backend { include * }`, what exactly does `*` include in scoped view semantics? Do not answer with only `the whole model` or only `the local subtree`. In your first bullet, you must explicitly use the phrase `direct children`. Answer in two short bullets: (1) the base include set, and (2) what neighboring or derived elements/relationships can still become visible because of that scoped include. Then provide a minimal snippet that keeps `include *` and adds only incoming and outgoing relationships around `cloud.backend`.",
+      "expected_output": "The response explains that scoped `include *` does not include the whole model: it includes the scoped element and its direct children as the base include, and neighboring elements / derived relationships may also become visible because of those included elements under scoped-view semantics. It then shows predicates for incoming/outgoing relationships around `cloud.backend`.",
+      "expectations": [
+        "The response explicitly says scoped `*` does NOT include the whole model.",
+        "The response explains that in a scoped view the base include is the scoped element plus its direct children.",
+        "The response explains that neighboring elements and/or derived relationships can also appear because of the scoped include semantics.",
+        "The snippet uses `view ... of cloud.backend` with `include *`.",
+        "The snippet adds relationship predicates for incoming/outgoing around `cloud.backend` (e.g., `include -> cloud.backend ->`).",
+        "The output includes a minimal usable DSL snippet, not prose-only explanation."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: A.md ✅, B.md ✅, grading-spec.json ✅. B aligns with the required semantics: scoped `include *` base set is scoped element + direct children, with neighbor visibility via relationship predicates. A incorrectly claims nested descendants are included in the base `*` semantics, which the grading guidance explicitly penalizes.",
+      "with_skill_rubric_score": 9.1,
+      "without_skill_rubric_score": 7.1,
+      "with_skill_rubric_notes": "Matches direct-children semantics and includes required predicates/snippet form.",
+      "without_skill_rubric_notes": "Good snippet, but core semantic error about descendants under scoped `*`.",
+      "with_skill_expectations": {
+        "passed": 6,
+        "total": 6
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 6
+      }
+    },
+    {
+      "eval_id": 20,
+      "run_number": 1,
+      "eval_prompt": "I need to validate only two edited files in one command: `projects/template/system-model.c4` and `projects/template/system-views.c4`, without layout drift checks. Give the exact command and explain how to confirm both files were actually filtered in JSON output.",
+      "expected_output": "The response provides a `likec4 validate` command with `--json`, `--no-layout`, and repeated `--file` for both edited files, then explains checking `filteredFiles` and `filteredErrors` to confirm filter scope.",
+      "expectations": [
+        "The command uses `npx likec4 validate --json --no-layout`.",
+        "The command passes two `--file` arguments, one for each edited file.",
+        "The command includes the project path argument (e.g., `projects/template`).",
+        "The response explains that `filteredFiles` should equal 2 to confirm both files were filtered.",
+        "The response explains interpreting `filteredErrors` versus project-wide counts like `totalErrors`."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. A matches all required semantics (validate command with --json --no-layout, two repeated --file flags, project path, and explicit filteredFiles=2 plus filteredErrors vs totalErrors interpretation). B uses unsupported/incorrect CLI shape for this rubric (e.g., --no-layout-drift/--files) and misses the required filteredFiles=2 and filteredErrors-vs-totalErrors interpretation.",
+      "with_skill_rubric_score": 9.4,
+      "without_skill_rubric_score": 2.5,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 0,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 20,
+      "run_number": 2,
+      "eval_prompt": "I need to validate only two edited files in one command: `projects/template/system-model.c4` and `projects/template/system-views.c4`, without layout drift checks. Give the exact command and explain how to confirm both files were actually filtered in JSON output.",
+      "expected_output": "The response provides a `likec4 validate` command with `--json`, `--no-layout`, and repeated `--file` for both edited files, then explains checking `filteredFiles` and `filteredErrors` to confirm filter scope.",
+      "expectations": [
+        "The command uses `npx likec4 validate --json --no-layout`.",
+        "The command passes two `--file` arguments, one for each edited file.",
+        "The command includes the project path argument (e.g., `projects/template`).",
+        "The response explains that `filteredFiles` should equal 2 to confirm both files were filtered.",
+        "The response explains interpreting `filteredErrors` versus project-wide counts like `totalErrors`."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "Read status: grading spec path success; A.md success; B.md success. A matches all strict invariants: `likec4 validate --json --no-layout`, two repeated `--file` flags, project path, and explicit interpretation of `filteredFiles = 2` plus `filteredErrors` vs `totalErrors`. B uses different command forms (including `--format json`/`--no-layout-drift` and positional files) and does not satisfy the required two-`--file` filtering pattern or the required filtered field interpretation.",
+      "with_skill_rubric_score": 9.7,
+      "without_skill_rubric_score": 3.8,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 0,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 21,
+      "run_number": 1,
+      "eval_prompt": "Given this base view:\n```likec4\nview backend-overview of cloud.backend {\n  include *\n}\n```\nIs the following child view valid as written, or does it need `of cloud.backend` again?\n```likec4\nview backend-detail extends backend-overview {\n  include api\n}\n```\nAnswer first with `Valid as written.` or `Needs scope redeclared.` Then explain why in one short paragraph and show the smallest final snippet that also adds incoming relationships to `cloud.backend`.",
+      "expected_output": "The response starts with `Valid as written.`, explains that `extends backend-overview` inherits the parent `of cloud.backend` scope so `include api` resolves within that scope, and shows a minimal final snippet that also pulls incoming relationships to `cloud.backend`.",
+      "expectations": [
+        "The response starts with `Valid as written.`.",
+        "The response explains that the child view inherits the parent `of cloud.backend` scope.",
+        "The final snippet keeps `extends backend-overview` without redeclaring `of cloud.backend`.",
+        "The final snippet uses bare `include api` rather than `include cloud.backend.api`.",
+        "The final snippet adds an incoming relationship predicate for `cloud.backend`."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. Both answers start with the exact required opening ('Valid as written.'), correctly explain inherited scope via extends, keep extends without redeclaring of-cloud.backend scope, use bare include api, and add incoming relationship inclusion. Content and usability are effectively equivalent for this eval.",
+      "with_skill_rubric_score": 9.6,
+      "without_skill_rubric_score": 9.6,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 21,
+      "run_number": 2,
+      "eval_prompt": "Given this base view:\n```likec4\nview backend-overview of cloud.backend {\n  include *\n}\n```\nIs the following child view valid as written, or does it need `of cloud.backend` again?\n```likec4\nview backend-detail extends backend-overview {\n  include api\n}\n```\nAnswer first with `Valid as written.` or `Needs scope redeclared.` Then explain why in one short paragraph and show the smallest final snippet that also adds incoming relationships to `cloud.backend`.",
+      "expected_output": "The response starts with `Valid as written.`, explains that `extends backend-overview` inherits the parent `of cloud.backend` scope so `include api` resolves within that scope, and shows a minimal final snippet that also pulls incoming relationships to `cloud.backend`.",
+      "expectations": [
+        "The response starts with `Valid as written.`.",
+        "The response explains that the child view inherits the parent `of cloud.backend` scope.",
+        "The final snippet keeps `extends backend-overview` without redeclaring `of cloud.backend`.",
+        "The final snippet uses bare `include api` rather than `include cloud.backend.api`.",
+        "The final snippet adds an incoming relationship predicate for `cloud.backend`."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: grading spec path success; A.md success; B.md success. Both answers satisfy the core semantics (`Valid as written.`, inherited scope from `extends`, bare `include api`, incoming relationship predicate). B is cleaner and internally consistent. A includes an extra conflicting variant (`include <- cloud.backend`) before a corrected form, which reduces reliability in a strict validation-style prompt.",
+      "with_skill_rubric_score": 9.3,
+      "without_skill_rubric_score": 8.0,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 22,
+      "run_number": 1,
+      "eval_prompt": "Write a minimal `dynamic view checkout-flow` snippet that simultaneously tests three tricky points: (1) `customer -> frontend -> api` must be a single chained expression, (2) only the `frontend -> api` hop carries a body with `technology 'HTTPS'` and `navigateTo payment-detail`, and (3) `api` fans out in `parallel { ... }` to `payments`, `inventory`, and `notifications`. After the snippet, add one sentence saying why rewriting the chain as separate standalone steps would not satisfy the request.",
+      "expected_output": "A minimal `dynamic view checkout-flow` snippet with `customer -> frontend -> api` as one chained expression, a body only on the `frontend -> api` hop containing `technology 'HTTPS'` and `navigateTo payment-detail`, a `parallel { ... }` fan-out from `api`, plus one sentence explaining that separate standalone steps would not preserve the requested chained-step structure.",
+      "expectations": [
+        "The response uses a `dynamic view checkout-flow { ... }` block.",
+        "The `customer -> frontend -> api` portion is written as a single chained expression (possibly split across continuation lines) rather than three standalone top-level steps.",
+        "Only the `frontend -> api` hop carries the body block with `technology 'HTTPS'` and `navigateTo payment-detail`.",
+        "The snippet includes a `parallel { ... }` (or `par { ... }`) fan-out from `api` to `payments`, `inventory`, and `notifications`.",
+        "The explanation sentence says why separate standalone steps would not satisfy the requested chained-step form."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. Both responses provide a valid dynamic view checkout-flow with a single chained customer->frontend->api expression, body only on that hop including technology HTTPS and navigateTo payment-detail, a parallel fan-out from api to payments/inventory/notifications, and an explicit explanation that standalone steps would not satisfy the chained-step requirement.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 9.5,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 22,
+      "run_number": 2,
+      "eval_prompt": "Write a minimal `dynamic view checkout-flow` snippet that simultaneously tests three tricky points: (1) `customer -> frontend -> api` must be a single chained expression, (2) only the `frontend -> api` hop carries a body with `technology 'HTTPS'` and `navigateTo payment-detail`, and (3) `api` fans out in `parallel { ... }` to `payments`, `inventory`, and `notifications`. After the snippet, add one sentence saying why rewriting the chain as separate standalone steps would not satisfy the request.",
+      "expected_output": "A minimal `dynamic view checkout-flow` snippet with `customer -> frontend -> api` as one chained expression, a body only on the `frontend -> api` hop containing `technology 'HTTPS'` and `navigateTo payment-detail`, a `parallel { ... }` fan-out from `api`, plus one sentence explaining that separate standalone steps would not preserve the requested chained-step structure.",
+      "expectations": [
+        "The response uses a `dynamic view checkout-flow { ... }` block.",
+        "The `customer -> frontend -> api` portion is written as a single chained expression (possibly split across continuation lines) rather than three standalone top-level steps.",
+        "Only the `frontend -> api` hop carries the body block with `technology 'HTTPS'` and `navigateTo payment-detail`.",
+        "The snippet includes a `parallel { ... }` (or `par { ... }`) fan-out from `api` to `payments`, `inventory`, and `notifications`.",
+        "The explanation sentence says why separate standalone steps would not satisfy the requested chained-step form."
+      ],
+      "winner": "without_skill",
+      "confidence": "low",
+      "reasoning": "Read status: grading spec path success; A.md success; B.md success. Both provide a correct dynamic view with a single chained `customer -> frontend -> api`, body on the frontend->api hop, parallel fan-out, and a sentence about why standalone steps are not equivalent. A is closer to the requested minimal form and avoids extra labeled step text on other hops.",
+      "with_skill_rubric_score": 9.0,
+      "without_skill_rubric_score": 9.6,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 23,
+      "run_number": 1,
+      "eval_prompt": "A deployment instance `prod.eu.frontend` comes from `instanceOf frontend` and adds `#gamma`; the logical `frontend` element already has `#next`. For each filter below, answer on its own line in the form `<filter>: matches` or `<filter>: does not match`:\n- `where source.tag is #next`\n- `where source.tag is #gamma`\n- `where source.tag is #missing`\nThen add exactly one sentence stating the tag rule, including whether deployment-instance tags are cumulative, replacement-only, or isolated from the logical tags.",
+      "expected_output": "The response says `#next` matches, `#gamma` matches, `#missing` does not match, and states in one clear sentence that deployment-instance tags are cumulative: inherited logical-model tags remain visible and directly added instance tags are added on top.",
+      "expectations": [
+        "The response says the `#next` filter matches.",
+        "The response says the `#gamma` filter matches.",
+        "The response says the `#missing` filter does not match.",
+        "The response explains that logical-model tags remain visible on the deployment instance.",
+        "The response explicitly states that deployment-instance tags are cumulative rather than replacement-only or isolated."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. Both responses correctly state #next matches, #gamma matches, #missing does not match, and clearly explain cumulative deployment-instance tags (logical tags remain visible and instance tags are additive, not replacement-only).",
+      "with_skill_rubric_score": 9.4,
+      "without_skill_rubric_score": 9.4,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 23,
+      "run_number": 2,
+      "eval_prompt": "A deployment instance `prod.eu.frontend` comes from `instanceOf frontend` and adds `#gamma`; the logical `frontend` element already has `#next`. For each filter below, answer on its own line in the form `<filter>: matches` or `<filter>: does not match`:\n- `where source.tag is #next`\n- `where source.tag is #gamma`\n- `where source.tag is #missing`\nThen add exactly one sentence stating the tag rule, including whether deployment-instance tags are cumulative, replacement-only, or isolated from the logical tags.",
+      "expected_output": "The response says `#next` matches, `#gamma` matches, `#missing` does not match, and states in one clear sentence that deployment-instance tags are cumulative: inherited logical-model tags remain visible and directly added instance tags are added on top.",
+      "expectations": [
+        "The response says the `#next` filter matches.",
+        "The response says the `#gamma` filter matches.",
+        "The response says the `#missing` filter does not match.",
+        "The response explains that logical-model tags remain visible on the deployment instance.",
+        "The response explicitly states that deployment-instance tags are cumulative rather than replacement-only or isolated."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "Read status: grading spec path success; A.md success; B.md success. Both answers explicitly state: `#next` matches, `#gamma` matches, `#missing` does not match, and explain cumulative deployment-instance tagging where logical tags remain visible and instance tags are added on top. No meaningful quality gap remains after rubric and expectations checks.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 9.5,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 24,
+      "run_number": 1,
+      "eval_prompt": "Assume both of these relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -[sync]-> api 'streams'`. Start your answer with exactly this line: `Correct matcher: extend frontend -[async]-> api 'streams'`. Then explain why `extend frontend -> api 'streams'` is insufficient here and why `extend frontend -[sync]-> api 'streams'` targets the wrong relationship. Then provide the exact extension snippet.",
+      "expected_output": "The response identifies `extend frontend -[async]-> api 'streams'` as the correct matcher, explains that the unkinded matcher is insufficient here and that the sync matcher targets the wrong relationship, then provides the exact async extension snippet.",
+      "expectations": [
+        "The response identifies `extend frontend -[async]-> api 'streams'` as the correct matcher.",
+        "The response explains that `extend frontend -> api 'streams'` is not the right matcher in this ambiguity case.",
+        "The response explains that `extend frontend -[sync]-> api 'streams'` would target the wrong relationship.",
+        "The final snippet uses the async matcher exactly.",
+        "The final snippet adds metadata within the `extend` block."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: A.md success, B.md success, grading-spec.json success. Both identify the async matcher and reject unkinded/sync alternatives, but B satisfies the final-snippet requirement by adding metadata inside the extend block. A's final snippet uses tags instead of metadata, so it misses a required expectation.",
+      "with_skill_rubric_score": 9.6,
+      "without_skill_rubric_score": 8,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 24,
+      "run_number": 2,
+      "eval_prompt": "Assume both of these relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -[sync]-> api 'streams'`. Start your answer with exactly this line: `Correct matcher: extend frontend -[async]-> api 'streams'`. Then explain why `extend frontend -> api 'streams'` is insufficient here and why `extend frontend -[sync]-> api 'streams'` targets the wrong relationship. Then provide the exact extension snippet.",
+      "expected_output": "The response identifies `extend frontend -[async]-> api 'streams'` as the correct matcher, explains that the unkinded matcher is insufficient here and that the sync matcher targets the wrong relationship, then provides the exact async extension snippet.",
+      "expectations": [
+        "The response identifies `extend frontend -[async]-> api 'streams'` as the correct matcher.",
+        "The response explains that `extend frontend -> api 'streams'` is not the right matcher in this ambiguity case.",
+        "The response explains that `extend frontend -[sync]-> api 'streams'` would target the wrong relationship.",
+        "The final snippet uses the async matcher exactly.",
+        "The final snippet adds metadata within the `extend` block."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Read status: grading spec path success; A.md success; B.md success. Both identify the async matcher and reject unkinded/sync alternatives, but A also satisfies the required final form with metadata in the extend block. B's provided snippets use non-metadata properties (`technology` / `description`) instead of the expected metadata addition, so A is more spec-aligned.",
+      "with_skill_rubric_score": 9.6,
+      "without_skill_rubric_score": 8.0,
+      "with_skill_rubric_notes": "",
+      "without_skill_rubric_notes": "",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 25,
+      "run_number": 1,
+      "eval_prompt": "I edited exactly three files in the template project: `projects/template/system-model.c4`, `projects/template/system-views.c4`, and `projects/template/likec4.config.json`. I want one syntax/semantic-only validation command from repo root, no layout drift. Put the command on the first line by itself, using repeated `--file` flags. Then say what `filteredFiles`, `filteredErrors`, and `totalErrors` each tell me. Also say what it means if `filteredFiles` comes back as `2` instead of `3`.",
+      "expected_output": "The response provides a `likec4 validate` command with `--json`, `--no-layout`, and three repeated `--file` flags for the edited template files, explains the roles of `filteredFiles`, `filteredErrors`, and `totalErrors`, and states that `filteredFiles = 2` means one intended file was not actually included in the filter set.",
+      "expectations": [
+        "The command uses `npx likec4 validate --json --no-layout`.",
+        "The command passes three `--file` arguments, one per edited file.",
+        "The command includes the template project path argument.",
+        "The response explains `filteredFiles`, `filteredErrors`, and `totalErrors` distinctly.",
+        "The response explains that `filteredFiles = 2` means one of the intended files was not actually filtered by the command."
+      ],
+      "winner": "with_skill",
+      "confidence": "high",
+      "reasoning": "B matches all required invariants: uses `likec4 validate` with `--json --no-layout`, includes three `--file` flags, includes the template project path, distinguishes `filteredFiles`/`filteredErrors`/`totalErrors`, and explicitly interprets `filteredFiles = 2` as one intended file not actually included in filtered source files. A misses core command requirements (`--no-layout`, project path) and is therefore weaker on primary content correctness.",
+      "with_skill_rubric_score": 9.6,
+      "without_skill_rubric_score": 6.6,
+      "with_skill_rubric_notes": "Precise command and correct interpretation of filtered coverage.",
+      "without_skill_rubric_notes": "Good field explanations, but command fidelity is off for this contrastive validation task.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 3,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 25,
+      "run_number": 2,
+      "eval_prompt": "I edited exactly three files in the template project: `projects/template/system-model.c4`, `projects/template/system-views.c4`, and `projects/template/likec4.config.json`. I want one syntax/semantic-only validation command from repo root, no layout drift. Put the command on the first line by itself, using repeated `--file` flags. Then say what `filteredFiles`, `filteredErrors`, and `totalErrors` each tell me. Also say what it means if `filteredFiles` comes back as `2` instead of `3`.",
+      "expected_output": "The response provides a `likec4 validate` command with `--json`, `--no-layout`, and three repeated `--file` flags for the edited template files, explains the roles of `filteredFiles`, `filteredErrors`, and `totalErrors`, and states that `filteredFiles = 2` means one intended file was not actually included in the filter set.",
+      "expectations": [
+        "The command uses `npx likec4 validate --json --no-layout`.",
+        "The command passes three `--file` arguments, one per edited file.",
+        "The command includes the template project path argument.",
+        "The response explains `filteredFiles`, `filteredErrors`, and `totalErrors` distinctly.",
+        "The response explains that `filteredFiles = 2` means one of the intended files was not actually filtered by the command."
+      ],
+      "winner": "without_skill",
+      "confidence": "medium",
+      "reasoning": "A is closer to the required command semantics and interpretation. A misses --json/--no-layout and project path, but correctly uses validate, includes three --file flags, distinguishes filteredFiles/filteredErrors/totalErrors, and explicitly explains filteredFiles=2 as missing one intended file. B uses likec4 check (not validate), omits required flags/project path, and incorrectly frames filteredFiles=2 as expected due to config-file type rather than missed filter coverage.",
+      "with_skill_rubric_score": 5.4,
+      "without_skill_rubric_score": 7.1,
+      "with_skill_rubric_notes": "Readable, but wrong command family and wrong filteredFiles=2 interpretation for this eval.",
+      "without_skill_rubric_notes": "Good field interpretation and explicit filteredFiles=2 meaning; command invariants partially missing.",
+      "with_skill_expectations": {
+        "passed": 2,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 3,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 26,
+      "run_number": 1,
+      "eval_prompt": "I need the exact reusable-predicate form for LikeC4 — not a style group, not a custom include alias. Define `core-services` in a `global { predicateGroup ... }` block so it includes `cloud.*` elements whose kind is `service` and excludes `#deprecated`. Then show one minimal view that applies it with the exact line `global predicate core-services`. Keep the answer to one DSL snippet only.",
+      "expected_output": "A single DSL snippet that defines `core-services` using `global { predicateGroup ... }` and then applies it in one view with the exact line `global predicate core-services`.",
+      "expectations": [
+        "The response contains one DSL snippet only.",
+        "The snippet uses `global { predicateGroup core-services { ... } }` exactly as the reusable mechanism.",
+        "The predicate group includes `cloud.*` elements whose kind is `service`.",
+        "The predicate group excludes elements tagged `#deprecated`.",
+        "The view applies the reusable predicate with the exact line `global predicate core-services`."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "B satisfies the exact reusable-predicate syntax target with one DSL snippet: `global { predicateGroup core-services { ... } }` and a view using the exact line `global predicate core-services`. A contains relevant syntax but provides multiple snippets instead of one snippet-only answer, reducing compliance with explicit output constraints.",
+      "with_skill_rubric_score": 9.5,
+      "without_skill_rubric_score": 7.5,
+      "with_skill_rubric_notes": "Exact mechanism and clean single-snippet delivery.",
+      "without_skill_rubric_notes": "Semantically close, but fails single-snippet output constraint.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 26,
+      "run_number": 2,
+      "eval_prompt": "I need the exact reusable-predicate form for LikeC4 — not a style group, not a custom include alias. Define `core-services` in a `global { predicateGroup ... }` block so it includes `cloud.*` elements whose kind is `service` and excludes `#deprecated`. Then show one minimal view that applies it with the exact line `global predicate core-services`. Keep the answer to one DSL snippet only.",
+      "expected_output": "A single DSL snippet that defines `core-services` using `global { predicateGroup ... }` and then applies it in one view with the exact line `global predicate core-services`.",
+      "expectations": [
+        "The response contains one DSL snippet only.",
+        "The snippet uses `global { predicateGroup core-services { ... } }` exactly as the reusable mechanism.",
+        "The predicate group includes `cloud.*` elements whose kind is `service`.",
+        "The predicate group excludes elements tagged `#deprecated`.",
+        "The view applies the reusable predicate with the exact line `global predicate core-services`."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "Both A and B deliver the required reusable-predicate mechanism with predicateGroup and exact 'global predicate core-services' usage, include cloud.* service filter, and deprecated exclusion. Both are usable single-snippet answers for the asked transformation, with no material correctness gap.",
+      "with_skill_rubric_score": 9.3,
+      "without_skill_rubric_score": 9.4,
+      "with_skill_rubric_notes": "Also correct mechanism and exact application line; slightly more verbose but still clean.",
+      "without_skill_rubric_notes": "Minimal and directly aligned with required keywords/mechanism.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 27,
+      "run_number": 1,
+      "eval_prompt": "In a scoped view `view backend of cloud.backend { include * }`, choose exactly one statement and justify it in one sentence: (A) `include *` means the whole recursive subtree of `cloud.backend`, (B) `include *` means `cloud.backend` plus its direct children as the base include set, or (C) `include *` means the whole model. Start your answer with exactly `B` if that is the right choice. Then give one minimal snippet that keeps `include *` and adds only incoming relationships around `cloud.backend`.",
+      "expected_output": "The response starts with `B`, explicitly identifies scoped `include *` as the scoped element plus its direct children as the base include set, and gives a minimal snippet that keeps `include *` while adding incoming relationships around `cloud.backend`.",
+      "expectations": [
+        "The response starts with `B` exactly.",
+        "The justification states that the base include set is the scoped element plus its direct children.",
+        "The answer rejects both the recursive-subtree interpretation and the whole-model interpretation.",
+        "The snippet keeps `include *` inside `view ... of cloud.backend { ... }`.",
+        "The snippet adds only incoming relationships around `cloud.backend`."
+      ],
+      "winner": "with_skill",
+      "confidence": "medium",
+      "reasoning": "Both choose B and mention direct children, but B is cleaner and fully aligned with the required minimal form. A mixes conflicting relationship directions (`include <- cloud.backend` and later `include -> cloud.backend`), which weakens the 'incoming-only' requirement. B keeps `include *` in a scoped view and adds only incoming relationships around `cloud.backend`.",
+      "with_skill_rubric_score": 9.3,
+      "without_skill_rubric_score": 7.2,
+      "with_skill_rubric_notes": "Exact choice, direct-children explanation, and focused incoming predicate.",
+      "without_skill_rubric_notes": "Correct core idea, but conflicting snippet direction reduces precision.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 27,
+      "run_number": 2,
+      "eval_prompt": "In a scoped view `view backend of cloud.backend { include * }`, choose exactly one statement and justify it in one sentence: (A) `include *` means the whole recursive subtree of `cloud.backend`, (B) `include *` means `cloud.backend` plus its direct children as the base include set, or (C) `include *` means the whole model. Start your answer with exactly `B` if that is the right choice. Then give one minimal snippet that keeps `include *` and adds only incoming relationships around `cloud.backend`.",
+      "expected_output": "The response starts with `B`, explicitly identifies scoped `include *` as the scoped element plus its direct children as the base include set, and gives a minimal snippet that keeps `include *` while adding incoming relationships around `cloud.backend`.",
+      "expectations": [
+        "The response starts with `B` exactly.",
+        "The justification states that the base include set is the scoped element plus its direct children.",
+        "The answer rejects both the recursive-subtree interpretation and the whole-model interpretation.",
+        "The snippet keeps `include *` inside `view ... of cloud.backend { ... }`.",
+        "The snippet adds only incoming relationships around `cloud.backend`."
+      ],
+      "winner": "with_skill",
+      "confidence": "low",
+      "reasoning": "Both choose B and mention direct children. A edges out because its snippet adds incoming relationships using 'include -> cloud.backend', matching the eval’s requested incoming-only predicate around cloud.backend. B’s snippet uses 'include <- cloud.backend', which points in the opposite direction and weakens task fidelity despite otherwise strong explanation.",
+      "with_skill_rubric_score": 8.9,
+      "without_skill_rubric_score": 8.5,
+      "with_skill_rubric_notes": "Correct incoming predicate and scoped include semantics; concise and practical.",
+      "without_skill_rubric_notes": "Great explanation, but snippet arrow direction appears inconsistent with incoming-only requirement.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 4,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 28,
+      "run_number": 1,
+      "eval_prompt": "Assume these two relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -> api 'streams'`. Start your answer with exactly `Wrong: extend frontend -> api 'streams'`. Then explain in one short paragraph why omitting the kind is wrong here, and finish with the exact `extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }` snippet.",
+      "expected_output": "The response starts with `Wrong: extend frontend -> api 'streams'`, explains that omitting the relationship kind is wrong under this ambiguity, and ends with the exact async extension snippet including metadata.",
+      "expectations": [
+        "The response starts with `Wrong: extend frontend -> api 'streams'` exactly.",
+        "The explanation says omitting the kind is wrong here because multiple relationships could match.",
+        "The explanation stays focused on relationship identity matching rather than unrelated syntax issues.",
+        "The final snippet is exactly `extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }` or a formatting-equivalent multi-line form.",
+        "The answer does not present the unkinded matcher as acceptable."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "A and B both satisfy all decisive constraints: exact required opening (`Wrong: extend frontend -> api 'streams'`), explicit explanation that omitting kind is wrong under ambiguity, focused relationship-identity reasoning, and the exact async extension snippet with metadata. Quality and correctness are effectively equivalent.",
+      "with_skill_rubric_score": 9.9,
+      "without_skill_rubric_score": 9.9,
+      "with_skill_rubric_notes": "Equally correct and complete with minor stylistic differences only.",
+      "without_skill_rubric_notes": "Fully correct and directly aligned with the contrastive requirement.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "eval_id": 28,
+      "run_number": 2,
+      "eval_prompt": "Assume these two relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -> api 'streams'`. Start your answer with exactly `Wrong: extend frontend -> api 'streams'`. Then explain in one short paragraph why omitting the kind is wrong here, and finish with the exact `extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }` snippet.",
+      "expected_output": "The response starts with `Wrong: extend frontend -> api 'streams'`, explains that omitting the relationship kind is wrong under this ambiguity, and ends with the exact async extension snippet including metadata.",
+      "expectations": [
+        "The response starts with `Wrong: extend frontend -> api 'streams'` exactly.",
+        "The explanation says omitting the kind is wrong here because multiple relationships could match.",
+        "The explanation stays focused on relationship identity matching rather than unrelated syntax issues.",
+        "The final snippet is exactly `extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }` or a formatting-equivalent multi-line form.",
+        "The answer does not present the unkinded matcher as acceptable."
+      ],
+      "winner": "TIE",
+      "confidence": "low",
+      "reasoning": "Both answers match all decisive signals: exact opening rejection line, clear ambiguity rationale about omitted kind, focus on relationship identity matching, and correct async extension snippet with metadata. No meaningful correctness difference.",
+      "with_skill_rubric_score": 9.6,
+      "without_skill_rubric_score": 9.5,
+      "with_skill_rubric_notes": "Exact, concise, and fully aligned with required matcher semantics.",
+      "without_skill_rubric_notes": "Also fully correct; multi-line snippet is formatting-equivalent.",
+      "with_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      },
+      "without_skill_expectations": {
+        "passed": 5,
+        "total": 5
+      }
+    }
+  ],
+  "executable_details": {
+    "with_skill": {
+      "applicable_eval_count": 48,
+      "valid_eval_count": 32,
+      "valid_eval_rate": 0.6667,
+      "snippet_count_total": 52,
+      "error_count_total": 45,
+      "warning_count_total": 52
+    },
+    "without_skill": {
+      "applicable_eval_count": 55,
+      "valid_eval_count": 32,
+      "valid_eval_rate": 0.5818,
+      "snippet_count_total": 124,
+      "error_count_total": 95,
+      "warning_count_total": 120
+    }
+  },
+  "high_variance_evals": [
+    {
+      "id": 0,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "rubric_delta_stats": {
+        "mean": 7.0,
+        "stddev": 1.4142,
+        "min": 6.0,
+        "max": 8.0
+      }
+    },
+    {
+      "id": 6,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill",
+        "without_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": -0.3,
+        "stddev": 0.7071,
+        "min": -0.8,
+        "max": 0.2
+      },
+      "rubric_delta_stats": {
+        "mean": -1.15,
+        "stddev": 4.5962,
+        "min": -4.4,
+        "max": 2.1
+      }
+    },
+    {
+      "id": 9,
+      "run_count": 2,
+      "winner_outcomes": [
+        "TIE",
+        "with_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "rubric_delta_stats": {
+        "mean": 0.5,
+        "stddev": 0.7071,
+        "min": 0.0,
+        "max": 1.0
+      }
+    },
+    {
+      "id": 10,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.3,
+        "stddev": 0.4243,
+        "min": 0.0,
+        "max": 0.6
+      },
+      "rubric_delta_stats": {
+        "mean": 2.95,
+        "stddev": 2.6163,
+        "min": 1.1,
+        "max": 4.8
+      }
+    },
+    {
+      "id": 12,
+      "run_count": 2,
+      "winner_outcomes": [
+        "TIE",
+        "with_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "rubric_delta_stats": {
+        "mean": 0.2,
+        "stddev": 0.2828,
+        "min": 0.0,
+        "max": 0.4
+      }
+    },
+    {
+      "id": 13,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.6,
+        "stddev": 0.2828,
+        "min": 0.4,
+        "max": 0.8
+      },
+      "rubric_delta_stats": {
+        "mean": 4.05,
+        "stddev": 2.0506,
+        "min": 2.6,
+        "max": 5.5
+      }
+    },
+    {
+      "id": 15,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.3,
+        "stddev": 0.1414,
+        "min": 0.2,
+        "max": 0.4
+      },
+      "rubric_delta_stats": {
+        "mean": 2.4,
+        "stddev": 1.9799,
+        "min": 1.0,
+        "max": 3.8
+      }
+    },
+    {
+      "id": 17,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill",
+        "without_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "rubric_delta_stats": {
+        "mean": 0.2,
+        "stddev": 0.2828,
+        "min": 0.0,
+        "max": 0.4
+      }
+    },
+    {
+      "id": 18,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill",
+        "without_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "rubric_delta_stats": {
+        "mean": 0.25,
+        "stddev": 1.0607,
+        "min": -0.5,
+        "max": 1.0
+      }
+    },
+    {
+      "id": 19,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.1666,
+        "stddev": 0.2357,
+        "min": 0.0,
+        "max": 0.3333
+      },
+      "rubric_delta_stats": {
+        "mean": 2.0,
+        "stddev": 0.0,
+        "min": 2.0,
+        "max": 2.0
+      }
+    },
+    {
+      "id": 21,
+      "run_count": 2,
+      "winner_outcomes": [
+        "TIE",
+        "with_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "rubric_delta_stats": {
+        "mean": 0.65,
+        "stddev": 0.9192,
+        "min": 0.0,
+        "max": 1.3
+      }
+    },
+    {
+      "id": 22,
+      "run_count": 2,
+      "winner_outcomes": [
+        "TIE",
+        "without_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "rubric_delta_stats": {
+        "mean": -0.3,
+        "stddev": 0.4243,
+        "min": -0.6,
+        "max": 0.0
+      }
+    },
+    {
+      "id": 25,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill",
+        "without_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.1,
+        "stddev": 0.4243,
+        "min": -0.2,
+        "max": 0.4
+      },
+      "rubric_delta_stats": {
+        "mean": 0.65,
+        "stddev": 3.3234,
+        "min": -1.7,
+        "max": 3.0
+      }
+    },
+    {
+      "id": 26,
+      "run_count": 2,
+      "winner_outcomes": [
+        "TIE",
+        "with_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.1,
+        "stddev": 0.1414,
+        "min": 0.0,
+        "max": 0.2
+      },
+      "rubric_delta_stats": {
+        "mean": 0.95,
+        "stddev": 1.4849,
+        "min": -0.1,
+        "max": 2.0
+      }
+    },
+    {
+      "id": 27,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.2,
+        "stddev": 0.0,
+        "min": 0.2,
+        "max": 0.2
+      },
+      "rubric_delta_stats": {
+        "mean": 1.25,
+        "stddev": 1.2021,
+        "min": 0.4,
+        "max": 2.1
+      }
+    }
+  ],
+  "synthesis_template": "# Critical Synthesis — `{skill_name}` Benchmark\n\n**Iteration:** `{iteration}`\n**Protocol:** {protocol_version}\n**Evals:** {eval_count} (ids {eval_id_range}), {run_count} run(s) per configuration\n**Generated:** {date}\n\n---\n\n## 1. Quantitative results\n\n| Metric | `with_skill` | `without_skill` | Δ |\n|---|---|---|---|\n| **Blind win rate** | **{with_wins}/{total_comparisons} = {with_win_pct}** | {without_wins}/{total_comparisons} = {without_win_pct} | {win_rate_delta} |\n| **Expectation pass rate** | **{with_exp_rate}** | {without_exp_rate} | **{exp_delta}** |\n| **Rubric score (0–10)** | **{with_rubric}** | {without_rubric} | **{rubric_delta}** |\n| Seconds / eval | {with_time} s | {without_time} s | {time_delta} |\n| Words / eval | {with_words} | {without_words} | {words_delta} |\n| Files read | {with_files} | {without_files} | {files_delta} |\n| Executable validity | {with_exec} | {without_exec} | {exec_delta} |\n\n[Interpret the quantitative results: what is the overall signal? Is it strong, weak, mixed?]\n\n---\n\n## 2. Eval-by-eval analysis\n\n| Eval | Topic | Winner | Exp with | Exp without | Key discriminator |\n|---|---|---|---|---|---|\n[One row per eval — fill in from per_eval_comparisons data]\n\n### Observations\n\n[For each notable eval, explain WHY the winner won. Use the blind comparison reasoning and rubric notes. Identify the strongest signals and the weakest discriminators.]\n\n---\n\n## 3. Executable validity analysis\n\n[Analyze the executable validity delta. If skill scores lower despite winning blind comparisons, explain the paradox (e.g. shell commands vs DSL blocks). State whether this metric is reliable for this skill.]\n\n---\n\n## 4. Skill design assessment\n\n### Strengths\n[Based on eval-by-eval wins: what does the skill teach that the baseline cannot infer? List 3-4 concrete strengths.]\n\n### Weak areas\n[Based on narrow wins, ties, or low-confidence comparisons: where could the skill improve? List 3-4 areas with specific eval references.]\n\n---\n\n## 5. Priority recommendations\n\n**P1 — Critical (direct impact on baseline failures)**\n[Actions that would fix the largest baseline gaps]\n\n**P2 — Important (improved precision)**\n[Actions that would strengthen narrow wins]\n\n**P3 — Nice to have (robustness)**\n[Follow-up experiments or eval additions]\n\n---\n\n## 6. Anthropic skill-authoring best-practices pass\n\n- **Concision / token economy:** [Identify instructions to trim because they restate model-common knowledge instead of adding task-critical guidance]\n- **Degrees of freedom fit:** [Assess where guidance should be looser (context-driven) vs stricter (fragile sequences) and why]\n- **Triggerability metadata quality:** [Assess whether `name` + `description` clearly communicate capability and trigger contexts]\n- **Progressive disclosure quality:** [Check whether SKILL.md stays focused and references remain one level deep to detailed files]\n- **Workflow + feedback-loop quality:** [Confirm complex tasks include a clear sequence and a validate/fix/retry loop]\n- **Anti-pattern scan + rewrites:** [Flag vague wording, option overload, stale/time-sensitive guidance, or path/platform pitfalls; propose concrete rewrite edits]\n\n---\n\n## 7. Verdict\n\n[State whether the skill is effective, with a 2-3 sentence summary citing the key metrics. Note any caveats.]\n"
+}

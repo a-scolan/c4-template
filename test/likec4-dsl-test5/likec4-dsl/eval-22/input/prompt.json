@@ -1,0 +1,6 @@
+{
+  "id": 22,
+  "skill_name": "likec4-dsl",
+  "prompt": "Write a minimal `dynamic view checkout-flow` snippet that simultaneously tests three tricky points: (1) `customer -> frontend -> api` must be a single chained expression, (2) only the `frontend -> api` hop carries a body with `technology 'HTTPS'` and `navigateTo payment-detail`, and (3) `api` fans out in `parallel { ... }` to `payments`, `inventory`, and `notifications`. After the snippet, add one sentence saying why rewriting the chain as separate standalone steps would not satisfy the request.",
+  "files": []
+}
