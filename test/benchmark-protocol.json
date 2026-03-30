@@ -1,12 +1,12 @@
 {
   "protocol_version": "benchmark-v3",
-  "generated_at": "2026-03-30T07:28:03Z",
+  "generated_at": "2026-03-30T15:57:58Z",
   "eval_artifact_schema_version": 2,
   "comparator_schema_version": 2,
   "tracked_files": [
     {
       "path": ".github/agents/skill-benchmark-manager.agent.md",
-      "sha256": "264c7cd95dbc94d3e97ba4161a4ac2e8d06568778fb7d899a93314364d34d417"
+      "sha256": "72b7eb3058ea142142679b68d4d903199849a12c68a01f958589b123872384a5"
     },
     {
       "path": ".github/agents/skill-benchmark-baseline.agent.md",
@@ -18,7 +18,7 @@
     },
     {
       "path": ".github/agents/skill-benchmark-with-skill.agent.md",
-      "sha256": "de55332cd1f8f3622534dc3b3a53e446f02a08dbb7461dea8f60949e4309c3b4"
+      "sha256": "c1b67671fcf27ebc0f39491e53c7c2da5fe3e6e5626a1e6cba0cda1637ab1a30"
     },
     {
       "path": ".github/agents/skill-blind-comparator.agent.md",
@@ -26,15 +26,15 @@
     },
     {
       "path": "test/scripts/benchmark_access_hook.py",
-      "sha256": "bd1749657d50a5e95c0ddeda3368a940c54a888e90c64370b86ecf144ecc4966"
+      "sha256": "1f25d435e7a8b122f41e373baa070919ae39ab86aab9514f7594b572633a9c25"
     },
     {
       "path": "test/benchmark-agent-workflow.md",
-      "sha256": "a7a99f059100569199f9c5dcfe60af173ade9948a3fec688b04a0f6fd2b3f3a9"
+      "sha256": "faaf11023cbda69db2d3e66671fc29ba6425c5dd72491c5d42ac95a27e8346c7"
     },
     {
       "path": "test/scripts/skill_suite_tools.py",
-      "sha256": "1747a4e044924041927faf1f335f94f87dd1fc3e663a69273915b201b2d14957"
+      "sha256": "c1f233da2c20b099ad241e544226688fad8de703ed3b66d58760601fa4147af1"
     }
   ]
 }

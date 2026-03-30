@@ -1,0 +1,5 @@
+npx likec4 validate --file projects/template/system-model.c4 --file projects/template/system-views.c4 --file projects/template/likec4.config.json
+
+`filteredFiles` tells you how many of the files you explicitly filtered to were actually included in this validation run. `filteredErrors` tells you how many syntax/semantic diagnostics were found within that filtered file set only. `totalErrors` tells you how many diagnostics exist overall before that file filter is applied, so it helps you see whether the selected files are the whole problem or just part of it.
+
+If `filteredFiles` comes back as `2` instead of `3`, one of the three paths you passed was not part of the validated input set for this run (for example, the path was wrong, not recognized by the project loader, or otherwise resolved outside the effective project scope), so only two requested files were actually considered.

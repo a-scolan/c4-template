@@ -59,7 +59,7 @@ def infer_anonymous_session_suffix(payload: dict[str, Any], workspace_root: Path
 		skills = {
 			skill
 			for rel_path in tool_paths
-			if (skill := legacy.extract_skill_from_skills_path(rel_path))
+			if (skill := legacy.extract_skill_from_skills_path(rel_path) or legacy.extract_skill_from_iteration_path(rel_path))
 		}
 		if len(skills) == 1:
 			return f"{mode}-{next(iter(skills))}"

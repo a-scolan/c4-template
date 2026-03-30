@@ -1,0 +1,6 @@
+{
+  "id": 7,
+  "skill_name": "likec4-dsl",
+  "prompt": "I have this base view:\n```likec4\nview backend-overview of cloud.backend {\n  include *\n}\n```\nWrite a `detail` view that: (1) extends `backend-overview`, (2) adds just `include api` — relying on scope inheritance so I don't need the full FQN `cloud.backend.api`, and (3) adds all incoming relationships to `cloud.backend` from the rest of the model using a relationship predicate. Show the DSL and explain what scope inheritance means here.",
+  "files": []
+}

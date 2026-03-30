@@ -1,0 +1,6 @@
+{
+  "id": 19,
+  "skill_name": "likec4-dsl",
+  "prompt": "In `view backend of cloud.backend { include * }`, what exactly does `*` include in scoped view semantics? Do not answer with only `the whole model` or only `the local subtree`. In your first bullet, you must explicitly use the phrase `direct children`. Answer in two short bullets: (1) the base include set, and (2) what neighboring or derived elements/relationships can still become visible because of that scoped include. Then provide a minimal snippet that keeps `include *` and adds only incoming and outgoing relationships around `cloud.backend`.",
+  "files": []
+}

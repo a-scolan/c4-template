@@ -1,0 +1,6 @@
+{
+  "id": 16,
+  "skill_name": "likec4-dsl",
+  "prompt": "Is this relationship valid in LikeC4? Start your answer with `Valid.` or `Invalid.` exactly.\n```likec4\nmodel {\n  cloud = system 'Cloud' {\n    backend = container 'Backend'\n    cloud -> backend 'contains traffic'\n  }\n}\n```\nIf invalid, explicitly say in one sentence that containment is modeled by nesting, not by a relationship. Then provide the smallest valid rewrite that keeps the hierarchy unchanged and adds exactly one valid non-parent/child relationship elsewhere.",
+  "files": []
+}

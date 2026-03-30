@@ -788,6 +788,17 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(hidden_grading), "deny")
 
+    def test_with_skill_allows_iteration_prompt_input_path(self) -> None:
+        output = self.run_hook_payload(
+            self.read_payload(
+                "with-skill-prompt-input-session",
+                "test/likec4-dsl-test4/likec4-dsl/eval-4/input/prompt.md",
+                end_line=20,
+            ),
+            mode="with_skill_targeted",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
     def test_blind_comparator_denies_mapping_file(self) -> None:
         output = self.run_hook_payload(
             self.read_payload("blind-session", "test/iteration-2/create-element/eval-0/blind-map.json", end_line=40),
@@ -862,6 +873,27 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(output), "deny")
         self.assertIn("must provide an explicit --iteration", output["hookSpecificOutput"]["permissionDecisionReason"])
+
+    def test_manager_denies_summarize_config_without_config_flag(self) -> None:
+        output = self.run_hook_payload(
+            self.command_payload(
+                "manager-session-summarize-missing-config",
+                "python test/scripts/skill_suite_tools.py summarize-config --iteration test/iteration-2 --skill create-element --workspace-root .",
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(output), "deny")
+        self.assertIn("missing required flag(s): --config", output["hookSpecificOutput"]["permissionDecisionReason"])
+
+    def test_manager_allows_safe_for_loop_with_allowlisted_commands(self) -> None:
+        output = self.run_hook_payload(
+            self.command_payload(
+                "manager-session-safe-loop",
+                "for s in create-element; do python test/scripts/skill_suite_tools.py summarize-phase --iteration test/iteration-2 --workspace-root . --config with_skill --skill $s; done",
+            ),
+            mode="benchmark_manager",
+        )
+        self.assertEqual(self.decision(output), "allow")
 
     def test_manager_allows_pre_aggregate_check_with_iteration(self) -> None:
         output = self.run_hook_payload(

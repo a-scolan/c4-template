@@ -806,6 +806,8 @@ def materialize_run_artifacts(
     skill_dir = iteration_dir / skill_name
     response_ids: set[int] = set()
     written_files: list[str] = []
+    per_response_started_candidates: list[datetime] = []
+    per_response_finished_candidates: list[datetime] = []
     for item in responses:
         if not isinstance(item, dict):
             raise ValueError(f"Each response entry must be an object in {raw_json_path}")
@@ -819,6 +821,15 @@ def materialize_run_artifacts(
         response = item.get("response")
         if not isinstance(response, str) or not response.strip():
             raise ValueError(f"Eval {eval_id} in {raw_json_path} must contain a non-empty 'response' string")
+
+        item_started = extract_timestamp_field(item, "started_at", "started_at_utc", "start_timestamp_utc")
+        item_finished = extract_timestamp_field(item, "finished_at", "finished_at_utc", "finish_timestamp_utc")
+        started_dt = iso_to_datetime(item_started) if item_started else None
+        finished_dt = iso_to_datetime(item_finished) if item_finished else None
+        if started_dt is not None:
+            per_response_started_candidates.append(started_dt)
+        if finished_dt is not None:
+            per_response_finished_candidates.append(finished_dt)
 
         output_path = response_path_for_run(skill_dir, eval_id, configuration, run_number)
         write_text(output_path, response.rstrip() + "\n")
@@ -842,6 +853,10 @@ def materialize_run_artifacts(
         "finished_at_utc",
         "finish_timestamp_utc",
     )
+    if not started_value and per_response_started_candidates:
+        started_value = min(per_response_started_candidates).strftime("%Y-%m-%dT%H:%M:%SZ")
+    if not finished_value and per_response_finished_candidates:
+        finished_value = max(per_response_finished_candidates).strftime("%Y-%m-%dT%H:%M:%SZ")
     if not started_value or not finished_value:
         raise ValueError(
             f"Raw payload {raw_json_path} must provide started_at/finished_at (or compatible aliases), or they must be passed via CLI"
@@ -1061,6 +1076,12 @@ def disable_workspace_skills(workspace_root: Path, iteration_dir: Path) -> dict[
 
     existing_backups = [child.name for child in disabled_root.iterdir() if child.is_dir()]
     if existing_backups:
+        # Idempotency guard: if a relocation manifest already exists AND .github/skills/ is
+        # already empty, we are already in strict-baseline mode — return the manifest instead
+        # of raising. This avoids spurious failures on double-disable calls during error
+        # recovery or scripted retries.
+        if manifest_path.exists() and not skill_directory_names(skills_root):
+            return read_json(manifest_path)
         raise FileExistsError(
             f"Disabled skills backup directory is not empty: {disabled_root}"
         )
@@ -1236,12 +1257,48 @@ def load_skill_eval_bundle(workspace_root: Path, skill_name: str) -> dict[str, A
     return load_split_eval_artifacts(workspace_root, skill_name)
 
 
+def load_skill_eval_bundle_for_iteration(workspace_root: Path, iteration_dir: Path, skill_name: str) -> dict[str, Any]:
+    try:
+        return load_skill_eval_bundle(workspace_root, skill_name)
+    except FileNotFoundError:
+        disabled_root = disabled_skills_root(iteration_dir) / skill_name / "evals"
+        public_path = disabled_root / EVALS_PUBLIC_FILENAME
+        grading_path = disabled_root / GRADING_SPEC_FILENAME
+        if not public_path.exists() or not grading_path.exists():
+            raise
+
+        public = read_json(public_path)
+        grading = read_json(grading_path)
+        public_issues = validate_public_eval_definition(skill_name, public)
+        grading_issues = validate_grading_spec_definition(skill_name, grading)
+        pair_issues = validate_split_eval_pair(skill_name, public, grading)
+        issues = [*public_issues, *grading_issues, *pair_issues]
+        if issues:
+            raise ValueError(
+                "Invalid split eval artifacts for skill "
+                f"'{skill_name}' in relocated backup {disabled_root}: "
+                + "; ".join(issues)
+            )
+
+        return {
+            "skill_name": skill_name,
+            "public": public,
+            "grading": grading,
+            "paths": {
+                "public": public_path,
+                "grading": grading_path,
+            },
+        }
+
+
 def snapshot_public_evals(iteration_dir: Path, workspace_root: Path, skill_name: str | None = None) -> dict[str, Any]:
     skill_names = [skill_name] if skill_name else workspace_benchmark_skill_names(workspace_root)
+    if not skill_names:
+        skill_names = skill_directory_names(disabled_skills_root(iteration_dir))
     snapshot: list[dict[str, Any]] = []
 
     for current_skill in skill_names:
-        bundle = load_skill_eval_bundle(workspace_root, current_skill)
+        bundle = load_skill_eval_bundle_for_iteration(workspace_root, iteration_dir, current_skill)
         public = bundle["public"]
         eval_entries: list[dict[str, Any]] = []
         worker_prompt_inputs: list[dict[str, Any]] = []
@@ -2880,6 +2937,107 @@ def current_utc_timestamp() -> dict[str, Any]:
     }
 
 
+def collect_run_response_paths(skill_dir: Path, configuration: str, run_number: int) -> list[Path]:
+    response_paths: list[Path] = []
+    seen: set[str] = set()
+
+    for eval_dir in sorted(skill_dir.glob("eval-*"), key=lambda path: path.name):
+        name = eval_dir.name
+        if not name.startswith("eval-"):
+            continue
+        try:
+            eval_id = int(name.split("-", 1)[1])
+        except (IndexError, ValueError):
+            continue
+
+        response_path = resolve_response_path(skill_dir, eval_id, configuration, run_number)
+        if response_path is None or not response_path.exists():
+            continue
+        key = str(response_path.resolve())
+        if key in seen:
+            continue
+        seen.add(key)
+        response_paths.append(response_path)
+
+    return response_paths
+
+
+def derive_run_metrics_from_responses(
+    iteration_dir: Path,
+    skill_name: str,
+    configuration: str,
+    run_number: int,
+    *,
+    output_path: Path | None = None,
+    language: str = "English",
+    mcp_used: bool = False,
+) -> dict[str, Any]:
+    skill_dir = iteration_dir / skill_name
+    if not skill_dir.exists():
+        raise FileNotFoundError(f"Missing skill directory: {skill_dir}")
+
+    responses = collect_run_response_paths(skill_dir, configuration, run_number)
+    if not responses:
+        raise FileNotFoundError(
+            f"No response.md files found for {skill_name} {configuration} run-{run_number} under {skill_dir}"
+        )
+
+    mtime_datetimes = [datetime.fromtimestamp(path.stat().st_mtime, timezone.utc) for path in responses]
+    started_at = min(mtime_datetimes).strftime("%Y-%m-%dT%H:%M:%SZ")
+    finished_at = max(mtime_datetimes).strftime("%Y-%m-%dT%H:%M:%SZ")
+    elapsed_seconds_total = round(
+        (max(mtime_datetimes) - min(mtime_datetimes)).total_seconds(),
+        6,
+    )
+
+    eval_ids: set[int] = set()
+    for path in responses:
+        eval_name = path.parents[2].name
+        if not eval_name.startswith("eval-"):
+            continue
+        try:
+            eval_ids.add(int(eval_name.split("-", 1)[1]))
+        except (IndexError, ValueError):
+            continue
+
+    prompt_reads = 0
+    for eval_id in eval_ids:
+        prompt_path = skill_dir / f"eval-{eval_id}" / "input" / "prompt.md"
+        if prompt_path.exists():
+            prompt_reads += 1
+    files_read_count = prompt_reads or len(eval_ids) or len(responses)
+
+    payload = build_run_metrics_payload(
+        skill_name=skill_name,
+        configuration=configuration,
+        language=language,
+        mcp_used=mcp_used,
+        started_at=started_at,
+        finished_at=finished_at,
+        elapsed_seconds_total=elapsed_seconds_total,
+        files_read_count=files_read_count,
+        files_written_count=len(responses),
+        run_number=run_number,
+    )
+
+    destination = output_path or per_run_metrics_path(skill_dir, configuration, run_number)
+    write_json(destination, payload)
+
+    return {
+        "iteration": iteration_dir.name,
+        "skill_name": skill_name,
+        "configuration": configuration,
+        "run_number": run_number,
+        "output": str(destination),
+        "responses_used": len(responses),
+        "started_at": started_at,
+        "finished_at": finished_at,
+        "elapsed_seconds_total": elapsed_seconds_total,
+        "files_read_count": files_read_count,
+        "files_written_count": len(responses),
+    }
+
+
 def prepare_blind(iteration_dir: Path) -> dict[str, Any]:
     prepared: list[dict[str, Any]] = []
     for skill_dir in skill_dirs(iteration_dir):
@@ -3913,6 +4071,14 @@ def cmd_write_protocol_manifest(args: argparse.Namespace) -> None:
 def cmd_protocol_preflight(args: argparse.Namespace) -> None:
     manifest_path = protocol_manifest_path(args.workspace_root, args.manifest)
     summary = freeze_protocol_for_iteration(args.iteration, args.workspace_root, manifest_path)
+    # Always reset all worker hook states at iteration start to prevent cross-iteration
+    # session contamination. This is mandatory: anonymous session IDs are derived from
+    # stable prefixes and persist across runs; stale state can lock workers to a previous
+    # iteration's scope and make them write to the wrong directory.
+    _WORKER_MODES = ("baseline", "with_skill_targeted", "blind_compare")
+    for mode in _WORKER_MODES:
+        reset_hook_state(args.workspace_root, mode=mode)
+    summary["hook_states_reset"] = list(_WORKER_MODES)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
@@ -4113,6 +4279,19 @@ def cmd_write_run_metrics(args: argparse.Namespace) -> None:
         "configuration": payload["configuration"],
         "elapsed_seconds_total": payload["elapsed_seconds_total"],
     }, indent=2, ensure_ascii=False))
+
+
+def cmd_write_run_metrics_auto(args: argparse.Namespace) -> None:
+    summary = derive_run_metrics_from_responses(
+        args.iteration,
+        args.skill,
+        args.config,
+        args.run_number,
+        output_path=args.output,
+        language=args.language,
+        mcp_used=args.mcp_used,
+    )
+    print(json.dumps(summary, indent=2, ensure_ascii=False))
 
 
 def cmd_materialize_run(args: argparse.Namespace) -> None:
@@ -4504,6 +4683,19 @@ def build_parser() -> argparse.ArgumentParser:
     write_metrics_parser.add_argument("--files-written-count", type=int, required=True, help="Files written under /test during the run")
     write_metrics_parser.add_argument("--run-number", type=int, default=1, help="Repeated-run index for this metrics payload (default: 1)")
     write_metrics_parser.set_defaults(func=cmd_write_run_metrics)
+
+    write_metrics_auto_parser = subparsers.add_parser(
+        "write-run-metrics-auto",
+        help="Derive run-metrics timestamps/counts from response artifacts for one <skill, config, run>",
+    )
+    write_metrics_auto_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    write_metrics_auto_parser.add_argument("--skill", required=True, help="Target skill name")
+    write_metrics_auto_parser.add_argument("--config", choices=["with_skill", "without_skill"], required=True, help="Configuration name")
+    write_metrics_auto_parser.add_argument("--run-number", type=int, default=1, help="Repeated-run index to derive (default: 1)")
+    write_metrics_auto_parser.add_argument("--output", type=Path, help="Optional explicit output metrics path")
+    write_metrics_auto_parser.add_argument("--language", default="English", help="Language used for the run output (default: English)")
+    write_metrics_auto_parser.add_argument("--mcp-used", action="store_true", help="Set this flag if any MCP tool was used during the run")
+    write_metrics_auto_parser.set_defaults(func=cmd_write_run_metrics_auto)
 
     materialize_run_parser = subparsers.add_parser(
         "materialize-run",

@@ -1,0 +1,1 @@
+I just edited `projects/template/system-model.c4` and I only want syntax and semantic validation for that file, not layout drift. What exact LikeC4 CLI command should I run from the repo root, and which JSON fields tell me whether only my file failed versus the whole project being broken?

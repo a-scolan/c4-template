@@ -1,0 +1,1 @@
+I need to validate only two edited files in one command: `projects/template/system-model.c4` and `projects/template/system-views.c4`, without layout drift checks. Give the exact command and explain how to confirm both files were actually filtered in JSON output.

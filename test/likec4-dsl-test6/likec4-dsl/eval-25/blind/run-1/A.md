@@ -1,0 +1,5 @@
+npx likec4 validate --json --no-layout --file projects/template/system-model.c4 --file projects/template/system-views.c4 --file projects/template/likec4.config.json projects/template
+
+`filteredFiles` tells you how many actual LikeC4 source files were included by the repeated `--file` filters. `filteredErrors` tells you how many validation errors exist only within that filtered subset. `totalErrors` tells you how many validation errors exist across the full project model, including files outside your filter.
+
+If `filteredFiles` comes back as `2` instead of `3`, it means one of the paths you passed with `--file` was not a `.c4` or `.likec4` source file for DSL validation; here, `projects/template/likec4.config.json` would not count as a validated LikeC4 source file, so only the two `.c4` files are included in the filtered file count.

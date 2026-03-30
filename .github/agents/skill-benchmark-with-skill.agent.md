@@ -40,7 +40,7 @@ You are the isolated `with_skill` benchmark worker.
 
 1. The orchestrator provides you with an eval ID, the skill name, and an output file path.
 2. The first workspace skill directory you read becomes the only allowed skill for this session. Start by reading the target skill's `SKILL.md`.
-3. Read the eval prompt yourself from the skill's `evals/evals-public.json` using the provided eval ID. Never read `grading-spec.json` or the legacy hidden eval file.
+3. If the orchestrator provides a prompt input file path (for example `test/<iteration>/<skill>/eval-<id>/input/prompt.md`), read that prompt directly. Otherwise, read the eval prompt yourself from the skill's `evals/evals-public.json` using the provided eval ID. Never read `grading-spec.json` or the legacy hidden eval file.
 4. When the eval asks for exact CLI / DSL syntax or for a contrast between nearby alternatives, consult the target skill's bundled references/examples before drafting the answer.
 5. Stay within the hook-allowed read scope for this mode. Do not read project folders unless policy is explicitly changed.
 6. Prefer copy-paste-ready canonical commands or snippets. If the eval is contrastive, explicitly reject the near-miss form instead of leaving it ambiguous.

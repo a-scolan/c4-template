@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -596,6 +597,38 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertEqual(len(summary["runs"]), 2)
         self.assertIn("elapsed_seconds_per_eval", summary["variance"])
         self.assertTrue((self.iteration_dir / "create-element" / "eval-0" / "with_skill" / "run-2" / "response.md").exists())
+
+    def test_materialize_run_uses_per_response_timestamps_when_top_level_missing(self) -> None:
+        raw_payload = self._write_json(
+            self.workspace_root / "run-per-response-timing.json",
+            {
+                "skill_name": "create-element",
+                "configuration": "with_skill",
+                "language": "English",
+                "mcp_used": False,
+                "responses": [
+                    {
+                        "id": 0,
+                        "response": "timed response",
+                        "started_at": "2026-03-13T10:00:00Z",
+                        "finished_at": "2026-03-13T10:00:07Z",
+                    }
+                ],
+            },
+        )
+
+        summary = tools.materialize_run_artifacts(
+            self.iteration_dir,
+            "create-element",
+            "with_skill",
+            raw_payload,
+            run_number=1,
+        )
+
+        self.assertEqual(summary["elapsed_seconds_total"], 7.0)
+        metrics = tools.read_json(self.iteration_dir / "create-element" / "with_skill-run-metrics.json")
+        self.assertEqual(metrics["started_at"], "2026-03-13T10:00:00Z")
+        self.assertEqual(metrics["finished_at"], "2026-03-13T10:00:07Z")
 
     def test_cmd_summarize_config_supports_legacy_iteration_skill_arguments(self) -> None:
         skill_dir = self.iteration_dir / "create-element"
@@ -1349,6 +1382,23 @@ class SkillSuiteToolsTests(unittest.TestCase):
         snapshot_path = self.iteration_dir / "_meta" / "evals-public-snapshot.json"
         self.assertTrue(snapshot_path.exists())
 
+    def test_snapshot_public_evals_works_when_workspace_skills_are_relocated(self) -> None:
+        skills_root = self.workspace_root / ".github" / "skills"
+        disabled_root = self.iteration_dir / "_disabled-skills"
+        disabled_root.mkdir(parents=True, exist_ok=True)
+
+        moved_skill = skills_root / "create-element"
+        moved_destination = disabled_root / "create-element"
+        moved_skill.rename(moved_destination)
+
+        summary = tools.snapshot_public_evals(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(summary["skill_count"], 1)
+        self.assertEqual(summary["skills"][0]["skill_name"], "create-element")
+        prompt_paths = summary["skills"][0]["worker_prompt_inputs"][0]
+        self.assertTrue((self.workspace_root / prompt_paths["prompt_md_path"]).exists())
+        self.assertTrue((self.workspace_root / prompt_paths["prompt_json_path"]).exists())
+
     def test_disable_workspace_skills_moves_all_and_marks_strict_ready(self) -> None:
         (self.workspace_root / ".github" / "skills" / "create-relationship" / "SKILL.md").parent.mkdir(parents=True, exist_ok=True)
         (self.workspace_root / ".github" / "skills" / "create-relationship" / "SKILL.md").write_text("x\n", encoding="utf-8")
@@ -1382,6 +1432,34 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertIn("timestamp", payload)
         self.assertIsNotNone(tools.iso_to_datetime(payload["timestamp"]))
         self.assertTrue(payload["timestamp"].endswith("Z"))
+
+    def test_derive_run_metrics_from_responses_uses_response_file_mtime_window(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+        response_0 = skill_dir / "eval-0" / "with_skill" / "run-2" / "response.md"
+        response_1 = skill_dir / "eval-1" / "with_skill" / "run-2" / "response.md"
+        response_0.parent.mkdir(parents=True, exist_ok=True)
+        response_1.parent.mkdir(parents=True, exist_ok=True)
+        response_0.write_text("answer 0\n", encoding="utf-8")
+        response_1.write_text("answer 1\n", encoding="utf-8")
+
+        t0 = 1773396000  # 2026-03-12T10:00:00Z
+        t1 = 1773396009  # 2026-03-12T10:00:09Z
+        os.utime(response_0, (t0, t0))
+        os.utime(response_1, (t1, t1))
+
+        summary = tools.derive_run_metrics_from_responses(
+            self.iteration_dir,
+            "create-element",
+            "with_skill",
+            2,
+        )
+
+        self.assertEqual(summary["responses_used"], 2)
+        self.assertEqual(summary["elapsed_seconds_total"], 9.0)
+        metrics = tools.read_json(skill_dir / "_runs" / "with_skill" / "run-2-metrics.json")
+        self.assertEqual(metrics["run_number"], 2)
+        self.assertEqual(metrics["files_written_count"], 2)
+        self.assertEqual(metrics["elapsed_seconds_total"], 9.0)
 
     def test_validate_hook_audit_accepts_denied_broad_mcp_and_prompt_input_reads(self) -> None:
         audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"

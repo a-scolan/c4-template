@@ -1,0 +1,6 @@
+{
+  "id": 18,
+  "skill_name": "likec4-dsl",
+  "prompt": "Assume these two relationships already exist: `frontend -[async]-> api 'streams'` and `frontend -> api 'streams'`. Can I extend the async one with `extend frontend -> api 'streams' { metadata { qos 'high' } }`? Explain why or why not in terms of relationship identity matching — source, target, title, and kind — and explicitly say whether omitting the kind is ambiguous or wrong here. Then provide the exact extension snippet that unambiguously targets the async relationship.",
+  "files": []
+}
