@@ -53,6 +53,12 @@ def load_legacy_hook_module():
 
 legacy = load_legacy_hook_module()
 
+# Isolation hardening:
+# - Do not infer file access from free-text fields (e.g., prompts/editor context)
+# - Keep path extraction limited to explicit path-bearing keys.
+if hasattr(legacy, "PATHISH_KEYS") and isinstance(legacy.PATHISH_KEYS, set):
+    legacy.PATHISH_KEYS = {key for key in legacy.PATHISH_KEYS if key != "query"}
+
 
 def infer_anonymous_session_suffix(payload: dict[str, Any], workspace_root: Path, mode: str) -> str | None:
     tool_paths = extract_tool_paths(payload, workspace_root, legacy)

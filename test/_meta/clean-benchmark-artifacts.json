@@ -1,13 +1,17 @@
 {
-  "generated_at": "2026-03-25T21:04:33Z",
+  "generated_at": "2026-03-29T16:13:42Z",
   "removed_count": 1,
   "removed": [
     "test/scripts/__pycache__"
   ],
-  "skipped_count": 3,
+  "skipped_count": 7,
   "skipped": [
     "test/iteration-1",
+    "test/iteration-2",
     "test/likec4-dsl-test2",
+    "test/likec4-dsl-test3",
+    "test/likec4-dsl-test4",
+    "test/likec4-dsl-test5",
     "test/_agent-hooks"
   ],
   "skipped_reason": "git-tracked directories are preserved to avoid data loss",

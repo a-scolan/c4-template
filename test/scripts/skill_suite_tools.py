@@ -113,7 +113,7 @@ BENCH_HOOK_MODES = (
     "with_skill_targeted",
     "blind_compare",
 )
-STATEFUL_ANONYMOUS_HOOK_MODES = {"with_skill_targeted", "blind_compare"}
+STATEFUL_ANONYMOUS_HOOK_MODES = {"baseline", "baseline_hook_only", "with_skill_targeted", "blind_compare"}
 RESTRICTED_LIKEC4_MCP_NORMALIZED_NAMES = {
     "mcplikec4listprojects",
     "mcplikec4readprojectsummary",
@@ -121,10 +121,13 @@ RESTRICTED_LIKEC4_MCP_NORMALIZED_NAMES = {
     "mcplikec4openview",
 }
 HOOK_AUDIT_ALLOWED_READ_PREFIXES = {
-    "baseline": ("projects/shared/",),
-    "baseline_hook_only": ("projects/shared/",),
-    "with_skill_targeted": ("projects/shared/", ".github/skills/"),
+    "baseline": (),
+    "baseline_hook_only": (),
+    "with_skill_targeted": (".github/skills/",),
 }
+BASELINE_PROMPT_INPUT_READ_RE = re.compile(
+    r"^test/(?:iteration-\d+|.+-test\d+)/[^/_][^/]*/eval-\d+/input/(?:prompt\.md|prompt\.json)$"
+)
 HIGH_VARIANCE_EXPECTATION_STDDEV = 0.2
 HIGH_VARIANCE_RUBRIC_STDDEV = 1.0
 
@@ -658,6 +661,118 @@ def normalize_comparison_entry(raw_entry: Any) -> dict[str, Any]:
     return normalized
 
 
+def extract_raw_comparisons_payload(raw: Any) -> tuple[str | None, list[Any]]:
+    if isinstance(raw, dict):
+        raw_skill_name = raw.get("skill_name")
+        comparisons = raw.get("comparisons")
+    elif isinstance(raw, list):
+        raw_skill_name = None
+        comparisons = raw
+    else:
+        raise ValueError("Expected a JSON object or list")
+
+    if isinstance(comparisons, dict):
+        comparisons = [comparisons]
+    if not isinstance(comparisons, list):
+        raise ValueError("Raw payload must contain a 'comparisons' list")
+    return raw_skill_name if isinstance(raw_skill_name, str) else None, comparisons
+
+
+def comparison_entry_key(entry: dict[str, Any]) -> tuple[int, int]:
+    eval_id = entry.get("eval_id")
+    run_number = coerce_int(entry.get("run_number")) or 1
+    if not isinstance(eval_id, int):
+        raise ValueError("comparison entry must provide an integer eval_id")
+    return (eval_id, run_number)
+
+
+def sort_comparison_entries(entries: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    return sorted(
+        entries,
+        key=lambda item: (
+            int(item.get("eval_id", -1)),
+            coerce_int(item.get("run_number")) or 1,
+        ),
+    )
+
+
+def normalize_comparisons_list(raw_items: list[Any], *, source: Path | None = None) -> list[dict[str, Any]]:
+    normalized: list[dict[str, Any]] = []
+    seen_keys: set[tuple[int, int]] = set()
+    source_label = str(source) if source else "payload"
+    for raw_item in raw_items:
+        item = normalize_comparison_entry(raw_item)
+        key = comparison_entry_key(item)
+        if key in seen_keys:
+            raise ValueError(
+                f"Duplicate comparison entry for eval-{key[0]} run-{key[1]} in {source_label}"
+            )
+        seen_keys.add(key)
+        normalized.append(item)
+    return sort_comparison_entries(normalized)
+
+
+def expected_blind_comparison_keys(skill_dir: Path) -> set[tuple[int, int]]:
+    expected: set[tuple[int, int]] = set()
+    for eval_dir in sorted(skill_dir.glob("eval-*"), key=lambda path: path.name):
+        try:
+            eval_id = int(eval_dir.name.split("-", 1)[1])
+        except (IndexError, ValueError):
+            continue
+
+        blind_root = eval_dir / "blind"
+        if not blind_root.exists() or not blind_root.is_dir():
+            continue
+
+        run_numbers: set[int] = set()
+        for run_dir in blind_root.iterdir():
+            if not run_dir.is_dir() or not RUN_DIR_RE.match(run_dir.name):
+                continue
+            run_number = int(run_dir.name.split("-", 1)[1])
+            if (run_dir / "A.md").exists() and (run_dir / "B.md").exists():
+                run_numbers.add(run_number)
+
+        if not run_numbers and (blind_root / "A.md").exists() and (blind_root / "B.md").exists():
+            run_numbers.add(1)
+
+        for run_number in sorted(run_numbers):
+            run_map_path = blind_map_path(eval_dir, run_number)
+            legacy_map_path = eval_dir / "blind-map.json"
+            if run_map_path.exists() or (run_number == 1 and legacy_map_path.exists()):
+                expected.add((eval_id, run_number))
+    return expected
+
+
+def blind_comparison_coverage(
+    skill_dir: Path,
+    comparisons: list[dict[str, Any]],
+) -> dict[str, Any]:
+    actual_keys = {comparison_entry_key(item) for item in comparisons}
+    expected_keys = expected_blind_comparison_keys(skill_dir)
+    missing_keys = sorted(expected_keys - actual_keys)
+    extra_keys = sorted(actual_keys - expected_keys) if expected_keys else []
+    return {
+        "expected_count": len(expected_keys),
+        "actual_count": len(actual_keys),
+        "missing_count": len(missing_keys),
+        "missing": [
+            {
+                "eval_id": eval_id,
+                "run_number": run_number,
+            }
+            for eval_id, run_number in missing_keys
+        ],
+        "extra_count": len(extra_keys),
+        "extra": [
+            {
+                "eval_id": eval_id,
+                "run_number": run_number,
+            }
+            for eval_id, run_number in extra_keys
+        ],
+    }
+
+
 def materialize_run_artifacts(
     iteration_dir: Path,
     skill_name: str,
@@ -789,37 +904,60 @@ def materialize_run_artifacts(
 
 def materialize_blind_comparisons(iteration_dir: Path, skill_name: str, raw_json_path: Path) -> dict[str, Any]:
     raw = read_json(raw_json_path)
-    if isinstance(raw, dict):
-        raw_skill_name = raw.get("skill_name")
-        if isinstance(raw_skill_name, str) and raw_skill_name.strip() and raw_skill_name != skill_name:
-            raise ValueError(
-                f"Raw payload skill_name mismatch: expected '{skill_name}', got '{raw_skill_name}'"
-            )
-        comparisons = raw.get("comparisons")
-    elif isinstance(raw, list):
-        comparisons = raw
-    else:
-        raise ValueError(f"Expected a JSON object or list in {raw_json_path}")
+    try:
+        raw_skill_name, comparisons = extract_raw_comparisons_payload(raw)
+    except ValueError as exc:
+        raise ValueError(f"{exc} in {raw_json_path}") from exc
 
-    if not isinstance(comparisons, list):
-        raise ValueError(f"Raw payload {raw_json_path} must contain a 'comparisons' list")
+    if raw_skill_name and raw_skill_name.strip() and raw_skill_name != skill_name:
+        raise ValueError(
+            f"Raw payload skill_name mismatch: expected '{skill_name}', got '{raw_skill_name}'"
+        )
 
-    normalized_comparisons = [normalize_comparison_entry(item) for item in comparisons]
+    normalized_comparisons = normalize_comparisons_list(comparisons, source=raw_json_path)
 
+    skill_dir = iteration_dir / skill_name
     output_path = iteration_dir / skill_name / "blind-comparisons.json"
+    existing_comparisons: list[dict[str, Any]] = []
+    if output_path.exists():
+        existing_comparisons = normalize_comparisons_list(load_comparisons(output_path), source=output_path)
+
+    merged_by_key = {
+        comparison_entry_key(item): item
+        for item in existing_comparisons
+    }
+
+    added_count = 0
+    replaced_count = 0
+    for item in normalized_comparisons:
+        key = comparison_entry_key(item)
+        if key in merged_by_key:
+            replaced_count += 1
+        else:
+            added_count += 1
+        merged_by_key[key] = item
+
+    merged_comparisons = sort_comparison_entries(list(merged_by_key.values()))
+
     write_json(
         output_path,
         {
             "schema_version": COMPARATOR_SCHEMA_VERSION,
             "skill_name": skill_name,
-            "comparisons": normalized_comparisons,
+            "comparisons": merged_comparisons,
         },
     )
+
+    coverage = blind_comparison_coverage(skill_dir, merged_comparisons)
     return {
         "iteration": iteration_dir.name,
         "skill_name": skill_name,
         "raw_json": str(raw_json_path),
-        "comparison_count": len(normalized_comparisons),
+        "raw_comparison_count": len(normalized_comparisons),
+        "comparison_count": len(merged_comparisons),
+        "added_count": added_count,
+        "replaced_count": replaced_count,
+        "coverage": coverage,
         "output_path": str(output_path),
     }
 
@@ -907,6 +1045,12 @@ def disabled_skills_root(iteration_dir: Path) -> Path:
     return iteration_dir / "_disabled-skills"
 
 
+def skill_directory_names(root: Path) -> list[str]:
+    if not root.exists():
+        return []
+    return sorted(child.name for child in root.iterdir() if child.is_dir())
+
+
 def disable_workspace_skills(workspace_root: Path, iteration_dir: Path) -> dict[str, Any]:
     skills_root = workspace_skills_root(workspace_root)
     disabled_root = disabled_skills_root(iteration_dir)
@@ -922,17 +1066,39 @@ def disable_workspace_skills(workspace_root: Path, iteration_dir: Path) -> dict[
         )
 
     moved: list[dict[str, str]] = []
-    for child in sorted(skills_root.iterdir(), key=lambda path: path.name):
-        if not child.is_dir():
-            continue
-        destination = disabled_root / child.name
-        child.rename(destination)
-        moved.append(
-            {
-                "skill": child.name,
-                "from": relative_to_root(skills_root / child.name, workspace_root),
-                "to": relative_to_root(destination, workspace_root),
-            }
+    moved_names: list[str] = []
+    candidates = [child for child in sorted(skills_root.iterdir(), key=lambda path: path.name) if child.is_dir()]
+
+    try:
+        for child in candidates:
+            destination = disabled_root / child.name
+            child.rename(destination)
+            moved_names.append(child.name)
+            moved.append(
+                {
+                    "skill": child.name,
+                    "from": relative_to_root(skills_root / child.name, workspace_root),
+                    "to": relative_to_root(destination, workspace_root),
+                }
+            )
+    except Exception:
+        for skill_name in reversed(moved_names):
+            source = disabled_root / skill_name
+            destination = skills_root / skill_name
+            if source.exists() and not destination.exists():
+                source.rename(destination)
+        raise
+
+    remaining_skills = skill_directory_names(skills_root)
+    if remaining_skills:
+        for skill_name in reversed(moved_names):
+            source = disabled_root / skill_name
+            destination = skills_root / skill_name
+            if source.exists() and not destination.exists():
+                source.rename(destination)
+        raise RuntimeError(
+            "Strict baseline relocation incomplete; workspace skills still present: "
+            + ", ".join(remaining_skills)
         )
 
     summary = {
@@ -942,6 +1108,9 @@ def disable_workspace_skills(workspace_root: Path, iteration_dir: Path) -> dict[
         "disabled_root": relative_to_root(disabled_root, workspace_root),
         "moved_count": len(moved),
         "moved": moved,
+        "strict_ready": True,
+        "remaining_skills_root_count": 0,
+        "remaining_skills_root": [],
     }
     write_json(manifest_path, summary)
     return summary
@@ -961,14 +1130,28 @@ def restore_workspace_skills(workspace_root: Path, iteration_dir: Path) -> dict[
     disabled_root.mkdir(parents=True, exist_ok=True)
 
     restored: list[dict[str, str]] = []
+    already_restored: list[str] = []
+    missing_backups: list[str] = []
+    destination_conflicts: list[str] = []
+
     for item in manifest.get("moved", []):
         skill_name = item["skill"]
         source = disabled_root / skill_name
         destination = skills_root / skill_name
-        if not source.exists():
-            raise FileNotFoundError(f"Missing disabled skill backup for {skill_name}: {source}")
-        if destination.exists():
-            raise FileExistsError(f"Cannot restore {skill_name}; destination already exists: {destination}")
+
+        source_exists = source.exists()
+        destination_exists = destination.exists()
+
+        if not source_exists and destination_exists:
+            already_restored.append(skill_name)
+            continue
+        if not source_exists and not destination_exists:
+            missing_backups.append(skill_name)
+            continue
+        if source_exists and destination_exists:
+            destination_conflicts.append(skill_name)
+            continue
+
         try:
             source.rename(destination)
         except PermissionError:
@@ -982,6 +1165,16 @@ def restore_workspace_skills(workspace_root: Path, iteration_dir: Path) -> dict[
             }
         )
 
+    if destination_conflicts:
+        raise FileExistsError(
+            "Cannot restore workspace skills because destination already exists for: "
+            + ", ".join(sorted(destination_conflicts))
+        )
+    if missing_backups:
+        raise FileNotFoundError(
+            "Missing disabled skill backup for: " + ", ".join(sorted(missing_backups))
+        )
+
     summary = {
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "operation": "restore-workspace-skills",
@@ -989,6 +1182,8 @@ def restore_workspace_skills(workspace_root: Path, iteration_dir: Path) -> dict[
         "disabled_root": relative_to_root(disabled_root, workspace_root),
         "restored_count": len(restored),
         "restored": restored,
+        "already_restored_count": len(already_restored),
+        "already_restored": sorted(already_restored),
     }
     write_json(restore_path, summary)
     return summary
@@ -1048,19 +1243,54 @@ def snapshot_public_evals(iteration_dir: Path, workspace_root: Path, skill_name:
     for current_skill in skill_names:
         bundle = load_skill_eval_bundle(workspace_root, current_skill)
         public = bundle["public"]
+        eval_entries: list[dict[str, Any]] = []
+        worker_prompt_inputs: list[dict[str, Any]] = []
+
+        for item in public.get("evals", []):
+            if not isinstance(item, dict):
+                continue
+            eval_id = item.get("id")
+            prompt = item.get("prompt") if isinstance(item.get("prompt"), str) else ""
+            files = normalize_string_list(item.get("files", []))
+
+            eval_entries.append(
+                {
+                    "id": eval_id,
+                    "prompt": prompt,
+                    "files": files,
+                }
+            )
+
+            if not isinstance(eval_id, int):
+                continue
+
+            input_dir = iteration_dir / current_skill / f"eval-{eval_id}" / "input"
+            prompt_md_path = input_dir / "prompt.md"
+            prompt_json_path = input_dir / "prompt.json"
+            write_text(prompt_md_path, prompt.rstrip() + "\n")
+            write_json(
+                prompt_json_path,
+                {
+                    "id": eval_id,
+                    "skill_name": current_skill,
+                    "prompt": prompt,
+                    "files": files,
+                },
+            )
+            worker_prompt_inputs.append(
+                {
+                    "id": eval_id,
+                    "prompt_md_path": prompt_md_path.relative_to(workspace_root).as_posix(),
+                    "prompt_json_path": prompt_json_path.relative_to(workspace_root).as_posix(),
+                }
+            )
+
         snapshot.append(
             {
                 "skill_name": current_skill,
                 "evals_public_path": bundle["paths"]["public"].relative_to(workspace_root).as_posix(),
-                "evals": [
-                    {
-                        "id": item.get("id"),
-                        "prompt": item.get("prompt"),
-                        "files": normalize_string_list(item.get("files", [])),
-                    }
-                    for item in public.get("evals", [])
-                    if isinstance(item, dict)
-                ],
+                "evals": eval_entries,
+                "worker_prompt_inputs": worker_prompt_inputs,
             }
         )
 
@@ -1105,6 +1335,9 @@ def build_blind_compare_bundle(
         "skill_name": skill_name,
         "eval_id": eval_id,
         "run_number": run_number,
+        "raw_output_path": (
+            iteration_dir / "_meta" / f"raw-comparison-{skill_name}-eval-{eval_id}-run-{run_number}.json"
+        ).relative_to(workspace_root).as_posix(),
         "blind_artifacts": {
             "A": a_path.relative_to(workspace_root).as_posix(),
             "B": b_path.relative_to(workspace_root).as_posix(),
@@ -1145,6 +1378,11 @@ def build_blind_compare_bundle(
                 "A": {"passed": "integer", "total": "integer", "pass_rate": "0-1 number"},
                 "B": {"passed": "integer", "total": "integer", "pass_rate": "0-1 number"},
             },
+        },
+        "raw_output_payload_hint": {
+            "schema_version": COMPARATOR_SCHEMA_VERSION,
+            "skill_name": skill_name,
+            "comparisons": ["<single comparison object matching output_schema_hint>"],
         },
     }
 
@@ -1325,6 +1563,31 @@ def locate_skill_creator_viewer_script(workspace_root: Path) -> Path:
     return script
 
 
+def merge_execution_checks(grading_definition: dict[str, Any], grading_entry: dict[str, Any]) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
+    default_checks_raw = grading_definition.get("default_execution_checks", [])
+    eval_checks_raw = grading_entry.get("execution_checks", [])
+    default_checks: list[dict[str, Any]] = [
+        deep_copy_json_like(item) for item in default_checks_raw if isinstance(item, dict)
+    ]
+    eval_checks: list[dict[str, Any]] = [
+        deep_copy_json_like(item) for item in eval_checks_raw if isinstance(item, dict)
+    ]
+
+    merged: list[dict[str, Any]] = []
+    by_name: dict[str, int] = {}
+    for check in default_checks + eval_checks:
+        name = check.get("name") if isinstance(check.get("name"), str) else None
+        key = name.strip().lower() if name and name.strip() else None
+        if key and key in by_name:
+            merged[by_name[key]] = deep_copy_json_like(check)
+            continue
+        merged.append(deep_copy_json_like(check))
+        if key:
+            by_name[key] = len(merged) - 1
+
+    return default_checks, eval_checks, merged
+
+
 def export_review_workspace(iteration_dir: Path, workspace_root: Path, skill_name: str, output_dir: Path) -> dict[str, Any]:
     skill_dir = iteration_dir / skill_name
     if not skill_dir.exists():
@@ -1345,6 +1608,10 @@ def export_review_workspace(iteration_dir: Path, workspace_root: Path, skill_nam
         if eval_id is None:
             continue
         grading_item = get_eval_entry(grading_definition, int(eval_id))
+        default_execution_checks, eval_execution_checks, merged_execution_checks = merge_execution_checks(
+            grading_definition,
+            grading_item,
+        )
         for configuration in ("with_skill", "without_skill"):
             response_path = resolve_response_path(skill_dir, int(eval_id), configuration, 1)
             if response_path is None:
@@ -1371,6 +1638,9 @@ def export_review_workspace(iteration_dir: Path, workspace_root: Path, skill_nam
                     "prompt": eval_item.get("prompt", ""),
                     "expected_output": grading_item.get("expected_output", ""),
                     "assertions": grading_item.get("expectations", []),
+                    "default_execution_checks": default_execution_checks,
+                    "eval_execution_checks": eval_execution_checks,
+                    "execution_checks": merged_execution_checks,
                 },
             )
             exported_runs.append(
@@ -1408,6 +1678,10 @@ def build_grader_bundle(
     eval_bundle = load_skill_eval_bundle(workspace_root, skill_name)
     public_entry = get_eval_entry(eval_bundle["public"], eval_id)
     grading_entry = get_eval_entry(eval_bundle["grading"], eval_id)
+    default_execution_checks, eval_execution_checks, merged_execution_checks = merge_execution_checks(
+        eval_bundle["grading"],
+        grading_entry,
+    )
     run_dir = output_dir / f"eval-{eval_id}" / configuration
     outputs_dir = run_dir / "outputs"
     if not outputs_dir.exists():
@@ -1434,6 +1708,10 @@ def build_grader_bundle(
         "prompt": public_entry.get("prompt"),
         "expected_output": grading_entry.get("expected_output"),
         "expectations": grading_entry.get("expectations", []),
+        "default_execution_checks": default_execution_checks,
+        "eval_execution_checks": eval_execution_checks,
+        "execution_checks": merged_execution_checks,
+        "execution_checks_merge_policy": "default_execution_checks + eval_execution_checks; eval checks override defaults with the same name",
         "eval_artifacts": {
             "evals_public_path": eval_bundle["paths"]["public"].relative_to(workspace_root).as_posix(),
             "grading_spec_path": eval_bundle["paths"]["grading"].relative_to(workspace_root).as_posix(),
@@ -2167,7 +2445,11 @@ def is_hook_audit_read_allowed(rel_path: str, mode: str) -> bool:
     prefixes = HOOK_AUDIT_ALLOWED_READ_PREFIXES.get(mode, ())
     if rel_path.startswith("@external/"):
         return False
-    return any(rel_path.startswith(prefix) for prefix in prefixes)
+    if any(rel_path.startswith(prefix) for prefix in prefixes):
+        return True
+    if mode in {"baseline", "baseline_hook_only"} and BASELINE_PROMPT_INPUT_READ_RE.match(rel_path):
+        return True
+    return False
 
 
 def validate_hook_audit(path: Path, mode: str | None = None) -> dict[str, Any]:
@@ -2511,8 +2793,22 @@ def pre_aggregate_check(iteration_dir: Path, workspace_root: Path) -> dict[str, 
             elif filename == "blind-comparisons.json":
                 try:
                     comparisons = load_comparisons(path)
-                    for item in comparisons:
-                        normalize_comparison_entry(item)
+                    normalized = normalize_comparisons_list(comparisons, source=path)
+                    coverage = blind_comparison_coverage(skill_dir, normalized)
+                    if coverage["missing_count"] > 0:
+                        issues.append(
+                            {
+                                "skill": skill_dir.name,
+                                "file": filename,
+                                "path": relative_path,
+                                "reason": "missing-blind-comparisons-for-prepared-runs",
+                                "details": {
+                                    "expected_count": coverage["expected_count"],
+                                    "actual_count": coverage["actual_count"],
+                                    "missing": coverage["missing"],
+                                },
+                            }
+                        )
                 except Exception as exc:
                     issues.append(
                         {
@@ -3520,6 +3816,32 @@ def render_markdown(summary: dict[str, Any]) -> str:
     return _render_markdown(summary)
 
 
+def cmd_reset_blind_comparisons(args: argparse.Namespace) -> None:
+    skill_dir = args.iteration / args.skill
+    if not skill_dir.exists():
+        raise FileNotFoundError(f"Missing skill results directory for '{args.skill}': {skill_dir}")
+    output_path = skill_dir / "blind-comparisons.json"
+    existing_count = 0
+    if output_path.exists():
+        try:
+            existing_data = read_json(output_path)
+            existing_count = len(existing_data.get("comparisons", []) if isinstance(existing_data, dict) else [])
+        except Exception:
+            existing_count = -1  # corrupted
+    write_json(output_path, {
+        "schema_version": COMPARATOR_SCHEMA_VERSION,
+        "skill_name": args.skill,
+        "comparisons": [],
+    })
+    print(json.dumps({
+        "iteration": args.iteration.name,
+        "skill_name": args.skill,
+        "output_path": output_path.relative_to(args.workspace_root).as_posix(),
+        "previous_comparison_count": existing_count,
+        "reset": True,
+    }, indent=2, ensure_ascii=False))
+
+
 def cmd_prepare_blind(args: argparse.Namespace) -> None:
     summary = prepare_blind(args.iteration)
     print(json.dumps(summary, indent=2, ensure_ascii=False))
@@ -3837,7 +4159,30 @@ def cmd_materialize_comparisons_stdin(args: argparse.Namespace) -> None:
     if not raw_text:
         raise ValueError("materialize-comparisons-stdin requires a JSON payload on stdin")
     payload = json.loads(raw_text)
-    raw_output = args.raw_json or (args.iteration / "_meta" / f"{args.skill}-blind.json")
+
+    try:
+        _, raw_comparisons = extract_raw_comparisons_payload(payload)
+        normalized = normalize_comparisons_list(raw_comparisons)
+    except ValueError as exc:
+        raise ValueError(f"Invalid blind comparator payload from stdin: {exc}") from exc
+
+    if args.raw_json:
+        raw_output = args.raw_json
+    else:
+        meta_dir = args.iteration / "_meta"
+        if len(normalized) == 1:
+            key_eval, key_run = comparison_entry_key(normalized[0])
+            candidate = meta_dir / f"raw-comparison-{args.skill}-eval-{key_eval}-run-{key_run}.json"
+        else:
+            timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+            candidate = meta_dir / f"raw-comparison-{args.skill}-batch-{timestamp}.json"
+
+        raw_output = candidate
+        suffix = 2
+        while raw_output.exists():
+            raw_output = candidate.with_name(f"{candidate.stem}-{suffix}{candidate.suffix}")
+            suffix += 1
+
     write_json(raw_output, payload)
     summary = materialize_blind_comparisons(args.iteration, args.skill, raw_output)
     workspace_root = infer_workspace_root_from_iteration(args.iteration)
@@ -3924,31 +4269,76 @@ def resume_finalize_iteration(
     materialized: list[dict[str, Any]] = []
     unresolved: list[dict[str, Any]] = []
 
+    meta_payload_cache: dict[Path, tuple[str | None, list[dict[str, Any]]]] = {}
+    for candidate in sorted(meta_dir.glob("*.json"), key=lambda path: path.name):
+        if not candidate.is_file():
+            continue
+        try:
+            raw_payload = read_json(candidate)
+            raw_skill_name, raw_comparisons = extract_raw_comparisons_payload(raw_payload)
+            normalized = normalize_comparisons_list(raw_comparisons, source=candidate)
+        except Exception:
+            continue
+        meta_payload_cache[candidate] = (raw_skill_name, normalized)
+
     for skill_dir in skill_dirs(iteration_dir):
         comparisons_path = skill_dir / "blind-comparisons.json"
+        existing_comparisons: list[dict[str, Any]] = []
         if comparisons_path.exists():
+            existing_comparisons = normalize_comparisons_list(load_comparisons(comparisons_path), source=comparisons_path)
+        coverage = blind_comparison_coverage(skill_dir, existing_comparisons)
+
+        needs_materialization = (not comparisons_path.exists()) or coverage["missing_count"] > 0
+        if not needs_materialization:
             continue
 
-        raw_path = meta_dir / f"{skill_dir.name}-blind.json"
-        if materialize_from_meta and raw_path.exists():
-            materialized_summary = materialize_blind_comparisons(iteration_dir, skill_dir.name, raw_path)
-            materialized.append(
+        matching_payloads: list[Path] = []
+        for path, (raw_skill_name, normalized_entries) in meta_payload_cache.items():
+            if raw_skill_name and raw_skill_name != skill_dir.name:
+                continue
+            if not normalized_entries:
+                continue
+            if any((iteration_dir / skill_dir.name / f"eval-{entry['eval_id']}").exists() for entry in normalized_entries):
+                matching_payloads.append(path)
+
+        if materialize_from_meta and matching_payloads:
+            for raw_path in matching_payloads:
+                materialized_summary = materialize_blind_comparisons(iteration_dir, skill_dir.name, raw_path)
+                materialized.append(
+                    {
+                        "skill": skill_dir.name,
+                        "raw_json": raw_path.relative_to(workspace_root).as_posix(),
+                        "raw_comparison_count": materialized_summary.get("raw_comparison_count", 0),
+                        "comparison_count": materialized_summary.get("comparison_count", 0),
+                        "added_count": materialized_summary.get("added_count", 0),
+                        "replaced_count": materialized_summary.get("replaced_count", 0),
+                        "output_path": comparisons_path.relative_to(workspace_root).as_posix(),
+                    }
+                )
+            refreshed = normalize_comparisons_list(load_comparisons(comparisons_path), source=comparisons_path)
+            coverage = blind_comparison_coverage(skill_dir, refreshed)
+
+        if not comparisons_path.exists() or coverage["missing_count"] > 0:
+            unresolved.append(
                 {
                     "skill": skill_dir.name,
-                    "raw_json": raw_path.relative_to(workspace_root).as_posix(),
-                    "comparison_count": materialized_summary.get("comparison_count", 0),
-                    "output_path": comparisons_path.relative_to(workspace_root).as_posix(),
+                    "reason": (
+                        "missing blind-comparisons and no resumable raw comparator payload"
+                        if not comparisons_path.exists()
+                        else "blind-comparisons coverage incomplete after resumable materialization"
+                    ),
+                    "details": {
+                        "expected_count": coverage["expected_count"],
+                        "actual_count": coverage["actual_count"],
+                        "missing": coverage["missing"],
+                    },
+                    "candidate_raw_payloads": [
+                        path.relative_to(workspace_root).as_posix()
+                        for path in matching_payloads
+                    ],
+                    "expected_raw_payload": (meta_dir / f"{skill_dir.name}-blind.json").relative_to(workspace_root).as_posix(),
                 }
             )
-            continue
-
-        unresolved.append(
-            {
-                "skill": skill_dir.name,
-                "reason": "missing blind-comparisons and no resumable raw comparator payload",
-                "expected_raw_payload": raw_path.relative_to(workspace_root).as_posix(),
-            }
-        )
 
     precheck = pre_aggregate_check(iteration_dir, workspace_root)
     if precheck.get("status") != "ok":
@@ -3987,10 +4377,28 @@ def resume_finalize_iteration(
 
 
 def cmd_summarize_phase(args: argparse.Namespace) -> None:
-    skill_names = [args.skill] if args.skill else completed_skill_names_for_config(args.iteration, args.config)
+    skill_names: set[str] = set([args.skill] if args.skill else completed_skill_names_for_config(args.iteration, args.config))
+
+    # Also include skills that have per-run metric files but no consolidated file yet.
+    # This handles the write-run-metrics → summarize-phase workflow where workers write
+    # per-run metrics to _runs/<config>/ and the manager calls write-run-metrics before
+    # summarize-phase; in that case, refresh_run_metrics_collection must be called first.
+    if not args.skill:
+        for skill_dir in skill_dirs(args.iteration):
+            if skill_dir.name not in skill_names:
+                run_metrics_root = per_run_metrics_dir(skill_dir, args.config)
+                if run_metrics_root.exists() and any(run_metrics_root.rglob("*.json")):
+                    skill_names.add(skill_dir.name)
+
     summaries = []
-    for skill_name in skill_names:
+    for skill_name in sorted(skill_names):
         skill_dir = args.iteration / skill_name
+        # Auto-refresh the consolidated <config>-run-metrics.json from per-run files when
+        # they exist. This ensures pre-aggregate-check sees a proper runs[] array and avoids
+        # requiring a separate refresh step between write-run-metrics and summarize-phase.
+        run_metrics_root = per_run_metrics_dir(skill_dir, args.config)
+        if run_metrics_root.exists() and any(run_metrics_root.rglob("*.json")):
+            refresh_run_metrics_collection(skill_dir, args.config)
         evals_path = resolve_public_evals_for_config(args.iteration, args.workspace_root, skill_name, args.config)
         summary = summarize_config(skill_dir, args.config, evals_path)
         summaries.append(
@@ -4055,6 +4463,12 @@ def build_parser() -> argparse.ArgumentParser:
     restore_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
     restore_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     restore_parser.set_defaults(func=cmd_restore_workspace_skills)
+
+    reset_blind_parser = subparsers.add_parser("reset-blind-comparisons", help="Reset blind-comparisons.json to an empty state for a given skill (use before re-running blind comparisons)")
+    reset_blind_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
+    reset_blind_parser.add_argument("--workspace-root", type=Path, required=True, help="Workspace root path")
+    reset_blind_parser.add_argument("--skill", required=True, help="Target skill name")
+    reset_blind_parser.set_defaults(func=cmd_reset_blind_comparisons)
 
     prepare_parser = subparsers.add_parser("prepare-blind", help="Create blinded A/B artifacts for each finished eval")
     prepare_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")

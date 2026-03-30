@@ -93,18 +93,25 @@ The benchmark guide now centralizes workflow, trust rules, hook modes, trace lev
 - Use the strict relocated baseline by default.
 - Run workers in parallel only within a phase.
 - Keep `without_skill`, `with_skill`, and `blind_compare` strictly sequential across phases.
+- Prefer discriminating eval prompts and assertions: require canonical minimal fixes, explicit rule verdicts for invalid outputs, and ambiguity-resistant cases rather than broad prose-only answers.
+- Re-check domain truth-claims against authoritative semantics before changing prompts or expectations; when near-miss syntax matters, prefer contrastive wording over vague prose.
+- Comparator-only grading tie-breaks may live in optional hidden `grading-spec.json` fields such as `grading_guidance`; keep those details out of public prompts.
+- Grader-only executable verification hints may live in hidden `grading-spec.json` via optional `default_execution_checks` (skill-level defaults) and/or eval-level `execution_checks`; effective checks are merged per eval, and non-executable evals must remain fully supported.
 - Run `pre-aggregate-check` before the final `aggregate` step so missing summaries / blind comparisons fail fast instead of being silently skipped.
-- Prefer `resume-finalize` for interruption recovery: it auto-materializes missing `blind-comparisons.json` from `test/<iteration>/_meta/<skill>-blind.json`, runs `pre-aggregate-check`, then writes fresh suite summaries.
+- Prefer `resume-finalize` for interruption recovery: it auto-materializes missing `blind-comparisons.json` from raw comparison journals under `test/<iteration>/_meta/raw-comparison-*.json`, runs `pre-aggregate-check`, then writes fresh suite summaries.
+- For blind comparison, prefer worker-side journaling: `blind-compare-bundle` now provides a per-task `raw_output_path`, and comparator workers should write their wrapped JSON to `test/<iteration>/_meta/raw-comparison-*.json` before returning a tiny acknowledgment.
 - Keep all canonical outputs under `test/<iteration>/`.
 - Treat review exports and hook traces as disposable by default.
 - Prefer JSON as the machine source of truth; `suite-summary.md` remains the human-facing rendering of suite results.
 - For each benchmarked skill, complete a mandatory Anthropic skill-authoring best-practices pass in `test/<iteration>/<skill>/synthesis.md` (concision, degrees-of-freedom fit, triggerability metadata quality, progressive disclosure quality, workflow/validation loop quality, anti-pattern scan with prioritized fixes).
+- For LikeC4 DSL evals specifically, apply an implicit test-context contract when a prompt does not fully define project specification: assume a minimal valid LikeC4 context consistent with official semantics (nearest-config project scope, allowed top-level blocks, lexical scoping/FQN rules, and explicitly referenced kinds/tags). Do not penalize answers that make these assumptions explicit before solving.
 
 ### Resilient benchmark flow
 
 The benchmark harness now aims to be interruption-tolerant rather than interruption-free:
 
 - JSON writes use atomic replacement, reducing the chance of half-written benchmark artifacts.
+- Large blind-comparison payloads are now expected to be journaled directly under `test/<iteration>/_meta/raw-comparison-*.json` instead of relying on large chat responses.
 - `pre-aggregate-check` validates that each skill has both summaries, both run-metrics files, and `blind-comparisons.json` before a final suite aggregation.
 - `resume-finalize` provides a deterministic one-step recovery/finalization path (`materialize missing blind artifacts -> pre-check -> aggregate`) after interruptions.
 - `suite-summary.json` now reports `skipped_skills` explicitly when partial artifacts are still present, instead of silently hiding omissions.

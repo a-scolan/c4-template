@@ -41,6 +41,10 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         (skill_series_blind_dir / "B.md").write_text("blind artifact series B\n", encoding="utf-8")
         (skill_series_blind_dir.parent / "blind-map.json").write_text("{}\n", encoding="utf-8")
         (skill_series_blind_dir.parent.parent / "blind-comparisons.json").write_text("{}\n", encoding="utf-8")
+        baseline_prompt_input = self.workspace_root / "test" / "likec4-dsl-test4" / "likec4-dsl" / "eval-4" / "input"
+        baseline_prompt_input.mkdir(parents=True, exist_ok=True)
+        (baseline_prompt_input / "prompt.md").write_text("Prompt for baseline worker\n", encoding="utf-8")
+        (baseline_prompt_input / "prompt.json").write_text('{"id":4,"prompt":"Prompt for baseline worker"}\n', encoding="utf-8")
         run_blind_dir = skill_series_blind_dir / "run-1"
         run_blind_dir.mkdir(parents=True, exist_ok=True)
         (run_blind_dir / "A.md").write_text("blind artifact series run A\n", encoding="utf-8")
@@ -217,13 +221,13 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
     def decision(self, output: dict[str, Any]) -> str:
         return output["hookSpecificOutput"]["permissionDecision"]
 
-    def test_baseline_allows_shared_specs_after_relocation(self) -> None:
+    def test_baseline_denies_shared_specs_after_relocation(self) -> None:
         self.clear_workspace_skills()
         output = self.run_hook_payload(
             self.read_payload("baseline-session", "projects/shared/spec-context.c4", end_line=20),
             mode="baseline",
         )
-        self.assertEqual(self.decision(output), "allow")
+        self.assertEqual(self.decision(output), "deny")
 
     def test_baseline_denies_readme_after_relocation(self) -> None:
         self.clear_workspace_skills()
@@ -252,12 +256,12 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         self.assertEqual(self.decision(output), "deny")
         self.assertIn("relocating workspace skills", output["hookSpecificOutput"]["permissionDecisionReason"])
 
-    def test_baseline_hook_only_allows_shared_specs_without_relocation(self) -> None:
+    def test_baseline_hook_only_denies_shared_specs_without_relocation(self) -> None:
         output = self.run_hook_payload(
             self.read_payload("baseline-session", "projects/shared/spec-context.c4", end_line=20),
             mode="baseline_hook_only",
         )
-        self.assertEqual(self.decision(output), "allow")
+        self.assertEqual(self.decision(output), "deny")
 
     def test_baseline_hook_only_denies_readme(self) -> None:
         output = self.run_hook_payload(
@@ -279,6 +283,29 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             mode="baseline",
         )
         self.assertEqual(self.decision(output), "deny")
+
+    def test_baseline_allows_worker_prompt_inputs_under_iteration_scope(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.read_payload(
+                "baseline-prompt-session",
+                "test/likec4-dsl-test4/likec4-dsl/eval-4/input/prompt.md",
+                end_line=20,
+            ),
+            mode="baseline",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_baseline_missing_session_id_uses_iteration_scoped_anonymous_state(self) -> None:
+        self.clear_workspace_skills()
+        output = self.run_hook_payload(
+            self.read_payload(None, "test/likec4-dsl-test4/likec4-dsl/eval-4/input/prompt.md", end_line=20),
+            mode="baseline",
+        )
+
+        self.assertEqual(self.decision(output), "allow")
+        state_root = Path(self.state_root.name)
+        self.assertTrue((state_root / "anonymous-baseline-likec4-dsl-test4.json").exists())
 
     def test_baseline_denies_disabled_skill_backup(self) -> None:
         output = self.run_hook_payload(
@@ -391,10 +418,14 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         self.assertEqual(audit_records[-1]["tool_name"], "mcp_likec4_read-project-summary")
         self.assertEqual(audit_records[-1]["permissionDecision"], "deny")
 
-    def test_baseline_resolved_audit_records_allowed_shared_read(self) -> None:
+    def test_baseline_resolved_audit_records_allowed_prompt_input_read(self) -> None:
         self.clear_workspace_skills()
         output = self.run_hook_payload(
-            self.read_payload("baseline-audit-allow-session", "projects/shared/spec-context.c4", end_line=20),
+            self.read_payload(
+                "baseline-audit-allow-session",
+                "test/likec4-dsl-test4/likec4-dsl/eval-4/input/prompt.md",
+                end_line=20,
+            ),
             mode="baseline",
             extra_env={
                 "BENCH_DEBUG_HOOKS": "1",
@@ -407,7 +438,7 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         self.assertTrue(audit_records)
         self.assertEqual(audit_records[-1]["tool_name"], "read_file")
         self.assertEqual(audit_records[-1]["permissionDecision"], "allow")
-        self.assertEqual(audit_records[-1]["tool_paths"], ["projects/shared/spec-context.c4"])
+        self.assertEqual(audit_records[-1]["tool_paths"], ["test/likec4-dsl-test4/likec4-dsl/eval-4/input/prompt.md"])
 
     def test_baseline_denies_non_likec4_mcp_tools(self) -> None:
         self.clear_workspace_skills()
@@ -703,12 +734,12 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
         )
         self.assertEqual(self.decision(allowed_after_reset), "allow")
 
-    def test_with_skill_allows_shared_specs_but_denies_nonshared_projects(self) -> None:
+    def test_with_skill_denies_project_reads_including_shared(self) -> None:
         shared = self.run_hook_payload(
             self.read_payload("with-skill-shared-session", "projects/shared/spec-context.c4", end_line=40),
             mode="with_skill_targeted",
         )
-        self.assertEqual(self.decision(shared), "allow")
+        self.assertEqual(self.decision(shared), "deny")
 
         denied = self.run_hook_payload(
             self.read_payload(
@@ -1019,6 +1050,28 @@ class BenchmarkAgentPolicyTests(unittest.TestCase):
             self.create_file_payload(
                 "blind-write-session",
                 "test/iteration-2/create-element/eval-0/blind/result.json",
+                "{}",
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "deny")
+
+    def test_blind_compare_allows_raw_comparison_journal_write(self) -> None:
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "blind-write-raw-session",
+                "test/iteration-2/_meta/raw-comparison-create-element-eval-0-run-1.json",
+                '{"schema_version":2,"skill_name":"create-element","comparisons":[]}',
+            ),
+            mode="blind_compare",
+        )
+        self.assertEqual(self.decision(output), "allow")
+
+    def test_blind_compare_denies_non_journal_meta_write(self) -> None:
+        output = self.run_hook_payload(
+            self.create_file_payload(
+                "blind-write-meta-session",
+                "test/iteration-2/_meta/injected.json",
                 "{}",
             ),
             mode="blind_compare",

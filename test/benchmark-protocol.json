@@ -1,40 +1,40 @@
 {
   "protocol_version": "benchmark-v3",
-  "generated_at": "2026-03-25T21:39:52Z",
+  "generated_at": "2026-03-30T07:28:03Z",
   "eval_artifact_schema_version": 2,
   "comparator_schema_version": 2,
   "tracked_files": [
     {
       "path": ".github/agents/skill-benchmark-manager.agent.md",
-      "sha256": "ce956911903dde78b6a60cfa363cfc78e86efa264849f85dd39b373038778a8e"
+      "sha256": "264c7cd95dbc94d3e97ba4161a4ac2e8d06568778fb7d899a93314364d34d417"
     },
     {
       "path": ".github/agents/skill-benchmark-baseline.agent.md",
-      "sha256": "c949d5e8f3866f49441a999e4eb692656f96f36ce6bd300966c8024aec0b1971"
+      "sha256": "b41e6dc12f5877c87668e8cc00d44d4de7d952f221270fc6669f8c53ef9aadfc"
     },
     {
       "path": ".github/agents/skill-benchmark-baseline-hook-only.agent.md",
-      "sha256": "3663a653bba315c07e5b3941c5bed75ab7aa975f74982799d11a6508eb533790"
+      "sha256": "2eced732cec954bcdd90e3d8c4940d8b781010181404b998d5b8803e2b5d2250"
     },
     {
       "path": ".github/agents/skill-benchmark-with-skill.agent.md",
-      "sha256": "0f76658798c669d85663c1cbd8cbf018673492dcf9aad26670e4055e10721a38"
+      "sha256": "de55332cd1f8f3622534dc3b3a53e446f02a08dbb7461dea8f60949e4309c3b4"
     },
     {
       "path": ".github/agents/skill-blind-comparator.agent.md",
-      "sha256": "cf6ab5d45640586fef5b96732bb49ec513850922f972463d8ee0d3567ba34a5e"
+      "sha256": "1e0b787d2398e2dcca73a215ee4d86c1a50884185b600f2e94f41f6604d5b2ec"
     },
     {
       "path": "test/scripts/benchmark_access_hook.py",
-      "sha256": "123f8d494daf14397bbf81796f8f8c4735ba41393ec8e9827dc1ad054a122105"
+      "sha256": "bd1749657d50a5e95c0ddeda3368a940c54a888e90c64370b86ecf144ecc4966"
     },
     {
       "path": "test/benchmark-agent-workflow.md",
-      "sha256": "296619eab3d3c2d12be7e8403a91ea35217f0d025a40b16339a3f4f65f8db376"
+      "sha256": "a7a99f059100569199f9c5dcfe60af173ade9948a3fec688b04a0f6fd2b3f3a9"
     },
     {
       "path": "test/scripts/skill_suite_tools.py",
-      "sha256": "653d14c51c64ba8d5e8cf63a964c499d5a37486b0132a134abd8718a9d623604"
+      "sha256": "1747a4e044924041927faf1f335f94f87dd1fc3e663a69273915b201b2d14957"
     }
   ]
 }

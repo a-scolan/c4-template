@@ -63,8 +63,9 @@ FORBIDDEN_NON_WORKER_PREFIXES = (
     ".github/instructions/",
     ".github/hooks/",
 )
-ROOT_READ_ALLOWLIST = (
-    "projects/shared/",
+ROOT_READ_ALLOWLIST: tuple[str, ...] = ()
+BASELINE_PROMPT_INPUT_READ_RE = re.compile(
+    r"^test/(?P<iteration>(?:iteration-\d+|.+-test\d+))/(?P<skill>[^/_][^/]*)/eval-\d+/input/(?:prompt\.md|prompt\.json)$"
 )
 MANAGER_READ_ALLOWLIST = (
     "README.md",
@@ -91,6 +92,9 @@ WORKER_WRITE_DENY_PREFIXES = (
     "test/scripts/",
     "test/_agent-hooks/",
     "test/_meta/",
+)
+BLIND_COMPARE_RAW_JOURNAL_RE = re.compile(
+    r"^test/(?P<iteration>(?:iteration-\d+|.+-test\d+))/_meta/raw-comparison-[^/]+\.json$"
 )
 ALLOWED_MANAGER_COMMANDS = (
     re.compile(r"^(python|python3|py(?:\s+-3)?)\s+test/scripts/skill_suite_tools\.py\b"),
@@ -218,15 +222,15 @@ def session_start_output(mode: str) -> dict[str, Any]:
             "Strict baseline benchmark worker mode is active. Workspace skills must have been "
             "relocated out of .github/skills/ before the session started, and no SKILL.md file "
             "may be read in this session. Outside the target prompt and benchmark artefacts, "
-            "only shared specification examples under projects/shared/ may be read. LikeC4 MCP use "
+            "no project folders may be read. LikeC4 MCP use "
             "must stay limited to narrow element/relationship grounding; project listing, project "
             "summaries, and view browsing remain blocked. Other MCP servers remain blocked."
         ),
         "baseline_hook_only": (
             "Hook-only baseline probe mode is active. Workspace skills may remain in place, "
             "but no .github path or SKILL.md file may be read in this session. Outside the "
-            "target prompt and benchmark artefacts, only shared specification examples under "
-            "projects/shared/ may be read. LikeC4 MCP use must stay limited to narrow "
+            "target prompt and benchmark artefacts, no project folders may be read. "
+            "LikeC4 MCP use must stay limited to narrow "
             "element/relationship grounding; project listing, project summaries, and view browsing "
             "remain blocked. All other MCP servers remain blocked. Treat this as an experiment, not "
             "the default trust boundary."
@@ -234,7 +238,7 @@ def session_start_output(mode: str) -> dict[str, Any]:
         "with_skill_targeted": (
             "Targeted with-skill worker mode is active. The first skill directory you read "
             "becomes the only workspace skill allowed for the rest of the session. Outside that "
-            "skill, only shared specification examples under projects/shared/ may be read. "
+            "skill, no project folders may be read. "
             "Within the target skill, read eval prompts only from evals/evals-public.json; "
             "grading-spec.json stays hidden from workers. LikeC4 MCP use must stay limited to narrow "
             "element/relationship grounding; project listing, project summaries, and view browsing "
@@ -243,7 +247,8 @@ def session_start_output(mode: str) -> dict[str, Any]:
         "blind_compare": (
             "Blind comparator mode is active. Stay blind to mapping and raw non-blind outputs; "
             "read only blind A/B artifacts from the active iteration plus the target grading-spec.json. "
-            "MCP tools remain blocked in this mode."
+            "When the orchestrator provides an explicit raw_output_path, you may journal the raw comparator "
+            "payload only under test/<iteration>/_meta/raw-comparison-*.json. MCP tools remain blocked in this mode."
         ),
     }
     additional = messages.get(mode)
@@ -489,6 +494,30 @@ def handle_edit(
     mode: str,
     state: dict[str, Any],
 ) -> dict[str, Any]:
+    if mode == "blind_compare":
+        paths = extract_paths(tool_name, tool_input, workspace_root)
+        if not paths:
+            return deny("Could not determine which files would be edited; blind comparator writes must be explicitly path-scoped.")
+
+        for rel_path in paths:
+            if not is_blind_compare_write_allowed(rel_path):
+                return deny(
+                    f"Editing '{rel_path}' is outside the blind comparator write scope. Blind comparator workers may only write raw-comparison journal files under test/<iteration>/_meta/."
+                )
+
+        iteration_scope_failure = enforce_iteration_scope(
+            state,
+            workspace_root,
+            extract_iteration_candidates_from_paths(paths),
+            mode,
+        )
+        if iteration_scope_failure:
+            return deny(iteration_scope_failure)
+
+        return allow(
+            additional_context="Blind comparator write allowed only for raw-comparison journal files under test/<iteration>/_meta/."
+        )
+
     if mode not in {"benchmark_manager"} and mode not in WORKER_WRITE_MODES:
         return deny("Editing tools are disabled for benchmark worker agents.")
 
@@ -550,7 +579,10 @@ def handle_search(
     for pattern in include_patterns:
         prefix = normalize_glob_prefix(pattern)
         if prefix is None:
-            return deny(f"Search scope '{pattern}' is too broad. Scope searches to a concrete allowed subtree such as test/**, .github/agents/**, or projects/shared/** depending on mode.")
+            return deny(
+                f"Search scope '{pattern}' is too broad. Scope searches to a concrete allowed subtree "
+                "that is explicitly permitted for the current benchmark mode."
+            )
         if not is_read_allowed(prefix, mode, state, workspace_root, is_prefix=True):
             return deny(f"Search scope '{pattern}' is outside the allowed benchmark area for mode '{mode}'.")
     return allow()
@@ -611,6 +643,15 @@ def is_worker_write_allowed(rel_path: str) -> bool:
     if len(parts) >= 3 and parts[2].startswith("_"):
         return False
     return True
+
+
+def is_blind_compare_write_allowed(rel_path: str) -> bool:
+    normalized = normalize_rel_path(rel_path)
+    match = BLIND_COMPARE_RAW_JOURNAL_RE.match(normalized)
+    if not match:
+        return False
+    iteration_name = match.group("iteration")
+    return is_benchmark_iteration_dir(iteration_name)
 
 
 def configured_allowed_iteration() -> str | None:
@@ -709,6 +750,8 @@ def is_read_allowed(
     if mode in {"baseline", "baseline_hook_only"}:
         if rel_path.startswith(".github/"):
             return False
+        if is_baseline_prompt_input_read_allowed(rel_path, state, workspace_root):
+            return True
         return any(path_matches_allowlist(rel_path, allowed, is_prefix=is_prefix) for allowed in ROOT_READ_ALLOWLIST)
 
     if mode == "with_skill_targeted":
@@ -768,6 +811,14 @@ def is_read_allowed(
         return False
 
     return False
+
+
+def is_baseline_prompt_input_read_allowed(rel_path: str, state: dict[str, Any], workspace_root: Path) -> bool:
+    match = BASELINE_PROMPT_INPUT_READ_RE.match(rel_path)
+    if not match:
+        return False
+    iteration_name = match.group("iteration")
+    return lock_iteration(state, iteration_name, workspace_root)
 
 
 def path_matches_allowlist(rel_path: str, allowed: str, *, is_prefix: bool) -> bool:

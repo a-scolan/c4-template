@@ -1,0 +1,6 @@
+{
+  "id": 27,
+  "skill_name": "likec4-dsl",
+  "prompt": "In a scoped view `view backend of cloud.backend { include * }`, choose exactly one statement and justify it in one sentence: (A) `include *` means the whole recursive subtree of `cloud.backend`, (B) `include *` means `cloud.backend` plus its direct children as the base include set, or (C) `include *` means the whole model. Start your answer with exactly `B` if that is the right choice. Then give one minimal snippet that keeps `include *` and adds only incoming relationships around `cloud.backend`.",
+  "files": []
+}

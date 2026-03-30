@@ -7,6 +7,33 @@ from typing import Any
 from .common import normalize_string_list, read_json
 
 
+def validate_execution_check_definition(skill_name: str, owner_id: int | str, check_index: int, check: Any) -> list[str]:
+	issues: list[str] = []
+	if not isinstance(check, dict):
+		return [f"{skill_name}: grading-spec {owner_id!r} execution_checks[{check_index}] must be an object"]
+	if not isinstance(check.get("name"), str) or not check.get("name", "").strip():
+		issues.append(f"{skill_name}: grading-spec {owner_id!r} execution_checks[{check_index}] must provide a non-empty name")
+	for key in ("description", "when"):
+		if key in check and (not isinstance(check.get(key), str) or not check.get(key, "").strip()):
+			issues.append(f"{skill_name}: grading-spec {owner_id!r} execution_checks[{check_index}] field '{key}' must be a non-empty string when provided")
+	if not isinstance(check.get("instructions"), list) or not check.get("instructions") or not all(isinstance(step, str) and step.strip() for step in check.get("instructions", [])):
+		issues.append(f"{skill_name}: grading-spec {owner_id!r} execution_checks[{check_index}] must provide a non-empty string-only instructions list")
+	for key in ("success_signals", "failure_signals"):
+		if key in check and (not isinstance(check.get(key), list) or not all(isinstance(signal, str) and signal.strip() for signal in check.get(key, []))):
+			issues.append(f"{skill_name}: grading-spec {owner_id!r} execution_checks[{check_index}] field '{key}' must be a string-only list when provided")
+	return issues
+
+
+def validate_execution_check_list(skill_name: str, owner_id: int | str, execution_checks: Any) -> list[str]:
+	issues: list[str] = []
+	if not isinstance(execution_checks, list) or not execution_checks:
+		issues.append(f"{skill_name}: grading-spec {owner_id!r} execution_checks must be a non-empty array when provided")
+		return issues
+	for check_index, check in enumerate(execution_checks):
+		issues.extend(validate_execution_check_definition(skill_name, owner_id, check_index, check))
+	return issues
+
+
 def workspace_skills_root(workspace_root: Path) -> Path:
 	return workspace_root / ".github" / "skills"
 
@@ -87,6 +114,10 @@ def validate_grading_spec_definition(skill_name: str, data: dict[str, Any]) -> l
 		issues.append(f"{skill_name}: grading-spec must contain a non-empty 'evals' array")
 		return issues
 
+	default_execution_checks = data.get("default_execution_checks")
+	if default_execution_checks is not None:
+		issues.extend(validate_execution_check_list(skill_name, "default", default_execution_checks))
+
 	seen_ids: set[int] = set()
 	for index, item in enumerate(evals):
 		if not isinstance(item, dict):
@@ -110,6 +141,9 @@ def validate_grading_spec_definition(skill_name: str, data: dict[str, Any]) -> l
 		expectations = item.get("expectations")
 		if not isinstance(expectations, list) or not all(isinstance(entry, str) and entry.strip() for entry in expectations):
 			issues.append(f"{skill_name}: grading-spec eval {eval_id!r} must provide a string-only expectations list")
+		execution_checks = item.get("execution_checks")
+		if execution_checks is not None:
+			issues.extend(validate_execution_check_list(skill_name, f"eval {eval_id!r}", execution_checks))
 	return issues
 
 

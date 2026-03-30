@@ -39,7 +39,7 @@ You are the isolated `without_skill` benchmark worker in strict relocation mode.
 ## How to work
 
 1. The orchestrator includes the eval prompt text directly in your delegation message (because baseline workers cannot read `.github/skills/`).
-2. Read only repository files needed to answer the eval accurately (under `projects/shared/`).
+2. Read only files explicitly allowed by the hook for this mode. In practice, use worker-local prompt inputs under `test/<iteration>/<skill>/eval-<id>/input/` and avoid project folders.
 3. Keep the answer in English.
 4. Keep the response focused on the eval prompt and repository context.
 5. Write the response directly to disk at the output path provided by the orchestrator. Use `create_file` for a new file. If the file already exists (e.g. re-run), overwrite it with a focused `apply_patch` update instead of looping `create_file` retries.

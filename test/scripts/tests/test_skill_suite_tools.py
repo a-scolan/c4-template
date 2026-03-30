@@ -157,6 +157,128 @@ class SkillSuiteToolsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             tools.load_split_eval_artifacts(self.workspace_root, "create-element")
 
+    def test_split_eval_artifacts_accept_execution_checks(self) -> None:
+        grading_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "grading-spec.json"
+        grading_payload = tools.read_json(grading_path)
+        grading_payload["evals"][0]["execution_checks"] = [
+            {
+                "name": "Validate snippet",
+                "description": "Run a lightweight validator when possible.",
+                "when": "Run this when the response includes a concrete snippet.",
+                "instructions": [
+                    "Extract the snippet.",
+                    "Validate it in isolation.",
+                ],
+                "success_signals": ["No validator errors are reported."],
+                "failure_signals": ["Validator errors are reported."],
+            }
+        ]
+        tools.write_json(grading_path, grading_payload)
+
+        bundle = tools.load_split_eval_artifacts(self.workspace_root, "create-element")
+
+        self.assertEqual(bundle["grading"]["evals"][0]["execution_checks"][0]["name"], "Validate snippet")
+
+    def test_split_eval_artifacts_reject_malformed_execution_checks(self) -> None:
+        grading_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "grading-spec.json"
+        grading_payload = tools.read_json(grading_path)
+        grading_payload["evals"][0]["execution_checks"] = [
+            {
+                "name": "",
+                "instructions": [],
+            }
+        ]
+        tools.write_json(grading_path, grading_payload)
+
+        with self.assertRaises(ValueError):
+            tools.load_split_eval_artifacts(self.workspace_root, "create-element")
+
+    def test_split_eval_artifacts_accept_default_execution_checks(self) -> None:
+        grading_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "grading-spec.json"
+        grading_payload = tools.read_json(grading_path)
+        grading_payload["default_execution_checks"] = [
+            {
+                "name": "Default validator",
+                "instructions": ["Extract output.", "Run lightweight validator."],
+                "success_signals": ["Validation succeeds."],
+                "failure_signals": ["Validation fails."],
+            }
+        ]
+        tools.write_json(grading_path, grading_payload)
+
+        bundle = tools.load_split_eval_artifacts(self.workspace_root, "create-element")
+
+        self.assertEqual(bundle["grading"]["default_execution_checks"][0]["name"], "Default validator")
+
+    def test_split_eval_artifacts_reject_malformed_default_execution_checks(self) -> None:
+        grading_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "grading-spec.json"
+        grading_payload = tools.read_json(grading_path)
+        grading_payload["default_execution_checks"] = [
+            {
+                "name": "",
+                "instructions": [],
+            }
+        ]
+        tools.write_json(grading_path, grading_payload)
+
+        with self.assertRaises(ValueError):
+            tools.load_split_eval_artifacts(self.workspace_root, "create-element")
+
+    def test_build_grader_bundle_includes_execution_checks(self) -> None:
+        grading_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "grading-spec.json"
+        grading_payload = tools.read_json(grading_path)
+        grading_payload["evals"][0]["execution_checks"] = [
+            {
+                "name": "Validate snippet",
+                "instructions": ["Extract the snippet.", "Validate it in isolation."],
+            }
+        ]
+        tools.write_json(grading_path, grading_payload)
+
+        response_path = self.iteration_dir / "create-element" / "eval-0" / "with_skill" / "response.md"
+        response_path.parent.mkdir(parents=True, exist_ok=True)
+        response_path.write_text("```likec4\napi = Container_Api 'API'\n```\n", encoding="utf-8")
+
+        bundle = tools.build_grader_bundle(self.iteration_dir, self.workspace_root, "create-element", 0, "with_skill")
+
+        self.assertEqual(bundle["execution_checks"][0]["name"], "Validate snippet")
+
+    def test_build_grader_bundle_merges_default_and_eval_execution_checks(self) -> None:
+        grading_path = self.workspace_root / ".github" / "skills" / "create-element" / "evals" / "grading-spec.json"
+        grading_payload = tools.read_json(grading_path)
+        grading_payload["default_execution_checks"] = [
+            {
+                "name": "Validate snippet",
+                "instructions": ["Default step."],
+                "success_signals": ["Default success signal."],
+            },
+            {
+                "name": "Generic syntax check",
+                "instructions": ["Run generic check."],
+            },
+        ]
+        grading_payload["evals"][0]["execution_checks"] = [
+            {
+                "name": "Validate snippet",
+                "instructions": ["Eval override step."],
+                "failure_signals": ["Eval-specific failure signal."],
+            }
+        ]
+        tools.write_json(grading_path, grading_payload)
+
+        response_path = self.iteration_dir / "create-element" / "eval-0" / "with_skill" / "response.md"
+        response_path.parent.mkdir(parents=True, exist_ok=True)
+        response_path.write_text("```likec4\napi = Container_Api 'API'\n```\n", encoding="utf-8")
+
+        bundle = tools.build_grader_bundle(self.iteration_dir, self.workspace_root, "create-element", 0, "with_skill")
+
+        self.assertEqual(len(bundle["default_execution_checks"]), 2)
+        self.assertEqual(len(bundle["eval_execution_checks"]), 1)
+        self.assertEqual(len(bundle["execution_checks"]), 2)
+        self.assertEqual(bundle["execution_checks"][0]["name"], "Validate snippet")
+        self.assertEqual(bundle["execution_checks"][0]["instructions"], ["Eval override step."])
+        self.assertEqual(bundle["execution_checks"][1]["name"], "Generic syntax check")
+
     def test_materialize_comparisons_rejects_incomplete_schema(self) -> None:
         raw_path = self._write_json(
             self.workspace_root / "raw-blind.json",
@@ -207,6 +329,126 @@ class SkillSuiteToolsTests(unittest.TestCase):
         summary = tools.materialize_blind_comparisons(self.iteration_dir, "create-element", raw_path)
 
         self.assertEqual(summary["comparison_count"], 1)
+
+    def test_materialize_comparisons_merges_without_overwriting_existing_entries(self) -> None:
+        first_payload = self._write_json(
+            self.workspace_root / "raw-blind-first.json",
+            {
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "eval_id": 0,
+                        "run_number": 1,
+                        "winner": "A",
+                        "reasoning": "A is better on eval 0.",
+                        "rubric": {
+                            "A": {"content_score": 8.0, "structure_score": 8.0, "overall_score": 8.0},
+                            "B": {"content_score": 6.0, "structure_score": 6.0, "overall_score": 6.0},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                            "B": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                        },
+                    }
+                ],
+            },
+        )
+        second_payload = self._write_json(
+            self.workspace_root / "raw-blind-second.json",
+            {
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "eval_id": 1,
+                        "run_number": 1,
+                        "winner": "B",
+                        "reasoning": "B is better on eval 1.",
+                        "rubric": {
+                            "A": {"content_score": 6.0, "structure_score": 6.0, "overall_score": 6.0},
+                            "B": {"content_score": 8.0, "structure_score": 8.0, "overall_score": 8.0},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                            "B": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                        },
+                    }
+                ],
+            },
+        )
+
+        first = tools.materialize_blind_comparisons(self.iteration_dir, "create-element", first_payload)
+        second = tools.materialize_blind_comparisons(self.iteration_dir, "create-element", second_payload)
+
+        self.assertEqual(first["raw_comparison_count"], 1)
+        self.assertEqual(first["comparison_count"], 1)
+        self.assertEqual(first["added_count"], 1)
+        self.assertEqual(first["replaced_count"], 0)
+
+        self.assertEqual(second["raw_comparison_count"], 1)
+        self.assertEqual(second["comparison_count"], 2)
+        self.assertEqual(second["added_count"], 1)
+        self.assertEqual(second["replaced_count"], 0)
+
+        persisted = tools.read_json(self.iteration_dir / "create-element" / "blind-comparisons.json")
+        self.assertEqual(len(persisted["comparisons"]), 2)
+        self.assertEqual([item["eval_id"] for item in persisted["comparisons"]], [0, 1])
+
+    def test_materialize_comparisons_replaces_existing_entry_same_eval_and_run(self) -> None:
+        first_payload = self._write_json(
+            self.workspace_root / "raw-blind-replace-1.json",
+            {
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "eval_id": 0,
+                        "run_number": 2,
+                        "winner": "A",
+                        "reasoning": "Initial judgment.",
+                        "rubric": {
+                            "A": {"content_score": 8.0, "structure_score": 8.0, "overall_score": 8.0},
+                            "B": {"content_score": 7.0, "structure_score": 7.0, "overall_score": 7.0},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                            "B": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                        },
+                    }
+                ],
+            },
+        )
+        second_payload = self._write_json(
+            self.workspace_root / "raw-blind-replace-2.json",
+            {
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "eval_id": 0,
+                        "run_number": 2,
+                        "winner": "B",
+                        "reasoning": "Re-evaluated judgment.",
+                        "rubric": {
+                            "A": {"content_score": 6.0, "structure_score": 6.0, "overall_score": 6.0},
+                            "B": {"content_score": 9.0, "structure_score": 9.0, "overall_score": 9.0},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                            "B": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                        },
+                    }
+                ],
+            },
+        )
+
+        tools.materialize_blind_comparisons(self.iteration_dir, "create-element", first_payload)
+        second = tools.materialize_blind_comparisons(self.iteration_dir, "create-element", second_payload)
+
+        self.assertEqual(second["comparison_count"], 1)
+        self.assertEqual(second["added_count"], 0)
+        self.assertEqual(second["replaced_count"], 1)
+
+        persisted = tools.read_json(self.iteration_dir / "create-element" / "blind-comparisons.json")
+        self.assertEqual(persisted["comparisons"][0]["winner"], "B")
+        self.assertEqual(persisted["comparisons"][0]["reasoning"], "Re-evaluated judgment.")
 
     def test_read_json_reports_path_and_context_for_invalid_json(self) -> None:
         bad_path = self.workspace_root / "broken.json"
@@ -624,6 +866,92 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertEqual(summary["issue_count"], 1)
         self.assertEqual(summary["issues"][0]["file"], "blind-comparisons.json")
 
+    def test_pre_aggregate_check_fails_when_blind_comparisons_do_not_cover_all_prepared_runs(self) -> None:
+        skill_dir = self.iteration_dir / "create-element"
+
+        for filename, configuration in (
+            ("with_skill-run-metrics.json", "with_skill"),
+            ("without_skill-run-metrics.json", "without_skill"),
+        ):
+            self._write_json(
+                skill_dir / filename,
+                {
+                    "skill_name": "create-element",
+                    "configuration": configuration,
+                    "language": "English",
+                    "mcp_used": False,
+                    "started_at": "2026-03-13T10:00:00Z",
+                    "finished_at": "2026-03-13T10:00:05Z",
+                    "elapsed_seconds_total": 5.0,
+                    "files_read_count": 1,
+                    "files_written_count": 1,
+                    "run_count": 1,
+                    "runs": [
+                        {
+                            "skill_name": "create-element",
+                            "configuration": configuration,
+                            "language": "English",
+                            "mcp_used": False,
+                            "started_at": "2026-03-13T10:00:00Z",
+                            "finished_at": "2026-03-13T10:00:05Z",
+                            "elapsed_seconds_total": 5.0,
+                            "files_read_count": 1,
+                            "files_written_count": 1,
+                            "run_number": 1,
+                        }
+                    ],
+                    "aggregate": {},
+                },
+            )
+
+        self._write_json(skill_dir / "with_skill-summary.json", {"summary": {}, "evals": []})
+        self._write_json(skill_dir / "without_skill-summary.json", {"summary": {}, "evals": []})
+
+        blind_run_1 = skill_dir / "eval-0" / "blind" / "run-1"
+        blind_run_1.mkdir(parents=True, exist_ok=True)
+        (blind_run_1 / "A.md").write_text("A1\n", encoding="utf-8")
+        (blind_run_1 / "B.md").write_text("B1\n", encoding="utf-8")
+        self._write_json(skill_dir / "eval-0" / "blind-map.run-1.json", {"A": "with_skill", "B": "without_skill"})
+
+        blind_run_2 = skill_dir / "eval-0" / "blind" / "run-2"
+        blind_run_2.mkdir(parents=True, exist_ok=True)
+        (blind_run_2 / "A.md").write_text("A2\n", encoding="utf-8")
+        (blind_run_2 / "B.md").write_text("B2\n", encoding="utf-8")
+        self._write_json(skill_dir / "eval-0" / "blind-map.run-2.json", {"A": "without_skill", "B": "with_skill"})
+
+        self._write_json(
+            skill_dir / "blind-comparisons.json",
+            {
+                "schema_version": 2,
+                "skill_name": "create-element",
+                "comparisons": [
+                    {
+                        "schema_version": 2,
+                        "eval_id": 0,
+                        "run_number": 1,
+                        "winner": "A",
+                        "reasoning": "Run 1 judged.",
+                        "rubric": {
+                            "A": {"content_score": 8, "structure_score": 8, "overall_score": 8},
+                            "B": {"content_score": 6, "structure_score": 6, "overall_score": 6},
+                        },
+                        "expectation_results": {
+                            "A": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                            "B": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                        },
+                    }
+                ],
+            },
+        )
+
+        summary = tools.pre_aggregate_check(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(summary["status"], "fail")
+        self.assertEqual(summary["issue_count"], 1)
+        self.assertEqual(summary["issues"][0]["reason"], "missing-blind-comparisons-for-prepared-runs")
+        self.assertEqual(summary["issues"][0]["details"]["expected_count"], 2)
+        self.assertEqual(summary["issues"][0]["details"]["actual_count"], 1)
+
     def test_resume_finalize_materializes_missing_blind_comparisons_from_meta(self) -> None:
         skill_dir = self.iteration_dir / "create-element"
         with_response = skill_dir / "eval-0" / "with_skill" / "response.md"
@@ -1014,8 +1342,39 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertEqual(summary["skill_count"], 1)
         self.assertEqual(summary["skills"][0]["skill_name"], "create-element")
         self.assertEqual(summary["skills"][0]["evals"][0]["prompt"], "Add an API container.")
+        self.assertTrue(summary["skills"][0]["worker_prompt_inputs"])
+        prompt_paths = summary["skills"][0]["worker_prompt_inputs"][0]
+        self.assertTrue((self.workspace_root / prompt_paths["prompt_md_path"]).exists())
+        self.assertTrue((self.workspace_root / prompt_paths["prompt_json_path"]).exists())
         snapshot_path = self.iteration_dir / "_meta" / "evals-public-snapshot.json"
         self.assertTrue(snapshot_path.exists())
+
+    def test_disable_workspace_skills_moves_all_and_marks_strict_ready(self) -> None:
+        (self.workspace_root / ".github" / "skills" / "create-relationship" / "SKILL.md").parent.mkdir(parents=True, exist_ok=True)
+        (self.workspace_root / ".github" / "skills" / "create-relationship" / "SKILL.md").write_text("x\n", encoding="utf-8")
+
+        summary = tools.disable_workspace_skills(self.workspace_root, self.iteration_dir)
+
+        self.assertTrue(summary["strict_ready"])
+        self.assertEqual(summary["remaining_skills_root_count"], 0)
+        self.assertEqual(summary["remaining_skills_root"], [])
+        self.assertEqual(tools.skill_directory_names(self.workspace_root / ".github" / "skills"), [])
+        self.assertGreaterEqual(summary["moved_count"], 2)
+
+    def test_restore_workspace_skills_accepts_already_restored_skills(self) -> None:
+        summary_disable = tools.disable_workspace_skills(self.workspace_root, self.iteration_dir)
+        moved_skill_names = [item["skill"] for item in summary_disable["moved"]]
+
+        first_skill = moved_skill_names[0]
+        backup_path = self.iteration_dir / "_disabled-skills" / first_skill
+        destination_path = self.workspace_root / ".github" / "skills" / first_skill
+        backup_path.rename(destination_path)
+
+        summary_restore = tools.restore_workspace_skills(self.workspace_root, self.iteration_dir)
+
+        self.assertIn(first_skill, summary_restore["already_restored"])
+        self.assertEqual(summary_restore["already_restored_count"], 1)
+        self.assertEqual(sorted(tools.skill_directory_names(self.workspace_root / ".github" / "skills")), sorted(moved_skill_names))
 
     def test_current_utc_timestamp_returns_iso8601_utc_string(self) -> None:
         payload = tools.current_utc_timestamp()
@@ -1024,7 +1383,7 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertIsNotNone(tools.iso_to_datetime(payload["timestamp"]))
         self.assertTrue(payload["timestamp"].endswith("Z"))
 
-    def test_validate_hook_audit_accepts_denied_broad_mcp_and_shared_reads(self) -> None:
+    def test_validate_hook_audit_accepts_denied_broad_mcp_and_prompt_input_reads(self) -> None:
         audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"
         audit_path.parent.mkdir(parents=True, exist_ok=True)
         audit_path.write_text(
@@ -1035,7 +1394,7 @@ class SkillSuiteToolsTests(unittest.TestCase):
                             "timestamp": "2026-03-16T21:00:00Z",
                             "mode": "baseline",
                             "tool_name": "read_file",
-                            "tool_paths": ["projects/shared/spec-context.c4"],
+                            "tool_paths": ["test/likec4-dsl-test4/likec4-dsl/eval-4/input/prompt.md"],
                             "permissionDecision": "allow",
                         }
                     ),
@@ -1081,6 +1440,28 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertFalse(summary["passed"])
         self.assertEqual(summary["issue_count"], 1)
         self.assertEqual(summary["issues"][0]["problem"], "allowed-read-outside-mode-scope")
+
+    def test_validate_hook_audit_accepts_baseline_prompt_input_reads(self) -> None:
+        audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        audit_path.write_text(
+            json.dumps(
+                {
+                    "timestamp": "2026-03-16T21:00:00Z",
+                    "mode": "baseline",
+                    "tool_name": "read_file",
+                    "tool_paths": ["test/likec4-dsl-test4/likec4-dsl/eval-4/input/prompt.md"],
+                    "permissionDecision": "allow",
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        summary = tools.validate_hook_audit(audit_path, mode="baseline")
+
+        self.assertTrue(summary["passed"])
+        self.assertEqual(summary["issue_count"], 0)
 
     def test_validate_hook_audit_reports_malformed_jsonl_lines_without_crashing(self) -> None:
         audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"

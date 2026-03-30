@@ -6,12 +6,13 @@
       "expected_output": "The response gives the focused `likec4 validate` command with `--json`, `--no-layout`, `--file`, and the correct project path, then explains how to interpret `filteredFiles` and `filteredErrors` versus `totalErrors`.",
       "files": [],
       "expectations": [
-        "The response uses `npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template 2>/dev/null` or an equivalent command with the same flags and project path.",
+        "The response uses `npx likec4 validate --json --no-layout --file projects/template/system-model.c4 projects/template` or an equivalent command with the same flags and project path; version pins such as `npx likec4@latest validate` are also accepted; platform-specific redirects like `2>/dev/null` are optional.",
         "The response explains that `--no-layout` skips layout drift checks.",
         "The response explains that `--file` scopes reported errors to the edited file.",
         "The response mentions `filteredFiles` and `filteredErrors` as the key fields for the targeted file check.",
         "The response distinguishes those filtered fields from `totalErrors` or other project-wide counts."
-      ]
+      ],
+      "grading_guidance": "Accept any reasonable version pin in the command (`npx likec4@latest`, `npx likec4@X.Y.Z`, or bare `npx likec4`). Never require `2>/dev/null` or other platform-specific redirections. The semantic invariants — `--json`, `--no-layout`, `--file <path>`, correct project path, and accurate interpretation of `filteredFiles`/`filteredErrors`/`totalErrors` — must all be present for full credit."
     },
     {
       "id": 1,
@@ -63,15 +64,16 @@
     },
     {
       "id": 5,
-      "expected_output": "A minimal `deployment` snippet with one VM node that contains two named `instanceOf cloud.api` declarations.",
+      "expected_output": "A minimal `deployment` snippet with one VM node that contains two separately named `instanceOf cloud.api` declarations, not two anonymous `instanceOf` lines.",
       "files": [],
       "expectations": [
         "The response uses a `deployment` block.",
         "The snippet includes a `vm` deployment node.",
-        "The snippet creates two named instances rather than one anonymous instance.",
+        "The snippet creates two separately named instances inside the same node.",
         "Each named instance uses `instanceOf cloud.api`.",
-        "The response stays focused on deployment DSL rather than drifting into unrelated view or relationship advice."
-      ]
+        "The response does not treat two anonymous `instanceOf cloud.api` lines as satisfying the request."
+      ],
+      "grading_guidance": "This eval is primarily about named deployment instances inside one node. If the answer uses anonymous instances or leaves the naming ambiguity unresolved, it should lose clearly even if the surrounding deployment block is otherwise valid. Do not over-weight extra explanation once the naming requirement is either satisfied or violated. Note: `instanceOf` is a DSL keyword, not a `deploymentNode` kind — the structural snippet checker may incorrectly flag `instanceOf` as an 'Unknown LikeC4 kind'; this is a checker limitation and should not count as a content error."
     },
     {
       "id": 6,
@@ -107,7 +109,8 @@
         "The predicate group excludes deprecated elements using `exclude * where tag is #deprecated` or a combined `and tag is not #deprecated` filter.",
         "Both views use `global predicate core-services` to apply the shared group.",
         "Each view demonstrates an additional distinct rule: one adds a `style` rule and the other adds an `include` rule."
-      ]
+      ],
+      "grading_guidance": "This is a contrastive syntax eval. The exact reusable-predicate mechanism matters: prefer answers that literally use `global { predicateGroup ... }` and `global predicate core-services`, and penalize substitutions such as style groups, prose-only explanations, or other reusable constructs even if they look conceptually adjacent. Accept `include -> cloud.* ->` as valid — it is the `-> expr ->` predicate that means 'relationships between elements matching expr and the accumulated result'. The structural snippet checker may flag `*` after `->` as an 'Unknown relationship kind'; this is a checker false positive. Grade on semantic correctness of the predicate, not on structural-checker output."
     },
     {
       "id": 9,
@@ -123,19 +126,41 @@
     },
     {
       "id": 10,
-      "expected_output": "The response confirms that both `where source.tag is #next` and `where source.tag is #gamma` match the `prod.eu.frontend` instance, explains that instances inherit all tags from the logical model element plus any tags added directly on the `instanceOf` block.",
+      "expected_output": "The response provides one minimal paste-ready `.c4` fixture that proves cumulative deployment-instance tag filtering: logical `frontend` has `#next`, deployed `prod.eu.web.frontend` adds `#gamma`, the logical relation is `frontend -> db 'reads'`, and the three deployment views `rel_only_next`, `rel_only_gamma`, and `rel_only_missing` use relationship-only `include ... where source.tag is ...` predicates such that the first two can render the relation and the third is empty.",
       "files": [],
       "expectations": [
-        "The response states that `where source.tag is #next` WILL match the relation from `prod.eu.frontend` (inherited from the logical model).",
-        "The response states that `where source.tag is #gamma` WILL also match (tag added directly on the `instanceOf` block).",
-        "The response explains that deployment instances inherit tags from the corresponding logical model element.",
-        "The response explains that additional tags declared on an `instanceOf` block are also visible for tag filtering.",
-        "The response does not suggest that deployment tags override or replace model tags."
+        "The response includes a valid top-level `specification`, `model`, `deployment`, and `views` structure in one `.c4` snippet.",
+        "The logical model tags `frontend` with `#next` and defines a logical `frontend -> db 'reads'` relationship.",
+        "The deployment model creates a deployed `frontend` instance under `prod.eu.web.frontend` (or equivalent nested FQN) and adds `#gamma` on the `instanceOf` block.",
+        "The snippet defines exactly the three deployment views `rel_only_next`, `rel_only_gamma`, and `rel_only_missing`.",
+        "Each of those views uses a relationship-only include with `where source.tag is #next`, `#gamma`, and `#missing` respectively, with the intended semantic outcome that the first two match and the last one renders empty."
+      ],
+      "grading_guidance": "This eval replaces the old duplicate knowledge question with an executable fixture-building task. Prefer concise snippets that make the cumulative-tag rule mechanically testable; do not require extra prose if the DSL is clear and consistent.",
+      "execution_checks": [
+        {
+          "name": "Validate the full LikeC4 fixture when present",
+          "description": "Use the LikeC4 validator as extra evidence when the response contains a single paste-ready `.c4` fixture rather than only prose fragments.",
+          "when": "Run this when the answer includes one main LikeC4 code block that appears intended to be the requested complete file.",
+          "instructions": [
+            "Extract the main LikeC4 code block from the response.",
+            "Create a temporary LikeC4 project directory in the workspace and, if needed, add the minimal config required for isolated validation.",
+            "Save the extracted snippet as a `.c4` file and validate it with the LikeC4 CLI using JSON output and no layout checks.",
+            "Treat validator errors as strong negative evidence against claims that the fixture is paste-ready or semantically correct."
+          ],
+          "success_signals": [
+            "The validator reports zero syntax or semantic errors for the extracted file.",
+            "The validated file still exhibits the intended cumulative-tag behavior described by the expectations."
+          ],
+          "failure_signals": [
+            "The validator reports parse, semantic, or unresolved-reference errors.",
+            "The file structure prevents the three requested deployment views from expressing the intended tag-filter outcomes."
+          ]
+        }
       ]
     },
     {
       "id": 11,
-      "expected_output": "The correct `ops.c4` snippet uses `extend cloud.api { metadata { port '9090'; region 'us-east-1' } health = component 'Health Check' }`, and the response states that `port` becomes the array `['8080', '9090']` because duplicate metadata keys are merged into arrays.",
+      "expected_output": "The correct `ops.c4` snippet uses `extend cloud.api { metadata { port '9090'; region 'us-east-1' } health = component 'Health Check' }`, and the response states that `port` becomes the array `['8080', '9090']` because duplicate metadata keys are merged into arrays instead of being overwritten.",
       "files": [],
       "expectations": [
         "The response shows a correct `extend cloud.api { ... }` block (not a re-declaration of `cloud.api`).",
@@ -143,18 +168,42 @@
         "The `extend` block also declares the nested `health = component 'Health Check'`.",
         "The response explicitly states that `port` ends up as an array `['8080', '9090']` (or equivalent notation).",
         "The response explains WHY: duplicate metadata keys are merged into arrays rather than overwriting."
-      ]
+      ],
+      "grading_guidance": "Treat any answer claiming that `port` is overwritten to a single scalar value as incorrect, even if the extend block itself is otherwise valid."
     },
     {
       "id": 12,
-      "expected_output": "The response states that deployment views do not support customize predicates (`with { ... }`) and do not support `global style ...`, then provides a minimal valid deployment view snippet using supported include/filter rules.",
+      "expected_output": "The response states that deployment views do not support customize predicates (`with { ... }`) and do not support `global style ...`, and if it proposes local styling it clearly presents that as a separate supported deployment-view construct rather than as `with { ... }` or `global style`. It then provides a minimal valid deployment view snippet using only supported syntax.",
       "files": [],
       "expectations": [
         "The response explicitly says `include * with { ... }` is not supported in deployment views.",
         "The response explicitly says `global style ...` is not supported in deployment views.",
         "The response still provides a valid `deployment view` snippet.",
-        "The snippet uses supported rules (for example `include *` and/or `include * -> * where ...`).",
+        "The snippet uses only supported deployment-view rules.",
+        "If the answer uses a local `style` rule, it clearly distinguishes that supported local rule from unsupported `with { ... }` and unsupported `global style ...`.",
         "The response distinguishes deployment-view limitations from element-view capabilities."
+      ],
+      "grading_guidance": "Do not penalize an answer merely for using a valid local deployment-view `style` rule such as `style * { color red }`, as long as it explicitly says this is a separate supported construct and does not falsely present `include * with { ... }` or `global style ...` as supported. The main failure cases are recommending unsupported syntax or overstating deployment-view parity with element views.",
+      "execution_checks": [
+        {
+          "name": "Validate the corrected deployment-view snippet when feasible",
+          "description": "When the response gives a concrete deployment-view snippet, use a tiny temporary harness to verify that the contested constructs are treated correctly by the validator.",
+          "when": "Run this when the answer includes a concrete deployment-view snippet that can be wrapped in a minimal LikeC4 file without guessing away the core syntax being evaluated.",
+          "instructions": [
+            "Extract the deployment-view snippet from the response.",
+            "Wrap it in a minimal temporary LikeC4 project containing just enough specification, model, deployment, and views structure for validation.",
+            "Validate the wrapped file with the LikeC4 CLI using JSON output and no layout checks.",
+            "If the proposed snippet still relies on `with { ... }` or `global style ...`, treat the resulting validator failure as decisive evidence against correctness."
+          ],
+          "success_signals": [
+            "The wrapped snippet validates successfully.",
+            "The snippet avoids unsupported `with { ... }` and `global style ...` deployment-view syntax."
+          ],
+          "failure_signals": [
+            "Validation fails because the answer preserved unsupported deployment-view styling syntax.",
+            "The answer claims deployment-view support that the validated snippet does not demonstrate."
+          ]
+        }
       ]
     },
     {
@@ -198,12 +247,14 @@
       "expected_output": "The response says parent-child relationships are invalid, removes `cloud -> backend` relationship, and provides a corrected pattern that preserves hierarchy and adds a valid relationship between non-parent/child elements.",
       "files": [],
       "expectations": [
+        "The response starts with `Invalid.` exactly.",
         "The response explicitly identifies `cloud -> backend` as invalid parent-child relationship.",
         "The corrected snippet preserves the hierarchical nesting of `backend` inside `cloud`.",
         "The corrected snippet demonstrates a valid relationship between non-parent-child elements.",
         "The response does not claim the original relation is valid with a different label.",
         "The corrected output is a minimal, usable DSL snippet."
-      ]
+      ],
+      "grading_guidance": "Treat the exact opening verdict `Invalid.` and the explicit sentence that containment is modeled by nesting, not by a relationship, as primary signals. Answers that hedge on validity, skip the exact verdict, or preserve a parent-child relationship should lose clearly even if the replacement snippet is otherwise plausible."
     },
     {
       "id": 17,
@@ -215,11 +266,12 @@
         "The corrected relationship uses full FQNs (e.g., `cloud.backend.api -> cloud.db`).",
         "The response does not suggest importing symbols as a substitute for FQNs in this case.",
         "The answer remains focused on reference resolution and corrected DSL."
-      ]
+      ],
+      "grading_guidance": "Answers that name FQNs in prose but provide a code snippet that still uses unresolved local references (e.g., `backend.api`) should receive at most partial credit. The corrected snippet itself must contain the correct full FQN form. Reject answers that suggest `import` statements as an alternative fix; partial fixes that avoid naming both sides as FQNs also receive reduced credit."
     },
     {
       "id": 18,
-      "expected_output": "The response explains that relationship extension must match source, target, title, and kind; it rejects extending kinded relation with non-kinded matcher and provides the correct `extend frontend -[async]-> api 'streams' { ... }` (or equivalent) snippet.",
+      "expected_output": "The response explains that relationship extension must match source, target, title, and kind; it rejects `extend frontend -> api 'streams'` for the async relationship here because omitting the kind is wrong for this disambiguation case, and provides the correct `extend frontend -[async]-> api 'streams' { ... }` snippet.",
       "files": [],
       "expectations": [
         "The response states that `extend` for relationships must match source and target.",
@@ -227,19 +279,22 @@
         "The response identifies `extend frontend -> api 'streams'` as incorrect for a relation originally declared with kind `async`.",
         "The corrected snippet includes the relationship kind in the `extend` matcher.",
         "The corrected snippet adds metadata within the `extend` block."
-      ]
+      ],
+      "grading_guidance": "Do not reward answers that hand-wave the missing kind as 'probably okay'. In this eval, the whole point is exact relationship identity matching under a real ambiguity. Prefer answers that explicitly say omitting the kind is wrong here, not merely ambiguous in the abstract."
     },
     {
       "id": 19,
-      "expected_output": "The response explains scoped wildcard semantics (`*` in `view ... of cloud.backend` means scoped element + direct children + relationships among included elements), clarifies it is not whole-model include, and shows predicates for incoming/outgoing relationships around `cloud.backend`.",
+      "expected_output": "The response explains that scoped `include *` does not include the whole model: it includes the scoped element and its direct children as the base include, and neighboring elements / derived relationships may also become visible because of those included elements under scoped-view semantics. It then shows predicates for incoming/outgoing relationships around `cloud.backend`.",
       "files": [],
       "expectations": [
         "The response explicitly says scoped `*` does NOT include the whole model.",
-        "The response explains that in a scoped view it includes the scoped element and direct children.",
+        "The response explains that in a scoped view the base include is the scoped element plus its direct children.",
+        "The response explains that neighboring elements and/or derived relationships can also appear because of the scoped include semantics.",
         "The snippet uses `view ... of cloud.backend` with `include *`.",
         "The snippet adds relationship predicates for incoming/outgoing around `cloud.backend` (e.g., `include -> cloud.backend ->`).",
         "The output includes a minimal usable DSL snippet, not prose-only explanation."
-      ]
+      ],
+      "grading_guidance": "Do not over-credit answers that reduce scoped `include *` to only the local subtree, and do not accept `the whole model` either. The key concept is: scoped element plus direct children (NOT all recursive descendants, NOT the entire model) as the base include, with neighboring or derived visibility emerging from those included nodes under scoped semantics. Prefer answers that explicitly use the phrase `direct children`. Penalize any answer that says `*` includes elements deeper than direct children, or that uses 'subtree' without qualifying it as 'direct children only'. The snippet relationship predicates for incoming/outgoing around `cloud.backend` are also required; accept both `include -> cloud.backend ->` and the split form `include * -> cloud.backend` + `include cloud.backend -> *`."
     },
     {
       "id": 20,
@@ -251,6 +306,132 @@
         "The command includes the project path argument (e.g., `projects/template`).",
         "The response explains that `filteredFiles` should equal 2 to confirm both files were filtered.",
         "The response explains interpreting `filteredErrors` versus project-wide counts like `totalErrors`."
+      ],
+      "grading_guidance": "Accept any reasonable version pin (`npx likec4@latest`, version-pinned, or bare `npx likec4`). The two `--file` flags, correct project path, and the `filteredFiles = 2` verification explanation are the strict semantic invariants; argument order is flexible."
+    },
+    {
+      "id": 21,
+      "expected_output": "The response starts with `Valid as written.`, explains that `extends backend-overview` inherits the parent `of cloud.backend` scope so `include api` resolves within that scope, and shows a minimal final snippet that also pulls incoming relationships to `cloud.backend`.",
+      "files": [],
+      "expectations": [
+        "The response starts with `Valid as written.`.",
+        "The response explains that the child view inherits the parent `of cloud.backend` scope.",
+        "The final snippet keeps `extends backend-overview` without redeclaring `of cloud.backend`.",
+        "The final snippet uses bare `include api` rather than `include cloud.backend.api`.",
+        "The final snippet adds an incoming relationship predicate for `cloud.backend`."
+      ],
+      "grading_guidance": "This eval is contrastive: answers that redeclare the scope or claim redeclaration is required should lose clearly, even if the rest of the snippet is plausible. Items 1–2 (binary verdict `Valid as written.` and scope-inheritance explanation) are the primary grading signals and account for roughly 60% of the score. Missing the exact opening phrase should noticeably reduce score even if the later explanation is correct. Items 3–5 (snippet correctness) are secondary completeness checks. Eval 21 is a validation task; eval 7 is the complementary construction task — assess each against its own primary objective."
+    },
+    {
+      "id": 22,
+      "expected_output": "A minimal `dynamic view checkout-flow` snippet with `customer -> frontend -> api` as one chained expression, a body only on the `frontend -> api` hop containing `technology 'HTTPS'` and `navigateTo payment-detail`, a `parallel { ... }` fan-out from `api`, plus one sentence explaining that separate standalone steps would not preserve the requested chained-step structure.",
+      "files": [],
+      "expectations": [
+        "The response uses a `dynamic view checkout-flow { ... }` block.",
+        "The `customer -> frontend -> api` portion is written as a single chained expression (possibly split across continuation lines) rather than three standalone top-level steps.",
+        "Only the `frontend -> api` hop carries the body block with `technology 'HTTPS'` and `navigateTo payment-detail`.",
+        "The snippet includes a `parallel { ... }` (or `par { ... }`) fan-out from `api` to `payments`, `inventory`, and `notifications`.",
+        "The explanation sentence says why separate standalone steps would not satisfy the requested chained-step form."
+      ],
+      "grading_guidance": "Penalize answers that flatten the chain into standalone top-level steps. Multi-line chain continuations (a single compound expression split across lines) are accepted. Both `par { }` and `parallel { }` are syntactically equivalent and both accepted. This eval is about exact dynamic-step structure, not topology, snippet length, or surface formatting. Note: the structural snippet checker may flag relationship step labels (e.g., `'charge'`, `'reserve'`) as 'Unknown relationship kind'; this is a checker false positive since step labels are valid in dynamic view syntax. Do not penalize a response solely due to structural-checker errors that arise from step label parsing."
+    },
+    {
+      "id": 23,
+      "expected_output": "The response says `#next` matches, `#gamma` matches, `#missing` does not match, and states in one clear sentence that deployment-instance tags are cumulative: inherited logical-model tags remain visible and directly added instance tags are added on top.",
+      "files": [],
+      "expectations": [
+        "The response says the `#next` filter matches.",
+        "The response says the `#gamma` filter matches.",
+        "The response says the `#missing` filter does not match.",
+        "The response explains that logical-model tags remain visible on the deployment instance.",
+        "The response explicitly states that deployment-instance tags are cumulative rather than replacement-only or isolated."
+      ],
+      "grading_guidance": "Grade this mechanically. The three filter verdicts and the cumulative-tag rule are the primary signals; do not over-weight presentation flourish once those concrete semantics are correct. Missing the `#missing` negative case or avoiding the cumulative-vs-replace distinction should still reduce confidence noticeably."
+    },
+    {
+      "id": 24,
+      "expected_output": "The response identifies `extend frontend -[async]-> api 'streams'` as the correct matcher, explains that the unkinded matcher is insufficient here and that the sync matcher targets the wrong relationship, then provides the exact async extension snippet.",
+      "files": [],
+      "expectations": [
+        "The response identifies `extend frontend -[async]-> api 'streams'` as the correct matcher.",
+        "The response explains that `extend frontend -> api 'streams'` is not the right matcher in this ambiguity case.",
+        "The response explains that `extend frontend -[sync]-> api 'streams'` would target the wrong relationship.",
+        "The final snippet uses the async matcher exactly.",
+        "The final snippet adds metadata within the `extend` block."
+      ],
+      "grading_guidance": "Treat exact matcher selection as the primary grading signal. Prefer answers that begin with the exact required matcher line when the prompt asks for it. Answers that fail to explicitly reject `extend frontend -> api 'streams'` as ambiguous or insufficient in this context lose points, even if they eventually provide the correct async matcher. Do not let extra rhetorical explanation outweigh a wrong matcher choice."
+    },
+    {
+      "id": 25,
+      "expected_output": "The response provides a `likec4 validate` command with `--json`, `--no-layout`, and three repeated `--file` flags for the edited template files, explains the roles of `filteredFiles`, `filteredErrors`, and `totalErrors`, and states that `filteredFiles = 2` means one intended file was not actually included in the filter set.",
+      "files": [],
+      "expectations": [
+        "The command uses `npx likec4 validate --json --no-layout`.",
+        "The command passes three `--file` arguments, one per edited file.",
+        "The command includes the template project path argument.",
+        "The response explains `filteredFiles`, `filteredErrors`, and `totalErrors` distinctly.",
+        "The response explains that `filteredFiles = 2` means one of the intended files was not actually filtered by the command."
+      ],
+      "grading_guidance": "Do not give full credit to answers that only restate the command. This eval checks partial filter coverage interpretation: `filteredFiles = 2` means one of the three intended files was not captured, and the response must state this explicitly. Prefer answers that put the command on the first line by itself when the prompt requires it. Accept any reasonable version pin (`npx likec4@latest`, `npx likec4@X.Y.Z`, or bare `npx likec4`). The semantic invariants — three `--file` flags, correct project path, accurate distinction of all three JSON fields, and the `filteredFiles = 2` interpretation — are strict and non-negotiable."
+    },
+    {
+      "id": 26,
+      "expected_output": "A single DSL snippet that defines `core-services` using `global { predicateGroup ... }` and then applies it in one view with the exact line `global predicate core-services`.",
+      "files": [],
+      "expectations": [
+        "The response contains one DSL snippet only.",
+        "The snippet uses `global { predicateGroup core-services { ... } }` exactly as the reusable mechanism.",
+        "The predicate group includes `cloud.*` elements whose kind is `service`.",
+        "The predicate group excludes elements tagged `#deprecated`.",
+        "The view applies the reusable predicate with the exact line `global predicate core-services`."
+      ],
+      "grading_guidance": "This is a sharp contrastive eval. Do not give full credit to answers that substitute style groups, aliases, prose descriptions, or any other reusable mechanism. Exact keyword fidelity (`predicateGroup`, `global predicate`) is the primary signal."
+    },
+    {
+      "id": 27,
+      "expected_output": "The response starts with `B`, explicitly identifies scoped `include *` as the scoped element plus its direct children as the base include set, and gives a minimal snippet that keeps `include *` while adding incoming relationships around `cloud.backend`.",
+      "files": [],
+      "expectations": [
+        "The response starts with `B` exactly.",
+        "The justification states that the base include set is the scoped element plus its direct children.",
+        "The answer rejects both the recursive-subtree interpretation and the whole-model interpretation.",
+        "The snippet keeps `include *` inside `view ... of cloud.backend { ... }`.",
+        "The snippet adds only incoming relationships around `cloud.backend`."
+      ],
+      "grading_guidance": "Treat the exact initial choice `B` and the phrase `direct children` as primary signals. Reject answers that blur choice B with a full subtree interpretation even if the rest of the prose sounds knowledgeable."
+    },
+    {
+      "id": 28,
+      "expected_output": "The response starts with `Wrong: extend frontend -> api 'streams'`, explains that omitting the relationship kind is wrong under this ambiguity, and ends with the exact async extension snippet including metadata.",
+      "files": [],
+      "expectations": [
+        "The response starts with `Wrong: extend frontend -> api 'streams'` exactly.",
+        "The explanation says omitting the kind is wrong here because multiple relationships could match.",
+        "The explanation stays focused on relationship identity matching rather than unrelated syntax issues.",
+        "The final snippet is exactly `extend frontend -[async]-> api 'streams' { metadata { qos 'high' } }` or a formatting-equivalent multi-line form.",
+        "The answer does not present the unkinded matcher as acceptable."
+      ],
+      "grading_guidance": "This eval is about explicit rejection of the near-miss matcher. The exact opening line and the exact async extension snippet are the decisive signals; do not over-credit generic ambiguity talk if those are missing."
+    }
+  ],
+  "default_execution_checks": [
+    {
+      "name": "Validate executable LikeC4 snippet when response is runnable",
+      "description": "Provide objective evidence by validating the answer with LikeC4 when the response includes a coherent runnable snippet or fixture.",
+      "when": "Run this when the response contains one main LikeC4 code block that can be validated with minimal wrapping and without inventing task semantics.",
+      "instructions": [
+        "Extract the main LikeC4 snippet from the response.",
+        "Create a temporary isolated LikeC4 project and add minimal surrounding structure only when necessary for syntactic validation.",
+        "Validate with the LikeC4 CLI in JSON mode and with layout checks disabled.",
+        "Use validator output as additional evidence for pass/fail decisions, while still grading task semantics from expectations."
+      ],
+      "success_signals": [
+        "The snippet validates without syntax or semantic errors.",
+        "Validated output is consistent with the eval's requested LikeC4 construct."
+      ],
+      "failure_signals": [
+        "Validation fails with parse, semantic, or unresolved-reference errors.",
+        "The snippet cannot be made runnable without rewriting core logic claimed by the response."
       ]
     }
   ],

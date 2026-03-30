@@ -9,7 +9,7 @@ from typing import Any
 AUDIT_LOG_FILENAME = "hook-audit.jsonl"
 ENABLED_BOOL_VALUES = {"1", "true", "yes", "on"}
 ANONYMOUS_SESSION_PREFIX = "anonymous-"
-STATEFUL_ANONYMOUS_MODES = {"with_skill_targeted", "blind_compare"}
+STATEFUL_ANONYMOUS_MODES = {"baseline", "baseline_hook_only", "with_skill_targeted", "blind_compare"}
 TRACE_LEVEL_ALIASES = {
 	"0": "off",
 	"off": "off",
@@ -63,6 +63,16 @@ def infer_anonymous_session_suffix(payload: dict[str, Any], workspace_root: Path
 		}
 		if len(skills) == 1:
 			return f"{mode}-{next(iter(skills))}"
+		return None
+
+	if mode in {"baseline", "baseline_hook_only"}:
+		iterations = {
+			iteration
+			for rel_path in tool_paths
+			if (iteration := legacy.extract_iteration_from_iteration_path(rel_path))
+		}
+		if len(iterations) == 1:
+			return f"{mode}-{next(iter(iterations))}"
 		return None
 
 	if mode == "blind_compare":
