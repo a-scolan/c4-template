@@ -1,0 +1,2 @@
+A
+B puts the body on the wrong hop, C breaks the single-chain requirement by duplicating/splitting `frontend -> api`, and D splits the chain into separate statements instead of one chained expression before the parallel fan-out from `api`.

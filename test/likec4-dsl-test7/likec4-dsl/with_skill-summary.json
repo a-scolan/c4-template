@@ -1,0 +1,681 @@
+{
+  "skill_name": "likec4-dsl",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "run_count": 2,
+  "summary": {
+    "elapsed_seconds_total": 294.2441,
+    "elapsed_seconds_per_eval": 9.1951,
+    "response_words_total": 2034.0,
+    "response_words_per_eval": 63.5625,
+    "files_read_count": 32.0,
+    "files_written_count": 32.0
+  },
+  "variance": {
+    "elapsed_seconds_total": {
+      "mean": 294.2441,
+      "stddev": 17.6113,
+      "min": 281.7911,
+      "max": 306.6972
+    },
+    "elapsed_seconds_per_eval": {
+      "mean": 9.1951,
+      "stddev": 0.5503,
+      "min": 8.806,
+      "max": 9.5843
+    },
+    "response_words_total": {
+      "mean": 2034.0,
+      "stddev": 38.1838,
+      "min": 2007.0,
+      "max": 2061.0
+    },
+    "response_words_per_eval": {
+      "mean": 63.5625,
+      "stddev": 1.1932,
+      "min": 62.7188,
+      "max": 64.4062
+    },
+    "files_read_count": {
+      "mean": 32.0,
+      "stddev": 0.0,
+      "min": 32.0,
+      "max": 32.0
+    },
+    "files_written_count": {
+      "mean": 32.0,
+      "stddev": 0.0,
+      "min": 32.0,
+      "max": 32.0
+    }
+  },
+  "runs": [
+    {
+      "run_number": 1,
+      "summary": {
+        "elapsed_seconds_total": 281.7911,
+        "elapsed_seconds_per_eval": 8.806,
+        "response_words_total": 2007,
+        "response_words_per_eval": 62.7188,
+        "files_read_count": 32,
+        "files_written_count": 32
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 1,
+          "response_path": "eval-0/with_skill/run-1/response.md",
+          "response_words": 87
+        },
+        {
+          "id": 1,
+          "run_number": 1,
+          "response_path": "eval-1/with_skill/run-1/response.md",
+          "response_words": 66
+        },
+        {
+          "id": 2,
+          "run_number": 1,
+          "response_path": "eval-2/with_skill/run-1/response.md",
+          "response_words": 37
+        },
+        {
+          "id": 3,
+          "run_number": 1,
+          "response_path": "eval-3/with_skill/run-1/response.md",
+          "response_words": 34
+        },
+        {
+          "id": 4,
+          "run_number": 1,
+          "response_path": "eval-4/with_skill/run-1/response.md",
+          "response_words": 38
+        },
+        {
+          "id": 5,
+          "run_number": 1,
+          "response_path": "eval-5/with_skill/run-1/response.md",
+          "response_words": 17
+        },
+        {
+          "id": 6,
+          "run_number": 1,
+          "response_path": "eval-6/with_skill/run-1/response.md",
+          "response_words": 60
+        },
+        {
+          "id": 7,
+          "run_number": 1,
+          "response_path": "eval-7/with_skill/run-1/response.md",
+          "response_words": 60
+        },
+        {
+          "id": 8,
+          "run_number": 1,
+          "response_path": "eval-8/with_skill/run-1/response.md",
+          "response_words": 46
+        },
+        {
+          "id": 9,
+          "run_number": 1,
+          "response_path": "eval-9/with_skill/run-1/response.md",
+          "response_words": 31
+        },
+        {
+          "id": 10,
+          "run_number": 1,
+          "response_path": "eval-10/with_skill/run-1/response.md",
+          "response_words": 100
+        },
+        {
+          "id": 11,
+          "run_number": 1,
+          "response_path": "eval-11/with_skill/run-1/response.md",
+          "response_words": 64
+        },
+        {
+          "id": 12,
+          "run_number": 1,
+          "response_path": "eval-12/with_skill/run-1/response.md",
+          "response_words": 122
+        },
+        {
+          "id": 13,
+          "run_number": 1,
+          "response_path": "eval-13/with_skill/run-1/response.md",
+          "response_words": 35
+        },
+        {
+          "id": 14,
+          "run_number": 1,
+          "response_path": "eval-14/with_skill/run-1/response.md",
+          "response_words": 89
+        },
+        {
+          "id": 15,
+          "run_number": 1,
+          "response_path": "eval-15/with_skill/run-1/response.md",
+          "response_words": 67
+        },
+        {
+          "id": 16,
+          "run_number": 1,
+          "response_path": "eval-16/with_skill/run-1/response.md",
+          "response_words": 33
+        },
+        {
+          "id": 17,
+          "run_number": 1,
+          "response_path": "eval-17/with_skill/run-1/response.md",
+          "response_words": 119
+        },
+        {
+          "id": 18,
+          "run_number": 1,
+          "response_path": "eval-18/with_skill/run-1/response.md",
+          "response_words": 126
+        },
+        {
+          "id": 19,
+          "run_number": 1,
+          "response_path": "eval-19/with_skill/run-1/response.md",
+          "response_words": 81
+        },
+        {
+          "id": 20,
+          "run_number": 1,
+          "response_path": "eval-20/with_skill/run-1/response.md",
+          "response_words": 76
+        },
+        {
+          "id": 21,
+          "run_number": 1,
+          "response_path": "eval-21/with_skill/run-1/response.md",
+          "response_words": 60
+        },
+        {
+          "id": 22,
+          "run_number": 1,
+          "response_path": "eval-22/with_skill/run-1/response.md",
+          "response_words": 66
+        },
+        {
+          "id": 23,
+          "run_number": 1,
+          "response_path": "eval-23/with_skill/run-1/response.md",
+          "response_words": 42
+        },
+        {
+          "id": 24,
+          "run_number": 1,
+          "response_path": "eval-24/with_skill/run-1/response.md",
+          "response_words": 96
+        },
+        {
+          "id": 25,
+          "run_number": 1,
+          "response_path": "eval-25/with_skill/run-1/response.md",
+          "response_words": 96
+        },
+        {
+          "id": 26,
+          "run_number": 1,
+          "response_path": "eval-26/with_skill/run-1/response.md",
+          "response_words": 31
+        },
+        {
+          "id": 27,
+          "run_number": 1,
+          "response_path": "eval-27/with_skill/run-1/response.md",
+          "response_words": 37
+        },
+        {
+          "id": 28,
+          "run_number": 1,
+          "response_path": "eval-28/with_skill/run-1/response.md",
+          "response_words": 69
+        },
+        {
+          "id": 29,
+          "run_number": 1,
+          "response_path": "eval-29/with_skill/run-1/response.md",
+          "response_words": 46
+        },
+        {
+          "id": 30,
+          "run_number": 1,
+          "response_path": "eval-30/with_skill/run-1/response.md",
+          "response_words": 56
+        },
+        {
+          "id": 31,
+          "run_number": 1,
+          "response_path": "eval-31/with_skill/run-1/response.md",
+          "response_words": 20
+        }
+      ]
+    },
+    {
+      "run_number": 2,
+      "summary": {
+        "elapsed_seconds_total": 306.6972,
+        "elapsed_seconds_per_eval": 9.5843,
+        "response_words_total": 2061,
+        "response_words_per_eval": 64.4062,
+        "files_read_count": 32,
+        "files_written_count": 32
+      },
+      "evals": [
+        {
+          "id": 0,
+          "run_number": 2,
+          "response_path": "eval-0/with_skill/run-2/response.md",
+          "response_words": 74
+        },
+        {
+          "id": 1,
+          "run_number": 2,
+          "response_path": "eval-1/with_skill/run-2/response.md",
+          "response_words": 72
+        },
+        {
+          "id": 2,
+          "run_number": 2,
+          "response_path": "eval-2/with_skill/run-2/response.md",
+          "response_words": 43
+        },
+        {
+          "id": 3,
+          "run_number": 2,
+          "response_path": "eval-3/with_skill/run-2/response.md",
+          "response_words": 26
+        },
+        {
+          "id": 4,
+          "run_number": 2,
+          "response_path": "eval-4/with_skill/run-2/response.md",
+          "response_words": 40
+        },
+        {
+          "id": 5,
+          "run_number": 2,
+          "response_path": "eval-5/with_skill/run-2/response.md",
+          "response_words": 17
+        },
+        {
+          "id": 6,
+          "run_number": 2,
+          "response_path": "eval-6/with_skill/run-2/response.md",
+          "response_words": 86
+        },
+        {
+          "id": 7,
+          "run_number": 2,
+          "response_path": "eval-7/with_skill/run-2/response.md",
+          "response_words": 95
+        },
+        {
+          "id": 8,
+          "run_number": 2,
+          "response_path": "eval-8/with_skill/run-2/response.md",
+          "response_words": 46
+        },
+        {
+          "id": 9,
+          "run_number": 2,
+          "response_path": "eval-9/with_skill/run-2/response.md",
+          "response_words": 28
+        },
+        {
+          "id": 10,
+          "run_number": 2,
+          "response_path": "eval-10/with_skill/run-2/response.md",
+          "response_words": 113
+        },
+        {
+          "id": 11,
+          "run_number": 2,
+          "response_path": "eval-11/with_skill/run-2/response.md",
+          "response_words": 57
+        },
+        {
+          "id": 12,
+          "run_number": 2,
+          "response_path": "eval-12/with_skill/run-2/response.md",
+          "response_words": 112
+        },
+        {
+          "id": 13,
+          "run_number": 2,
+          "response_path": "eval-13/with_skill/run-2/response.md",
+          "response_words": 47
+        },
+        {
+          "id": 14,
+          "run_number": 2,
+          "response_path": "eval-14/with_skill/run-2/response.md",
+          "response_words": 127
+        },
+        {
+          "id": 15,
+          "run_number": 2,
+          "response_path": "eval-15/with_skill/run-2/response.md",
+          "response_words": 59
+        },
+        {
+          "id": 16,
+          "run_number": 2,
+          "response_path": "eval-16/with_skill/run-2/response.md",
+          "response_words": 33
+        },
+        {
+          "id": 17,
+          "run_number": 2,
+          "response_path": "eval-17/with_skill/run-2/response.md",
+          "response_words": 115
+        },
+        {
+          "id": 18,
+          "run_number": 2,
+          "response_path": "eval-18/with_skill/run-2/response.md",
+          "response_words": 110
+        },
+        {
+          "id": 19,
+          "run_number": 2,
+          "response_path": "eval-19/with_skill/run-2/response.md",
+          "response_words": 74
+        },
+        {
+          "id": 20,
+          "run_number": 2,
+          "response_path": "eval-20/with_skill/run-2/response.md",
+          "response_words": 77
+        },
+        {
+          "id": 21,
+          "run_number": 2,
+          "response_path": "eval-21/with_skill/run-2/response.md",
+          "response_words": 60
+        },
+        {
+          "id": 22,
+          "run_number": 2,
+          "response_path": "eval-22/with_skill/run-2/response.md",
+          "response_words": 67
+        },
+        {
+          "id": 23,
+          "run_number": 2,
+          "response_path": "eval-23/with_skill/run-2/response.md",
+          "response_words": 44
+        },
+        {
+          "id": 24,
+          "run_number": 2,
+          "response_path": "eval-24/with_skill/run-2/response.md",
+          "response_words": 98
+        },
+        {
+          "id": 25,
+          "run_number": 2,
+          "response_path": "eval-25/with_skill/run-2/response.md",
+          "response_words": 102
+        },
+        {
+          "id": 26,
+          "run_number": 2,
+          "response_path": "eval-26/with_skill/run-2/response.md",
+          "response_words": 31
+        },
+        {
+          "id": 27,
+          "run_number": 2,
+          "response_path": "eval-27/with_skill/run-2/response.md",
+          "response_words": 36
+        },
+        {
+          "id": 28,
+          "run_number": 2,
+          "response_path": "eval-28/with_skill/run-2/response.md",
+          "response_words": 66
+        },
+        {
+          "id": 29,
+          "run_number": 2,
+          "response_path": "eval-29/with_skill/run-2/response.md",
+          "response_words": 32
+        },
+        {
+          "id": 30,
+          "run_number": 2,
+          "response_path": "eval-30/with_skill/run-2/response.md",
+          "response_words": 54
+        },
+        {
+          "id": 31,
+          "run_number": 2,
+          "response_path": "eval-31/with_skill/run-2/response.md",
+          "response_words": 20
+        }
+      ]
+    }
+  ],
+  "evals": [
+    {
+      "id": 0,
+      "run_number": 1,
+      "response_path": "eval-0/with_skill/run-1/response.md",
+      "response_words": 87
+    },
+    {
+      "id": 1,
+      "run_number": 1,
+      "response_path": "eval-1/with_skill/run-1/response.md",
+      "response_words": 66
+    },
+    {
+      "id": 2,
+      "run_number": 1,
+      "response_path": "eval-2/with_skill/run-1/response.md",
+      "response_words": 37
+    },
+    {
+      "id": 3,
+      "run_number": 1,
+      "response_path": "eval-3/with_skill/run-1/response.md",
+      "response_words": 34
+    },
+    {
+      "id": 4,
+      "run_number": 1,
+      "response_path": "eval-4/with_skill/run-1/response.md",
+      "response_words": 38
+    },
+    {
+      "id": 5,
+      "run_number": 1,
+      "response_path": "eval-5/with_skill/run-1/response.md",
+      "response_words": 17
+    },
+    {
+      "id": 6,
+      "run_number": 1,
+      "response_path": "eval-6/with_skill/run-1/response.md",
+      "response_words": 60
+    },
+    {
+      "id": 7,
+      "run_number": 1,
+      "response_path": "eval-7/with_skill/run-1/response.md",
+      "response_words": 60
+    },
+    {
+      "id": 8,
+      "run_number": 1,
+      "response_path": "eval-8/with_skill/run-1/response.md",
+      "response_words": 46
+    },
+    {
+      "id": 9,
+      "run_number": 1,
+      "response_path": "eval-9/with_skill/run-1/response.md",
+      "response_words": 31
+    },
+    {
+      "id": 10,
+      "run_number": 1,
+      "response_path": "eval-10/with_skill/run-1/response.md",
+      "response_words": 100
+    },
+    {
+      "id": 11,
+      "run_number": 1,
+      "response_path": "eval-11/with_skill/run-1/response.md",
+      "response_words": 64
+    },
+    {
+      "id": 12,
+      "run_number": 1,
+      "response_path": "eval-12/with_skill/run-1/response.md",
+      "response_words": 122
+    },
+    {
+      "id": 13,
+      "run_number": 1,
+      "response_path": "eval-13/with_skill/run-1/response.md",
+      "response_words": 35
+    },
+    {
+      "id": 14,
+      "run_number": 1,
+      "response_path": "eval-14/with_skill/run-1/response.md",
+      "response_words": 89
+    },
+    {
+      "id": 15,
+      "run_number": 1,
+      "response_path": "eval-15/with_skill/run-1/response.md",
+      "response_words": 67
+    },
+    {
+      "id": 16,
+      "run_number": 1,
+      "response_path": "eval-16/with_skill/run-1/response.md",
+      "response_words": 33
+    },
+    {
+      "id": 17,
+      "run_number": 1,
+      "response_path": "eval-17/with_skill/run-1/response.md",
+      "response_words": 119
+    },
+    {
+      "id": 18,
+      "run_number": 1,
+      "response_path": "eval-18/with_skill/run-1/response.md",
+      "response_words": 126
+    },
+    {
+      "id": 19,
+      "run_number": 1,
+      "response_path": "eval-19/with_skill/run-1/response.md",
+      "response_words": 81
+    },
+    {
+      "id": 20,
+      "run_number": 1,
+      "response_path": "eval-20/with_skill/run-1/response.md",
+      "response_words": 76
+    },
+    {
+      "id": 21,
+      "run_number": 1,
+      "response_path": "eval-21/with_skill/run-1/response.md",
+      "response_words": 60
+    },
+    {
+      "id": 22,
+      "run_number": 1,
+      "response_path": "eval-22/with_skill/run-1/response.md",
+      "response_words": 66
+    },
+    {
+      "id": 23,
+      "run_number": 1,
+      "response_path": "eval-23/with_skill/run-1/response.md",
+      "response_words": 42
+    },
+    {
+      "id": 24,
+      "run_number": 1,
+      "response_path": "eval-24/with_skill/run-1/response.md",
+      "response_words": 96
+    },
+    {
+      "id": 25,
+      "run_number": 1,
+      "response_path": "eval-25/with_skill/run-1/response.md",
+      "response_words": 96
+    },
+    {
+      "id": 26,
+      "run_number": 1,
+      "response_path": "eval-26/with_skill/run-1/response.md",
+      "response_words": 31
+    },
+    {
+      "id": 27,
+      "run_number": 1,
+      "response_path": "eval-27/with_skill/run-1/response.md",
+      "response_words": 37
+    },
+    {
+      "id": 28,
+      "run_number": 1,
+      "response_path": "eval-28/with_skill/run-1/response.md",
+      "response_words": 69
+    },
+    {
+      "id": 29,
+      "run_number": 1,
+      "response_path": "eval-29/with_skill/run-1/response.md",
+      "response_words": 46
+    },
+    {
+      "id": 30,
+      "run_number": 1,
+      "response_path": "eval-30/with_skill/run-1/response.md",
+      "response_words": 56
+    },
+    {
+      "id": 31,
+      "run_number": 1,
+      "response_path": "eval-31/with_skill/run-1/response.md",
+      "response_words": 20
+    }
+  ],
+  "high_variance_evals": [
+    {
+      "id": 7,
+      "metric": "response_words",
+      "stats": {
+        "mean": 77.5,
+        "stddev": 24.7487,
+        "min": 60.0,
+        "max": 95.0
+      }
+    },
+    {
+      "id": 14,
+      "metric": "response_words",
+      "stats": {
+        "mean": 108.0,
+        "stddev": 26.8701,
+        "min": 89.0,
+        "max": 127.0
+      }
+    }
+  ]
+}

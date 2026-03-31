@@ -1,6 +1,6 @@
 ---
 name: likec4-dsl
-description: Use when working with `.c4`/`.likec4` files and exact LikeC4 DSL/CLI syntax is required (validate/export flags, predicates `*`/`_`/`**`, views, deployment, relationship extension matching, strict minimal snippets).
+description: Use when working with `.c4`/`.likec4` files or LikeC4 CLI/config questions where exact DSL/CLI syntax is required, especially for strict command/snippet-first answers, validate/export flags, predicates `*`/`_`/`**`, deployment snippets, dynamic views, or relationship extension matching.
 ---
 
 # LikeC4 DSL Skill
@@ -15,23 +15,40 @@ Architecture-as-code tool. Describe systems in `.c4`/`.likec4` files and LikeC4 
 4. **Strings** — `'single'`, `"double"` — all support multi-line. Escape quotes with backslash: `\'` or `\"`.
 5. **Markdown** — properties like `summary`/`description`/`notes` can contain Markdown. Use triple quotes `'''` or `"""`. Begin a new line after opening quotes and indent Markdown content for better formatting and syntax highlighting.
 6. **Comments** — `// single line` and `/* multi-line */` comments supported anywhere.
-7. **Identifier** — letters, digits, hyphens, underscores only. No dots (dots are FQN separators). Can't start with a digit. Examples: `customer`, `payment-service`, `frontendApp`, `quque-1`.
+7. **Identifier** — letters, digits, hyphens, underscores only. No dots (dots are FQN separators). Can't start with a digit. Examples: `customer`, `payment-service`, `frontendApp`, `quque-1`. **Critical:** `payment-api` is valid; `payment.api` is NOT an identifier (dots separate FQN hierarchy). See `references/identifier-validity.md`.
 8. **FQN** — Fully Qualified Name (FQN) is a dot-separated path to an element, MUST be unique within the project. Examples: `customer`, `saas.backend.payment-service.paymentsApi`, `infra.eu.zone1.node1`.
 9. **References** — LikeC4 has lexical scoping with hoisting, nested scope may shadow outer, like in JavaScript. To reference across files, FQN must be used.
 
 ## Response Discipline (critical for evals)
 
-- If prompt says **"minimal"**, **"paste-ready"**, or **"strict"**, output exactly **one final command/snippet** (no alternatives, no fallback variants, no extra preamble).
+- If prompt says **"minimal"**, **"paste-ready"**, **"strict"**, **"exact"**, or requires a specific **first line**, output exactly **one final command/snippet/verdict token first** (no alternatives, no fallback variants, no extra preamble).
 - Do **not** add unrequested `title`, labels, alternate snippets, or long explanations unless explicitly asked.
 - Prefer exact requested tokens/phrases in the first line when the prompt requires strict phrasing.
 - For strict command prompts, avoid ambiguous wording like "equivalent command" unless prompt explicitly asks for alternatives.
+- If the task is snippet-first or command-first, a prose-only answer is a failure even if the explanation is knowledgeable.
 
 ## CLI Canonical Contracts (anti-substitution guardrails)
 
 - Validate family: use `likec4 validate` (never substitute with `check`, `lint`, or `build`).
 - Export family: use `likec4 export` (never substitute with other command families).
 - Validation flags contract for strict evals: `--json --no-layout --file <path> ... <project-dir>`.
+- Multi-file validation contract: repeat `--file` once per edited `.c4` / `.likec4` source file.
 - Export output flags contract: prefer `--outdir` or `-o` (avoid invented aliases).
+
+## Exact Syntax Guardrails (high-signal only)
+
+### Deployment snippets
+
+- If the prompt asks for **named deployment instances**, use `IDENTIFIER = instanceOf ELEMENT_ID`.
+- Do **not** substitute anonymous `instanceOf ELEMENT_ID` lines when naming is required.
+- If the prompt asks for a full fixture, keep the minimal executable structure: `specification`, `model`, `deployment`, and `views`.
+
+### Relationship-extension matchers
+
+- Relationship identity is matched by **source + target + kind (+ title when needed)**.
+- If typed relationships exist, omitting `KIND` is wrong for strict disambiguation prompts.
+- If multiple relationships share source/target/kind, include the title in the matcher.
+- Do not "simplify" a typed matcher to `extend SOURCE -> TARGET ...` when the prompt is testing exact relationship identity.
 
 ## Workflow
 
@@ -47,8 +64,17 @@ Architecture-as-code tool. Describe systems in `.c4`/`.likec4` files and LikeC4 
 For strict command/snippet prompts, keep a compact loop:
 
 1. **Generate** only the requested final command/snippet.
-2. **Self-check** quickly: exact command family/flags, predicate semantics, scope/FQN correctness, relationship matcher specificity.
+2. **Self-check** quickly:
+  - exact command family / required flags / repeated `--file` count
+  - snippet-first or first-line contract satisfied
+  - predicate semantics (`*`, `_`, `**`) stated precisely
+  - scope / FQN correctness
+  - deployment naming requirement satisfied
+  - relationship matcher specificity (`kind`, `title` when needed)
+  - dynamic view exactness: return arrows, chain form, single parallel block when requested
 3. **Finalize** by fixing in place (no extra alternatives unless explicitly requested).
+
+Before final answer, verify the required tokens are literally present when the prompt depends on them (examples: `--no-layout`, `instanceOf`, `variant sequence`, `global predicate`, `-[async]->`, `parallel {`, `<-`).
 
 Never claim CLI execution happened unless it actually ran.
 
@@ -119,6 +145,51 @@ Do not invent flags like `--out-dir`. Depending on LikeC4 version, `--output` ma
 
 Full CLI reference → `references/cli.md`
 
+## Canonical Snippets for High-Variance Families
+
+Use these as exactness anchors when the prompt is testing syntax, not broad explanation.
+
+### `predicateGroup` reusable predicate
+
+```likec4
+global {
+  predicateGroup core-services {
+    include cloud.* where kind is service
+    exclude * where tag is #deprecated
+  }
+}
+
+views {
+  view service-overview {
+    global predicate core-services
+  }
+}
+```
+
+### Deployment fixture with named instances
+
+```likec4
+deployment {
+  vm appVm {
+    primary = instanceOf cloud.api
+    secondary = instanceOf cloud.api
+  }
+}
+```
+
+### Scoped include semantics
+
+```likec4
+views {
+  view backend of cloud.backend {
+    include *
+    include -> cloud.backend
+  }
+}
+```
+
+Interpretation anchor: in a scoped view, `include *` means the scoped element plus its **direct children** as the base include set; neighbors can still appear through scoped relationship visibility.
+
 ## LikeC4 Project Configuration
 
 Config file (`likec4.config.json`, `.likec4rc`, or `likec4.config.{ts,js}`) defines a project. Its location sets the project scope (LikeC4 files belong to the project of the nearest config file in the directory hierarchy).
@@ -134,341 +205,39 @@ Config file (`likec4.config.json`, `.likec4rc`, or `likec4.config.{ts,js}`) defi
 Key options: `name` (required, unique ID in the workspace), `title` (display name)
 Full reference → `references/configuration.md`
 
-## Specification (Quick Reference)
+## Specification
 
-Syntax:
+Defines all named vocabularies: element kinds, deployment node kinds, relationship kinds, tags, and custom color tokens. Must appear before those kinds are used in `model` or `deployment` blocks.
 
-```likec4
-specification {
-  // Define a tag, extra metadata, outside of specification used as #IDENTIFIER
-  tag IDENTIFIER  
-  // Define kind to use in model, with optional properties and style
-  element IDENTIFIER {
-    #tag-1 #tag-2 // tags to apply to all elements of this kind
-    title "default title for this kind" // see Properties section below
-    technology "default tech for this kind"
-    description "default description for this kind"
-    notation "legend title for this kind"
-    style { ... } // see Style section below
-  }
-  // Define kind to use in deployment model
-  deploymentNode IDENTIFIER {
-    // same properties and styles as element kind
-  }  
-  // Define relationship kind with default properties and styles
-  relationship IDENTIFIER {
-    technology "default tech for this relationship kind"
-    description "default description for this relationship kind"
-    style { ... } // default style for this relationship kind
-  }
-  // Define custom color
-  color IDENTIFIER #FFFFFF // or rgba(255,255,255,1)
-}
-```
+Key reminders: all definitions are global across files; duplicate kind/tag identifiers cause a validation error; specification changes trigger a full project re-parse — keep it in a dedicated `spec.c4` file.
 
-**Important:**
+Full syntax, options per kind, and worked example → `references/specification.md`
 
-- Specification is global, all defined kinds, tags etc. are available across all files in the project.
-- Duplicate identifiers (same kind, same tag, etc.) will cause a validation error.
-- Multiple specification blocks (in one file or across files) are allowed, but not recommended.
-- Prefer to keep specification in a separate file, e.g. `specification.c4` (this improves responsiveness, as changes to the specification require parsing the entire model).
+## Model
 
-Example:
+Hierarchical structure of elements and relationships. Elements have a kind (from specification), a unique identifier within their parent, and optional properties and nested elements.
 
-```likec4
-specification {
-  element actor { notation "Person" style { shape person } }
-  element service { description "Same for all of the kind" style { shape component } }
-  element webapp { style { shape browser } }
-  element queue { style { shape queue color secondary } }
+Key reminders: `this`/`it` aliases the current element in nested relationships; cross-file references require full FQN; parent-child direct relationships are forbidden; `extend FQN { }` merges tags, metadata, and links into an existing element without redefining it.
 
-  relationship async { color amber; line dotted; head diamond; tail vee }
+Full syntax, extend patterns, property table, and worked example → `references/model.md`
 
-  tag deprecated
-  tag critical
+## Style
 
-  deploymentNode environment { notation "Environment"; style { color gray } }
-  deploymentNode vm
-}
-```
+Style properties control visual appearance: `color`, `shape`, `border`, `opacity`, `size`, `padding`, `textSize`, `icon`, `iconColor`, `iconSize`, `iconPosition`, `multiple`. Relationship style extends this with `line`, `head`, and `tail` arrow shapes.
 
-## Model (Quick Reference)
+Full color token table, all shape values, border/opacity/size tokens, icon pack prefixes (`aws:`, `azure:`, `gcp:`, `tech:`, `bootstrap:`), and correct usage patterns → `references/style-tokens-colors.md`
 
-Model is a hierarchical structure of elements, where each element can contain other elements. Element MUST have a kind (from the specification) and an identifier (also known as name). Identifier MUST be unique within its parent. Element may have a body `{ .. }` with tags, properties, nested elements and relationships.
-Relationships exist between any pair of elements, but not between parent-child elements. Relationships can be defined on any level of the hierarchy. Relationships, defined inside an element, implicitly have that element as their source.
+## Deployment
 
-Syntax:
+Maps logical model elements to physical infrastructure nodes using `instanceOf`. Uses `deploymentNode` kinds from specification. Inherits all logical model relationships automatically; additional deployment-level relationships can be defined inline.
 
-```likec4
-model {
-  // Elements, top-levels are global, can be referenced anywhere in the project
-  IDENTIFIER = KIND                   // without title, without body (title defaults to ID)
-  IDENTIFIER = KIND "title"           // with title, without body
-  KIND IDENTIFIER "title"             // if preferred by user to have kind before OD  
-  IDENTIFIER = KIND {
-    TAGS                              // optional, but must come first if present, before any properties
-    PROPERTIES                        // optional, but must come before nested elements and relationships
+Named vs. anonymous instances, multi-environment fixture, deployment relationships, and selection guidance → `references/deployment.md`
 
-    // order of nested elements vs relationships doesn't matter
-    // Nested elements, can be referenced in this file by id, but from other files only using FQN, i.e. parentid.childid
-    IDENTIFIER = KIND "Child Title" {
-       // Same as above, no limit to nesting levels
-    }
-    KIND IDENTIFIER "Child Title" // if preferred by user to have kind before name
+## Views
 
-    // Explicit Relationship, SOURCE and TARGET must be resolvable within the current scope
-    SOURCE -> TARGET
-    // Implicit Relationship (current element is SOURCE)
-    -> TARGET "Relationship title"
-    -> TARGET "Relationship title" {
-      TAGS                            // optional, but must come first if present, before any properties
-      PROPERTIES                      // optional
-    }
-    // Relationship with kind
-    -[REL_KIND]-> TARGET "Relationship title" 
-    .REL_KIND -> TARGET "Relationship title"   // Alternative syntax for relationship with kind
-    // "it" and "this" refer to the current element
-    SOURCE -> it     // relationship to current element
-    this -> TARGET   // relationship from current element
-  }
+Three view types: element views (`view id` or `view id of element`), dynamic views (`dynamic view id`), deployment views (`deployment view id`). View properties: `title`, `description`, `metadata`, `link`.
 
-  // Relationships on top level MUST have SOURCE
-  SOURCE -> TARGET "Relationship title"    //without body
-  SOURCE -> TARGET "Relationship title" {
-    TAGS                                   // optional, but must come first if present, before any properties
-    PROPERTIES                             // optional
-  }
-  SOURCE -[REL_KIND]-> TARGET
-  SOURCE .REL_KIND TARGET
-
-  // Extend existing element by FQN, e.g. from another file
-  extend FQN { 
-    TAGS                   // additional tags to apply to this element
-    PROPERTIES             // additional properties to merge into this element, allowed `metadata` and `link` only
-
-    NESTED_ELEMENTS | RELATIONSHIPS
-  }
-  // Extend existing relationship (must match existing relationship identity)
-  // Anti-ambiguity matcher contract:
-  // 1) SOURCE and TARGET are always required.
-  // 2) If typed relationships exist, include KIND.
-  // 3) If multiple relationships share SOURCE/TARGET/KIND, include TITLE.
-  // In disambiguation cases, omitting KIND is WRONG (not just "ambiguous"): it can silently
-  // match an unkinded relation instead of the intended typed one.
-  extend SOURCE -> TARGET  {
-    TAGS                   // additional tags to apply to this relationship
-    PROPERTIES             // additional properties to merge into this relationship, allowed `metadata` and `link` only
-  }
-  extend SOURCE -[REL_KIND]-> TARGET "Relationship title" {
-    TAGS                   // additional tags to apply to this relationship
-    PROPERTIES             // additional properties to merge into this relationship, allowed `metadata` and `link` only
-  }
-
-  // Example:
-  // Existing:
-  //   frontend -> api "streams"
-  //   frontend -[async]-> api "streams"
-  // Wrong matcher for async target:
-  //   extend frontend -> api "streams" { ... }
-  // Correct matcher:
-  //   extend frontend -[async]-> api "streams" { metadata { qos "high" } }
-}
-```
-
-Example:
-
-```likec4
-model {
-  customer = actor { 
-    title "Customer" // Example `title` as property inside
-    summary "Consumes Cloud Services"
-    description """
-      User with **active** subscription
-      ... detailed description
-    """
-  }
-
-  cloud = system "Cloud" {
-    ui = container "Frontend" {
-      technology "React"
-      style { 
-        shape browser
-      }
-      metadata { 
-        version "1.0.0"
-        owners ["Name 1", "Name 2"]
-      }
-      link https://github.com/likec4/likec4 "Repository"
-      link ../relative/adr1.md
-      link ../relative/adr2.md
-      
-      dashboard = app "Dashboard" {         
-        icon tech:react
-      }
-    }
-    backend = container "Backend" {
-      api = service "API" { 
-        #critical
-        -[sql]-> db "reads/writes"
-      }
-      db = database "DB" {         
-        style { 
-          icon tech:postgresql
-          shape storage
-        }
-      }
-    }
-    ui.dashboard -> backend.api { 
-      title "calls"        // Example `title` as property inside  
-      technology "HTTPS"
-    }
-  }
-
-  customer -> cloud.ui.dashboard "browses" {
-    metadata { 
-      protocol "HTTPS"
-    }
-  }
-}
-```
-
-**Element properties:** `title`, `description`, `summary`, `technology`, `metadata`, `style`, `icon`, `link`. If `description` exceeds 150 characters, add a `summary` with a shorter version (<150 chars) and keep the full details in `description`.
-
-**Relationship properties:** `title`, `description`, `technology`, `metadata`, `style`, `link`, `navigateTo`
-
-## Property (Quick Reference)
-
-| Category        | Values                                                                                                                 |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **title**       | String, single line                                                                                                    |
-| **description** | String, prefer to format with Markdown                                                                                 |
-| **summary**     | String, short description, max 150 characters                                                                          |
-| **technology**  | String, no multi-line                                                                                                  |
-| **style**       | Syntax: `style { ... }`, see Style section below                                                                       |
-| **icon**        | Shortcut for the `style { icon ... }`, takes precedence                                                                |
-| **metadata**    | Syntax: `metadata { KEY VALUE }`, where key must follow identifiers format and value can be string or array of strings |
-| **link**        | Syntax: `link URL "Optional title"`. May be used multiple times. URL can be relative to the document.                  |
-| **navigateTo**  | ID of dynamic view to navigate to                                                                                      |
-
-## Style (Quick Reference)
-
-Style is a dict of properties to define the visual appearance, example:
-
-```likec4
-style {
-  color primary   
-  icon tech:claude
-}
-```
-
-| style property   | Values                                                                                                                                 |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **color**        | `primary`, `secondary`, `muted`, `slate`, `blue`, `indigo`, `sky`, `red`, `gray`, `green`, `amber`, or custom color from specification |
-| **shape**        | `rectangle`, `component`, `person`, `browser`, `mobile`, `cylinder`, `storage`, `queue`, `bucket`, `document`                          |
-| **border**       | `solid`, `dashed`, `dotted`, `none`                                                                                                    |
-| **opacity**      | `0%` - `100%`                                                                                                                          |
-| **size**         | `xs`, `sm`, `md`, `lg`, `xl`                                                                                                           |
-| **padding**      | same as size                                                                                                                           |
-| **textSize**     | same as size                                                                                                                           |
-| **icon**         | relative path, URL, or from icon pack (`aws:`, `azure:`, `gcp:`, `tech:`, `bootstrap:`)                                                |
-| **iconColor**    | same as color                                                                                                                          |
-| **iconSize**     | same as size                                                                                                                           |
-| **iconPosition** | `top`, `left`, `right`, `bottom`                                                                                                       |
-| **multiple**     | `true`/`false`                                                                                                                         |
-
-Icon pack is a bundled set of icons, referenced by prefix.
-For example, `icon aws:simple-storage-service` will use `@likec4/icons/aws/simple-storage-service` (scan package to find available icons, use lower-kebab-case).
-
-Relationship style properties:
-
-- `color` (line color): same as element colors
-- `line` (line style): `solid`, `dashed`, `dotted`
-- `head` (arrow style on head, i.e to TARGET): `none`, `normal`, `onormal`, `dot`, `odot`, `diamond`, `odiamond`, `crow`, `open`, `vee`
-- `tail` (arrow style on tail, i.e to SOURCE): same as for `head`
-
-## Deployment (Quick Reference)
-
-Deployment has same syntax as model, but is defined in `deployment` block and uses `deploymentNode` kinds.
-The deployment model maps logical architecture elements to physical infrastructure, allowing to "deploy" instances of elements from the model inside deployment nodes using the `instanceOf` keyword.
-
-```likec4
-deployment {
-  IDENTIFIER = DEPLOYMENT_KIND {
-    TAGS
-    PROPERTIES
-
-    instanceOf ELEMENT_ID
-    IDENTIFIER = instanceOf ELEMENT_ID {
-      TAGS
-      PROPERTIES
-    }
-  }
-}
-```
-
-Example:
-
-```likec4
-specification {
-  element webapp
-  deploymentNode vm
-}
-model {
-  webapp myapp
-}
-deployment {
-  vm vm1 {
-    instanceOf myapp
-  }
-  vm vm2 {
-    // Named instances of same element within the same deployment node
-    instance1 = instanceOf myapp
-    instance2 = instanceOf myapp
-  }
-}
-```
-
-Deployment model inherits relationships from the logical model, but allows to define additional relationships between deployment nodes/instances (using same syntax as in model).
-
-## Views (Quick Reference)
-
-Element/deployment views show elements/relationships from the model/deployment.
-Dynamic views show interactions between elements. They can render as animated flow diagrams or UML sequence diagrams.
-
-Syntax:
-
-```likec4
-views {
-  // element view
-  view IDENTIFIER {
-    TAGS                // optional tags, must come first if present, before any properties
-    PROPERTIES          // optional, but must come before any view rules
-    ELEMENT_VIEW_RULES    
-  }
-  // element view can also be scoped to a specific element, explained below
-  view IDENTIFIER of ELEMENT_ID {     
-    TAGS
-    PROPERTIES
-    ELEMENT_VIEW_RULES    
-  }
-  // dynamic views
-  dynamic view IDENTIFIER {
-    TAGS
-    PROPERTIES  
-    DYNAMIC_VIEW_RULES
-  }
-  // deployment views
-  deployment view IDENTIFIER {
-    TAGS
-    PROPERTIES
-    DEPLOYMENT_VIEW_RULES
-  }
-}
-```
-
-**View properties:** `title`, `description`, `metadata`, `link`
-
-Full view reference → references/views.md
+Include/exclude predicates, view-level style rules, groups, `autoLayout`, `extends`, `navigateTo`, and global predicate groups → `references/views.md`
 
 ## Quick Decision Trees
 
@@ -540,12 +309,19 @@ Multi-file project?
 Flow / sequence diagram?
 ├─ Basic steps → source -> target "title"
 ├─ Response / backward → source <- target "returns"
-├─ Parallel actions → parallel { ... } (also: par { ... })
+├─ Parallel actions → one `parallel { ... }` block (also: `par { ... }`)
 ├─ Chained steps → customer -> frontend "x" -> backend "y"
 ├─ Step with notes → step { notes 'Markdown content' }
 ├─ Link to another view → step { navigateTo other-view }
 ├─ Sequence variant → dynamic view name { variant sequence }
 └─ Full reference → references/dynamic-views.md
+```
+
+Return-arrow precision:
+
+- If the prompt asks for **response arrows back out**, prefer `<-` steps rather than replacing them with new forward arrows.
+- If the prompt asks for a body on a specific hop in a chain, attach the block only to that hop.
+- If the prompt asks for one fan-out, keep sibling actions in one `parallel { ... }` block instead of multiple one-step parallel blocks.
 
 ## Anti-Patterns to Avoid in Strict Prompts
 
@@ -555,14 +331,37 @@ Flow / sequence diagram?
 | Inventing/guessing flags | Creates non-portable invalid commands | Use canonical documented flags only |
 | Multiple alternative snippets for one strict ask | Reduces precision; fails strict-output grading | Output one final answer unless alternatives are requested |
 | Extending typed relationship without kind/title in ambiguous graph | Can target wrong relationship | Match with source + target + kind (+ title when needed) |
-```
+
+## Common Mistakes & Debugging
+
+When a model errors or an eval answer seems wrong, load `references/troubleshooting.md` which contains:
+- **Syntax errors** — identifier format (dots forbidden in identifiers), unknown kinds, duplicate FQNs, malformed `where` predicates
+- **Model & Hierarchy** — broken FQN references, parent-child relationship constraint, cross-file visibility
+- **View Predicates** — `*` vs `**` confusion, missing neighbor elements, `WHERE` case sensitivity
+- **Deployment** — `instanceOf` FQN resolution, undefined `deploymentNode` kinds
+- **Dynamic Views** — flattening parallel blocks, response arrow symmetry, exact `variant sequence` keyword
+- **Validation & Import** — config not found, import path resolution, upstream error cascade
+- **Performance** — spec in separate file, splitting large views
+- **5-step debugging workflow** — validation-first with `--file`, FQN integrity, predicate isolation, spec-first validation
+- **7 Skill Best Practices** — response discipline, relationship disambiguation, FQN usage, safe editing rules
 
 ## Reference Index
 
-| File                          | Purpose                                                                          |
-| ----------------------------- | -------------------------------------------------------------------------------- |
-| `references/cli.md`           | CLI commands: serve, build, export, codegen, mcp, format                         |
-| `references/configuration.md` | Project config options, multi-project setup, styles, generators, include/exclude |
-| `references/views.md`         | View rules, include/exclude, style rules, groups, autoLayout                     |
-| `references/predicates.md`    | Predicate syntax, wildcards, where conditions, with overrides, global groups     |
-| `references/examples.md`      | Compact real-world examples: extend, groups, globals, dynamic, deployment, rank  |
+Load a reference file when the task involves the corresponding topic. Claude reads SKILL.md first; these files are loaded on demand only when needed.
+
+| File | Purpose — load when... |
+|---|---|
+| `references/specification.md` | Writing/editing `specification { }` blocks, defining element/deploymentNode/relationship/tag/color kinds |
+| `references/model.md` | Writing/editing `model { }` blocks, element hierarchy, relationships, `extend` patterns, property names |
+| `references/deployment.md` | Writing/editing `deployment { }` blocks, `instanceOf`, named instances, multi-environment topology |
+| `references/style-tokens-colors.md` | Applying colors, shapes, icons, or relationship line styles; need exact token names |
+| `references/views.md` | Writing views, include/exclude rules, style rules in views, groups, autoLayout, global predicates |
+| `references/predicates.md` | Complex `where` conditions, `with` overrides, global predicate groups, reusable predicates |
+| `references/include-predicates-wildcards.md` | Wildcard confusion suspected (`*` vs `_` vs `**`); need exact scoped-view semantics |
+| `references/dynamic-views.md` | Writing dynamic views: steps, return arrows, chained steps, parallel blocks, `variant sequence` |
+| `references/identifier-validity.md` | Identifier vs FQN confusion; "dots in names" errors; understanding FQN construction |
+| `references/relationships-bidirectional.md` | Bidirectional relationship syntax and `<->` view predicate patterns |
+| `references/cli.md` | Full CLI reference: serve, build, export, codegen, mcp, format; flag disambiguation |
+| `references/configuration.md` | Project config options, multi-project setup, include/exclude paths, generators |
+| `references/examples.md` | Compact real-world examples: extend, groups, globals, dynamic views, deployment, rank |
+| `references/troubleshooting.md` | Errors, unexpected output, eval failures — 6 error tables, 5-step debug workflow, 7 best practices |

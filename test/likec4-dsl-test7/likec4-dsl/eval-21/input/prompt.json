@@ -1,0 +1,6 @@
+{
+  "id": 21,
+  "skill_name": "likec4-dsl",
+  "prompt": "Given this base view:\n```likec4\nview backend-overview of cloud.backend {\n  include *\n}\n```\nIs the following child view valid as written, or does it need `of cloud.backend` again?\n```likec4\nview backend-detail extends backend-overview {\n  include api\n}\n```\nAnswer first with `Valid as written.` or `Needs scope redeclared.` Then explain why in one short paragraph and show the smallest final snippet that also adds incoming relationships to `cloud.backend`.",
+  "files": []
+}

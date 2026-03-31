@@ -1,0 +1,2 @@
+A
+B attaches the body to the wrong hop, C breaks the single-chain rule by separating/duplicating `frontend -> api`, and D splits `customer -> frontend -> api` into two separate expressions instead of one chained expression.

@@ -473,6 +473,24 @@
         "Validation fails with parse, semantic, or unresolved-reference errors.",
         "The snippet cannot be made runnable without rewriting core logic claimed by the response."
       ]
+    },
+    {
+      "name": "Penalize prose-only answers on snippet-first prompts",
+      "description": "When the prompt explicitly requires a command-first, snippet-first, paste-ready, one-snippet, or exact first-line answer, treat prose-only or prose-first outputs as a meaningful failure.",
+      "when": "Run this when the prompt asks for an exact command, a minimal paste-ready snippet, one DSL snippet only, or a strict first-line token/verdict/letter.",
+      "instructions": [
+        "Check whether the answer delivers the required command/snippet/token as the first meaningful content instead of leading with explanatory prose.",
+        "If the prompt requires one snippet only or a command on the first line, treat prose-first structure as negative evidence even when later content is knowledgeable.",
+        "If the prompt asks for a strict one-line token or exact opening phrase, verify that contract before considering the rest of the answer."
+      ],
+      "success_signals": [
+        "The first meaningful content is the requested command, snippet, or exact verdict token.",
+        "The answer stays snippet-first or command-first when the prompt explicitly requires it."
+      ],
+      "failure_signals": [
+        "The answer starts with explanatory prose when the prompt requires command-first or snippet-first output.",
+        "The answer is prose-only even though the prompt requires a concrete snippet, command, or exact opening token."
+      ]
     }
   ],
   "artifact_type": "grading-spec",
