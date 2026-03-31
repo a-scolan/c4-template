@@ -1,0 +1,1 @@
+I only want `cloud.backend.*` highlighted in one view while everything else stays muted. Do not move this styling into the model or specification. Answer in two parts: (1) one explicit sentence saying where this styling belongs, and (2) one minimal LikeC4 view snippet that uses `include *`, `style * { color muted }`, and a dedicated rule for `cloud.backend.*`.

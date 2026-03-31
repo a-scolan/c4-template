@@ -1,0 +1,2 @@
+A
+B attaches the body to `customer -> frontend`, `C` repeats `frontend -> api` outside the single chained expression, and `D` splits `customer -> frontend -> api` into separate statements instead of keeping one chain.

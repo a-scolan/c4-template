@@ -86,6 +86,7 @@ In this repository, keep benchmark documentation intentionally minimal and opera
 
 - where artifacts are stored (`test/<iteration>/`)
 - local entrypoints used in this workspace (e.g. `skill_suite_tools.py`)
+- non-fatal benchmark noise summaries live in `test/<iteration>/_meta/harness-noise.json`
 - execution-oriented grading checks for snippet-first / command-first benchmark prompts should live with the skill eval artifacts, not in this README
 - links to canonical external documentation
 

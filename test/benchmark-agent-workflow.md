@@ -27,9 +27,11 @@ Internal helpers now live under `test/scripts/benchmark/`. This refactor must re
 - `disable-workspace-skills` is idempotent: if skills are already relocated and the manifest exists, a second call returns the existing manifest instead of raising an error
 - `materialize-comparisons` must refresh `suite-summary.json` and `suite-summary.md` immediately
 - `materialize-comparisons` must merge incrementally by `(eval_id, run_number)` (never overwrite previous comparisons) and refresh `suite-summary.json` + `suite-summary.md` immediately
+- `materialize-comparisons` accepts the exact deterministic form `python test/scripts/skill_suite_tools.py materialize-comparisons --iteration test/<iteration> --skill <skill> --raw-json <path>` and tolerates an extra `--workspace-root <path>` compatibility flag when older recovery notes still include it
 - `materialize-comparisons-stdin` without `--raw-json` must persist each payload to a unique `_meta/raw-comparison-*.json` journal file (no shared overwrite target)
 - `blind-compare-bundle` must provide a per-task `raw_output_path`, and comparator workers should journal their wrapped JSON there before returning so large blind judgments never depend on chat transport
 - `resume-finalize` is the preferred recovery/finalization command after interruptions (auto-materialize missing blind outputs from `_meta`, run pre-check, then aggregate)
+- `resume-finalize` / `aggregate` also refresh `test/<iteration>/_meta/harness-noise.json`, which records non-fatal denied discovery attempts and duplicate raw comparator journals for later synthesis
 - Cross-iteration comparisons must support both numeric iterations (`iteration-N`) and named benchmark series (`<skill>-test`, `<skill>-test2`, `<skill>-test3`, ...)
 - Never reuse an older `blind-comparisons.json` as fresh evidence
 - Blind comparator workers must receive explicit evidence paths from `blind-compare-bundle` (A, B, grading spec). Do not rely on broad repository search during blind runs.
@@ -40,6 +42,7 @@ Internal helpers now live under `test/scripts/benchmark/`. This refactor must re
 - `with_skill_targeted` workers may read the same iteration-local prompt input files (`test/<iteration>/<skill>/eval-<id>/input/prompt.md|prompt.json`) in addition to `evals/evals-public.json`, while `grading-spec.json` remains hidden.
 - Benchmark-manager command guardrails now fail fast for missing required subcommand flags (for example `summarize-config` without `--config`) to prevent partial/manual reruns.
 - Benchmark-manager command parsing now accepts safe `for ... do ... done` batching only when every command inside the loop body is still on the allowlist.
+- Benchmark-manager allowlist guidance is explicit: prefer single helper invocations, use `python test/scripts/skill_suite_tools.py --help` when unsure, and treat `for ... do ... done` as the only approved batching form.
 
 If raw hook payloads omit `sessionId`, the wrapper must derive stable anonymous sessions per scope for stateful phases. If that derivation is ambiguous, reset hook state and serialize that phase as a safety fallback.
 
@@ -122,6 +125,8 @@ When calling `write-run-metrics` (manual timestamps) or `write-run-metrics-auto`
 
 Blind comparator workers remain read-mostly, but may additionally journal one wrapped raw payload per task under the exact `raw_output_path` returned by `blind-compare-bundle` (for example `test/<iteration>/_meta/raw-comparison-<skill>-eval-<id>-run-<n>.json`). That keeps large comparator reasoning out of chat transport while preserving an auditable per-task journal.
 
+When `raw_output_path` is used, the comparator acknowledgment should stay tiny and deterministic: return only `{ eval_id, run_number, winner, raw_json_path }`. Do not add ad-hoc `status` fields or echo `raw_output_path` under a different key.
+
 ## Metrics corruption prevention
 
 Workers must write **one JSON object per file**, not append. If a worker batch-processes multiple evals in one session and writes metrics sequentially, always use `create_file` (or an atomic overwrite with `replace_string_in_file`) per metrics file — never open-and-append. Multiple JSON objects in the same `eval-N-metrics.json` file cause `"Extra data"` JSON parse errors that break `summarize-phase`.
@@ -160,6 +165,8 @@ Treat as disposable generated artefacts:
 - `test/<iteration>/<skill>/skill-creator-benchmark.json`
 
 The harness no longer generates `skill-creator-benchmark.md` or `export-summary.json`.
+
+`test/<iteration>/_meta/harness-noise.json` is a canonical operational summary, not disposable scratch output.
 
 Use `python test/scripts/skill_suite_tools.py prune-generated-artifacts --iteration test/iteration-N --workspace-root .` to remove disposable per-iteration review exports after a run.
 
@@ -201,6 +208,7 @@ Before launching comparator workers for an eval:
 ## Diagnostics
 
 - Use `validate-hook-audit` when trace level is `audit` or `debug`
+- If trace level is `normal` / `off`, `validate-hook-audit` returns `status: not_enabled` when no audit file exists; that is expected and should not be treated as a failure.
 - If audit JSONL is malformed, delete `test/_agent-hooks/` and rerun the affected phase
 - Use `reset-hook-state` before forcing a serialized fallback for stateful modes
 

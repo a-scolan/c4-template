@@ -1,0 +1,6 @@
+{
+  "id": 13,
+  "skill_name": "likec4-dsl",
+  "prompt": "Fix this invalid LikeC4 snippet and explain why it is invalid:\n```likec4\nmodel {\n  api = service 'API' {\n    technology 'Node.js'\n    #critical\n  }\n}\n```\nKeep the corrected snippet minimal. Do not change the element kind or remove either field; only fix what is necessary.",
+  "files": []
+}

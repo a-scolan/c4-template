@@ -1,0 +1,2002 @@
+{
+  "generated_at": "2026-03-31T14:05:38Z",
+  "iteration": "likec4-dsl-test9",
+  "previous_iteration": "likec4-dsl-test8",
+  "protocol_version": "benchmark-v3",
+  "protocol_lock_path": "test/likec4-dsl-test9/_meta/protocol-lock.json",
+  "skill_count": 1,
+  "benchmark_caveats": null,
+  "comparison_validity": {
+    "provisional": false,
+    "blind_metrics_trustworthy": true,
+    "time_metrics_trustworthy": true,
+    "previous_iteration_comparison_trustworthy": true,
+    "reasons": [],
+    "protocol_deviations": [],
+    "notes": []
+  },
+  "harness_noise": {
+    "generated_at": "2026-03-31T14:05:38Z",
+    "iteration": "likec4-dsl-test9",
+    "status": "clean",
+    "event_count": 0,
+    "events": []
+  },
+  "suite_averages": {
+    "with_skill_win_rate": 0.8125,
+    "expectation_delta": 0.2787,
+    "rubric_delta": 2.6844,
+    "time_delta_per_eval": -4.7557,
+    "words_delta_per_eval": -13.0468,
+    "files_read_delta": 0.0,
+    "executable_delta": 0.003
+  },
+  "suite_variance": {
+    "with_skill_win_rate": {
+      "mean": 0.8125,
+      "stddev": 0.0,
+      "min": 0.8125,
+      "max": 0.8125
+    },
+    "expectation_delta": {
+      "mean": 0.2787,
+      "stddev": 0.0,
+      "min": 0.2787,
+      "max": 0.2787
+    },
+    "rubric_delta": {
+      "mean": 2.6844,
+      "stddev": 0.0,
+      "min": 2.6844,
+      "max": 2.6844
+    },
+    "time_delta_per_eval": {
+      "mean": -4.7557,
+      "stddev": 0.0,
+      "min": -4.7557,
+      "max": -4.7557
+    },
+    "executable_delta": {
+      "mean": 0.003,
+      "stddev": 0.0,
+      "min": 0.003,
+      "max": 0.003
+    }
+  },
+  "metric_validation": {
+    "generated_at": "2026-03-31T14:05:38Z",
+    "iteration": "likec4-dsl-test9",
+    "status": "passed",
+    "expected_files": 2,
+    "checked_files": 2,
+    "normalized_file_count": 0,
+    "normalized_files": [],
+    "issue_count": 0,
+    "issues": []
+  },
+  "skipped_skills": [],
+  "executable_checks": {
+    "generated_at": "2026-03-31T14:05:38Z",
+    "iteration": "likec4-dsl-test9",
+    "summary_count": 2,
+    "summaries": [
+      {
+        "skill": "likec4-dsl",
+        "configuration": "with_skill",
+        "output_path": "test/likec4-dsl-test9/likec4-dsl/with_skill-executable-checks.json",
+        "applicable_eval_count": 42,
+        "valid_eval_rate": 0.881
+      },
+      {
+        "skill": "likec4-dsl",
+        "configuration": "without_skill",
+        "output_path": "test/likec4-dsl-test9/likec4-dsl/without_skill-executable-checks.json",
+        "applicable_eval_count": 41,
+        "valid_eval_rate": 0.878
+      }
+    ]
+  },
+  "overview": [
+    {
+      "skill": "likec4-dsl",
+      "eval_count": 32,
+      "with_skill_win_rate": 0.8125,
+      "expectation_delta": 0.2787,
+      "rubric_delta": 2.6844,
+      "time_delta_per_eval": -4.7557,
+      "words_delta_per_eval": -13.0468,
+      "files_read_delta": 0.0,
+      "executable_delta": 0.003,
+      "run_count": 2,
+      "high_variance_eval_count": 21
+    }
+  ],
+  "skills": [
+    {
+      "skill": "likec4-dsl",
+      "eval_count": 32,
+      "run_count": 2,
+      "capability": {
+        "blind": {
+          "with_skill_wins": 52,
+          "without_skill_wins": 6,
+          "ties": 6,
+          "with_skill_win_rate": 0.8125,
+          "without_skill_win_rate": 0.0938,
+          "variance": {
+            "with_skill_win_rate": {
+              "mean": 0.8125,
+              "stddev": 0.3934,
+              "min": 0.0,
+              "max": 1.0
+            },
+            "without_skill_win_rate": {
+              "mean": 0.0938,
+              "stddev": 0.2938,
+              "min": 0.0,
+              "max": 1.0
+            }
+          }
+        },
+        "expectation_pass_rate": {
+          "with_skill": 0.9823,
+          "without_skill": 0.7036,
+          "delta": 0.2787,
+          "variance": {
+            "with_skill": {
+              "mean": 0.9823,
+              "stddev": 0.0557,
+              "min": 0.8,
+              "max": 1.0
+            },
+            "without_skill": {
+              "mean": 0.7036,
+              "stddev": 0.2769,
+              "min": 0.0,
+              "max": 1.0
+            },
+            "delta": {
+              "mean": 0.2786,
+              "stddev": 0.2786,
+              "min": -0.2,
+              "max": 1.0
+            }
+          }
+        },
+        "rubric_score": {
+          "with_skill": 9.5125,
+          "without_skill": 6.8281,
+          "delta": 2.6844,
+          "variance": {
+            "with_skill": {
+              "mean": 9.5125,
+              "stddev": 0.5954,
+              "min": 8,
+              "max": 10
+            },
+            "without_skill": {
+              "mean": 6.8281,
+              "stddev": 2.423,
+              "min": 0,
+              "max": 10
+            },
+            "delta": {
+              "mean": 2.6844,
+              "stddev": 2.5534,
+              "min": -1.0,
+              "max": 10.0
+            }
+          }
+        },
+        "comparison_count": 64,
+        "per_eval_variance": [
+          {
+            "id": 0,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.9,
+              "stddev": 0.1414,
+              "min": 0.8,
+              "max": 1.0
+            },
+            "rubric_delta_stats": {
+              "mean": 6.5,
+              "stddev": 0.7071,
+              "min": 6.0,
+              "max": 7.0
+            }
+          },
+          {
+            "id": 1,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.6,
+              "stddev": 0.0,
+              "min": 0.6,
+              "max": 0.6
+            },
+            "rubric_delta_stats": {
+              "mean": 5.5,
+              "stddev": 0.7071,
+              "min": 5.0,
+              "max": 6.0
+            }
+          },
+          {
+            "id": 2,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.3,
+              "stddev": 0.1414,
+              "min": 0.2,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 3.5,
+              "stddev": 2.1213,
+              "min": 2.0,
+              "max": 5.0
+            }
+          },
+          {
+            "id": 3,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.5,
+              "stddev": 0.1414,
+              "min": 0.4,
+              "max": 0.6
+            },
+            "rubric_delta_stats": {
+              "mean": 4.5,
+              "stddev": 0.7071,
+              "min": 4.0,
+              "max": 5.0
+            }
+          },
+          {
+            "id": 4,
+            "run_count": 2,
+            "winner_outcomes": [
+              "TIE",
+              "with_skill"
+            ],
+            "winner_flips": true,
+            "expectation_delta_stats": {
+              "mean": 0.1,
+              "stddev": 0.1414,
+              "min": 0.0,
+              "max": 0.2
+            },
+            "rubric_delta_stats": {
+              "mean": 0.5,
+              "stddev": 0.7071,
+              "min": 0.0,
+              "max": 1.0
+            }
+          },
+          {
+            "id": 5,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.4,
+              "stddev": 0.0,
+              "min": 0.4,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 4.0,
+              "stddev": 0.0,
+              "min": 4.0,
+              "max": 4.0
+            }
+          },
+          {
+            "id": 6,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.2,
+              "stddev": 0.0,
+              "min": 0.2,
+              "max": 0.2
+            },
+            "rubric_delta_stats": {
+              "mean": 1.75,
+              "stddev": 1.0607,
+              "min": 1.0,
+              "max": 2.5
+            }
+          },
+          {
+            "id": 7,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.3,
+              "stddev": 0.1414,
+              "min": 0.2,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 2.5,
+              "stddev": 0.7071,
+              "min": 2.0,
+              "max": 3.0
+            }
+          },
+          {
+            "id": 8,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.3,
+              "stddev": 0.1414,
+              "min": 0.2,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 3.0,
+              "stddev": 1.4142,
+              "min": 2.0,
+              "max": 4.0
+            }
+          },
+          {
+            "id": 9,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.4,
+              "stddev": 0.2828,
+              "min": 0.2,
+              "max": 0.6
+            },
+            "rubric_delta_stats": {
+              "mean": 4.0,
+              "stddev": 0.0,
+              "min": 4.0,
+              "max": 4.0
+            }
+          },
+          {
+            "id": 10,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.1,
+              "stddev": 0.1414,
+              "min": 0.0,
+              "max": 0.2
+            },
+            "rubric_delta_stats": {
+              "mean": 2.0,
+              "stddev": 0.0,
+              "min": 2.0,
+              "max": 2.0
+            }
+          },
+          {
+            "id": 11,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.4,
+              "stddev": 0.0,
+              "min": 0.4,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 5.5,
+              "stddev": 0.7071,
+              "min": 5.0,
+              "max": 6.0
+            }
+          },
+          {
+            "id": 12,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill",
+              "without_skill"
+            ],
+            "winner_flips": true,
+            "expectation_delta_stats": {
+              "mean": 0.083,
+              "stddev": 0.1174,
+              "min": 0.0,
+              "max": 0.166
+            },
+            "rubric_delta_stats": {
+              "mean": 0.5,
+              "stddev": 2.1213,
+              "min": -1.0,
+              "max": 2.0
+            }
+          },
+          {
+            "id": 13,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.3,
+              "stddev": 0.1414,
+              "min": 0.2,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 3.5,
+              "stddev": 0.7071,
+              "min": 3.0,
+              "max": 4.0
+            }
+          },
+          {
+            "id": 14,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.5,
+              "stddev": 0.1414,
+              "min": 0.4,
+              "max": 0.6
+            },
+            "rubric_delta_stats": {
+              "mean": 4.0,
+              "stddev": 1.4142,
+              "min": 3.0,
+              "max": 5.0
+            }
+          },
+          {
+            "id": 15,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.4,
+              "stddev": 0.2828,
+              "min": 0.2,
+              "max": 0.6
+            },
+            "rubric_delta_stats": {
+              "mean": 4.0,
+              "stddev": 2.8284,
+              "min": 2.0,
+              "max": 6.0
+            }
+          },
+          {
+            "id": 16,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.1667,
+              "stddev": 0.0,
+              "min": 0.1667,
+              "max": 0.1667
+            },
+            "rubric_delta_stats": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            }
+          },
+          {
+            "id": 17,
+            "run_count": 2,
+            "winner_outcomes": [
+              "without_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": -0.1,
+              "stddev": 0.1414,
+              "min": -0.2,
+              "max": 0.0
+            },
+            "rubric_delta_stats": {
+              "mean": -1.0,
+              "stddev": 0.0,
+              "min": -1.0,
+              "max": -1.0
+            }
+          },
+          {
+            "id": 18,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "rubric_delta_stats": {
+              "mean": 0.6,
+              "stddev": 0.5657,
+              "min": 0.2,
+              "max": 1.0
+            }
+          },
+          {
+            "id": 19,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.1667,
+              "stddev": 0.0,
+              "min": 0.1667,
+              "max": 0.1667
+            },
+            "rubric_delta_stats": {
+              "mean": 1.5,
+              "stddev": 0.7071,
+              "min": 1.0,
+              "max": 2.0
+            }
+          },
+          {
+            "id": 20,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "rubric_delta_stats": {
+              "mean": 8.0,
+              "stddev": 2.8284,
+              "min": 6.0,
+              "max": 10.0
+            }
+          },
+          {
+            "id": 21,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.6,
+              "stddev": 0.5657,
+              "min": 0.2,
+              "max": 1.0
+            },
+            "rubric_delta_stats": {
+              "mean": 5.65,
+              "stddev": 6.1518,
+              "min": 1.3,
+              "max": 10.0
+            }
+          },
+          {
+            "id": 22,
+            "run_count": 2,
+            "winner_outcomes": [
+              "without_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "rubric_delta_stats": {
+              "mean": -1.0,
+              "stddev": 0.0,
+              "min": -1.0,
+              "max": -1.0
+            }
+          },
+          {
+            "id": 23,
+            "run_count": 2,
+            "winner_outcomes": [
+              "TIE"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "rubric_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          {
+            "id": 24,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.2,
+              "stddev": 0.0,
+              "min": 0.2,
+              "max": 0.2
+            },
+            "rubric_delta_stats": {
+              "mean": 1.65,
+              "stddev": 0.495,
+              "min": 1.3,
+              "max": 2.0
+            }
+          },
+          {
+            "id": 25,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.4,
+              "stddev": 0.0,
+              "min": 0.4,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 4.5,
+              "stddev": 0.7071,
+              "min": 4.0,
+              "max": 5.0
+            }
+          },
+          {
+            "id": 26,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.4,
+              "stddev": 0.0,
+              "min": 0.4,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 5.5,
+              "stddev": 0.7071,
+              "min": 5.0,
+              "max": 6.0
+            }
+          },
+          {
+            "id": 27,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.1,
+              "stddev": 0.1414,
+              "min": 0.0,
+              "max": 0.2
+            },
+            "rubric_delta_stats": {
+              "mean": 1.5,
+              "stddev": 0.7071,
+              "min": 1.0,
+              "max": 2.0
+            }
+          },
+          {
+            "id": 28,
+            "run_count": 2,
+            "winner_outcomes": [
+              "TIE",
+              "without_skill"
+            ],
+            "winner_flips": true,
+            "expectation_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "rubric_delta_stats": {
+              "mean": -0.5,
+              "stddev": 0.7071,
+              "min": -1.0,
+              "max": 0.0
+            }
+          },
+          {
+            "id": 29,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "rubric_delta_stats": {
+              "mean": 0.75,
+              "stddev": 0.3536,
+              "min": 0.5,
+              "max": 1.0
+            }
+          },
+          {
+            "id": 30,
+            "run_count": 2,
+            "winner_outcomes": [
+              "TIE"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "rubric_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            }
+          },
+          {
+            "id": 31,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.2,
+              "stddev": 0.0,
+              "min": 0.2,
+              "max": 0.2
+            },
+            "rubric_delta_stats": {
+              "mean": 2.5,
+              "stddev": 0.7071,
+              "min": 2.0,
+              "max": 3.0
+            }
+          }
+        ],
+        "high_variance_evals": [
+          {
+            "id": 2,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.3,
+              "stddev": 0.1414,
+              "min": 0.2,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 3.5,
+              "stddev": 2.1213,
+              "min": 2.0,
+              "max": 5.0
+            }
+          },
+          {
+            "id": 4,
+            "run_count": 2,
+            "winner_outcomes": [
+              "TIE",
+              "with_skill"
+            ],
+            "winner_flips": true,
+            "expectation_delta_stats": {
+              "mean": 0.1,
+              "stddev": 0.1414,
+              "min": 0.0,
+              "max": 0.2
+            },
+            "rubric_delta_stats": {
+              "mean": 0.5,
+              "stddev": 0.7071,
+              "min": 0.0,
+              "max": 1.0
+            }
+          },
+          {
+            "id": 6,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.2,
+              "stddev": 0.0,
+              "min": 0.2,
+              "max": 0.2
+            },
+            "rubric_delta_stats": {
+              "mean": 1.75,
+              "stddev": 1.0607,
+              "min": 1.0,
+              "max": 2.5
+            }
+          },
+          {
+            "id": 8,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.3,
+              "stddev": 0.1414,
+              "min": 0.2,
+              "max": 0.4
+            },
+            "rubric_delta_stats": {
+              "mean": 3.0,
+              "stddev": 1.4142,
+              "min": 2.0,
+              "max": 4.0
+            }
+          },
+          {
+            "id": 9,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.4,
+              "stddev": 0.2828,
+              "min": 0.2,
+              "max": 0.6
+            },
+            "rubric_delta_stats": {
+              "mean": 4.0,
+              "stddev": 0.0,
+              "min": 4.0,
+              "max": 4.0
+            }
+          },
+          {
+            "id": 12,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill",
+              "without_skill"
+            ],
+            "winner_flips": true,
+            "expectation_delta_stats": {
+              "mean": 0.083,
+              "stddev": 0.1174,
+              "min": 0.0,
+              "max": 0.166
+            },
+            "rubric_delta_stats": {
+              "mean": 0.5,
+              "stddev": 2.1213,
+              "min": -1.0,
+              "max": 2.0
+            }
+          },
+          {
+            "id": 14,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.5,
+              "stddev": 0.1414,
+              "min": 0.4,
+              "max": 0.6
+            },
+            "rubric_delta_stats": {
+              "mean": 4.0,
+              "stddev": 1.4142,
+              "min": 3.0,
+              "max": 5.0
+            }
+          },
+          {
+            "id": 15,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.4,
+              "stddev": 0.2828,
+              "min": 0.2,
+              "max": 0.6
+            },
+            "rubric_delta_stats": {
+              "mean": 4.0,
+              "stddev": 2.8284,
+              "min": 2.0,
+              "max": 6.0
+            }
+          },
+          {
+            "id": 20,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 1.0,
+              "stddev": 0.0,
+              "min": 1.0,
+              "max": 1.0
+            },
+            "rubric_delta_stats": {
+              "mean": 8.0,
+              "stddev": 2.8284,
+              "min": 6.0,
+              "max": 10.0
+            }
+          },
+          {
+            "id": 21,
+            "run_count": 2,
+            "winner_outcomes": [
+              "with_skill"
+            ],
+            "winner_flips": false,
+            "expectation_delta_stats": {
+              "mean": 0.6,
+              "stddev": 0.5657,
+              "min": 0.2,
+              "max": 1.0
+            },
+            "rubric_delta_stats": {
+              "mean": 5.65,
+              "stddev": 6.1518,
+              "min": 1.3,
+              "max": 10.0
+            }
+          },
+          {
+            "id": 28,
+            "run_count": 2,
+            "winner_outcomes": [
+              "TIE",
+              "without_skill"
+            ],
+            "winner_flips": true,
+            "expectation_delta_stats": {
+              "mean": 0.0,
+              "stddev": 0.0,
+              "min": 0.0,
+              "max": 0.0
+            },
+            "rubric_delta_stats": {
+              "mean": -0.5,
+              "stddev": 0.7071,
+              "min": -1.0,
+              "max": 0.0
+            }
+          }
+        ]
+      },
+      "consumption": {
+        "with_skill": {
+          "response_words_per_eval": 76.9688,
+          "files_read_count": 32.0,
+          "files_written_count": 32.0,
+          "variance": {
+            "elapsed_seconds_total": {
+              "mean": 886.3025,
+              "stddev": 3.5169,
+              "min": 883.8156,
+              "max": 888.7893
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 27.697,
+              "stddev": 0.11,
+              "min": 27.6192,
+              "max": 27.7747
+            },
+            "response_words_total": {
+              "mean": 2463.0,
+              "stddev": 103.2376,
+              "min": 2390.0,
+              "max": 2536.0
+            },
+            "response_words_per_eval": {
+              "mean": 76.9688,
+              "stddev": 3.2262,
+              "min": 74.6875,
+              "max": 79.25
+            },
+            "files_read_count": {
+              "mean": 32.0,
+              "stddev": 0.0,
+              "min": 32.0,
+              "max": 32.0
+            },
+            "files_written_count": {
+              "mean": 32.0,
+              "stddev": 0.0,
+              "min": 32.0,
+              "max": 32.0
+            }
+          }
+        },
+        "without_skill": {
+          "response_words_per_eval": 90.0156,
+          "files_read_count": 32.0,
+          "files_written_count": 32.0,
+          "variance": {
+            "elapsed_seconds_total": {
+              "mean": 1038.4869,
+              "stddev": 326.4916,
+              "min": 807.6225,
+              "max": 1269.3514
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 32.4527,
+              "stddev": 10.2028,
+              "min": 25.2382,
+              "max": 39.6672
+            },
+            "response_words_total": {
+              "mean": 2880.5,
+              "stddev": 30.4056,
+              "min": 2859.0,
+              "max": 2902.0
+            },
+            "response_words_per_eval": {
+              "mean": 90.0156,
+              "stddev": 0.9501,
+              "min": 89.3438,
+              "max": 90.6875
+            },
+            "files_read_count": {
+              "mean": 32.0,
+              "stddev": 0.0,
+              "min": 32.0,
+              "max": 32.0
+            },
+            "files_written_count": {
+              "mean": 32.0,
+              "stddev": 0.0,
+              "min": 32.0,
+              "max": 32.0
+            }
+          }
+        },
+        "delta": {
+          "response_words_per_eval": -13.0468,
+          "files_read_count": 0.0,
+          "files_written_count": 0.0
+        }
+      },
+      "time": {
+        "with_skill": {
+          "elapsed_seconds_total": 886.3025,
+          "elapsed_seconds_per_eval": 27.697,
+          "variance": {
+            "elapsed_seconds_total": {
+              "mean": 886.3025,
+              "stddev": 3.5169,
+              "min": 883.8156,
+              "max": 888.7893
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 27.697,
+              "stddev": 0.11,
+              "min": 27.6192,
+              "max": 27.7747
+            },
+            "response_words_total": {
+              "mean": 2463.0,
+              "stddev": 103.2376,
+              "min": 2390.0,
+              "max": 2536.0
+            },
+            "response_words_per_eval": {
+              "mean": 76.9688,
+              "stddev": 3.2262,
+              "min": 74.6875,
+              "max": 79.25
+            },
+            "files_read_count": {
+              "mean": 32.0,
+              "stddev": 0.0,
+              "min": 32.0,
+              "max": 32.0
+            },
+            "files_written_count": {
+              "mean": 32.0,
+              "stddev": 0.0,
+              "min": 32.0,
+              "max": 32.0
+            }
+          }
+        },
+        "without_skill": {
+          "elapsed_seconds_total": 1038.4869,
+          "elapsed_seconds_per_eval": 32.4527,
+          "variance": {
+            "elapsed_seconds_total": {
+              "mean": 1038.4869,
+              "stddev": 326.4916,
+              "min": 807.6225,
+              "max": 1269.3514
+            },
+            "elapsed_seconds_per_eval": {
+              "mean": 32.4527,
+              "stddev": 10.2028,
+              "min": 25.2382,
+              "max": 39.6672
+            },
+            "response_words_total": {
+              "mean": 2880.5,
+              "stddev": 30.4056,
+              "min": 2859.0,
+              "max": 2902.0
+            },
+            "response_words_per_eval": {
+              "mean": 90.0156,
+              "stddev": 0.9501,
+              "min": 89.3438,
+              "max": 90.6875
+            },
+            "files_read_count": {
+              "mean": 32.0,
+              "stddev": 0.0,
+              "min": 32.0,
+              "max": 32.0
+            },
+            "files_written_count": {
+              "mean": 32.0,
+              "stddev": 0.0,
+              "min": 32.0,
+              "max": 32.0
+            }
+          }
+        },
+        "delta": {
+          "elapsed_seconds_total": -152.1844,
+          "elapsed_seconds_per_eval": -4.7557
+        }
+      },
+      "executable_validity": {
+        "with_skill": {
+          "applicable_eval_count": 42,
+          "valid_eval_count": 37,
+          "valid_eval_rate": 0.881,
+          "snippet_count_total": 44,
+          "error_count_total": 11,
+          "warning_count_total": 39
+        },
+        "without_skill": {
+          "applicable_eval_count": 41,
+          "valid_eval_count": 36,
+          "valid_eval_rate": 0.878,
+          "snippet_count_total": 41,
+          "error_count_total": 11,
+          "warning_count_total": 34
+        },
+        "delta": {
+          "valid_eval_rate": 0.003
+        }
+      },
+      "high_variance_evals": [
+        {
+          "source": "with_skill",
+          "id": 14,
+          "metric": "response_words",
+          "stats": {
+            "mean": 158.0,
+            "stddev": 50.9117,
+            "min": 122.0,
+            "max": 194.0
+          }
+        },
+        {
+          "source": "with_skill",
+          "id": 15,
+          "metric": "response_words",
+          "stats": {
+            "mean": 111.5,
+            "stddev": 21.9203,
+            "min": 96.0,
+            "max": 127.0
+          }
+        },
+        {
+          "source": "with_skill",
+          "id": 24,
+          "metric": "response_words",
+          "stats": {
+            "mean": 95.5,
+            "stddev": 28.9914,
+            "min": 75.0,
+            "max": 116.0
+          }
+        },
+        {
+          "source": "without_skill",
+          "id": 7,
+          "metric": "response_words",
+          "stats": {
+            "mean": 141.5,
+            "stddev": 47.3762,
+            "min": 108.0,
+            "max": 175.0
+          }
+        },
+        {
+          "source": "without_skill",
+          "id": 8,
+          "metric": "response_words",
+          "stats": {
+            "mean": 141.0,
+            "stddev": 36.7696,
+            "min": 115.0,
+            "max": 167.0
+          }
+        },
+        {
+          "source": "without_skill",
+          "id": 10,
+          "metric": "response_words",
+          "stats": {
+            "mean": 143.5,
+            "stddev": 28.9914,
+            "min": 123.0,
+            "max": 164.0
+          }
+        },
+        {
+          "source": "without_skill",
+          "id": 14,
+          "metric": "response_words",
+          "stats": {
+            "mean": 200.0,
+            "stddev": 24.0416,
+            "min": 183.0,
+            "max": 217.0
+          }
+        },
+        {
+          "source": "without_skill",
+          "id": 15,
+          "metric": "response_words",
+          "stats": {
+            "mean": 108.5,
+            "stddev": 64.3467,
+            "min": 63.0,
+            "max": 154.0
+          }
+        },
+        {
+          "source": "without_skill",
+          "id": 18,
+          "metric": "response_words",
+          "stats": {
+            "mean": 150.5,
+            "stddev": 31.8198,
+            "min": 128.0,
+            "max": 173.0
+          }
+        },
+        {
+          "source": "without_skill",
+          "id": 31,
+          "metric": "response_words",
+          "stats": {
+            "mean": 39.0,
+            "stddev": 26.8701,
+            "min": 20.0,
+            "max": 58.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 2,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill"
+          ],
+          "winner_flips": false,
+          "expectation_delta_stats": {
+            "mean": 0.3,
+            "stddev": 0.1414,
+            "min": 0.2,
+            "max": 0.4
+          },
+          "rubric_delta_stats": {
+            "mean": 3.5,
+            "stddev": 2.1213,
+            "min": 2.0,
+            "max": 5.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 4,
+          "run_count": 2,
+          "winner_outcomes": [
+            "TIE",
+            "with_skill"
+          ],
+          "winner_flips": true,
+          "expectation_delta_stats": {
+            "mean": 0.1,
+            "stddev": 0.1414,
+            "min": 0.0,
+            "max": 0.2
+          },
+          "rubric_delta_stats": {
+            "mean": 0.5,
+            "stddev": 0.7071,
+            "min": 0.0,
+            "max": 1.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 6,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill"
+          ],
+          "winner_flips": false,
+          "expectation_delta_stats": {
+            "mean": 0.2,
+            "stddev": 0.0,
+            "min": 0.2,
+            "max": 0.2
+          },
+          "rubric_delta_stats": {
+            "mean": 1.75,
+            "stddev": 1.0607,
+            "min": 1.0,
+            "max": 2.5
+          }
+        },
+        {
+          "source": "blind",
+          "id": 8,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill"
+          ],
+          "winner_flips": false,
+          "expectation_delta_stats": {
+            "mean": 0.3,
+            "stddev": 0.1414,
+            "min": 0.2,
+            "max": 0.4
+          },
+          "rubric_delta_stats": {
+            "mean": 3.0,
+            "stddev": 1.4142,
+            "min": 2.0,
+            "max": 4.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 9,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill"
+          ],
+          "winner_flips": false,
+          "expectation_delta_stats": {
+            "mean": 0.4,
+            "stddev": 0.2828,
+            "min": 0.2,
+            "max": 0.6
+          },
+          "rubric_delta_stats": {
+            "mean": 4.0,
+            "stddev": 0.0,
+            "min": 4.0,
+            "max": 4.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 12,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill",
+            "without_skill"
+          ],
+          "winner_flips": true,
+          "expectation_delta_stats": {
+            "mean": 0.083,
+            "stddev": 0.1174,
+            "min": 0.0,
+            "max": 0.166
+          },
+          "rubric_delta_stats": {
+            "mean": 0.5,
+            "stddev": 2.1213,
+            "min": -1.0,
+            "max": 2.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 14,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill"
+          ],
+          "winner_flips": false,
+          "expectation_delta_stats": {
+            "mean": 0.5,
+            "stddev": 0.1414,
+            "min": 0.4,
+            "max": 0.6
+          },
+          "rubric_delta_stats": {
+            "mean": 4.0,
+            "stddev": 1.4142,
+            "min": 3.0,
+            "max": 5.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 15,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill"
+          ],
+          "winner_flips": false,
+          "expectation_delta_stats": {
+            "mean": 0.4,
+            "stddev": 0.2828,
+            "min": 0.2,
+            "max": 0.6
+          },
+          "rubric_delta_stats": {
+            "mean": 4.0,
+            "stddev": 2.8284,
+            "min": 2.0,
+            "max": 6.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 20,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill"
+          ],
+          "winner_flips": false,
+          "expectation_delta_stats": {
+            "mean": 1.0,
+            "stddev": 0.0,
+            "min": 1.0,
+            "max": 1.0
+          },
+          "rubric_delta_stats": {
+            "mean": 8.0,
+            "stddev": 2.8284,
+            "min": 6.0,
+            "max": 10.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 21,
+          "run_count": 2,
+          "winner_outcomes": [
+            "with_skill"
+          ],
+          "winner_flips": false,
+          "expectation_delta_stats": {
+            "mean": 0.6,
+            "stddev": 0.5657,
+            "min": 0.2,
+            "max": 1.0
+          },
+          "rubric_delta_stats": {
+            "mean": 5.65,
+            "stddev": 6.1518,
+            "min": 1.3,
+            "max": 10.0
+          }
+        },
+        {
+          "source": "blind",
+          "id": 28,
+          "run_count": 2,
+          "winner_outcomes": [
+            "TIE",
+            "without_skill"
+          ],
+          "winner_flips": true,
+          "expectation_delta_stats": {
+            "mean": 0.0,
+            "stddev": 0.0,
+            "min": 0.0,
+            "max": 0.0
+          },
+          "rubric_delta_stats": {
+            "mean": -0.5,
+            "stddev": 0.7071,
+            "min": -1.0,
+            "max": 0.0
+          }
+        }
+      ]
+    }
+  ],
+  "high_variance_evals": [
+    {
+      "skill": "likec4-dsl",
+      "source": "with_skill",
+      "id": 14,
+      "metric": "response_words",
+      "stats": {
+        "mean": 158.0,
+        "stddev": 50.9117,
+        "min": 122.0,
+        "max": 194.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "with_skill",
+      "id": 15,
+      "metric": "response_words",
+      "stats": {
+        "mean": 111.5,
+        "stddev": 21.9203,
+        "min": 96.0,
+        "max": 127.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "with_skill",
+      "id": 24,
+      "metric": "response_words",
+      "stats": {
+        "mean": 95.5,
+        "stddev": 28.9914,
+        "min": 75.0,
+        "max": 116.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "without_skill",
+      "id": 7,
+      "metric": "response_words",
+      "stats": {
+        "mean": 141.5,
+        "stddev": 47.3762,
+        "min": 108.0,
+        "max": 175.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "without_skill",
+      "id": 8,
+      "metric": "response_words",
+      "stats": {
+        "mean": 141.0,
+        "stddev": 36.7696,
+        "min": 115.0,
+        "max": 167.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "without_skill",
+      "id": 10,
+      "metric": "response_words",
+      "stats": {
+        "mean": 143.5,
+        "stddev": 28.9914,
+        "min": 123.0,
+        "max": 164.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "without_skill",
+      "id": 14,
+      "metric": "response_words",
+      "stats": {
+        "mean": 200.0,
+        "stddev": 24.0416,
+        "min": 183.0,
+        "max": 217.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "without_skill",
+      "id": 15,
+      "metric": "response_words",
+      "stats": {
+        "mean": 108.5,
+        "stddev": 64.3467,
+        "min": 63.0,
+        "max": 154.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "without_skill",
+      "id": 18,
+      "metric": "response_words",
+      "stats": {
+        "mean": 150.5,
+        "stddev": 31.8198,
+        "min": 128.0,
+        "max": 173.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "without_skill",
+      "id": 31,
+      "metric": "response_words",
+      "stats": {
+        "mean": 39.0,
+        "stddev": 26.8701,
+        "min": 20.0,
+        "max": 58.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 2,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.3,
+        "stddev": 0.1414,
+        "min": 0.2,
+        "max": 0.4
+      },
+      "rubric_delta_stats": {
+        "mean": 3.5,
+        "stddev": 2.1213,
+        "min": 2.0,
+        "max": 5.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 4,
+      "run_count": 2,
+      "winner_outcomes": [
+        "TIE",
+        "with_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.1,
+        "stddev": 0.1414,
+        "min": 0.0,
+        "max": 0.2
+      },
+      "rubric_delta_stats": {
+        "mean": 0.5,
+        "stddev": 0.7071,
+        "min": 0.0,
+        "max": 1.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 6,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.2,
+        "stddev": 0.0,
+        "min": 0.2,
+        "max": 0.2
+      },
+      "rubric_delta_stats": {
+        "mean": 1.75,
+        "stddev": 1.0607,
+        "min": 1.0,
+        "max": 2.5
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 8,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.3,
+        "stddev": 0.1414,
+        "min": 0.2,
+        "max": 0.4
+      },
+      "rubric_delta_stats": {
+        "mean": 3.0,
+        "stddev": 1.4142,
+        "min": 2.0,
+        "max": 4.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 9,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.4,
+        "stddev": 0.2828,
+        "min": 0.2,
+        "max": 0.6
+      },
+      "rubric_delta_stats": {
+        "mean": 4.0,
+        "stddev": 0.0,
+        "min": 4.0,
+        "max": 4.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 12,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill",
+        "without_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.083,
+        "stddev": 0.1174,
+        "min": 0.0,
+        "max": 0.166
+      },
+      "rubric_delta_stats": {
+        "mean": 0.5,
+        "stddev": 2.1213,
+        "min": -1.0,
+        "max": 2.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 14,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.5,
+        "stddev": 0.1414,
+        "min": 0.4,
+        "max": 0.6
+      },
+      "rubric_delta_stats": {
+        "mean": 4.0,
+        "stddev": 1.4142,
+        "min": 3.0,
+        "max": 5.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 15,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.4,
+        "stddev": 0.2828,
+        "min": 0.2,
+        "max": 0.6
+      },
+      "rubric_delta_stats": {
+        "mean": 4.0,
+        "stddev": 2.8284,
+        "min": 2.0,
+        "max": 6.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 20,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "rubric_delta_stats": {
+        "mean": 8.0,
+        "stddev": 2.8284,
+        "min": 6.0,
+        "max": 10.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 21,
+      "run_count": 2,
+      "winner_outcomes": [
+        "with_skill"
+      ],
+      "winner_flips": false,
+      "expectation_delta_stats": {
+        "mean": 0.6,
+        "stddev": 0.5657,
+        "min": 0.2,
+        "max": 1.0
+      },
+      "rubric_delta_stats": {
+        "mean": 5.65,
+        "stddev": 6.1518,
+        "min": 1.3,
+        "max": 10.0
+      }
+    },
+    {
+      "skill": "likec4-dsl",
+      "source": "blind",
+      "id": 28,
+      "run_count": 2,
+      "winner_outcomes": [
+        "TIE",
+        "without_skill"
+      ],
+      "winner_flips": true,
+      "expectation_delta_stats": {
+        "mean": 0.0,
+        "stddev": 0.0,
+        "min": 0.0,
+        "max": 0.0
+      },
+      "rubric_delta_stats": {
+        "mean": -0.5,
+        "stddev": 0.7071,
+        "min": -1.0,
+        "max": 0.0
+      }
+    }
+  ],
+  "previous_iteration_comparison": {
+    "previous_iteration": "likec4-dsl-test8",
+    "skills": [
+      {
+        "skill": "likec4-dsl",
+        "previous_with_skill_win_rate": 0.7656,
+        "current_with_skill_win_rate": 0.8125,
+        "delta_with_skill_win_rate": 0.0469,
+        "previous_expectation_delta": 0.214,
+        "current_expectation_delta": 0.2787,
+        "delta_expectation_delta": 0.0647,
+        "previous_rubric_delta": 2.1344,
+        "current_rubric_delta": 2.6844,
+        "delta_rubric_delta": 0.55,
+        "previous_time_delta_per_eval": -6.6004,
+        "current_time_delta_per_eval": -4.7557,
+        "delta_time_delta_per_eval": 1.8447
+      }
+    ]
+  }
+}

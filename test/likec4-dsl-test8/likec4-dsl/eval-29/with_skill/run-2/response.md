@@ -1,0 +1,2 @@
+A
+B puts the body on the `customer -> frontend` hop, while C duplicates the `frontend -> api` hop outside the single chain and D breaks the required `customer -> frontend -> api` chain into separate steps.

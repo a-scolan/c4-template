@@ -1,0 +1,2 @@
+A
+B puts the body on `customer -> frontend`, `C` breaks the requirement by restating `frontend -> api` separately instead of keeping one chained expression, and `D` splits `customer -> frontend -> api` into separate top-level steps before the `parallel { ... }` fan-out.

@@ -1,0 +1,6 @@
+{
+  "id": 11,
+  "skill_name": "likec4-dsl",
+  "prompt": "My `base.c4` defines:\n```likec4\nmodel {\n  cloud = system 'Cloud' {\n    api = service 'API' {\n      metadata { port '8080' }\n    }\n  }\n}\n```\nIn `ops.c4` I use `extend cloud.api` to add `metadata { port '9090'; region 'us-east-1' }` and a nested `health = component 'Health Check'`. Show the correct `ops.c4` snippet and state exactly what value `port` holds in the merged model, and why. Be explicit about whether the original `port '8080'` is overwritten or merged.",
+  "files": []
+}

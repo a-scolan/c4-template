@@ -194,6 +194,48 @@ RUN_METRIC_ALIAS_KEYS_TO_DROP = {
     for alias in aliases
     if alias != key
 }
+GENERIC_LIKEC4_BUILTIN_KINDS = {
+    "actor",
+    "api",
+    "application",
+    "browser",
+    "component",
+    "container",
+    "database",
+    "env",
+    "environment",
+    "mobileapp",
+    "person",
+    "queue",
+    "region",
+    "service",
+    "storage",
+    "system",
+    "vm",
+    "worker",
+}
+LIKEC4_FENCE_PATTERN = re.compile(r"```(?:likec4|c4|txt|text)?\n(.*?)```", re.IGNORECASE | re.DOTALL)
+LIKEC4_BALANCED_BLOCK_START_RE = re.compile(r"^\s*(model|views?|deployment|specification)\b[^\n{}]*\{", re.IGNORECASE | re.MULTILINE)
+LIKEC4_DECLARATION_RE = re.compile(r"^\s*([A-Za-z_][\w.]*)\s*=\s*([A-Za-z_][\w]*)\b", re.MULTILINE)
+LIKEC4_INSTANCE_OF_RE = re.compile(r"^\s*([A-Za-z_][\w.]*)\s+instanceOf\s+([A-Za-z_][\w.]*)\b", re.MULTILINE)
+LIKEC4_RELATIONSHIP_RE = re.compile(
+    r"^\s*(?P<source>[A-Za-z_][\w.]*)\s*(?:(?:-\[(?P<kind>[A-Za-z_][\w-]*)\]->)|(?:->))\s*(?P<target>[A-Za-z_][\w.]*)(?P<tail>.*)$",
+    re.MULTILINE,
+)
+LIKEC4_INLINE_LINE_RE = re.compile(
+    r"^\s*(?:"
+    r"[{}]"
+    r"|(?:model|views?|deployment|specification|include|exclude|style|title|description|autoLayout)\b"
+    r"|[A-Za-z_][\w.]*\s*=\s*[A-Za-z_][\w]*\b"
+    r"|[A-Za-z_][\w.]*\s+instanceOf\s+[A-Za-z_][\w.]*\b"
+    r"|[A-Za-z_][\w.]*\s*(?:->|-\[[^\]]+\]->)\s*[A-Za-z_][\w.]*\b"
+    r")",
+    re.IGNORECASE,
+)
+LIKEC4_IGNORED_RELATIONSHIP_TAIL_PREFIXES = ('"', "'", "{", "//", "->", "<-")
+RAW_COMPARISON_FILENAME_RE = re.compile(
+    r"^raw-comparison-(?P<skill>.+?)-eval-(?P<eval_id>\d+)-run-(?P<run_number>\d+)(?:-\d+)?\.json$"
+)
 
 
 def anonymous_hook_session_id(mode: str) -> str:
@@ -1441,6 +1483,13 @@ def build_blind_compare_bundle(
             "skill_name": skill_name,
             "comparisons": ["<single comparison object matching output_schema_hint>"],
         },
+        "ack_schema_hint": {
+            "eval_id": eval_id,
+            "run_number": run_number,
+            "winner": "A | B | TIE",
+            "raw_json_path": "string path matching raw_output_path",
+            "notes": "Return only these four fields after writing the wrapped payload; omit status/raw_output_path echoes.",
+        },
     }
 
 
@@ -2510,6 +2559,21 @@ def is_hook_audit_read_allowed(rel_path: str, mode: str) -> bool:
 
 
 def validate_hook_audit(path: Path, mode: str | None = None) -> dict[str, Any]:
+    if not path.exists():
+        return {
+            "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "path": path.as_posix(),
+            "mode": mode,
+            "status": "not_enabled",
+            "entry_count": 0,
+            "malformed_line_count": 0,
+            "first_timestamp": None,
+            "last_timestamp": None,
+            "issue_count": 0,
+            "issues": [],
+            "passed": True,
+        }
+
     entries, parse_issues = load_jsonl_records_with_issues(path)
     issues: list[dict[str, Any]] = [
         {
@@ -2591,6 +2655,7 @@ def validate_hook_audit(path: Path, mode: str | None = None) -> dict[str, Any]:
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "path": path.as_posix(),
         "mode": mode,
+        "status": "checked",
         "entry_count": len(filtered_entries),
         "malformed_line_count": len(parse_issues),
         "first_timestamp": timestamps[0] if timestamps else None,
@@ -2599,6 +2664,100 @@ def validate_hook_audit(path: Path, mode: str | None = None) -> dict[str, Any]:
         "issues": issues,
         "passed": len(issues) == 0,
     }
+
+
+def hook_audit_entry_targets_iteration(entry: dict[str, Any], iteration_dir: Path, workspace_root: Path) -> bool:
+    prefix = iteration_dir.relative_to(workspace_root).as_posix() + "/"
+    tool_paths = [value for value in entry.get("tool_paths", []) if isinstance(value, str)]
+    if any(path.startswith(prefix) for path in tool_paths):
+        return True
+    reason = str(entry.get("permissionDecisionReason") or "")
+    return prefix in reason
+
+
+def collect_harness_noise(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]:
+    events: list[dict[str, Any]] = []
+    audit_path = workspace_root / HOOK_AUDIT_LOG_RELATIVE_PATH
+    if audit_path.exists():
+        entries, parse_issues = load_jsonl_records_with_issues(audit_path)
+        for issue in parse_issues:
+            events.append(
+                {
+                    "category": "hook-audit-malformed-line",
+                    "line_number": issue.get("line_number"),
+                    "raw_preview": issue.get("raw_preview"),
+                }
+            )
+        for entry in entries:
+            if entry.get("permissionDecision") != "deny":
+                continue
+            if not hook_audit_entry_targets_iteration(entry, iteration_dir, workspace_root):
+                continue
+            tool_name = str(entry.get("tool_name") or "")
+            normalized_tool = normalize_hook_tool_name(tool_name)
+            reason = str(entry.get("permissionDecisionReason") or "")
+            if normalized_tool in {"listdir", "filesearch", "grepsearch", "semanticsearch"}:
+                events.append(
+                    {
+                        "category": "denied-broad-discovery",
+                        "tool_name": tool_name,
+                        "reason": reason,
+                        "line_number": entry.get("_line_number"),
+                    }
+                )
+            elif "write-only destination" in reason.lower():
+                events.append(
+                    {
+                        "category": "denied-raw-output-read",
+                        "tool_name": tool_name,
+                        "reason": reason,
+                        "line_number": entry.get("_line_number"),
+                    }
+                )
+
+    raw_payload_occurrences: dict[tuple[str, int, int], list[str]] = {}
+    meta_dir = iteration_dir / "_meta"
+    for candidate in sorted(meta_dir.glob("*.json"), key=lambda path: path.name):
+        if not candidate.is_file():
+            continue
+        try:
+            raw_payload = read_json(candidate)
+            raw_skill_name, raw_comparisons = extract_raw_comparisons_payload(raw_payload)
+            normalized_entries = normalize_comparisons_list(raw_comparisons, source=candidate)
+        except Exception:
+            continue
+
+        fallback_match = RAW_COMPARISON_FILENAME_RE.match(candidate.name)
+        fallback_skill_name = fallback_match.group("skill") if fallback_match else None
+        skill_name = raw_skill_name or fallback_skill_name or "unknown-skill"
+        relative_candidate = candidate.relative_to(workspace_root).as_posix()
+        for entry in normalized_entries:
+            eval_id, run_number = comparison_entry_key(entry)
+            raw_payload_occurrences.setdefault((skill_name, eval_id, run_number), []).append(relative_candidate)
+
+    for (skill_name, eval_id, run_number), paths in sorted(raw_payload_occurrences.items()):
+        unique_paths = sorted(set(paths))
+        if len(unique_paths) < 2:
+            continue
+        events.append(
+            {
+                "category": "duplicate-raw-comparison-payload",
+                "skill": skill_name,
+                "eval_id": eval_id,
+                "run_number": run_number,
+                "paths": unique_paths,
+            }
+        )
+
+    summary = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "iteration": iteration_dir.name,
+        "status": "clean" if not events else "observed",
+        "event_count": len(events),
+        "events": events,
+    }
+    write_json(iteration_dir / "_meta" / "harness-noise.json", summary)
+    return summary
 
 
 def run_self_test(iteration_dir: Path, workspace_root: Path, baseline_isolation: str) -> dict[str, Any]:
@@ -3232,26 +3391,80 @@ def load_likec4_reference_data(workspace_root: Path) -> dict[str, Any]:
     }
 
 
+def normalize_extracted_likec4_snippet(snippet: str) -> str:
+    lines = [line.rstrip() for line in snippet.strip().splitlines()]
+    while lines and not lines[0].strip():
+        lines.pop(0)
+    while lines and not lines[-1].strip():
+        lines.pop()
+    return "\n".join(lines).strip()
+
+
+def is_meaningful_likec4_snippet(snippet: str) -> bool:
+    snippet = normalize_extracted_likec4_snippet(snippet)
+    if not snippet:
+        return False
+    meaningful_lines = [line.strip() for line in snippet.splitlines() if line.strip() and line.strip() not in {"{", "}"}]
+    if not meaningful_lines:
+        return False
+    return any(LIKEC4_INLINE_LINE_RE.search(line) for line in meaningful_lines)
+
+
+def extract_balanced_likec4_blocks(response_text: str) -> list[str]:
+    snippets: list[str] = []
+    cursor = 0
+    while True:
+        match = LIKEC4_BALANCED_BLOCK_START_RE.search(response_text, cursor)
+        if not match:
+            break
+        start = match.start()
+        brace_start = response_text.find("{", match.start(), match.end())
+        if brace_start < 0:
+            cursor = match.end()
+            continue
+
+        balance = 0
+        end = None
+        for index in range(brace_start, len(response_text)):
+            character = response_text[index]
+            if character == "{":
+                balance += 1
+            elif character == "}":
+                balance -= 1
+                if balance == 0:
+                    end = index + 1
+                    break
+
+        if end is None:
+            cursor = match.end()
+            continue
+
+        snippet = normalize_extracted_likec4_snippet(response_text[start:end])
+        if is_meaningful_likec4_snippet(snippet):
+            snippets.append(snippet)
+        cursor = end
+    return snippets
+
+
 def extract_likec4_snippets(response_text: str) -> list[str]:
     snippets: list[str] = []
-    fence_pattern = re.compile(r"```(?:likec4|c4|txt|text)?\n(.*?)```", re.IGNORECASE | re.DOTALL)
-    for match in fence_pattern.finditer(response_text):
-        snippet = match.group(1).strip()
-        if snippet and any(marker in snippet for marker in ("=", "->", "view", "views", "deployment", "{")):
+    for match in LIKEC4_FENCE_PATTERN.finditer(response_text):
+        snippet = normalize_extracted_likec4_snippet(match.group(1))
+        if is_meaningful_likec4_snippet(snippet):
             snippets.append(snippet)
 
     if snippets:
         return snippets
 
+    snippets = extract_balanced_likec4_blocks(response_text)
+    if snippets:
+        return snippets
+
     inline_candidates: list[list[str]] = []
     current: list[str] = []
-    inline_pattern = re.compile(
-        r"(^\s*[A-Za-z_][\w.]*\s*=\s*[A-Za-z_][\w]*\b)|(^\s*[A-Za-z_][\w.]*\s*->\s*[A-Za-z_][\w.]*\b)|(^\s*(views?|deployment|model)\b)|(^\s*[{}]\s*$)",
-        re.IGNORECASE,
-    )
     for line in response_text.splitlines():
-        if inline_pattern.search(line):
-            current.append(line)
+        if LIKEC4_INLINE_LINE_RE.search(line):
+            current.append(line.rstrip())
             continue
         if current:
             inline_candidates.append(current)
@@ -3260,17 +3473,27 @@ def extract_likec4_snippets(response_text: str) -> list[str]:
         inline_candidates.append(current)
 
     for block in inline_candidates:
-        snippet = "\n".join(block).strip()
-        if snippet:
+        snippet = normalize_extracted_likec4_snippet("\n".join(block))
+        if is_meaningful_likec4_snippet(snippet):
             snippets.append(snippet)
     return snippets
 
 
 def analyze_likec4_snippet(snippet: str, reference_data: dict[str, Any]) -> dict[str, Any]:
-    known_kinds = set(reference_data.get("known_kinds", []))
-    known_relationships = set(reference_data.get("known_relationships", []))
+    known_kinds = {
+        kind.lower()
+        for kind in reference_data.get("known_kinds", [])
+        if isinstance(kind, str) and kind.strip()
+    }
+    known_kinds.update(GENERIC_LIKEC4_BUILTIN_KINDS)
+    known_relationships = {
+        relationship.lower()
+        for relationship in reference_data.get("known_relationships", [])
+        if isinstance(relationship, str) and relationship.strip()
+    }
     errors: list[str] = []
     warnings: list[str] = []
+    seen_warnings: set[str] = set()
     declared_symbols: set[str] = set()
 
     brace_balance = 0
@@ -3285,29 +3508,47 @@ def analyze_likec4_snippet(snippet: str, reference_data: dict[str, Any]) -> dict
     if brace_balance != 0:
         errors.append("Braces are not balanced.")
 
-    declaration_pattern = re.compile(r"^\s*([A-Za-z_][\w.]*)\s*=\s*([A-Za-z_][\w]*)\b", re.MULTILINE)
-    for match in declaration_pattern.finditer(snippet):
+    for match in LIKEC4_DECLARATION_RE.finditer(snippet):
         symbol = match.group(1)
         kind = match.group(2)
         declared_symbols.add(symbol.split(".")[-1])
-        if kind not in known_kinds:
+        if kind.lower() not in known_kinds:
             errors.append(f"Unknown LikeC4 kind '{kind}'.")
 
-    relationship_pattern = re.compile(r"^\s*([A-Za-z_][\w.]*)\s*->\s*([A-Za-z_][\w.]*)(.*)$", re.MULTILINE)
-    for match in relationship_pattern.finditer(snippet):
+    for match in LIKEC4_INSTANCE_OF_RE.finditer(snippet):
         source = match.group(1)
         target = match.group(2)
-        tail = match.group(3).strip()
+        declared_symbols.add(source.split(".")[-1])
+        for endpoint in (source, target):
+            leaf = endpoint.split(".")[-1]
+            if "." not in endpoint and leaf not in declared_symbols:
+                warning = f"Reference '{endpoint}' is not declared inside the snippet (may rely on surrounding model context)."
+                if warning not in seen_warnings:
+                    warnings.append(warning)
+                    seen_warnings.add(warning)
+
+    for match in LIKEC4_RELATIONSHIP_RE.finditer(snippet):
+        source = match.group("source")
+        target = match.group("target")
+        relationship_kind = match.group("kind")
+        tail = match.group("tail").strip()
 
         for endpoint in (source, target):
             leaf = endpoint.split(".")[-1]
             if "." not in endpoint and leaf not in declared_symbols:
-                warnings.append(f"Reference '{endpoint}' is not declared inside the snippet (may rely on surrounding model context).")
+                warning = f"Reference '{endpoint}' is not declared inside the snippet (may rely on surrounding model context)."
+                if warning not in seen_warnings:
+                    warnings.append(warning)
+                    seen_warnings.add(warning)
 
-        if tail and not tail.startswith('"') and not tail.startswith("{") and not tail.startswith("//"):
-            relationship_kind = tail.split()[0]
-            if relationship_kind not in known_relationships:
-                errors.append(f"Unknown relationship kind '{relationship_kind}'.")
+        if relationship_kind and relationship_kind.lower() not in known_relationships:
+            errors.append(f"Unknown relationship kind '{relationship_kind}'.")
+            continue
+
+        if tail and not tail.startswith(LIKEC4_IGNORED_RELATIONSHIP_TAIL_PREFIXES):
+            inferred_relationship_kind = tail.split()[0]
+            if inferred_relationship_kind.lower() not in known_relationships:
+                errors.append(f"Unknown relationship kind '{inferred_relationship_kind}'.")
 
     return {
         "snippet": snippet,
@@ -3865,6 +4106,7 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
     protocol_lock = read_json(protocol_lock_path) if protocol_lock_path.exists() else None
     benchmark_caveats = load_iteration_caveats(iteration_dir)
     comparison_validity = derive_iteration_comparison_validity(benchmark_caveats)
+    harness_noise = collect_harness_noise(iteration_dir, workspace_root)
 
     skill_rows: list[dict[str, Any]] = []
     skipped_skills: list[dict[str, Any]] = []
@@ -3894,6 +4136,7 @@ def aggregate_suite(iteration_dir: Path, workspace_root: Path) -> dict[str, Any]
         "skill_count": len(skill_rows),
         "benchmark_caveats": benchmark_caveats,
         "comparison_validity": comparison_validity,
+        "harness_noise": harness_noise,
         "suite_averages": {
             "with_skill_win_rate": safe_mean([row["capability"]["blind"]["with_skill_win_rate"] for row in skill_rows]),
             "expectation_delta": safe_mean([row["capability"]["expectation_pass_rate"]["delta"] for row in skill_rows]),
@@ -4519,6 +4762,7 @@ def resume_finalize_iteration(
                 }
             )
 
+    harness_noise = collect_harness_noise(iteration_dir, workspace_root)
     precheck = pre_aggregate_check(iteration_dir, workspace_root)
     if precheck.get("status") != "ok":
         return {
@@ -4529,6 +4773,7 @@ def resume_finalize_iteration(
             "materialized": materialized,
             "unresolved_count": len(unresolved),
             "unresolved": unresolved,
+            "harness_noise": harness_noise,
             "pre_aggregate_check": precheck,
             "aggregate": None,
         }
@@ -4545,6 +4790,7 @@ def resume_finalize_iteration(
         "materialized": materialized,
         "unresolved_count": len(unresolved),
         "unresolved": unresolved,
+        "harness_noise": harness_noise,
         "pre_aggregate_check": precheck,
         "aggregate": {
             "skill_count": aggregate_summary.get("skill_count", 0),
@@ -4730,6 +4976,7 @@ def build_parser() -> argparse.ArgumentParser:
     materialize_comparisons_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     materialize_comparisons_parser.add_argument("--skill", required=True, help="Target skill name")
     materialize_comparisons_parser.add_argument("--raw-json", type=Path, required=True, help="Path to the raw comparator JSON payload")
+    materialize_comparisons_parser.add_argument("--workspace-root", type=Path, help="Optional compatibility flag; ignored because the workspace root is auto-inferred from --iteration")
     materialize_comparisons_parser.set_defaults(func=cmd_materialize_comparisons)
 
     materialize_comparisons_stdin_parser = subparsers.add_parser(
@@ -4739,6 +4986,7 @@ def build_parser() -> argparse.ArgumentParser:
     materialize_comparisons_stdin_parser.add_argument("--iteration", type=Path, required=True, help="Path to /test/iteration-N")
     materialize_comparisons_stdin_parser.add_argument("--skill", required=True, help="Target skill name")
     materialize_comparisons_stdin_parser.add_argument("--raw-json", type=Path, help="Optional output path for the persisted raw comparator JSON payload")
+    materialize_comparisons_stdin_parser.add_argument("--workspace-root", type=Path, help="Optional compatibility flag; ignored because the workspace root is auto-inferred from --iteration")
     materialize_comparisons_stdin_parser.set_defaults(func=cmd_materialize_comparisons_stdin)
 
     validate_parser = subparsers.add_parser("validate-metrics", help="Validate that every run-metrics file exists and contains all required non-null keys")

@@ -1,0 +1,58 @@
+{
+  "skill_name": "likec4-dsl",
+  "configuration": "with_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-31T13:20:43Z",
+  "finished_at": "2026-03-31T13:35:46Z",
+  "elapsed_seconds_total": 883.81562,
+  "files_read_count": 32,
+  "files_written_count": 32,
+  "run_count": 2,
+  "runs": [
+    {
+      "skill_name": "likec4-dsl",
+      "configuration": "with_skill",
+      "language": "English",
+      "mcp_used": false,
+      "started_at": "2026-03-31T13:21:02Z",
+      "finished_at": "2026-03-31T13:35:46Z",
+      "elapsed_seconds_total": 883.81562,
+      "files_read_count": 32,
+      "files_written_count": 32,
+      "run_number": 1
+    },
+    {
+      "skill_name": "likec4-dsl",
+      "configuration": "with_skill",
+      "language": "English",
+      "mcp_used": false,
+      "started_at": "2026-03-31T13:20:43Z",
+      "finished_at": "2026-03-31T13:35:31Z",
+      "elapsed_seconds_total": 888.789284,
+      "files_read_count": 32,
+      "files_written_count": 32,
+      "run_number": 2
+    }
+  ],
+  "aggregate": {
+    "elapsed_seconds_total": {
+      "mean": 886.3025,
+      "stddev": 3.5169,
+      "min": 883.8156,
+      "max": 888.7893
+    },
+    "files_read_count": {
+      "mean": 32.0,
+      "stddev": 0.0,
+      "min": 32.0,
+      "max": 32.0
+    },
+    "files_written_count": {
+      "mean": 32.0,
+      "stddev": 0.0,
+      "min": 32.0,
+      "max": 32.0
+    }
+  }
+}

@@ -1,0 +1,1 @@
+`base.c4` defines `cloud = system { backend = container { api = service } }`. In `ops.c4` I wrote `backend.api -> cloud.db` and validation says unresolved reference. Do not fix this with import statements. Explain exactly why this happens across files and provide the corrected cross-file relationship using FQNs.

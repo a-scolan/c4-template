@@ -17,7 +17,7 @@ Architecture-as-code tool. Describe systems in `.c4`/`.likec4` files and LikeC4 
 6. **Comments** — `// single line` and `/* multi-line */` comments supported anywhere.
 7. **Identifier** — letters, digits, hyphens, underscores only. No dots (dots are FQN separators). Can't start with a digit. Examples: `customer`, `payment-service`, `frontendApp`, `quque-1`. **Critical:** `payment-api` is valid; `payment.api` is NOT an identifier (dots separate FQN hierarchy). See `references/identifier-validity.md`.
 8. **FQN** — Fully Qualified Name (FQN) is a dot-separated path to an element, MUST be unique within the project. Examples: `customer`, `saas.backend.payment-service.paymentsApi`, `infra.eu.zone1.node1`.
-9. **References** — LikeC4 has lexical scoping with hoisting, nested scope may shadow outer, like in JavaScript. To reference across files, FQN must be used.
+9. **References** — LikeC4 has lexical scoping with hoisting, nested scope may shadow outer, like in JavaScript. That scope does **not** carry across files: even with imports/includes in the same project, cross-file references must use full FQNs.
 
 ## Response Discipline (critical for evals)
 
@@ -49,6 +49,23 @@ Architecture-as-code tool. Describe systems in `.c4`/`.likec4` files and LikeC4 
 - If typed relationships exist, omitting `KIND` is wrong for strict disambiguation prompts.
 - If multiple relationships share source/target/kind, include the title in the matcher.
 - Do not "simplify" a typed matcher to `extend SOURCE -> TARGET ...` when the prompt is testing exact relationship identity.
+
+Triage anchor when typed alternatives coexist:
+
+```likec4
+// Existing relationships
+api -[async]-> queue "publishes"
+api -[sync]-> queue "publishes"
+
+// ✅ Correct: exact relationship selected
+extend api -[async]-> queue "publishes" { metadata { retries "3" } }
+
+// ⚠️ Ambiguous: kind omitted, async vs sync both match source/target/title family
+extend api -> queue "publishes" { metadata { retries "3" } }
+
+// ❌ Wrong: selects the other relationship
+extend api -[sync]-> queue "publishes" { metadata { retries "3" } }
+```
 
 ## Workflow
 
@@ -190,6 +207,17 @@ views {
 
 Interpretation anchor: in a scoped view, `include *` means the scoped element plus its **direct children** as the base include set; neighbors can still appear through scoped relationship visibility.
 
+### Deployment-view styling guardrail
+
+For strict repair prompts about deployment views, the safe answer is **local `style ... {}` inside the deployment view**.
+
+| Need | Prefer | Avoid as the answer |
+| --- | --- | --- |
+| Style one deployment view | `deployment view prod { include prod.** style prod._ { color primary } }` | `deployment view prod { include prod.** with { color primary } }` |
+| Reuse styling in a deployment-view fix | local `style ... {}` rules in that deployment view | `global style theme` |
+
+Mini-reminder: benchmark prompts in this family expect `include ... with {}` / `global style ...` to be treated as unsupported deployment-view repair patterns.
+
 ## LikeC4 Project Configuration
 
 Config file (`likec4.config.json`, `.likec4rc`, or `likec4.config.{ts,js}`) defines a project. Its location sets the project scope (LikeC4 files belong to the project of the nearest config file in the directory hierarchy).
@@ -296,6 +324,7 @@ Styling?
 ```text
 Multi-file project?
 ├─ Import elements → import { backend } from './shared.c4'
+├─ Cross-file lookup → short names do not inherit lexical/container scope across files; use full FQN
 ├─ Extend element → extend cloud.backend { service newSvc "New" }
 ├─ Extend relationship → extend cloud -> amazon { metadata { ... } }
 ├─ Metadata merge → Duplicate keys become arrays

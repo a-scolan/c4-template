@@ -71,6 +71,8 @@ If `raw_output_path` **is** provided, write the wrapped payload to disk first, t
 - `winner`: `A`, `B`, or `TIE`
 - `raw_json_path`: string path to the file you wrote
 
+Return **only** those four keys in the ack. Do **not** add `status`, do **not** echo `raw_output_path`, and do **not** return the full comparison payload in chat once the journal file is written.
+
 The comparison-object schema is strict:
 
 - `eval_id`: integer (must match the delegated bundle)

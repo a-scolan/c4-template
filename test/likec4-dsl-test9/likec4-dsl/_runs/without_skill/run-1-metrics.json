@@ -1,0 +1,12 @@
+{
+  "skill_name": "likec4-dsl",
+  "configuration": "without_skill",
+  "language": "English",
+  "mcp_used": false,
+  "started_at": "2026-03-31T12:56:10Z",
+  "finished_at": "2026-03-31T13:17:19Z",
+  "elapsed_seconds_total": 1269.351358,
+  "files_read_count": 32,
+  "files_written_count": 32,
+  "run_number": 1
+}

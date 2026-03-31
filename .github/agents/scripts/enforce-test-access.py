@@ -431,12 +431,12 @@ def handle_execute(tool_input: Any, workspace_root: Path, mode: str, state: dict
         normalized_candidates = normalize_manager_command_candidates(normalized)
         if not normalized_candidates:
             return deny(
-                f"Command '{normalized}' is outside the benchmark-manager allowlist. Use test/scripts helpers, pytest under test/scripts, or harmless git inspection only."
+                f"Command '{normalized}' is outside the benchmark-manager allowlist. Use explicit test/scripts helper commands, pytest under test/scripts, safe git inspection, or a safe for...do...done loop composed only of those commands. Run 'python test/scripts/skill_suite_tools.py --help' when unsure."
             )
         for candidate in normalized_candidates:
             if not any(pattern.search(candidate) for pattern in ALLOWED_MANAGER_COMMANDS):
                 return deny(
-                    f"Command '{candidate}' is outside the benchmark-manager allowlist. Use test/scripts helpers, pytest under test/scripts, or harmless git inspection only."
+                    f"Command '{candidate}' is outside the benchmark-manager allowlist. Use explicit test/scripts helper commands, pytest under test/scripts, safe git inspection, or a safe for...do...done loop composed only of those commands. Run 'python test/scripts/skill_suite_tools.py --help' when unsure."
                 )
 
     iteration_candidates = extract_iteration_candidates_from_commands(commands, workspace_root)

@@ -1,0 +1,2 @@
+A
+Only A preserves `customer -> frontend -> api` as a single chained expression while placing the body on the final `frontend -> api` hop, whereas B attaches the body to the wrong hop and C and D break the required single-chain form.

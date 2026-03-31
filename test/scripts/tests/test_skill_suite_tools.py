@@ -451,6 +451,38 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertEqual(persisted["comparisons"][0]["winner"], "B")
         self.assertEqual(persisted["comparisons"][0]["reasoning"], "Re-evaluated judgment.")
 
+    def test_materialize_comparisons_parser_accepts_workspace_root_compat_flag(self) -> None:
+        parser = tools.build_parser()
+
+        args = parser.parse_args(
+            [
+                "materialize-comparisons",
+                "--iteration",
+                str(self.iteration_dir),
+                "--skill",
+                "create-element",
+                "--raw-json",
+                str(self.workspace_root / "raw-blind.json"),
+                "--workspace-root",
+                str(self.workspace_root),
+            ]
+        )
+
+        self.assertEqual(args.workspace_root, self.workspace_root)
+
+    def test_blind_compare_bundle_includes_ack_schema_hint(self) -> None:
+        blind_dir = self.iteration_dir / "create-element" / "eval-0" / "blind" / "run-1"
+        blind_dir.mkdir(parents=True, exist_ok=True)
+        (blind_dir / "A.md").write_text("A\n", encoding="utf-8")
+        (blind_dir / "B.md").write_text("B\n", encoding="utf-8")
+
+        bundle = tools.build_blind_compare_bundle(self.iteration_dir, self.workspace_root, "create-element", 0, 1)
+
+        self.assertEqual(bundle["ack_schema_hint"]["eval_id"], 0)
+        self.assertEqual(bundle["ack_schema_hint"]["run_number"], 1)
+        self.assertEqual(bundle["ack_schema_hint"]["winner"], "A | B | TIE")
+        self.assertIn("raw_json_path", bundle["ack_schema_hint"])
+
     def test_read_json_reports_path_and_context_for_invalid_json(self) -> None:
         bad_path = self.workspace_root / "broken.json"
         bad_path.write_text('{"a": 1 trailing}\n', encoding="utf-8")
@@ -1197,6 +1229,51 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertEqual(checks["summary"]["valid_eval_rate"], 0.0)
         self.assertIn("Unknown LikeC4 kind 'Container_Imaginary'.", checks["evals"][0]["snippets"][0]["errors"])
 
+    def test_extract_likec4_snippets_balances_unfenced_blocks_without_orphan_braces(self) -> None:
+        response_text = (
+            "Here is the model.\n\n"
+            "model {\n"
+            "  frontend = service 'Frontend' {\n"
+            "  }\n"
+            "  db = database 'DB'\n"
+            "  frontend -> db 'reads'\n"
+            "}\n\n"
+            "And the deployment.\n\n"
+            "deployment {\n"
+            "  liveFrontend instanceOf frontend\n"
+            "}\n"
+        )
+
+        snippets = tools.extract_likec4_snippets(response_text)
+
+        self.assertEqual(len(snippets), 2)
+        self.assertFalse(any(snippet.strip() == "}" for snippet in snippets))
+        self.assertTrue(any("frontend -> db 'reads'" in snippet for snippet in snippets))
+
+    def test_analyze_likec4_response_accepts_generic_kinds_instanceof_and_dynamic_chain(self) -> None:
+        response_text = (
+            "model {\n"
+            "  monitor = system 'Monitor'\n"
+            "  cloud = system 'Cloud' {\n"
+            "    backend = container 'Backend'\n"
+            "  }\n"
+            "  liveBackend instanceOf cloud.backend\n"
+            "  monitor -[calls]-> cloud.backend 'observes'\n"
+            "}\n\n"
+            "views {\n"
+            "  dynamic monitorFlow {\n"
+            "    include *\n"
+            "    monitor -> cloud -> cloud.backend\n"
+            "  }\n"
+            "}\n"
+        )
+
+        analysis = tools.analyze_likec4_response(response_text, tools.load_likec4_reference_data(self.workspace_root))
+
+        self.assertEqual(analysis["status"], "checked")
+        self.assertEqual(analysis["error_count"], 0)
+        self.assertGreaterEqual(analysis["snippet_count"], 1)
+
     def test_iteration_caveats_flag_provisional_comparison(self) -> None:
         validity = tools.derive_iteration_comparison_validity(
             {
@@ -1496,6 +1573,13 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertTrue(summary["passed"])
         self.assertEqual(summary["issue_count"], 0)
 
+    def test_validate_hook_audit_returns_not_enabled_when_file_is_missing(self) -> None:
+        summary = tools.validate_hook_audit(self.workspace_root / "test" / "_agent-hooks" / "missing.jsonl", mode="baseline")
+
+        self.assertTrue(summary["passed"])
+        self.assertEqual(summary["status"], "not_enabled")
+        self.assertEqual(summary["issue_count"], 0)
+
     def test_validate_hook_audit_flags_allowed_read_outside_baseline_scope(self) -> None:
         audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"
         audit_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1611,6 +1695,54 @@ class SkillSuiteToolsTests(unittest.TestCase):
         self.assertFalse((hook_root / "anonymous-blind_compare-iteration-2-create-element.json").exists())
         self.assertFalse((hook_root / "anonymous-blind_compare-iteration-3-create-element.json").exists())
         self.assertFalse((hook_root / "default.json").exists())
+
+    def test_collect_harness_noise_reports_denied_discovery_and_duplicate_raw_payloads(self) -> None:
+        audit_path = self.workspace_root / "test" / "_agent-hooks" / "hook-audit.jsonl"
+        audit_path.parent.mkdir(parents=True, exist_ok=True)
+        audit_path.write_text(
+            json.dumps(
+                {
+                    "timestamp": "2026-03-16T21:00:00Z",
+                    "mode": "benchmark_manager",
+                    "tool_name": "grep_search",
+                    "tool_paths": ["test/iteration-9/create-element/eval-0/input/prompt.md"],
+                    "permissionDecision": "deny",
+                    "permissionDecisionReason": "broad discovery denied for benchmark manager",
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        duplicate_payload = {
+            "skill_name": "create-element",
+            "comparisons": [
+                {
+                    "eval_id": 0,
+                    "run_number": 1,
+                    "winner": "A",
+                    "reasoning": "A is better.",
+                    "rubric": {
+                        "A": {"content_score": 9, "structure_score": 9, "overall_score": 9},
+                        "B": {"content_score": 5, "structure_score": 5, "overall_score": 5},
+                    },
+                    "expectation_results": {
+                        "A": {"passed": 2, "total": 2, "pass_rate": 1.0},
+                        "B": {"passed": 1, "total": 2, "pass_rate": 0.5},
+                    },
+                }
+            ],
+        }
+        self._write_json(self.iteration_dir / "_meta" / "raw-comparison-create-element-eval-0-run-1.json", duplicate_payload)
+        self._write_json(self.iteration_dir / "_meta" / "create-element-blind.json", duplicate_payload)
+
+        summary = tools.collect_harness_noise(self.iteration_dir, self.workspace_root)
+
+        self.assertEqual(summary["status"], "observed")
+        self.assertEqual(summary["event_count"], 2)
+        categories = {event["category"] for event in summary["events"]}
+        self.assertEqual(categories, {"denied-broad-discovery", "duplicate-raw-comparison-payload"})
+        self.assertTrue((self.iteration_dir / "_meta" / "harness-noise.json").exists())
 
     def test_build_synthesis_bundle_returns_quantitative_and_per_eval(self) -> None:
         skill_dir = self.iteration_dir / "create-element"

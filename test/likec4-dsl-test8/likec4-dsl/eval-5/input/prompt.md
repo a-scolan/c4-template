@@ -1,0 +1,1 @@
+Assume `deploymentNode vm` already exists and `cloud.api` already exists in the logical model. Show a minimal deployment snippet that creates two separately named instances of `cloud.api` inside one VM node. Do not use two anonymous `instanceOf cloud.api` lines; I specifically need two named instances in the same node.

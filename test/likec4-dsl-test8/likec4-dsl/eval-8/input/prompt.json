@@ -1,0 +1,6 @@
+{
+  "id": 8,
+  "skill_name": "likec4-dsl",
+  "prompt": "I want to define a reusable predicate group called `core-services` that includes all `service`-kind elements from `cloud.*` but excludes those tagged `#deprecated`. Use the exact reusable-predicate mechanism `global { predicateGroup ... }` and, in each view, apply it with the exact keyword form `global predicate core-services` (do not replace this with some other reusable-style mechanism). Then show two different views that both apply it: one that adds a per-view style rule on top, and another that adds an extra `include` rule.",
+  "files": []
+}
